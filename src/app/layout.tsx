@@ -1,21 +1,19 @@
-"use client";
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import BottomTabBar from "@/components/ui/BottomTabBar";
-import AuthGuard from "@/components/auth/AuthGuard";
-import { useUserStore } from "@/store/useUserStore";
-import { useEffect } from "react";
-import { fetchMe } from "@/lib/api";
+'use client';
+
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import BottomTabBar from '@/components/ui/BottomTabBar';
+import AuthGuard from '@/components/auth/AuthGuard';
+import useAuthRedirectSync from '@/hooks/useAuthRedirectSync';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export default function RootLayout({
@@ -23,27 +21,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const setUser = useUserStore((state) => state.setUser);
+  const loading = useAuthRedirectSync();
 
-  useEffect(() => {
-    const initUser = async () => {
-      try {
-        const user = await fetchMe<{ id: string; email: string }>();
-        setUser(user);
-      } catch (error) {
-        console.log("자동 로그인 실패");
-      }
-    };
-
-    initUser();
-  }, []);
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthGuard>{children}</AuthGuard>
-        <BottomTabBar />
+        {loading ? (
+          <div className='flex justify-center items-center min-h-screen'>
+            <span className='text-sm text-gray-500 dark:text-gray-300'>
+              로딩 중...
+            </span>
+          </div>
+        ) : (
+          <>
+            <AuthGuard>{children}</AuthGuard>
+            <BottomTabBar />
+          </>
+        )}
       </body>
     </html>
   );

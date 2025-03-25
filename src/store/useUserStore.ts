@@ -1,11 +1,7 @@
 // src/store/useUserStore.ts
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-
-interface User {
-  id: string;
-  email: string;
-}
+import { User } from '@/types/auth';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface UserState {
   user: User | null;
@@ -17,12 +13,12 @@ export const useUserStore = create<UserState>()(
   devtools(
     (set) => ({
       user: null,
-      setUser: (user) => set({ user }, false, "setUser"),
+      setUser: (user) => set({ user }, false, 'setUser'),
       signout: () => {
-        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem('accessToken');
         set({ user: null });
       },
     }),
-    { name: "UserStore" }
+    { name: 'UserStore' }
   )
 );

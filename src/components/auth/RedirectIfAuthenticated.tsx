@@ -2,7 +2,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/useUserStore';
 
-export default function RedirectIfAuthenticated({ children }: { children: React.ReactNode }) {
+export default function RedirectIfAuthenticated({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
 
@@ -10,7 +14,7 @@ export default function RedirectIfAuthenticated({ children }: { children: React.
     if (user) {
       router.replace('/dashboard/daily');
     }
-  }, [user]);
+  }, [router, user]);
 
   if (user) return null;
   return <>{children}</>;
