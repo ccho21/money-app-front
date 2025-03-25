@@ -2,9 +2,8 @@
 
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import BottomTabBar from '@/components/ui/BottomTabBar';
-import AuthGuard from '@/components/auth/AuthGuard';
-import useAuthRedirectSync from '@/hooks/useAuthRedirectSync';
+import useAuthRedirectSync from '@features/auth/hooks/useAuthRedirectSync';
+import AuthGuard from '@features/auth/components/AuthGuard';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,21 +23,16 @@ export default function RootLayout({
   const loading = useAuthRedirectSync();
 
   return (
-    <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {loading ? (
-          <div className='flex justify-center items-center min-h-screen'>
-            <span className='text-sm text-gray-500 dark:text-gray-300'>
+          <div className="flex justify-center items-center min-h-screen">
+            <span className="text-sm text-gray-500 dark:text-gray-300">
               로딩 중...
             </span>
           </div>
         ) : (
-          <>
-            <AuthGuard>{children}</AuthGuard>
-            <BottomTabBar />
-          </>
+          <AuthGuard>{children}</AuthGuard>
         )}
       </body>
     </html>

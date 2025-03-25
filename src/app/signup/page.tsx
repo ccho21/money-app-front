@@ -2,10 +2,10 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { post } from '@/lib/api';
-import { useUserStore } from '@/store/useUserStore';
-import RedirectIfAuthenticated from '@/components/auth/RedirectIfAuthenticated';
-import { SigninResponse } from '@/types/auth';
+import { useUserStore } from '@features/auth/store';
+import { SigninResponse } from '@features/auth/types';
+import { post } from '@features/shared/api';
+import RedirectIfAuthenticated from '@components/common/RedirectIfAuthenticated';
 
 export default function SignupPage() {
   const router = useRouter();
