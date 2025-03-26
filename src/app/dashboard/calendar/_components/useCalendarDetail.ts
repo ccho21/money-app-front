@@ -1,28 +1,26 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/features/shared/api';
-import { TransactionDailyGrouped, TransactionDTO } from '@/features/transaction/types';
-
-export type Transaction = {
-  id: string;
-  type: 'income' | 'expense';
-  amount: number;
-  category: {
-    id: string;
-    name: string;
-    icon: string;
-  };
-  note?: string;
-};
+import {
+  GroupedTransactionDTO,
+  GroupedTransactionSummary,
+} from '@/features/transaction/types';
 
 export function useCalendarDetail(date: string, isOpen: boolean) {
-  const [data, setData] = useState<TransactionDTO | null>(null);
+  const [data, setData] = useState<GroupedTransactionSummary | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
+
     const fetch = async () => {
-      const res = await api<TransactionDTO>(`/transactions?range=date&date=${date}`);
-      setData(res);
+      const res = await api<GroupedTransactionDTO>(
+        `/transactions/grouped?range=date&date=${date}`
+      );
+
+      // ✅ label === baseDate로 정확히 찾기
+      const matched = res.data.find((item) => item.label === date);
+      setData(matched || null);
     };
+
     fetch();
   }, [date, isOpen]);
 

@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
-import { api } from "@/features/shared/api";
-import { format } from "date-fns";
+import { useState, useEffect } from 'react';
+import { api } from '@/features/shared/api';
 import {
   GroupedTransactionDTO,
   GroupedTransactionSummary,
-} from "@/features/transaction/types";
+} from '@/features/transaction/types';
 
 export function useDailyGroupedTransactions() {
-  const [groupedData, setGroupedData] = useState<GroupedTransactionSummary[]>([]);
+  const [groupedData, setGroupedData] = useState<GroupedTransactionSummary[]>(
+    []
+  );
   const [selectedDate, setSelectedDate] = useState('');
   const [incomeTotal, setIncomeTotal] = useState(0);
   const [expenseTotal, setExpenseTotal] = useState(0);
@@ -15,7 +16,7 @@ export function useDailyGroupedTransactions() {
   useEffect(() => {
     const fetch = async () => {
       const res = await api<GroupedTransactionDTO>(
-        "/transactions/grouped?range=month&date=2025-03-01"
+        '/transactions/grouped?range=month&date=2025-03'
       );
 
       setIncomeTotal(res.incomeTotal);
