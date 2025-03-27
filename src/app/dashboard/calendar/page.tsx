@@ -1,59 +1,144 @@
 'use client';
 
 import { useState } from 'react';
-import { format } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '@/styles/calendar-overrides.css';
+import '@/styles/custom-calendar.css'; // 커스터마이징 CSS 별도 작성
+import TransactionDetailSheet from './_components/TransactionDetailSheet';
 
-import CalendarTransactionDetail from './_components/CalendarTransactionDetail';
-import { useCalendarSummary } from './_components/useCalendarSummary';
+interface Transaction {
+  id: number;
+  category: string;
+  memo: string;
+  method: string;
+  amount: number;
+  date: string; // yyyy-mm-dd
+}
+
+// ⚙️ Mock 데이터
+const mockTransactions: Transaction[] = [
+  {
+    id: 1,
+    category: 'Food',
+    memo: '뭔데?',
+    method: 'Cash',
+    amount: -2,
+    date: '2025-03-25',
+  },
+  {
+    id: 2,
+    category: 'Food',
+    memo: '뭔데?',
+    method: 'Cash',
+    amount: -3,
+    date: '2025-03-25',
+  },
+  {
+    id: 3,
+    category: 'Food',
+    memo: '커피2',
+    method: 'Cash',
+    amount: -3,
+    date: '2025-03-25',
+  },
+];
 
 export default function CalendarPage() {
-  const { monthSummary } = useCalendarSummary('2025-03');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const getDotColor = (date: Date) => {
-    const d = format(date, 'yyyy-MM-dd');
-    const item = monthSummary.find((s) => s.date === d);
-    if (!item) return null;
-    if (item.expense > 0) return 'bg-red-500';
-    if (item.income > 0) return 'bg-green-500';
-    return null;
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    setOpen(true);
   };
 
-  const handleDateClick = (value: Date) => {
-    setSelectedDate(value);
-    setIsDetailOpen(true);
-  };
+  const getDateStr = (date: Date) => date.toISOString().split('T')[0];
 
-  const handleClose = () => {
-    setIsDetailOpen(false);
-    setSelectedDate(null);
-  };
+  const currentMonthTransactions = mockTransactions.filter((t) =>
+    t.date.startsWith('2025-03')
+  );
+
+  const groupedData: Record<string, Transaction[]> =
+    currentMonthTransactions.reduce((acc, cur) => {
+      acc[cur.date] = acc[cur.date] || [];
+      acc[cur.date].push(cur);
+      return acc;
+    }, {} as Record<string, Transaction[]>);
+
+  const calcSummary = Object.values(groupedData).flat();
+  const income = calcSummary
+    .filter((t) => t.amount > 0)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const expense = calcSummary
+    .filter((t) => t.amount < 0)
+    .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="p-0">
+    <div className='max-w-md mx-auto px-4 pb-24'>
       <Calendar
-        className="w-full max-w-none border-none"
-        onChange={handleDateClick}
+        value={selectedDate || new Date(2025, 2, 26)}
+        onClickDay={(date) => handleDateClick(date)}
+        showNavigation={false}
+        prevLabel={null}
+        nextLabel={null}
+        prev2Label={null}
+        next2Label={null}
         tileContent={({ date }) => {
-          const dotColor = getDotColor(date);
-          return dotColor ? (
+          const key = getDateStr(date);
+          const transactions = groupedData[key];
+          if (!transactions) return null;
+          const total = transactions.reduce((sum, t) => sum + t.amount, 0);
+          return (
             <div
-              className={`w-1.5 h-1.5 rounded-full mx-auto mt-1 ${dotColor}`}
-            />
-          ) : null;
+              className={`text-xs mt-1 ${
+                total < 0 ? 'text-red-500' : 'text-blue-500'
+              }`}
+            >
+              ${Math.abs(total).toFixed(2)}
+            </div>
+          );
         }}
-        tileClassName="text-xs p-1"
+        tileClassName={({ date }) => {
+          const isSelected =
+            selectedDate && getDateStr(date) === getDateStr(selectedDate);
+          return isSelected ? 'bg-blue-700 text-white rounded-full' : '';
+        }}
       />
 
+      {/* Bottom Floating Button */}
+      <div className='fixed bottom-20 right-4 z-30'>
+        <button className='w-14 h-14 bg-red-500 text-white rounded-full text-2xl shadow-lg'>
+          +
+        </button>
+      </div>
+
+      {/* Modal Sheet */}
       {selectedDate && (
-        <CalendarTransactionDetail
-          date={format(selectedDate, 'yyyy-MM-dd')}
-          isOpen={isDetailOpen}
-          onClose={handleClose}
+        <TransactionDetailSheet
+          open={open}
+          date={selectedDate}
+          transactions={groupedData[getDateStr(selectedDate)] || []}
+          onClose={() => setOpen(false)}
+          onPrev={() =>
+            setSelectedDate(
+              (prev) =>
+                new Date(
+                  prev!.getFullYear(),
+                  prev!.getMonth(),
+                  prev!.getDate() - 1
+                )
+            )
+          }
+          onNext={() =>
+            setSelectedDate(
+              (prev) =>
+                new Date(
+                  prev!.getFullYear(),
+                  prev!.getMonth(),
+                  prev!.getDate() + 1
+                )
+            )
+          }
         />
       )}
     </div>

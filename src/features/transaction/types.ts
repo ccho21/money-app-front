@@ -1,7 +1,7 @@
 export type TransactionType = 'income' | 'expense';
 
 export interface TransactionCategory {
-  id: string;
+  id?: string;
   name: string;
   icon: string;
 }

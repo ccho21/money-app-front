@@ -1,24 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { eachMonthOfInterval, startOfYear, endOfYear } from 'date-fns';
 
-import YearNavigator from '@/components/ui/YearNavigator';
 import MonthlyItem from './_components/MonthlyItem';
 import { useMonthlyGroupedTransactions } from './_components/useMonthlyGroupedTransactions';
+import DateNavigator from '@/components/ui/DateNavigator';
 
 export default function MonthlyPage() {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [date, setDate] = useState(new Date());
 
-  const { groupedData } = useMonthlyGroupedTransactions(year);
+  const { groupedData } = useMonthlyGroupedTransactions(date.getFullYear());
 
   return (
-    <div className="p-4">
-      <YearNavigator initialYear={year} onChange={setYear} />
-
-      <div className="mt-4 space-y-3">
+    <div className='p-4'>
+      <DateNavigator date={date} onChange={setDate} mode='year' />
+      <div className='mt-4 space-y-3'>
         {groupedData.map((group) => {
-
           return (
             <MonthlyItem
               key={group.label}

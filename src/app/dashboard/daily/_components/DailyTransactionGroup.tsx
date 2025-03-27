@@ -1,4 +1,7 @@
-import { GroupedTransactionSummary, Transaction } from '@/features/transaction/types';
+import {
+  GroupedTransactionSummary,
+  Transaction,
+} from '@/features/transaction/types';
 import DailyTransactionItem from './DailyTransactionItem';
 
 interface Props {
@@ -12,34 +15,37 @@ export default function DailyTransactionGroup({
   selected,
   onSelect,
 }: Props) {
+  const date = new Date(group.label);
+  const day = date.getDate();
+  const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+
   return (
-    <div className="mb-6">
+    <div className='mb-6'>
       {/* 날짜 헤더 */}
       <div
-        className={`grid grid-cols-12 items-center px-3 py-2 rounded-md cursor-pointer ${
-          selected ? 'bg-gray-100 font-semibold' : ''
+        className={`grid grid-cols-12 items-center px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${
+          selected
+            ? 'bg-zinc-100 dark:bg-zinc-800'
+            : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'
         }`}
         onClick={onSelect}
       >
-        <span className="col-span-2 text-lg">
-          {new Date(group.label).getDate()}
-        </span>
-        <span className="col-span-2 text-sm text-gray-500">
-          {new Date(group.label).toLocaleDateString('en-US', {
-            weekday: 'short',
-          })}
-        </span>
-        <div className="col-span-2" />
-        <p className="col-span-3 text-blue-500 text-sm text-right">
+        <div className='col-span-1 text-xl font-bold text-gray-800 dark:text-white'>
+          {day}
+        </div>
+        <div className='col-span-1 text-sm text-gray-500'>{weekday}</div>
+        <div className='col-span-4'></div>
+        <div className='col-span-3 text-sm text-right font-medium text-emerald-500 dark:text-emerald-400'>
           ₩{group.incomeTotal.toFixed(2)}
-        </p>
-        <p className="col-span-3 text-red-500 text-sm text-right">
+        </div>
+        <div className='col-span-3 text-sm text-right font-medium text-rose-500 dark:text-rose-400'>
           ₩{group.expenseTotal.toFixed(2)}
-        </p>
+        </div>
+        <div className='col-span-3'></div>
       </div>
 
       {/* 거래 리스트 */}
-      <ul className="mt-2 space-y-2">
+      <ul className='mt-3 space-y-2'>
         {group.transactions.map((tx: Transaction) => (
           <DailyTransactionItem key={tx.id} tx={tx} />
         ))}
