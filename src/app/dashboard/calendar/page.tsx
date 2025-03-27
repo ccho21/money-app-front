@@ -76,8 +76,9 @@ export default function CalendarPage() {
   return (
     <div className='max-w-md mx-auto px-4 pb-24'>
       <Calendar
-        value={selectedDate || new Date(2025, 2, 26)}
-        onClickDay={(date) => handleDateClick(date)}
+        calendarType='gregory'
+        value={selectedDate || new Date()}
+        onClickDay={handleDateClick}
         showNavigation={false}
         prevLabel={null}
         nextLabel={null}
@@ -90,19 +91,28 @@ export default function CalendarPage() {
           const total = transactions.reduce((sum, t) => sum + t.amount, 0);
           return (
             <div
-              className={`text-xs mt-1 ${
-                total < 0 ? 'text-red-500' : 'text-blue-500'
+              className={`text-[13px] mt-1 ${
+                total < 0 ? 'text-[#F04438]' : 'text-[#3C50E0]'
               }`}
             >
-              ${Math.abs(total).toFixed(2)}
+              ₩{Math.abs(total).toLocaleString()}
             </div>
           );
         }}
-        tileClassName={({ date }) => {
+        tileClassName={({ date, view }) => {
           const isSelected =
             selectedDate && getDateStr(date) === getDateStr(selectedDate);
-          return isSelected ? 'bg-blue-700 text-white rounded-full' : '';
+          const isToday = getDateStr(date) === getDateStr(new Date());
+
+          return [
+            'relative border border-gray-200 dark:border-zinc-700 text-[13px] leading-snug rounded-md transition-colors duration-150',
+            isSelected && 'bg-[#3C50E0] text-white',
+            isToday && 'border-[#3C50E0]',
+          ]
+            .filter(Boolean)
+            .join(' ');
         }}
+        className='w-full !text-sm custom-calendar'
       />
 
       {/* Bottom Floating Button */}

@@ -1,3 +1,4 @@
+// 📄 경로: src/components/ui/DateNavigator.tsx
 'use client';
 
 import {
@@ -10,7 +11,7 @@ import {
 type Props = {
   date: Date;
   onChange: (newDate: Date) => void;
-  mode?: 'year' | 'month'; // ← optional
+  mode?: 'year' | 'month';
 };
 
 export default function DateNavigator({
@@ -32,26 +33,29 @@ export default function DateNavigator({
   };
 
   return (
-    <div className='flex justify-between items-center px-4 py-2 text-sm font-medium'>
-      <div className='flex gap-2 text-gray-500'>
+    <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
+      {/* 왼쪽 버튼 */}
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(mode === 'year' ? -10 : -12)}>
-          <ChevronsLeft size={18} />
+          <ChevronsLeft size={20} />
         </button>
         <button onClick={() => handleChange(-1)}>
-          <ChevronLeft size={18} />
+          <ChevronLeft size={20} />
         </button>
       </div>
 
-      <span className='text-black dark:text-white'>
+      {/* 타이틀 */}
+      <span className='text-base font-font-medium text-gray-900 dark:text-white'>
         {mode === 'year' ? `${year}` : `${month} ${year}`}
       </span>
 
-      <div className='flex gap-2 text-gray-500'>
+      {/* 오른쪽 버튼 */}
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(1)}>
-          <ChevronRight size={18} />
+          <ChevronRight size={20} />
         </button>
         <button onClick={() => handleChange(mode === 'year' ? 10 : 12)}>
-          <ChevronsRight size={18} />
+          <ChevronsRight size={20} />
         </button>
       </div>
     </div>

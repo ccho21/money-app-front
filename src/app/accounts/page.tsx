@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { formatCurrency } from '@/features/shared/utils';
+import { formatCurrency } from '@/lib/utils';
 
 const mockAccounts = [
   { id: '1', name: 'Cash', type: 'CASH', balance: 92 },

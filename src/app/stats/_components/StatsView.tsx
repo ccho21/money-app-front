@@ -1,6 +1,6 @@
 'use client';
 
-import { formatCurrency } from '@/features/shared/utils';
+import { formatCurrency } from '@/lib/utils';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const data = [{ name: 'Food', value: 32.48, percent: 100, color: '#fb5c4c' }];

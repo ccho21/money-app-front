@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { Progress } from '@/components/ui/Progress';
-import { formatCurrency } from '@/features/shared/utils';
+import { formatCurrency } from '@/lib/utils';
 
 const mockBudgets = [
   { categoryName: 'Monthly', total: 100, used: 24.48, percent: 24.48 },

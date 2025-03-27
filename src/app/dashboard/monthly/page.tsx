@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 import MonthlyItem from './_components/MonthlyItem';
 import { useMonthlyGroupedTransactions } from './_components/useMonthlyGroupedTransactions';
-import DateNavigator from '@/components/ui/DateNavigator';
 
 export default function MonthlyPage() {
   const [date, setDate] = useState(new Date());
@@ -13,7 +12,6 @@ export default function MonthlyPage() {
 
   return (
     <div className='p-4'>
-      <DateNavigator date={date} onChange={setDate} mode='year' />
       <div className='mt-4 space-y-3'>
         {groupedData.map((group) => {
           return (

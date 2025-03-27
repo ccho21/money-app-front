@@ -1,6 +1,6 @@
 'use client';
 
-import { formatCurrency } from '@/features/shared/utils';
+import { formatCurrency } from '@/lib/utils';
 import React from 'react';
 
 const dummyNotes = [

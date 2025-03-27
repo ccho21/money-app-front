@@ -1,7 +1,8 @@
+// 📄 경로: src/components/common/TopNav.tsx
 'use client';
 
 import { ReactNode } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Filter, Search } from 'lucide-react';
 
 interface TopNavProps {
   title: string;
@@ -9,6 +10,10 @@ interface TopNavProps {
   leftSlot?: ReactNode;
   rightSlot?: ReactNode;
   onBack?: () => void;
+  onSearchClick?: () => void;
+  onFilterClick?: () => void;
+  showSearchButton?: boolean;
+  showFilterButton?: boolean;
 }
 
 export default function TopNav({
@@ -17,30 +22,59 @@ export default function TopNav({
   leftSlot,
   rightSlot,
   onBack,
+  onSearchClick,
+  onFilterClick,
+  showSearchButton = false,
+  showFilterButton = false,
 }: TopNavProps) {
   return (
-    <div className='relative flex items-center justify-between px-4 py-3 border-b bg-white dark:bg-black'>
-      {/* Left */}
-      <div className='flex items-center gap-2 z-10'>
+    <div className='relative flex items-center justify-between px-5 py-5 border-b border-gray-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm'>
+      {/* 왼쪽 영역 */}
+      <div className='flex items-center gap-3 z-10'>
         {onBack && (
-          <button onClick={onBack}>
-            <ArrowLeft className='w-5 h-5 text-gray-700 dark:text-gray-300' />
+          <button
+            onClick={onBack}
+            className='p-2 rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-zinc-800 transition-colors'
+          >
+            <ArrowLeft className='w-5 h-5' />
           </button>
         )}
         {leftSlot}
       </div>
 
-      {/* Title */}
+      {/* 타이틀 */}
       {center ? (
-        <div className='absolute left-0 right-0 flex justify-center pointer-events-none'>
-          <h1 className='text-lg font-semibold'>{title}</h1>
+        <div className='absolute inset-0 flex justify-center items-center pointer-events-none'>
+          <h1 className='text-xl font-semibold text-gray-900 dark:text-white'>
+            {title}
+          </h1>
         </div>
       ) : (
-        <h1 className='text-lg font-semibold'>{title}</h1>
+        <h1 className='text-xl font-semibold text-gray-900 dark:text-white'>
+          {title}
+        </h1>
       )}
 
-      {/* Right */}
-      <div className='flex items-center gap-3 z-10'>{rightSlot}</div>
+      {/* 오른쪽 영역 */}
+      <div className='flex items-center gap-3 z-10'>
+        {showSearchButton && (
+          <button
+            onClick={onSearchClick}
+            className='p-2 rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-zinc-800 transition-colors'
+          >
+            <Search className='w-5 h-5' />
+          </button>
+        )}
+        {showFilterButton && (
+          <button
+            onClick={onFilterClick}
+            className='p-2 rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-zinc-800 transition-colors'
+          >
+            <Filter className='w-5 h-5' />
+          </button>
+        )}
+        {rightSlot}
+      </div>
     </div>
   );
 }

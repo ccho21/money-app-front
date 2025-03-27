@@ -1,7 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
-import { cn } from '@/features/shared/utils';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 export type ViewMode = 'Stats' | 'Budget' | 'Note';

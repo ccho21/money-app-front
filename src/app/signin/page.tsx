@@ -6,7 +6,7 @@ import { useUserStore } from '@features/auth/store';
 import { post } from '@features/shared/api';
 import { authGet } from '@features/auth/api';
 import { User } from '@features/auth/types';
-import RedirectIfAuthenticated from '@components/common/RedirectIfAuthenticated';
+import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
 
 export default function SigninPage() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function SigninPage() {
 
   return (
     <RedirectIfAuthenticated>
-      <div className='min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black px-4'>
+      <div className='flex items-center justify-center bg-gray-50 dark:bg-black px-4'>
         <form
           onSubmit={handleSignin}
           className='w-full max-w-md space-y-6 p-8 bg-white dark:bg-zinc-900 shadow rounded-lg'

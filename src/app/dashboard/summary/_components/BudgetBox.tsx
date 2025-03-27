@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import useBudgetStore from '@/features/budget/store';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Progress } from '@/components/ui/Progress';
-import { formatCurrency } from '@/features/shared/utils';
+import { formatCurrency } from '@/lib/utils';
 
 export default function BudgetBox() {
   const { budgets, loading, error, fetchBudgetsAction } = useBudgetStore();

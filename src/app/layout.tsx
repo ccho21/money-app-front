@@ -1,3 +1,4 @@
+// 📄 경로: src/app/layout.tsx
 'use client';
 
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -23,11 +24,13 @@ export default function RootLayout({
   const loading = useAuthRedirectSync();
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang='en' suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-black dark:text-white`}
+      >
         {loading ? (
-          <div className="flex justify-center items-center min-h-screen">
-            <span className="text-sm text-gray-500 dark:text-gray-300">
+          <div className='flex justify-center items-center min-h-screen'>
+            <span className='text-sm text-gray-500 dark:text-gray-300'>
               로딩 중...
             </span>
           </div>

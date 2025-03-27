@@ -67,7 +67,7 @@ export default function DailyPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   return (
-    <div className='p-4 pb-24'>
+    <div className='p-2'>
       <DailySummaryRow
         incomeTotal={mockGroupedTransactionDTO.incomeTotal}
         expenseTotal={mockGroupedTransactionDTO.expenseTotal}

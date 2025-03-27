@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@features/shared/utils';
+import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 export default function FloatingActionButton({
   onClick,
-  icon = <Plus className="w-5 h-5 text-white" />,
+  icon = <Plus className='w-5 h-5 text-white' />,
   className = '',
 }: Props) {
   return (

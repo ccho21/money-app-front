@@ -15,7 +15,7 @@ export default function AccountEditPage() {
   const router = useRouter();
 
   return (
-    <div className='min-h-screen bg-white'>
+    <div className='bg-white'>
       {/* Header */}
       <div className='flex justify-between items-center px-4 py-3 border-b'>
         <div className='flex items-center gap-3'>
