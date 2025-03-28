@@ -7,36 +7,36 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useEffect } from 'react';
 
-type Props = {
-  date: Date;
-  onChange: (newDate: Date) => void;
-  mode?: 'year' | 'month';
-};
+export default function DateNavigator() {
+  const { date, type, setDate } = useDateFilterStore();
 
-export default function DateNavigator({
-  date,
-  onChange,
-  mode = 'month',
-}: Props) {
+  // ✅ 최초 마운트 시점에 오늘 날짜 저장
+  useEffect(() => {
+    setDate(new Date());
+  }, [setDate]);
+
   const year = date.getFullYear();
   const month = date.toLocaleString('default', { month: 'long' });
 
   const handleChange = (diff: number) => {
     const newDate = new Date(date);
-    if (mode === 'year') {
+    if (type === 'yearly') {
       newDate.setFullYear(newDate.getFullYear() + diff);
     } else {
       newDate.setMonth(newDate.getMonth() + diff);
     }
-    onChange(newDate);
+
+    setDate(newDate);
   };
 
   return (
     <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
       {/* 왼쪽 버튼 */}
       <div className='flex gap-3 text-gray-500'>
-        <button onClick={() => handleChange(mode === 'year' ? -10 : -12)}>
+        <button onClick={() => handleChange(type === 'yearly' ? -10 : -12)}>
           <ChevronsLeft size={20} />
         </button>
         <button onClick={() => handleChange(-1)}>
@@ -44,9 +44,9 @@ export default function DateNavigator({
         </button>
       </div>
 
-      {/* 타이틀 */}
-      <span className='text-base font-font-medium text-gray-900 dark:text-white'>
-        {mode === 'year' ? `${year}` : `${month} ${year}`}
+      {/* 날짜 텍스트 */}
+      <span className='text-base font-medium text-gray-900 dark:text-white'>
+        {type === 'yearly' ? `${year}` : `${month} ${year}`}
       </span>
 
       {/* 오른쪽 버튼 */}
@@ -54,7 +54,7 @@ export default function DateNavigator({
         <button onClick={() => handleChange(1)}>
           <ChevronRight size={20} />
         </button>
-        <button onClick={() => handleChange(mode === 'year' ? 10 : 12)}>
+        <button onClick={() => handleChange(type === 'yearly' ? 10 : 12)}>
           <ChevronsRight size={20} />
         </button>
       </div>

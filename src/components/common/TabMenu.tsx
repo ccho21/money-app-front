@@ -13,7 +13,7 @@ interface TabMenuProps {
 
 export default function TabMenu({ tabs, active, onChange }: TabMenuProps) {
   return (
-    <div className="flex border-b">
+    <div className='flex border-b border-gray-200'>
       {tabs.map((tab) => (
         <button
           key={tab.key}

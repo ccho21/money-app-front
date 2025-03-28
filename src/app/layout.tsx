@@ -2,6 +2,7 @@
 'use client';
 
 import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import useAuthRedirectSync from '@features/auth/hooks/useAuthRedirectSync';
 import AuthGuard from '@features/auth/components/AuthGuard';
@@ -37,6 +38,7 @@ export default function RootLayout({
         ) : (
           <AuthGuard>{children}</AuthGuard>
         )}
+        <Toaster position='top-right' reverseOrder={false} />
       </body>
     </html>
   );

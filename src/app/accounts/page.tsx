@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
 import { formatCurrency } from '@/lib/utils';
+import { CategoryListItem } from '../stats/_components/CategoryListItem';
+import SummaryBox from '@/components/ui/SummaryBox';
 
 const mockAccounts = [
   { id: '1', name: 'Cash', type: 'CASH', balance: 92 },
@@ -26,24 +27,32 @@ export default function AccountsPage() {
   const netTotal = assetTotal + liabilityTotal;
 
   return (
-    <div className='p-4 space-y-4'>
-      <div className='flex justify-around text-sm font-medium'>
-        <div className='text-center'>
-          <p className='text-gray-500'>Assets</p>
-          <p className='text-blue-600'>{formatCurrency(assetTotal)}</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-gray-500'>Liabilities</p>
-          <p className='text-red-500'>{formatCurrency(liabilityTotal)}</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-gray-500'>Total</p>
-          <p className='text-black dark:text-white'>
-            {formatCurrency(netTotal)}
-          </p>
-        </div>
-      </div>
+    <div className='p-4 space-y-6'>
+      {/* 상단 요약 */}
+      <SummaryBox
+        items={[
+          {
+            label: 'Assets',
+            value: assetTotal,
+            color: 'text-blue-600',
+            prefix: '₩',
+          },
+          {
+            label: 'Liabilities',
+            value: liabilityTotal,
+            color: 'text-red-500',
+            prefix: '₩',
+          },
+          {
+            label: 'Total',
+            value: netTotal,
+            color: 'text-black dark:text-white',
+            prefix: '₩',
+          },
+        ]}
+      />
 
+      {/* 계좌 목록 */}
       <div className='space-y-6'>
         {['CASH', 'BANK', 'CARD'].map((type) => {
           const filtered = accounts.filter((a) => a.type === type);
@@ -56,25 +65,13 @@ export default function AccountsPage() {
                 {type === 'BANK' && 'Bank Accounts'}
                 {type === 'CARD' && 'Card'}
               </h3>
-              <div className='space-y-2'>
+              <div className='divide-y'>
                 {filtered.map((acc) => (
-                  <div
+                  <CategoryListItem
                     key={acc.id}
-                    className='flex justify-between items-center px-2 py-2 rounded-md bg-white dark:bg-zinc-900 shadow-sm'
-                  >
-                    <p className='text-sm font-medium text-gray-800 dark:text-white'>
-                      {acc.name}
-                    </p>
-                    <p
-                      className={
-                        type === 'CARD'
-                          ? 'text-red-500 font-medium'
-                          : 'text-blue-600 font-medium'
-                      }
-                    >
-                      {formatCurrency(acc.balance)}
-                    </p>
-                  </div>
+                    name={acc.name}
+                    amount={acc.balance}
+                  />
                 ))}
               </div>
             </div>

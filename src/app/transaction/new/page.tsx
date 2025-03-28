@@ -1,13 +1,21 @@
 'use client';
 
 import Selector from '@/components/ui/Selector';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { useCategoryStore } from '@/stores/useCategoryStore';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const TABS = ['Income', 'Expense', 'Transfer'] as const;
 type Tab = (typeof TABS)[number];
 export default function TransactionNewPage() {
+  const { categories, selectedCategoryId, fetchCategories, selectCategory } =
+    useCategoryStore();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<Tab>('Expense');

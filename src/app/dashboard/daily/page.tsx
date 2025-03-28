@@ -1,86 +1,76 @@
 'use client';
 
-import DailySummaryRow from './_components/DailySummaryRow';
+import { useEffect, useState } from 'react';
 import DailyTransactionGroup from './_components/DailyTransactionGroup';
-import { useState } from 'react';
-import {
-  GroupedTransactionDTO,
-  TransactionType,
-} from '@/features/transaction/types';
-
-const mockGroupedTransactionDTO: GroupedTransactionDTO = {
-  range: 'date',
-  baseDate: '2025-03-26',
-  incomeTotal: 100,
-  expenseTotal: 32.48,
-  data: [
-    {
-      label: '2025-03-26',
-      incomeTotal: 0,
-      expenseTotal: 32.48,
-      transactions: [
-        {
-          id: 'tx1',
-          type: 'expense' as TransactionType,
-          amount: 4.48,
-          category: { name: 'Coffee', icon: '☕️' },
-          note: 'Morning Coffee',
-          date: '2025-03-26T08:15:00',
-        },
-        {
-          id: 'tx2',
-          type: 'expense' as TransactionType,
-          amount: 20.0,
-          category: { name: 'Food', icon: '🍱' },
-          note: 'Lunch',
-          date: '2025-03-26T12:40:00',
-        },
-        {
-          id: 'tx3',
-          type: 'expense' as TransactionType,
-          amount: 8.0,
-          category: { name: 'Transport', icon: '🚌' },
-          note: 'Subway',
-          date: '2025-03-26T18:20:00',
-        },
-      ],
-    },
-    {
-      label: '2025-03-25',
-      incomeTotal: 100,
-      expenseTotal: 0,
-      transactions: [
-        {
-          id: 'tx4',
-          type: 'income' as TransactionType,
-          amount: 100,
-          category: { name: 'Salary', icon: '💼' },
-          note: 'March Pay',
-          date: '2025-03-25T09:00:00',
-        },
-      ],
-    },
-  ],
-};
+import SummaryBox from '@/components/ui/SummaryBox';
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
 
 export default function DailyPage() {
+  const { fetchTransactionGroups, transactionGroups, isLoading } =
+    useTransactionStore();
+  const { date, type } = useDateFilterStore();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
+  // 🚀 페이지 마운트 시 데이터 fetch
+  useEffect(() => {
+    fetchTransactionGroups(
+      type,
+      String(date.getFullYear()),
+      String(date.getMonth() + 1)
+    );
+  }, [fetchTransactionGroups, type, date]);
+
+  if (isLoading) {
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+  }
+
+  if (!transactionGroups) {
+    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+  }
+
   return (
-    <div className='p-2'>
-      <DailySummaryRow
-        incomeTotal={mockGroupedTransactionDTO.incomeTotal}
-        expenseTotal={mockGroupedTransactionDTO.expenseTotal}
+    <>
+      <SummaryBox
+        items={[
+          {
+            label: 'Income',
+            value: transactionGroups.incomeTotal,
+            color:
+              transactionGroups.incomeTotal > 0
+                ? 'text-[#3C50E0]'
+                : 'text-gray-400',
+            prefix: '₩',
+          },
+          {
+            label: 'Exp.',
+            value: transactionGroups.expenseTotal,
+            color:
+              transactionGroups.expenseTotal > 0
+                ? 'text-[#fb5c4c]'
+                : 'text-gray-400',
+            prefix: '₩',
+          },
+          {
+            label: 'Total',
+            value:
+              transactionGroups.incomeTotal - transactionGroups.expenseTotal,
+            color: 'text-gray-900 dark:text-white',
+            prefix: '₩',
+          },
+        ]}
       />
 
-      {mockGroupedTransactionDTO.data.map((group) => (
-        <DailyTransactionGroup
-          key={group.label}
-          group={group}
-          selected={selectedDate === group.label}
-          onSelect={() => setSelectedDate(group.label)}
-        />
-      ))}
-    </div>
+      <div className='mt-4 space-y-4'>
+        {transactionGroups.data.map((group) => (
+          <DailyTransactionGroup
+            key={group.label}
+            group={group}
+            selected={selectedDate === group.label}
+            onSelect={() => setSelectedDate(group.label)}
+          />
+        ))}
+      </div>
+    </>
   );
 }

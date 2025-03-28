@@ -62,9 +62,7 @@ const SettingItem = ({
 
 export default function MorePage() {
   return (
-    <div className='py-6'>
-      <h2 className='text-center text-lg font-semibold'>Settings</h2>
-
+    <div className=''>
       <Section title='Trans.'>
         <SettingItem
           icon={<CalendarDays size={18} />}

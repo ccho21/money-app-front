@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { api } from "@/features/shared/api";
+import { useEffect, useState } from 'react';
+import { api } from '@/features/shared/api';
 import {
-  GroupedTransactionDTO,
+  TransactionGroupResponse,
   GroupedTransactionSummary,
-} from "@/features/transaction/types";
+} from '@/features/transaction/types';
 
 export function useMonthlyGroupedTransactions(year: number) {
   const [groupedData, setGroupedData] = useState<GroupedTransactionSummary[]>(
@@ -12,7 +12,7 @@ export function useMonthlyGroupedTransactions(year: number) {
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await api<GroupedTransactionDTO>(
+      const res = await api<TransactionGroupResponse>(
         `/transactions/grouped?range=year&date=${year}&includeEmpty=true`
       );
       setGroupedData(res.data);

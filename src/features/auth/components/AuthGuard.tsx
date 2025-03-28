@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '../store';
+import { useUserStore } from '../../../stores/useUserStore';
 
 const PUBLIC_ROUTES = ['/signin', '/signup'];
 

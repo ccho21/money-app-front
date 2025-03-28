@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@features/auth/store';
-import { post } from '@features/shared/api';
-import { authGet } from '@features/auth/api';
-import { User } from '@features/auth/types';
+import { useUserStore } from '@/stores/useUserStore';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
+import toast from 'react-hot-toast';
 
 export default function SigninPage() {
+  const { signin } = useUserStore.getState();
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
 
@@ -16,19 +15,13 @@ export default function SigninPage() {
   const [password, setPassword] = useState('secure123');
   const [error, setError] = useState('');
 
-  const handleSignin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await post('/auth/signin', { email, password }); // 이제 access_token은 서버가 쿠키로 설정
-
-      // 로그인 성공 후 /auth/me 요청
-      const userInfo = await authGet<User>('/auth/me');
-      console.log('현재 로그인된 유저:', userInfo);
-      setUser({ id: userInfo.id, email: userInfo.email });
-
-      router.push('/dashboard/daily');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '로그인 오류');
+    const success = await signin(email, password);
+    if (success) {
+      router.push('/dashboard/daily'); // 로그인 성공 시 이동
+    } else {
+      toast.error('이메일 또는 비밀번호가 올바르지 않습니다');
     }
   };
 

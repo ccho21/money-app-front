@@ -15,17 +15,23 @@ export interface Transaction {
   category: TransactionCategory;
 }
 
-export interface GroupedTransactionSummary {
+export interface GroupedTransactions {
   label: string; // 예: '2025-03-20', '2025-03'
   incomeTotal: number;
   expenseTotal: number;
   transactions: Transaction[];
 }
 
-export interface GroupedTransactionDTO {
-  range: 'date' | 'week' | 'month' | 'year';
-  baseDate: string; // YYYY or YYYY-MM 등
+export interface TransactionGroupResponse {
+  type: 'weekly' | 'monthly' | 'yearly';
+  date: string;
   incomeTotal: number;
   expenseTotal: number;
-  data: GroupedTransactionSummary[];
+  data: GroupedTransactions[];
+}
+
+export interface TransactionCalendarItem {
+  date: string;
+  income: number;
+  expense: number;
 }

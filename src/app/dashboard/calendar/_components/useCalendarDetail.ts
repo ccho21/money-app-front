@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/features/shared/api';
 import {
-  GroupedTransactionDTO,
-  GroupedTransactionSummary,
+  TransactionGroupResponse,
+  GroupedTransactions,
 } from '@/features/transaction/types';
 
 export function useCalendarDetail(date: string, isOpen: boolean) {
-  const [data, setData] = useState<GroupedTransactionSummary | null>(null);
+  const [data, setData] = useState<GroupedTransactions | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const fetch = async () => {
-      const res = await api<GroupedTransactionDTO>(
+      const res = await api<TransactionGroupResponse>(
         `/transactions/grouped?range=date&date=${date}`
       );
 

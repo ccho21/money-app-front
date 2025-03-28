@@ -14,7 +14,7 @@ export default function NoteView() {
   const total = dummyNotes.reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <div className='p-4 space-y-4'>
+    <div className='bg-white p-4 space-y-4'>
       <div className='flex justify-between items-center'>
         <span className='text-sm text-gray-400'>Income</span>
         <span className='text-sm font-semibold text-red-500'>

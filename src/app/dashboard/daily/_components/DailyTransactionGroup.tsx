@@ -1,14 +1,11 @@
 // 📄 경로: src/components/ui/DailyTransactionGroup.tsx
 'use client';
 
-import {
-  GroupedTransactionSummary,
-  Transaction,
-} from '@/features/transaction/types';
+import { GroupedTransactions, Transaction } from '@/features/transaction/types';
 import DailyTransactionItem from './DailyTransactionItem';
 
 interface Props {
-  group: GroupedTransactionSummary;
+  group: GroupedTransactions;
   selected: boolean;
   onSelect: () => void;
 }
@@ -23,7 +20,7 @@ export default function DailyTransactionGroup({
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
 
   const incomeColor = 'text-[#3C50E0]'; // TailAdmin 파랑
-  const expenseColor = 'text-[#F04438]'; // TailAdmin 소프트레드
+  const expenseColor = 'text-[#fb5c4c]'; // TailAdmin 소프트레드
 
   return (
     <div className='mb-4'>

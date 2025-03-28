@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@features/auth/store';
+import { useUserStore } from '@/stores/useUserStore';
 import { SigninResponse } from '@features/auth/types';
 import { post } from '@features/shared/api';
 import RedirectIfAuthenticated from '@components/common/RedirectIfAuthenticated';

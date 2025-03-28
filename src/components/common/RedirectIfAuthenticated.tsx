@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@features/auth/store';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function RedirectIfAuthenticated({
   children,

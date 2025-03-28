@@ -12,10 +12,11 @@ export default function SummaryPage() {
   if (!accountSummary) return <div className='p-4'>불러오는 중...</div>;
 
   return (
-    <div className='p-4 space-y-4'>
+    <>
+    <div className='px-3'>
       {accountSummary && <AccountsBox accounts={accountSummary} />}
-
       <BudgetBox />
     </div>
+    </>
   );
 }

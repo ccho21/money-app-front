@@ -1,6 +1,6 @@
 'use client';
 
-import { useUserStore } from '@features/auth/store';
+import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'next/navigation';
 
 export default function SignoutButton() {
@@ -13,7 +13,10 @@ export default function SignoutButton() {
   };
 
   return (
-    <button onClick={handleSignout} className="text-sm text-red-500 hover:underline">
+    <button
+      onClick={handleSignout}
+      className='text-sm text-red-500 hover:underline'
+    >
       로그아웃
     </button>
   );

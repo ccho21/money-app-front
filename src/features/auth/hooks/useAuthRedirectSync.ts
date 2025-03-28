@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '../store';
+import { useUserStore } from '../../../stores/useUserStore';
 import { authGet } from '../api';
 import { User } from '../types';
 
