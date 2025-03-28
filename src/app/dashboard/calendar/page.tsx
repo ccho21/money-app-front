@@ -1,22 +1,34 @@
 // 📄 경로: src/app/dashboard/calendar/page.tsx
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '@/styles/custom-calendar.css';
 import TransactionDetailSheet from './_components/TransactionDetailSheet';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
+import { format, addDays, isSameMonth } from 'date-fns';
 
 export default function CalendarPage() {
-  const { fetchTransactionCalendar, transactionCalendarItems, isLoading } =
-    useTransactionStore();
+  const {
+    fetchTransactionCalendar,
+    transactionCalendarItems, // <- 이제 이건 SummaryItem[]
+    isLoading,
+  } = useTransactionStore();
 
   const { date } = useDateFilterStore();
-
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
+
+  // ✅ 배열 → Map으로 변환
+  const calendarMap = useMemo(() => {
+    const map = new Map<string, { income: number; expense: number }>();
+    transactionCalendarItems?.forEach((item) => {
+      map.set(item.date, { income: item.income, expense: item.expense });
+    });
+    return map;
+  }, [transactionCalendarItems]);
 
   useEffect(() => {
     fetchTransactionCalendar(
@@ -25,30 +37,18 @@ export default function CalendarPage() {
     );
   }, [fetchTransactionCalendar, date]);
 
-  const getDateStr = (date: Date) => date.toISOString().split('T')[0];
+  const getDateStr = (date: Date): string => format(date, 'yyyy-MM-dd');
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     setOpen(true);
   };
 
-  // ✅ 요약 수치 계산 (수입/지출 총합)
-  const { income, expense } = useMemo(() => {
-    const all = Object.values(transactionCalendarItems ?? {}).flat();
-    const income = all
-      .filter((t) => t.amount > 0)
-      .reduce((sum, t) => sum + t.amount, 0);
-    const expense = all
-      .filter((t) => t.amount < 0)
-      .reduce((sum, t) => sum + t.amount, 0);
-    return { income, expense };
-  }, [transactionCalendarItems]);
-
   if (isLoading) {
     return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
-  if (!transactionCalendarItems) {
+  if (!transactionCalendarItems || transactionCalendarItems.length === 0) {
     return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
@@ -63,54 +63,41 @@ export default function CalendarPage() {
         nextLabel={null}
         prev2Label={null}
         next2Label={null}
-        className=''
         tileContent={({ date }) => {
-          const key = getDateStr(date);
-          const transactions = transactionCalendarItems?.[key];
-          if (!transactions || transactions.length === 0) return null;
+          if (!isSameMonth(date, new Date(date.getFullYear(), date.getMonth())))
+            return null;
 
-          const total = transactions.reduce((sum, t) => sum + t.amount, 0);
-          const isExpense = total < 0;
+          const key = getDateStr(date);
+          const summary = calendarMap.get(key);
+
+          if (!summary) return null;
 
           return (
             <div className='text-[10px]'>
-              <span className={isExpense ? 'text-red-500' : 'text-blue-500'}>
-                ₩{Math.abs(total).toLocaleString()}
-              </span>
+              {summary.income > 0 && (
+                <div className='text-blue-500'>
+                  +₩{summary.income.toLocaleString()}
+                </div>
+              )}
+              {summary.expense > 0 && (
+                <div className='text-red-500'>
+                  -₩{summary.expense.toLocaleString()}
+                </div>
+              )}
             </div>
           );
         }}
       />
 
-      {/* Modal Sheet */}
+      {/* 상세 내역은 지금은 없음 */}
       {selectedDate && (
         <TransactionDetailSheet
           open={open}
           date={selectedDate}
-          transactions={
-            transactionCalendarItems[getDateStr(selectedDate)] || []
-          }
+          transactions={[]} // 🔒 상세 내역 없음
           onClose={() => setOpen(false)}
-          onPrev={() =>
-            setSelectedDate(
-              (prev) =>
-                new Date(
-                  prev!.getFullYear(),
-                  prev!.getMonth(),
-                  prev!.getDate() - 1
-                )
-            )
-          }
-          onNext={() =>
-            setSelectedDate(
-              (prev) =>
-                new Date(
-                  prev!.getFullYear(),
-                  prev!.getMonth(),
-                  prev!.getDate() + 1
-                )
-            )
-          }
+          onPrev={() => setSelectedDate((prev) => prev && addDays(prev, -1))}
+          onNext={() => setSelectedDate((prev) => prev && addDays(prev, 1))}
         />
       )}
     </>
