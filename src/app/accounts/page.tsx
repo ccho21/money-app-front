@@ -1,34 +1,37 @@
 'use client';
 
-import { formatCurrency } from '@/lib/utils';
-import { CategoryListItem } from '../stats/_components/CategoryListItem';
+import { useEffect } from 'react';
+import { useAccountStore } from '@/stores/useAccountStore';
 import SummaryBox from '@/components/ui/SummaryBox';
+import { CategoryListItem } from '../stats/_components/CategoryListItem';
 
-const mockAccounts = [
-  { id: '1', name: 'Cash', type: 'CASH', balance: 92 },
-  { id: '2', name: 'Cash 2', type: 'CASH', balance: 8 },
-  { id: '3', name: 'Cash 3', type: 'CASH', balance: 100 },
-  { id: '4', name: 'Bank', type: 'BANK', balance: 4000 },
-  { id: '5', name: 'Card', type: 'CARD', balance: -24.48 },
-  { id: '6', name: 'Card 2', type: 'CARD', balance: -24.48 },
-];
+export default function AccountsPage()  {
+  const { summaries, isLoading, fetchGroupedSummaries } = useAccountStore();
 
-export default function AccountsPage() {
-  const accounts = mockAccounts;
+  useEffect(() => {
+    void fetchGroupedSummaries();
+  }, [fetchGroupedSummaries]);
 
-  const assetTotal = accounts
-    .filter((a) => a.type !== 'CARD')
-    .reduce((sum, a) => sum + a.balance, 0);
+  const assetAccounts = summaries.filter(
+    (a) => a.balance >= 0 && a.accountName.toUpperCase() !== 'CARD'
+  );
+  const liabilityAccounts = summaries.filter(
+    (a) => a.balance < 0 || a.accountName.toUpperCase() === 'CARD'
+  );
 
-  const liabilityTotal = accounts
-    .filter((a) => a.type === 'CARD')
-    .reduce((sum, a) => sum + a.balance, 0);
-
+  const assetTotal = assetAccounts.reduce((sum, acc) => sum + acc.balance, 0);
+  const liabilityTotal = liabilityAccounts.reduce(
+    (sum, acc) => sum + acc.balance,
+    0
+  );
   const netTotal = assetTotal + liabilityTotal;
 
+  if (isLoading) {
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+  }
+
   return (
-    <div className='p-4 space-y-6'>
-      {/* 상단 요약 */}
+    <div className="p-4 space-y-6">
       <SummaryBox
         items={[
           {
@@ -52,25 +55,28 @@ export default function AccountsPage() {
         ]}
       />
 
-      {/* 계좌 목록 */}
-      <div className='space-y-6'>
+      <div className="space-y-6">
         {['CASH', 'BANK', 'CARD'].map((type) => {
-          const filtered = accounts.filter((a) => a.type === type);
+          const filtered = summaries.filter((a) =>
+            a.accountName.toUpperCase().includes(type)
+          );
+
           if (filtered.length === 0) return null;
 
           return (
             <div key={type}>
-              <h3 className='text-sm font-semibold text-gray-500 mb-2'>
+              <h3 className="text-sm font-semibold text-gray-500 mb-2">
                 {type === 'CASH' && 'Cash'}
                 {type === 'BANK' && 'Bank Accounts'}
                 {type === 'CARD' && 'Card'}
               </h3>
-              <div className='divide-y'>
+              <div className="divide-y">
                 {filtered.map((acc) => (
                   <CategoryListItem
-                    key={acc.id}
-                    name={acc.name}
+                    key={acc.accountId}
+                    name={acc.accountName}
                     amount={acc.balance}
+                    isMatched={true} // ✅ 향후 잔고 정합성 비교 로직 연결 예정
                   />
                 ))}
               </div>

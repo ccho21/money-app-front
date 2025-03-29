@@ -1,179 +1,240 @@
-import { api } from '@/features/shared/api';
+import { api } from "@/features/shared/api";
 import {
-  TransactionGroupResponse,
+  FetchTransactionSummaryParams,
   Transaction,
   TransactionCalendarItem,
-} from '@/features/transaction/types';
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+  TransactionSummaryResponse,
+} from "@/features/transaction/types";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface TransactionState {
   transactions: Transaction[];
-  transactionGroups: TransactionGroupResponse | null;
+  transactionSummaryResponse: TransactionSummaryResponse | null;
   transactionCalendarItems: TransactionCalendarItem[];
 
-  startDate: string;
-  endDate: string;
+  filters: {
+    type?: "income" | "expense";
+    categoryId?: string;
+    search?: string;
+    sort?: "date" | "amount";
+    order?: "asc" | "desc";
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+  };
 
   isLoading: boolean;
   error: string | null;
 
   fetchTransactions: () => Promise<void>;
-  fetchTransactionGroups: (
-    type: 'weekly' | 'monthly' | 'yearly',
-    year: string,
-    month: string
-  ) => Promise<void>;
+  fetchTransactionSummary: ({
+    groupBy,
+    startDate,
+    endDate,
+  }: FetchTransactionSummaryParams) => Promise<void>;
   fetchTransactionCalendar: (year: string, month: string) => Promise<void>;
 
   setDateRange: (start: string, end: string) => void;
-  setTransactionGroups: (data: TransactionGroupResponse) => void;
+  setTransactionSummary: (data: TransactionSummaryResponse) => void;
+  setFilters: (filters: Partial<TransactionState["filters"]>) => void;
+  resetFilters: () => void;
   clear: () => void;
 }
+
+const defaultFilters: TransactionState["filters"] = {
+  sort: "date",
+  order: "desc",
+  page: 1,
+  limit: 20,
+};
 
 export const useTransactionStore = create<TransactionState>()(
   devtools(
     (set, get) => ({
       transactions: [],
-      groupedTransactions: null,
-      transactionCalendarItem: null,
-      startDate: '',
-      endDate: '',
+      transactionSummaryResponse: null,
+      transactionCalendarItems: [],
+
+      filters: { ...defaultFilters },
 
       isLoading: false,
       error: null,
-      setTransactionGroups: (data) =>
-        set({ transactionGroups: data }, false, 'setGroupedTransactions'),
 
-      setDateRange: (start, end) =>
-        set({ startDate: start, endDate: end }, false, 'setDateRange'),
+      setTransactionSummary: (data) =>
+        set(
+          { transactionSummaryResponse: data },
+          false,
+          "setTransactionSummary"
+        ),
 
-      // 개별 거래 리스트 불러오기
+      setFilters: (filters) =>
+        set(
+          (state) => ({ filters: { ...state.filters, ...filters } }),
+          false,
+          "setFilters"
+        ),
+
+      resetFilters: () =>
+        set({ filters: { ...defaultFilters } }, false, "resetFilters"),
+
+      // ✅ 거래 리스트 API (필터는 매번 리셋)
       fetchTransactions: async () => {
-        const { startDate, endDate } = get();
+        // ✅ 필터 초기화 (매번 초기화되게 처리)
+        set(
+          (state) => ({
+            filters: {
+              ...state.filters,
+              type: undefined,
+              categoryId: undefined,
+              search: undefined,
+              sort: "date",
+              order: "desc",
+              page: 1,
+              limit: 20,
+              startDate: state.filters.startDate, // 기존 날짜 유지
+              endDate: state.filters.endDate,
+            },
+          }),
+          false,
+          "fetchTransactions:resetFilters"
+        );
 
-        if (!startDate || !endDate) {
-          console.warn('startDate 또는 endDate가 설정되지 않았습니다.');
+        const { filters } = get();
+
+        if (!filters.startDate || !filters.endDate) {
+          console.warn("startDate 또는 endDate가 설정되지 않았습니다.");
           return;
         }
 
         set(
           { isLoading: true, error: null },
           false,
-          'fetchTransactions:loading'
+          "fetchTransactions:loading"
         );
 
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/transactions?startDate=${startDate}&endDate=${endDate}`,
+          const params = new URLSearchParams({
+            startDate: filters.startDate,
+            endDate: filters.endDate,
+            ...(filters.type && { type: filters.type }),
+            ...(filters.categoryId && { categoryId: filters.categoryId }),
+            ...(filters.search && { search: filters.search }),
+            ...(filters.sort && { sort: filters.sort }),
+            ...(filters.order && { order: filters.order }),
+            ...(filters.page && { page: String(filters.page) }),
+            ...(filters.limit && { limit: String(filters.limit) }),
+          });
+
+          const res = await api<Transaction[]>(
+            `/transactions?${params.toString()}`,
             {
-              method: 'GET',
-              credentials: 'include',
+              method: "GET",
             }
           );
 
-          if (!res.ok) throw new Error('거래 내역 불러오기 실패');
-
-          const data = await res.json();
           set(
-            { transactions: data, isLoading: false },
+            { transactions: res, isLoading: false },
             false,
-            'fetchTransactions:success'
+            "fetchTransactions:success"
           );
         } catch (err) {
           set(
             {
               isLoading: false,
-              error: err instanceof Error ? err.message : '거래 불러오기 오류',
+              error: err instanceof Error ? err.message : "거래 불러오기 오류",
             },
             false,
-            'fetchTransactions:error'
+            "fetchTransactions:error"
           );
         }
       },
 
-      // 그룹 요약 데이터 불러오기
-      fetchTransactionGroups: async (
-        type: string,
-        year: string,
-        month: string
-      ) => {
+      fetchTransactionSummary: async ({
+        groupBy,
+        startDate,
+        endDate,
+      }: FetchTransactionSummaryParams) => {
         set(
           { isLoading: true, error: null },
           false,
-          'fetchTransactionGroups:loading'
+          "fetchTransactionSummary:loading"
         );
 
         try {
-          const res: TransactionGroupResponse =
-            await api<TransactionGroupResponse>(
-              `/transactions/grouped?type=${type}&year=${year}&month=${month}`,
-              { method: 'GET' }
-            );
-
-          if (!res) throw new Error('그룹 요약 데이터 불러오기 실패');
+          const params = new URLSearchParams();
+          params.append("groupBy", groupBy);
+          params.append("startDate", String(startDate));
+          params.append("endDate", String(endDate));
+         
+      
+          const res = await api<TransactionSummaryResponse>(
+            `/transactions/summary?${params.toString()}`,
+            { method: "GET" }
+          );
 
           set(
-            { transactionGroups: res, isLoading: false },
+            { transactionSummaryResponse: res, isLoading: false },
             false,
-            'fetchTransactionGroups:success'
+            "fetchTransactionSummary:success"
           );
         } catch (err) {
           set(
             {
               isLoading: false,
-              error: err instanceof Error ? err.message : '요약 데이터 오류',
+              error: err instanceof Error ? err.message : "요약 데이터 오류",
             },
             false,
-            'fetchTransactionGroups:error'
+            "fetchTransactionSummary:error"
           );
         }
       },
-      fetchTransactionCalendar: async (year: string, month: string) => {
+
+      fetchTransactionCalendar: async (year, month) => {
         set(
           { isLoading: true, error: null },
           false,
-          'fetchTransactionCalendar:loading'
+          "fetchTransactionCalendar:loading"
         );
 
         try {
           const res = await api<TransactionCalendarItem[]>(
             `/transactions/calendar?year=${year}&month=${month}`,
-            { method: 'GET' }
+            { method: "GET" }
           );
 
           set(
             { transactionCalendarItems: res, isLoading: false },
             false,
-            'fetchTransactionCalendar:success'
+            "fetchTransactionCalendar:success"
           );
         } catch (err) {
           set(
             {
               isLoading: false,
-              error: err instanceof Error ? err.message : '캘린더 데이터 오류',
+              error: err instanceof Error ? err.message : "캘린더 데이터 오류",
             },
             false,
-            'fetchTransactionCalendar:error'
+            "fetchTransactionCalendar:error"
           );
         }
       },
 
-      // 상태 초기화 (예: 로그아웃 시)
       clear: () =>
         set(
           {
             transactions: [],
-            transactionGroups: null,
-            startDate: '',
-            endDate: '',
+            transactionSummaryResponse: null,
+            transactionCalendarItems: [],
+            filters: { ...defaultFilters },
             isLoading: false,
             error: null,
           },
           false,
-          'clearTransactionState'
+          "clearTransactionState"
         ),
     }),
-    { name: 'TransactionStore' }
+    { name: "TransactionStore" }
   )
 );

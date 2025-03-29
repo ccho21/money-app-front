@@ -1,4 +1,4 @@
-export type TransactionType = 'income' | 'expense';
+export type TransactionType = "income" | "expense";
 
 export interface TransactionCategory {
   id?: string;
@@ -15,19 +15,22 @@ export interface Transaction {
   category: TransactionCategory;
 }
 
-export interface GroupedTransactions {
+export interface TransactionSummary {
   label: string; // 예: '2025-03-20', '2025-03'
+  rangeStart: string;
+  rangeEnd: string;
   incomeTotal: number;
   expenseTotal: number;
   transactions: Transaction[];
 }
 
-export interface TransactionGroupResponse {
-  type: 'weekly' | 'monthly' | 'yearly';
-  date: string;
+export interface TransactionSummaryResponse {
+  type: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  startDate: string;
+  endDate: string;
   incomeTotal: number;
   expenseTotal: number;
-  data: GroupedTransactions[];
+  data: TransactionSummary[]; // ✅ 날짜/월/연 단위로 그룹된 데이터 목록
 }
 
 export interface TransactionCalendarItem {
@@ -35,3 +38,9 @@ export interface TransactionCalendarItem {
   income: number;
   expense: number;
 }
+
+export type FetchTransactionSummaryParams = {
+  groupBy: "daily" | "weekly" | "monthly" | "yearly";
+  startDate: string;
+  endDate?: string;
+};

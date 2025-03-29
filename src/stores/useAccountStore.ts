@@ -1,13 +1,20 @@
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { AccountSummary } from '@/features/accounts/types';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { api } from "@/features/shared/api";
+import {
+  AccountTransactionSummaryDto,
+  AccountTransactionSummaryParams,
+} from "@/features/accounts/types";
 
 interface AccountState {
-  summaries: AccountSummary[];
+  summaries: AccountTransactionSummaryDto[];
   isLoading: boolean;
   error: string | null;
 
-  fetchAccountSummaries: () => Promise<void>;
+  fetchAccountTransactionSummary: ({
+    startDate,
+    endDate,
+  }: AccountTransactionSummaryParams) => Promise<void>;
   clear: () => void;
 }
 
@@ -18,49 +25,56 @@ export const useAccountStore = create<AccountState>()(
       isLoading: false,
       error: null,
 
-      fetchAccountSummaries: async () => {
+      fetchAccountTransactionSummary: async ({
+        startDate,
+        endDate,
+      }: AccountTransactionSummaryParams) => {
         set(
           { isLoading: true, error: null },
           false,
-          'fetchAccountSummaries:loading'
+          "fetchAccountTransactionSummary:loading"
         );
 
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/accounts/summary`,
+          const params = new URLSearchParams();
+          params.append("startDate", String(startDate));
+          params.append("endDate", String(endDate));
+          const res = await api<AccountTransactionSummaryDto[]>(
+            `/accounts/grouped-transactions?${params.toString()}`,
             {
-              method: 'GET',
-              credentials: 'include',
+              method: "GET",
+              credentials: "include",
             }
           );
 
-          if (!res.ok) throw new Error('계좌 요약 불러오기 실패');
-
-          const data = await res.json();
           set(
-            { summaries: data, isLoading: false },
+            { summaries: res, isLoading: false },
             false,
-            'fetchAccountSummaries:success'
+            "fetchAccountTransactionSummary:success"
           );
         } catch (err) {
           set(
             {
               isLoading: false,
-              error: err instanceof Error ? err.message : '계좌 요약 오류',
+              error: err instanceof Error ? err.message : "계좌 요약 오류",
             },
             false,
-            'fetchAccountSummaries:error'
+            "fetchAccountTransactionSummary:error"
           );
         }
       },
 
       clear: () =>
         set(
-          { summaries: [], isLoading: false, error: null },
+          {
+            summaries: [],
+            isLoading: false,
+            error: null,
+          },
           false,
-          'clearAccountSummaries'
+          "clearAccountSummaries"
         ),
     }),
-    { name: 'AccountSummaryStore' }
+    { name: "AccountStore" }
   )
 );

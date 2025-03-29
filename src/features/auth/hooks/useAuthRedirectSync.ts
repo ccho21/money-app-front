@@ -21,7 +21,7 @@ export default function useAuthRedirectSync() {
     const fetchUser = async () => {
       try {
         const res = await authGet<User>('/auth/me');
-        setUser({ id: res.id, email: res.email });
+        setUser({ id: res.id, email: res.email, timezone: res.timezone });
       } catch (err: unknown) {
         if (err) {
           console.error(err);
