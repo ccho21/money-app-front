@@ -8,10 +8,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   // const router = useRouter();
 
   return (
-    <div className=''>
-      {/* <TopNav title='Trans.' onBack={router.back} /> */}
-      <div className='mb-3'></div>
-      {children}
+    <div className='min-h-screen flex flex-col h-full'>
+      <div className='flex-1 overflow-y-auto'>{children}</div>
     </div>
   );
 }

@@ -40,8 +40,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Bottom Components */}
       <BottomTabBar />
       <Button
-        variant={null}
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-red-500 text-white rounded-full shadow-md z-50'
+        variant={'solid'}
+        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-red-500 text-white rounded-full shadow-md z-50 text-center flex justify-center'
         onClick={() => router.push('/transaction/new')}
       >
         <Plus className='w-4 h-4' />

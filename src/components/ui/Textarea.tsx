@@ -1,16 +1,16 @@
-// 📄 경로: src/components/ui/Input.tsx
+// 📄 경로: src/components/ui/Textarea.tsx
 'use client';
 
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef, TextareaHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 type Props = {
   label?: string;
   error?: string;
   description?: string;
-} & InputHTMLAttributes<HTMLInputElement>;
+} & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export const Input = forwardRef<HTMLInputElement, Props>(
+export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
   ({ label, error, description, className, ...props }, ref) => {
     return (
       <div className='space-y-1'>
@@ -19,10 +19,10 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             {label}
           </label>
         )}
-        <input
+        <textarea
           ref={ref}
           className={cn(
-            'w-full border-0 border-b text-sm py-2 px-1 bg-transparent',
+            'w-full border-0 border-b text-sm py-2 px-1 bg-transparent resize-none',
             'focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white',
             'placeholder:text-gray-400 dark:placeholder:text-gray-500',
             error && 'border-b-red-500',
@@ -39,4 +39,4 @@ export const Input = forwardRef<HTMLInputElement, Props>(
   }
 );
 
-Input.displayName = 'Input';
+Textarea.displayName = 'Textarea';

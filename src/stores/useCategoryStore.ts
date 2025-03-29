@@ -1,52 +1,37 @@
-import { TransactionCategory } from '@/features/transaction/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { api } from '@/features/shared/api';
+import { Category } from '@/features/categories/types';
 
 interface CategoryState {
-  categories: TransactionCategory[];
-  selectedCategoryId: string | null;
+  categories: Category[];
+  isLoading: boolean;
+  error: string | null;
 
   fetchCategories: () => Promise<void>;
-  selectCategory: (id: string) => void;
   clear: () => void;
 }
 
 export const useCategoryStore = create<CategoryState>()(
-  devtools(
-    (set) => ({
-      categories: [],
-      selectedCategoryId: null,
+  devtools((set) => ({
+    categories: [],
+    isLoading: false,
+    error: null,
 
-      fetchCategories: async () => {
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-            {
-              method: 'GET',
-              credentials: 'include',
-            }
-          );
+    fetchCategories: async () => {
+      try {
+        set({ isLoading: true, error: null });
+        const res = await api<Category[]>('/categories');
+        set({ categories: res });
+      } catch (err) {
+        set({
+          error: err instanceof Error ? err.message : '카테고리 불러오기 실패',
+        });
+      } finally {
+        set({ isLoading: false });
+      }
+    },
 
-          if (!res.ok) throw new Error('카테고리 불러오기 실패');
-
-          const data = await res.json();
-          set({ categories: data }, false, 'fetchCategories:success');
-        } catch (err) {
-          console.error(err instanceof Error ? err.message : '카테고리 오류');
-          set({ categories: [] }, false, 'fetchCategories:error');
-        }
-      },
-
-      selectCategory: (id) =>
-        set({ selectedCategoryId: id }, false, 'selectCategory'),
-
-      clear: () =>
-        set(
-          { categories: [], selectedCategoryId: null },
-          false,
-          'clearCategoryState'
-        ),
-    }),
-    { name: 'CategoryStore' }
-  )
+    clear: () => set({ categories: [], isLoading: false, error: null }),
+  }))
 );

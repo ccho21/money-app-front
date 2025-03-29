@@ -13,8 +13,10 @@ export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
     <li className='px-3 py-2.5 border-b border-gray-200 dark:border-zinc-700'>
       <div className='grid grid-cols-12 items-center'>
         {/* 아이콘 */}
-        <div className='col-span-2 text-2xl text-gray-400 dark:text-gray-500'>
-          {tx.category?.icon}
+        <div className='col-span-2 text-xs text-gray-400 dark:text-gray-500 overflow-hidden'>
+          {tx.category && tx.category.icon.length > 5
+            ? tx.category.icon.slice(0, 5) + '...'
+            : tx.category.icon}
         </div>
 
         {/* 메모 / 계좌 */}

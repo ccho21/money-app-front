@@ -1,33 +1,45 @@
-"use client";
+// 📄 경로: src/components/ui/Button.tsx
+'use client';
 
-import { cn } from "@/lib/utils";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | null;
+  variant?: 'solid' | 'outline';
+  color?: 'primary' | 'danger' | 'gray';
 }
 
-export function Button({
-  children,
-  className,
-  variant = "primary",
-  ...props
-}: ButtonProps) {
-  const baseStyles =
-    "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
-    
-  const variants = {
-    primary:
-      "bg-primary text-white hover:bg-primary/90 focus:ring-primary dark:bg-primary dark:hover:bg-primary/80",
-    secondary:
-      "bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600",
-  };
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'solid', color = 'primary', ...props }, ref) => {
+    const base = 'text-sm font-semibold py-3 rounded-md';
 
-  const variantClass = variant ? variants[variant] : "";
+    const variants = {
+      solid: {
+        primary: 'bg-[#FF5B38] text-white',
+        danger: 'bg-red-500 text-white',
+        gray: 'bg-gray-500 text-white',
+      },
+      outline: {
+        primary: 'border border-[#FF5B38] text-[#FF5B38] bg-white',
+        danger: 'border border-red-500 text-red-500 bg-white',
+        gray: 'border border-gray-300 text-gray-600 bg-white',
+      },
+    };
 
-  return (
-    <button className={cn(baseStyles, variantClass, className)} {...props}>
-      {children}
-    </button>
-  );
-}
+    // 스타일 안전 처리
+    const safeVariant = variant in variants ? variant : 'solid';
+    const safeColor = color in variants[safeVariant] ? color : 'primary';
+
+    const variantClass = variants[safeVariant][safeColor];
+
+    return (
+      <button
+        ref={ref}
+        className={cn(base, variantClass, className)} // className 항상 마지막!
+        {...props}
+      />
+    );
+  }
+);
+
+Button.displayName = 'Button';
