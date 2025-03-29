@@ -1,28 +1,28 @@
 // 📄 경로: src/components/ui/DateNavigator.tsx
-"use client";
+'use client';
 
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+} from 'lucide-react';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function DateNavigator() {
   const path = usePathname();
   const { date, setDate } = useDateFilterStore();
-  
+
   const resolveTypeFromPath = (
     path: string
-  ): "daily" | "monthly" | "yearly" => {
-    if (path.includes("/daily")) return "daily";
-    if (path.includes("/calendar")) return "monthly";
-    if (path.includes("/monthly")) return "yearly";
-    if (path.includes("/summary")) return "yearly";
-    return "monthly"; // default
+  ): 'daily' | 'monthly' | 'yearly' => {
+    if (path.includes('/daily')) return 'daily';
+    if (path.includes('/calendar')) return 'monthly';
+    if (path.includes('/monthly')) return 'yearly';
+    if (path.includes('/summary')) return 'monthly';
+    return 'monthly'; // default
   };
   const type = resolveTypeFromPath(path);
 
@@ -32,11 +32,11 @@ export default function DateNavigator() {
   }, [setDate]);
 
   const year = date.getFullYear();
-  const month = date.toLocaleString("default", { month: "long" });
+  const month = date.toLocaleString('default', { month: 'long' });
 
   const handleChange = (diff: number) => {
     const newDate = new Date(date);
-    if (type === "yearly") {
+    if (type === 'yearly') {
       newDate.setFullYear(newDate.getFullYear() + diff);
     } else {
       newDate.setMonth(newDate.getMonth() + diff);
@@ -46,10 +46,10 @@ export default function DateNavigator() {
   };
 
   return (
-    <div className="flex justify-between items-center px-5 py-3 text-base font-normal">
+    <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
       {/* 왼쪽 버튼 */}
-      <div className="flex gap-3 text-gray-500">
-        <button onClick={() => handleChange(type === "yearly" ? -10 : -12)}>
+      <div className='flex gap-3 text-gray-500'>
+        <button onClick={() => handleChange(type === 'yearly' ? -10 : -12)}>
           <ChevronsLeft size={20} />
         </button>
         <button onClick={() => handleChange(-1)}>
@@ -58,16 +58,16 @@ export default function DateNavigator() {
       </div>
 
       {/* 날짜 텍스트 */}
-      <span className="text-base font-medium text-gray-900 dark:text-white">
-        {type === "yearly" ? `${year}` : `${month} ${year}`}
+      <span className='text-base font-medium text-gray-900 dark:text-white'>
+        {type === 'yearly' ? `${year}` : `${month} ${year}`}
       </span>
 
       {/* 오른쪽 버튼 */}
-      <div className="flex gap-3 text-gray-500">
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(1)}>
           <ChevronRight size={20} />
         </button>
-        <button onClick={() => handleChange(type === "yearly" ? 10 : 12)}>
+        <button onClick={() => handleChange(type === 'yearly' ? 10 : 12)}>
           <ChevronsRight size={20} />
         </button>
       </div>
