@@ -14,9 +14,9 @@ export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
       <div className='grid grid-cols-12 items-center'>
         {/* 아이콘 */}
         <div className='col-span-2 text-xs text-gray-400 dark:text-gray-500 overflow-hidden'>
-          {tx.category && tx.category.icon.length > 5
-            ? tx.category.icon.slice(0, 5) + '...'
-            : tx.category.icon}
+          {tx.category && tx.category.name.length > 5
+            ? tx.category.name.slice(0, 5) + '...'
+            : tx.category.name}
         </div>
 
         {/* 메모 / 계좌 */}
@@ -25,7 +25,7 @@ export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
             {tx.note}
           </div>
           <div className='text-xs text-gray-400 dark:text-gray-500 truncate'>
-            {'card'} {/* TODO: 실제 계좌명으로 바꾸기 */}
+            {(tx.account && tx.account.name) || tx.account.name}
           </div>
         </div>
 

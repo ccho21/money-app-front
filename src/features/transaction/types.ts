@@ -1,4 +1,4 @@
-export type TransactionType = "income" | "expense";
+export type TransactionType = 'income' | 'expense';
 
 export interface TransactionCategory {
   id?: string;
@@ -13,6 +13,11 @@ export interface Transaction {
   note: string;
   date: string; // ISO 형식 ('2025-03-20T00:00:00.000Z')
   category: TransactionCategory;
+  account: {
+    name: string;
+    type: string;
+    color?: string | null;
+  };
 }
 
 export interface TransactionSummary {
@@ -40,7 +45,41 @@ export interface TransactionCalendarItem {
 }
 
 export type FetchTransactionSummaryParams = {
-  groupBy: "daily" | "weekly" | "monthly" | "yearly";
+  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
   startDate: string;
   endDate?: string;
 };
+
+export type TransactionFormFields = {
+  type: 'income' | 'expense' | 'transfer';
+  amount: string;
+  accountId: string;
+  categoryId: string;
+  date: string;
+  note: string;
+  description: string;
+  from: string;
+  to: string;
+};
+
+export type IncomeOrExpensePayload = {
+  type: 'income' | 'expense';
+  amount: number;
+  accountId: string;
+  categoryId: string;
+  date: string;
+  note?: string;
+  description?: string;
+};
+
+export type TransferPayload = {
+  type: 'transfer';
+  amount: number;
+  from: string;
+  to: string;
+  date: string;
+  note?: string;
+  description?: string;
+};
+
+export type SubmitTransactionPayload = IncomeOrExpensePayload | TransferPayload;

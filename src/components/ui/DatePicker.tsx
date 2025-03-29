@@ -6,12 +6,11 @@ import { Input } from '@/components/ui/Input';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {
-  label?: string;
   value: Date;
   onChange: (date: Date) => void;
 }
 
-export default function DatePicker({ label, value, onChange }: Props) {
+export default function DatePicker({ value, onChange }: Props) {
   const [localDate, setLocalDate] = useState<Date>(value);
 
   useEffect(() => {
@@ -31,7 +30,6 @@ export default function DatePicker({ label, value, onChange }: Props) {
   >(({ value, onClick }, ref) => (
     <Input
       readOnly
-      label={label}
       value={value}
       onClick={onClick}
       ref={ref}

@@ -18,7 +18,12 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
       <StatsHeader />
       <DateNavigator date={date} onChange={setDate} mode='year' />
-      <TabMenu tabs={tabs} active={currentTab} onChange={setCurrentTab} />
+      <TabMenu
+        tabs={tabs}
+        active={currentTab}
+        onChange={setCurrentTab}
+        variant='underline'
+      />
       <main className='flex-1 overflow-y-auto bg-gray-100'>{children}</main>
       <BottomTabBar />
     </div>

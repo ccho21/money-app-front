@@ -30,6 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <TabMenu
           tabs={tabs}
           active={current}
+          variant='underline'
           onChange={(key) => router.push(`/dashboard/${key}`)}
         />
       </div>

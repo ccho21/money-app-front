@@ -1,65 +1,44 @@
-// 📄 경로: src/app/transaction/new/_components/TransferForm.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccountStore } from '@/stores/useAccountStore';
+import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { submitTransaction } from '@/services/transactionService';
+
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import Selector from '@/components/ui/Selector';
 import { Textarea } from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
 
-export default function TransferForm() {
+type Props = {
+  mode: 'new' | 'edit';
+  id?: string;
+};
+
+export default function IncomeForm({ mode, id }: Props) {
   const router = useRouter();
-  const {
-    amount,
-    from,
-    to,
-    note,
-    description,
-    date,
-    setField,
-    submitTransaction,
-  } = useTransactionFormStore();
+  const { amount, accountId, categoryId, note, description, date, setField } =
+    useTransactionFormStore();
 
-  const { accounts = [], fetchAccounts } = useAccountStore();
+  const { accounts = [] } = useAccountStore();
+  const { categories = [] } = useCategoryStore();
 
-  const [localDate, setLocalDate] = useState<Date | null>(
-    date ? new Date(date) : new Date()
-  );
-
-  useEffect(() => {
-    fetchAccounts();
-  }, [fetchAccounts]);
-
-  useEffect(() => {
-    if (localDate) {
-      const iso = localDate.toISOString().slice(0, 10);
-      setField('date', iso);
-    }
-  }, [localDate, setField]);
-
-  const fromAccount = accounts.find((a) => a.id === from);
-  const toAccount = accounts.find((a) => a.id === to);
+  const selectedAccount = accounts.find((a) => a.id === accountId);
+  const selectedCategory = categories.find((c) => c.id === categoryId);
 
   const handleSubmit = async () => {
-    if (!amount || !from || !to) {
-      alert('금액, 보낸 계좌, 받는 계좌를 모두 입력해주세요.');
-      return;
-    }
-
     try {
-      await submitTransaction();
+      await submitTransaction(mode, id);
       router.push('/dashboard');
     } catch (err) {
-      alert(err instanceof Error ? err.message : '이체 저장 중 오류 발생');
+      alert(err instanceof Error ? err.message : '저장 실패');
     }
   };
 
   return (
-    <div className='space-y-5'>
+    <div className='space-y-5 px-4 pt-5 pb-10'>
       <Input
         label='Amount'
         placeholder='₩ 0'
@@ -69,21 +48,21 @@ export default function TransferForm() {
       />
 
       <Selector
-        label='From'
-        value={fromAccount?.name ?? ''}
-        onChange={(val) => setField('from', val)}
+        label='Account'
+        value={selectedAccount?.name ?? ''}
+        onChange={(val) => setField('accountId', val)}
         options={accounts}
         getOptionLabel={(a) => a.name}
         getOptionValue={(a) => a.id}
       />
 
       <Selector
-        label='To'
-        value={toAccount?.name ?? ''}
-        onChange={(val) => setField('to', val)}
-        options={accounts}
-        getOptionLabel={(a) => a.name}
-        getOptionValue={(a) => a.id}
+        label='Category'
+        value={selectedCategory?.name ?? ''}
+        onChange={(val) => setField('categoryId', val)}
+        options={categories.filter((c) => c.type === 'income')}
+        getOptionLabel={(c) => c.name}
+        getOptionValue={(c) => c.id}
       />
 
       <div>
@@ -91,7 +70,6 @@ export default function TransferForm() {
           Date
         </label>
         <DatePicker
-          label='Date'
           value={new Date(date)}
           onChange={(val) => setField('date', val.toISOString().slice(0, 10))}
         />
@@ -112,8 +90,8 @@ export default function TransferForm() {
         rows={3}
       />
 
-      <Button color='primary' onClick={handleSubmit} className='w-full'>
-        Save Transfer
+      <Button onClick={handleSubmit} className='w-full mt-6'>
+        {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
     </div>
   );

@@ -1,4 +1,4 @@
-import { AccountSummary } from '@/features/accounts/types';
+import { AccountSummary } from '@/features/account/types';
 import { api } from '@/features/shared/api';
 import { useEffect, useState } from 'react';
 

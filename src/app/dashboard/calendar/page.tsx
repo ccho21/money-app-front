@@ -1,19 +1,19 @@
 // 📄 경로: src/app/dashboard/calendar/page.tsx
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import "@/styles/custom-calendar.css";
-import TransactionDetailSheet from "./_components/TransactionDetailSheet";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
-import { format, addDays } from "date-fns";
-import { api } from "@/features/shared/api";
+import { useEffect, useMemo, useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import '@/styles/custom-calendar.css';
+import TransactionDetailSheet from './_components/TransactionDetailSheet';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { format, addDays } from 'date-fns';
+import { api } from '@/features/shared/api';
 import {
   TransactionSummary,
   TransactionSummaryResponse,
-} from "@/features/transaction/types";
+} from '@/features/transaction/types';
 
 export default function CalendarPage() {
   const {
@@ -45,7 +45,7 @@ export default function CalendarPage() {
     );
   }, [fetchTransactionCalendar, date]);
 
-  const getDateStr = (date: Date): string => format(date, "yyyy-MM-dd");
+  const getDateStr = (date: Date): string => format(date, 'yyyy-MM-dd');
 
   const handleDateClick = async (date: Date) => {
     const dateStr = getDateStr(date);
@@ -61,7 +61,7 @@ export default function CalendarPage() {
     } else {
       try {
         const params = new URLSearchParams({
-          type: "daily",
+          type: 'daily',
           year: String(date.getFullYear()),
           month: String(date.getMonth() + 1),
           day: String(date.getDate()),
@@ -69,7 +69,7 @@ export default function CalendarPage() {
 
         const res = await api<TransactionSummaryResponse>(
           `/transactions/summary?${params.toString()}`,
-          { method: "GET" }
+          { method: 'GET' }
         );
 
         // ✅ 해당 일자 summary만 local 상태에 저장
@@ -77,7 +77,7 @@ export default function CalendarPage() {
         if (summary) setSelectedTransactionSummary(summary);
         else setSelectedTransactionSummary(undefined);
       } catch (err) {
-        console.error("일간 거래 요약 가져오기 실패", err);
+        console.error('일간 거래 요약 가져오기 실패', err);
         setSelectedTransactionSummary(undefined);
       }
     }
@@ -86,13 +86,13 @@ export default function CalendarPage() {
   };
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   return (
     <>
       <Calendar
-        calendarType="gregory"
+        calendarType='gregory'
         value={date}
         onClickDay={handleDateClick}
         showNavigation={false}
@@ -110,14 +110,14 @@ export default function CalendarPage() {
           if (!summary) return null;
 
           return (
-            <div className="text-[10px]">
+            <div className='text-[10px]'>
               {summary.income > 0 && (
-                <div className="text-blue-500">
+                <div className='text-blue-500'>
                   +₩{summary.income.toLocaleString()}
                 </div>
               )}
               {summary.expense > 0 && (
-                <div className="text-red-500">
+                <div className='text-red-500'>
                   -₩{summary.expense.toLocaleString()}
                 </div>
               )}

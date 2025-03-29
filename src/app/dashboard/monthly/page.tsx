@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { parse, startOfMonth, endOfMonth, format } from "date-fns";
-import MonthlyItem from "./_components/MonthlyItem";
-import TransactionSummaryBox from "../_components/TransactionSummaryBox";
-import { useTransactionStore } from "@/stores/useTransactionStore";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
+import MonthlyItem from './_components/MonthlyItem';
+import TransactionSummaryBox from '../_components/TransactionSummaryBox';
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import {
   FetchTransactionSummaryParams,
   TransactionSummary,
   TransactionSummaryResponse,
-} from "@/features/transaction/types";
-import { getDateRange } from "@/lib/utils";
-import { api } from "@/features/shared/api";
+} from '@/features/transaction/types';
+import { getDateRange } from '@/lib/utils';
+import { api } from '@/features/shared/api';
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -25,13 +25,13 @@ export default function MonthlyPage() {
   const { date } = useDateFilterStore();
 
   const dateRange = useMemo(
-    () => getDateRange(date, { unit: "year", amount: 0 }),
+    () => getDateRange(date, { unit: 'year', amount: 0 }),
     [date]
   );
 
   useEffect(() => {
     const params: FetchTransactionSummaryParams = {
-      groupBy: "monthly",
+      groupBy: 'monthly',
       ...dateRange,
     };
     fetchTransactionSummary(params);
@@ -46,12 +46,12 @@ export default function MonthlyPage() {
 
       const label = summary.label;
       if (openIndex !== index && !weeklySummaryByMonth[label]) {
-        const monthDate = parse(label, "yyyy-MM", new Date());
-        const startDate = format(startOfMonth(monthDate), "yyyy-MM-dd");
-        const endDate = format(endOfMonth(monthDate), "yyyy-MM-dd");
+        const monthDate = parse(label, 'yyyy-MM', new Date());
+        const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
+        const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
 
         const params: FetchTransactionSummaryParams = {
-          groupBy: "weekly",
+          groupBy: 'weekly',
           startDate,
           endDate,
         };
@@ -62,7 +62,7 @@ export default function MonthlyPage() {
             params as any
           ).toString()}`,
           {
-            method: "GET",
+            method: 'GET',
           }
         );
 
@@ -87,11 +87,11 @@ export default function MonthlyPage() {
   );
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   if (!transactionSummaryResponse || !transactionSummaryResponse.data.length) {
-    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
   return (

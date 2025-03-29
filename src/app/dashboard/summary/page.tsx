@@ -5,7 +5,7 @@ import { useAccountStore } from '@/stores/useAccountStore';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { getDateRange } from '@/lib/utils';
-import { AccountTransactionSummaryParams } from '@/features/accounts/types';
+import { AccountTransactionSummaryParams } from '@/features/account/types';
 import SummaryBox from '@/components/ui/SummaryBox';
 import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';

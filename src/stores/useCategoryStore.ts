@@ -1,37 +1,31 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { api } from '@/features/shared/api';
-import { Category } from '@/features/categories/types';
+import { Category } from '@/features/category/types';
 
 interface CategoryState {
   categories: Category[];
   isLoading: boolean;
   error: string | null;
 
-  fetchCategories: () => Promise<void>;
+  setCategories: (data: Category[]) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (err: string | null) => void;
   clear: () => void;
 }
 
 export const useCategoryStore = create<CategoryState>()(
-  devtools((set) => ({
-    categories: [],
-    isLoading: false,
-    error: null,
+  devtools(
+    (set) => ({
+      categories: [],
+      isLoading: false,
+      error: null,
 
-    fetchCategories: async () => {
-      try {
-        set({ isLoading: true, error: null });
-        const res = await api<Category[]>('/categories');
-        set({ categories: res });
-      } catch (err) {
-        set({
-          error: err instanceof Error ? err.message : '카테고리 불러오기 실패',
-        });
-      } finally {
-        set({ isLoading: false });
-      }
-    },
+      setCategories: (data) => set({ categories: data }),
+      setLoading: (loading) => set({ isLoading: loading }),
+      setError: (err) => set({ error: err }),
 
-    clear: () => set({ categories: [], isLoading: false, error: null }),
-  }))
+      clear: () => set({ categories: [], isLoading: false, error: null }),
+    }),
+    { name: 'CategoryStore' }
+  )
 );

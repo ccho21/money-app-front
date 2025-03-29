@@ -12,26 +12,26 @@ import {
   addMonths,
   addWeeks,
   addDays,
-} from "date-fns";
+} from 'date-fns';
 
 export function cn(...classes: (string | false | null | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export function formatCurrency(
   amount: number,
-  locale = "en-US",
-  currency = "USD"
+  locale = 'en-US',
+  currency = 'USD'
 ): string {
   return new Intl.NumberFormat(locale, {
-    style: "currency",
+    style: 'currency',
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount);
 }
 
-type RangeUnit = "year" | "month" | "week" | "day" | "custom";
+type RangeUnit = 'year' | 'month' | 'week' | 'day' | 'custom';
 
 interface DateRangeOptions {
   unit: RangeUnit;
@@ -40,27 +40,27 @@ interface DateRangeOptions {
 }
 
 export const getDateRange = (baseDate: Date, options: DateRangeOptions) => {
-  const { unit, amount = 1, customEndDate } = options;
+  const { unit, amount = 0, customEndDate } = options;
   let start: Date, end: Date;
 
   switch (unit) {
-    case "year":
+    case 'year':
       start = startOfYear(baseDate);
       end = endOfYear(addYears(baseDate, amount));
       break;
-    case "month":
+    case 'month':
       start = startOfMonth(baseDate);
       end = endOfMonth(addMonths(baseDate, amount));
       break;
-    case "week":
+    case 'week':
       start = startOfWeek(baseDate, { weekStartsOn: 0 });
       end = endOfWeek(addWeeks(baseDate, amount), { weekStartsOn: 0 });
       break;
-    case "day":
+    case 'day':
       start = startOfDay(baseDate);
       end = endOfDay(addDays(baseDate, amount));
       break;
-    case "custom":
+    case 'custom':
       if (!customEndDate) {
         throw new Error("customEndDate is required for 'custom' unit");
       }
@@ -68,11 +68,11 @@ export const getDateRange = (baseDate: Date, options: DateRangeOptions) => {
       end = endOfDay(customEndDate);
       break;
     default:
-      throw new Error("Invalid unit");
+      throw new Error('Invalid unit');
   }
   return {
-    startDate: format(start, "yyyy-MM-dd"),
-    endDate: format(end, "yyyy-MM-dd"),
+    startDate: format(start, 'yyyy-MM-dd'),
+    endDate: format(end, 'yyyy-MM-dd'),
   };
 };
 

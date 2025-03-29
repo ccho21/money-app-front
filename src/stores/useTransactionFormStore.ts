@@ -1,9 +1,12 @@
-import { post } from '@/features/shared/api';
+import {
+  SubmitTransactionPayload,
+  TransactionFormFields,
+} from '@/features/transaction/types';
 import { create } from 'zustand';
 
 type TransactionType = 'income' | 'expense' | 'transfer';
 
-interface TransactionFormState {
+interface TransactionFormState extends TransactionFormFields {
   type: TransactionType;
   amount: string;
   accountId: string;
@@ -20,12 +23,12 @@ interface TransactionFormState {
   ) => void;
 
   reset: () => void;
-  submitTransaction: () => Promise<void>;
+  getFormData: () => SubmitTransactionPayload;
 }
 
 const initialState: Omit<
   TransactionFormState,
-  'setField' | 'reset' | 'submitTransaction'
+  'setField' | 'reset' | 'getFormData'
 > = {
   type: 'expense',
   amount: '',
@@ -46,7 +49,7 @@ export const useTransactionFormStore = create<TransactionFormState>(
 
     reset: () => set(() => ({ ...initialState })),
 
-    submitTransaction: async () => {
+    getFormData: (): SubmitTransactionPayload => {
       const {
         type,
         amount,
@@ -59,35 +62,29 @@ export const useTransactionFormStore = create<TransactionFormState>(
         to,
       } = get();
 
-      try {
-        // 전송할 데이터 타입별로 분기
-        let data: any = {
+      const base = {
+        type,
+        amount: Number(amount),
+        date,
+        note: note || undefined,
+        description: description || undefined,
+      };
+
+      if (type === 'income' || type === 'expense') {
+        return {
+          ...base,
           type,
-          amount: Number(amount),
-          date,
-          note,
-          description,
+          accountId,
+          categoryId,
         };
-
-        if (type === 'income' || type === 'expense') {
-          data.accountId = accountId;
-          data.categoryId = categoryId;
-        } else if (type === 'transfer') {
-          data.from = from;
-          data.to = to;
-        }
-
-        await post(`/transactions`, data);
-
-        get().reset();
-      } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : '거래 저장 중 오류가 발생했습니다.';
-        console.error('❌ submitTransaction error:', message);
-        throw new Error(message);
       }
+
+      return {
+        ...base,
+        type: 'transfer',
+        from,
+        to,
+      };
     },
   })
 );
