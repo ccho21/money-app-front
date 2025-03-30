@@ -20,6 +20,7 @@ interface TransactionFilters {
 
 interface TransactionState {
   transactions: Transaction[];
+  selectedTransaction: Transaction;
   transactionSummaryResponse: TransactionSummaryResponse | null;
   transactionCalendarItems: TransactionCalendarItem[];
 
@@ -29,6 +30,7 @@ interface TransactionState {
   error: string | null;
 
   setTransactions: (txs: Transaction[]) => void;
+  setSelectedTransaction: (tx: Transaction) => void;
   setTransactionSummary: (data: TransactionSummaryResponse) => void;
   setCalendarItems: (items: TransactionCalendarItem[]) => void;
 
@@ -58,6 +60,7 @@ export const useTransactionStore = create<TransactionState>()(
       error: null,
 
       setTransactions: (txs) => set({ transactions: txs }),
+      setSelectedTransaction: (tx) => set({ selectedTransaction: tx }),
       setTransactionSummary: (data) =>
         set({ transactionSummaryResponse: data }),
       setCalendarItems: (items) => set({ transactionCalendarItems: items }),

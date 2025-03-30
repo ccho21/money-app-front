@@ -9,19 +9,20 @@ import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import {
   FetchTransactionSummaryParams,
   TransactionSummary,
-  TransactionSummaryResponse,
 } from '@/features/transaction/types';
 import { getDateRange } from '@/lib/utils';
-import { api } from '@/features/shared/api';
+import {
+  fetchTransactionSummary,
+  fetchTransactionSummaryWeekly,
+} from '@/services/transactionService';
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [weeklySummaryByMonth, setWeeklySummaryByMonth] = useState<{
-    [key: string]: any;
+    [key: string]: TransactionSummary[];
   }>({});
 
-  const { transactionSummaryResponse, fetchTransactionSummary, isLoading } =
-    useTransactionStore();
+  const { transactionSummaryResponse, isLoading } = useTransactionStore();
   const { date } = useDateFilterStore();
 
   const dateRange = useMemo(
@@ -30,12 +31,17 @@ export default function MonthlyPage() {
   );
 
   useEffect(() => {
+    console.log('### date', date);
+    console.log('### dateRange', dateRange);
     const params: FetchTransactionSummaryParams = {
       groupBy: 'monthly',
       ...dateRange,
     };
-    fetchTransactionSummary(params);
-  }, [fetchTransactionSummary, dateRange]);
+    const run = async () => {
+      await fetchTransactionSummary(params);
+    };
+    run();
+  }, [dateRange]);
 
   const monthlyData = transactionSummaryResponse?.data || [];
 
@@ -57,14 +63,7 @@ export default function MonthlyPage() {
         };
 
         // ✅ 내부 API 직접 호출
-        const weeklyRes = await api<TransactionSummaryResponse>(
-          `/transactions/summary?${new URLSearchParams(
-            params as any
-          ).toString()}`,
-          {
-            method: 'GET',
-          }
-        );
+        const weeklyRes = await fetchTransactionSummaryWeekly(params);
 
         const weeklyData: TransactionSummary[] = weeklyRes?.data?.map(
           (item: TransactionSummary) => ({

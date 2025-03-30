@@ -5,7 +5,6 @@ import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import TopNav from '@/components/common/TopNav';
-import TopTabMenu from './_components/TopTabMenu';
 import TabMenu from '@/components/common/TabMenu';
 
 const TABS = [
@@ -20,7 +19,8 @@ export default function TransactionLayout({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState<string>('expense');
+  const type = useTransactionFormStore((s) => s.type); // ✅ store에서 type 구독
+  const [activeTab, setActiveTab] = useState<string>(type || 'expense');
   const setField = useTransactionFormStore((s) => s.setField);
   const router = useRouter();
 
@@ -32,9 +32,11 @@ export default function TransactionLayout({
   };
 
   useEffect(() => {
-    setActiveTab('expense');
-    setField('type', 'expense');
-  }, [pathname]);
+    if (type && type !== activeTab) {
+      setActiveTab(type);
+      setField('type', type);
+    }
+  }, [pathname, type, activeTab, setField]);
 
   return (
     <div className='min-h-screen flex flex-col h-full'>

@@ -5,10 +5,12 @@ import { useAccountStore } from '@/stores/useAccountStore';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { getDateRange } from '@/lib/utils';
-import { AccountTransactionSummaryParams } from '@/features/account/types';
 import SummaryBox from '@/components/ui/SummaryBox';
 import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
+import { fetchAccountTransactionSummary } from '@/services/accountService';
+import { FetchTransactionSummaryParams } from '@/features/transaction/types';
+import { fetchBudgetUsage } from '@/services/budgetService';
 
 export default function SummaryPage() {
   const { date } = useDateFilterStore();
@@ -17,32 +19,30 @@ export default function SummaryPage() {
     () => getDateRange(date, { unit: 'month', amount: 0 }),
     [date]
   );
-
   const {
     summaries,
     isLoading: isAccountLoading,
     error: accountError,
-    fetchAccountTransactionSummary,
   } = useAccountStore();
 
   const {
     budgetUsageItems,
     isLoading: isBudgetLoading,
     error: budgetError,
-    fetchBudgetUsage,
   } = useBudgetStore();
-
-  // 🧠 fetch params 메모이제이션
-  const fetchParams: AccountTransactionSummaryParams = useMemo(() => {
-    return { ...dateRange };
-  }, [dateRange]);
 
   // 📦 데이터 fetch
   useEffect(() => {
-    fetchAccountTransactionSummary(fetchParams);
-    fetchBudgetUsage(fetchParams);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchParams]);
+    const run = async () => {
+      const params: FetchTransactionSummaryParams = {
+        groupBy: 'daily',
+        ...dateRange,
+      };
+      await fetchAccountTransactionSummary(params);
+      await fetchBudgetUsage(dateRange);
+    };
+    run();
+  }, [dateRange]);
 
   // 💰 총합 계산
   const incomeTotal = useMemo(

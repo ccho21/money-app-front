@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import DailyTransactionGroup from './_components/DailyTransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import { useTransactionStore } from '@/stores/useTransactionStore';
@@ -12,7 +12,6 @@ import { fetchTransactionSummary } from '@/services/transactionService';
 export default function DailyPage() {
   const { transactionSummaryResponse, isLoading } = useTransactionStore();
   const { date } = useDateFilterStore();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const dateRange = useMemo(
     () => getDateRange(date, { unit: 'month', amount: 0 }),
@@ -74,12 +73,7 @@ export default function DailyPage() {
 
       <div className='mt-4 space-y-4'>
         {transactionSummaryResponse.data.map((group) => (
-          <DailyTransactionGroup
-            key={group.label}
-            group={group}
-            selected={selectedDate === group.label}
-            onSelect={() => setSelectedDate(group.label)}
-          />
+          <DailyTransactionGroup key={group.label} group={group} />
         ))}
       </div>
     </>

@@ -1,7 +1,7 @@
 import {
   fetchAccountsAPI,
   fetchAccountSummaryAPI,
-} from '@/features/accounts/api/account';
+} from '@/features/account/api';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { AccountTransactionSummaryParams } from '@/features/account/types';
 

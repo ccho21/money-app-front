@@ -1,46 +1,61 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-import { getTransactionById } from '@/features/transaction/api';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
-import { useAccountStore } from '@/stores/useAccountStore';
-import { useCategoryStore } from '@/stores/useCategoryStore';
+import { useTransactionStore } from '@/stores/useTransactionStore';
+
 import IncomeForm from '../../_components/IncomeForm';
 import TransferForm from '../../_components/TransferForm';
 import ExpenseForm from '../../_components/ExpenseForm';
 
+import { fetchAccounts } from '@/services/accountService';
+import { fetchCategories } from '@/services/categoryService';
+import { fetchTransactionById } from '@/services/transactionService';
+
 export default function TransactionEditPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { fetchAccounts } = useAccountStore();
-  const { fetchCategories } = useCategoryStore();
   const { type, setAllFields } = useTransactionFormStore();
 
   useEffect(() => {
-    fetchAccounts();
-    fetchCategories();
+    const run = async () => {
+      if (!id) return;
 
-    if (id) {
-      (async () => {
-        try {
-          const data = await getTransactionById(id as string);
-          setAllFields(data);
-        } catch (err) {
-          alert(
-            err instanceof Error
-              ? err.message
-              : '거래 정보를 불러오지 못했습니다.'
-          );
-          router.back();
-        }
-      })();
-    }
-  }, [id, fetchAccounts, fetchCategories, setAllFields, router]);
+      await fetchAccounts();
+      await fetchCategories();
 
-  if (!type) return null;
+      const tx =
+        useTransactionStore.getState().selectedTransaction ??
+        (await fetchTransactionById(id.toString()));
+
+      if (tx) {
+        // ✅ 폼 필드 초기화
+        setAllFields({
+          type: tx.type,
+          amount: String(tx.amount),
+          date: tx.date,
+          note: tx.note ?? '',
+          description: tx.description ?? '',
+          accountId: tx.account?.id || '',
+          categoryId: tx.category?.id || '',
+        });
+      } else {
+        alert('해당 거래를 불러올 수 없습니다.');
+        router.push('/dashboard/daily');
+      }
+    };
+
+    run();
+  }, [id, setAllFields, router]);
+
+  if (!type)
+    return (
+      <div className='text-center text-gray-400 p-10'>
+        Loading transaction...
+      </div>
+    );
 
   if (type === 'income') return <IncomeForm mode='edit' id={id as string} />;
   if (type === 'transfer')

@@ -1,27 +1,28 @@
-// 📄 경로: src/app/dashboard/calendar/page.tsx
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '@/styles/custom-calendar.css';
+
 import TransactionDetailSheet from './_components/TransactionDetailSheet';
+
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
+
 import { format, addDays } from 'date-fns';
-import { api } from '@/features/shared/api';
+import { getDateRange } from '@/lib/utils';
+import { get } from '@/features/shared/api';
+import { fetchTransactionCalendar } from '@/services/transactionService';
+
 import {
   TransactionSummary,
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
 
 export default function CalendarPage() {
-  const {
-    fetchTransactionCalendar,
-    transactionCalendarItems,
-    transactionSummaryResponse,
-    isLoading,
-  } = useTransactionStore();
+  const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
+    useTransactionStore();
   const { date } = useDateFilterStore();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -29,29 +30,34 @@ export default function CalendarPage() {
     useState<TransactionSummary>();
   const [open, setOpen] = useState(false);
 
-  // ✅ 배열 → Map으로 변환
+  // 🔁 매달 렌더링할 수 있도록 Map으로 변환
   const calendarMap = useMemo(() => {
-    const map = new Map<string, { income: number; expense: number }>();
-    transactionCalendarItems?.forEach((item) => {
-      map.set(item.date, { income: item.income, expense: item.expense });
-    });
-    return map;
+    return new Map(
+      transactionCalendarItems?.map((item) => [
+        item.date,
+        { income: item.income, expense: item.expense },
+      ])
+    );
   }, [transactionCalendarItems]);
 
+  // 🔄 캘린더 거래 요약 fetch (월 단위)
   useEffect(() => {
     fetchTransactionCalendar(
       String(date.getFullYear()),
       String(date.getMonth() + 1)
     );
-  }, [fetchTransactionCalendar, date]);
+  }, [date]);
 
-  const getDateStr = (date: Date): string => format(date, 'yyyy-MM-dd');
+  const getDateStr = (d: Date) => format(d, 'yyyy-MM-dd');
+  const dateRange = useMemo(
+    () => getDateRange(date, { unit: 'month', amount: 0 }),
+    [date]
+  );
 
-  const handleDateClick = async (date: Date) => {
-    const dateStr = getDateStr(date);
-    setSelectedDate(date);
+  const handleDateClick = async (clickedDate: Date) => {
+    const dateStr = getDateStr(clickedDate);
+    setSelectedDate(clickedDate);
 
-    // 1. transactionSummaryResponse 안에 있는지 확인
     const fromStore = transactionSummaryResponse?.data.find(
       (g) => g.label === dateStr
     );
@@ -60,22 +66,13 @@ export default function CalendarPage() {
       setSelectedTransactionSummary(fromStore);
     } else {
       try {
-        const params = new URLSearchParams({
-          type: 'daily',
-          year: String(date.getFullYear()),
-          month: String(date.getMonth() + 1),
-          day: String(date.getDate()),
-        });
-
-        const res = await api<TransactionSummaryResponse>(
-          `/transactions/summary?${params.toString()}`,
-          { method: 'GET' }
+        const params = new URLSearchParams({ groupBy: 'daily', ...dateRange });
+        const res = await get<TransactionSummaryResponse>(
+          `/transactions/summary?${params.toString()}`
         );
 
-        // ✅ 해당 일자 summary만 local 상태에 저장
-        const summary = res.data?.[0];
-        if (summary) setSelectedTransactionSummary(summary);
-        else setSelectedTransactionSummary(undefined);
+        const summary = res.data?.find((s) => s.label === dateStr);
+        setSelectedTransactionSummary(summary);
       } catch (err) {
         console.error('일간 거래 요약 가져오기 실패', err);
         setSelectedTransactionSummary(undefined);
@@ -100,9 +97,9 @@ export default function CalendarPage() {
         nextLabel={null}
         prev2Label={null}
         next2Label={null}
-        tileDisabled={({ date: tileDate }) => {
-          return tileDate.getMonth() !== date.getMonth();
-        }}
+        tileDisabled={({ date: tileDate }) =>
+          tileDate.getMonth() !== date.getMonth()
+        }
         tileContent={({ date }) => {
           const key = getDateStr(date);
           const summary = calendarMap.get(key);
@@ -126,7 +123,7 @@ export default function CalendarPage() {
         }}
       />
 
-      {/* 상세 내역 Bottom Sheet */}
+      {/* 🔽 거래 상세 Bottom Sheet */}
       {selectedDate && (
         <TransactionDetailSheet
           open={open}

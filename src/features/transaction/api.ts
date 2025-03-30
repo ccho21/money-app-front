@@ -1,21 +1,25 @@
-import { post, put, get } from '@/features/shared/api';
+import { post, get, patch } from '@/features/shared/api';
 import {
   FetchTransactionSummaryParams,
+  SubmitTransactionPayload,
   Transaction,
   TransactionCalendarItem,
   TransactionSummaryResponse,
 } from './types';
 
-export const createTransaction = (data: any) => {
+export const createTransaction = (data: SubmitTransactionPayload) => {
   return post('/transactions', data);
 };
 
-export const updateTransaction = (id: string, data: any) => {
-  return put(`/transactions/${id}`, data);
+export const updateTransaction = (
+  id: string,
+  data: SubmitTransactionPayload
+) => {
+  return patch(`/transactions/${id}`, data);
 };
 
-export const getTransactionById = (id: string) => {
-  return get(`/transactions/${id}`);
+export const getTransactionById = (id: string): Promise<Transaction> => {
+  return get<Transaction>(`/transactions/${id}`);
 };
 
 export const fetchTransactionsAPI = async (query: URLSearchParams) => {

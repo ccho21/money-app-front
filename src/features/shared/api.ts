@@ -55,3 +55,10 @@ export function del<T = void>(path: string): Promise<T> {
     method: 'DELETE',
   });
 }
+
+export function patch<Res, Req>(path: string, data: Req): Promise<Res> {
+  return api<Res>(path, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}

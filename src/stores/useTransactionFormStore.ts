@@ -14,13 +14,12 @@ interface TransactionFormState extends TransactionFormFields {
   date: string;
   note: string;
   description: string;
-  from: string;
-  to: string;
 
   setField: <K extends keyof TransactionFormState>(
     key: K,
     value: TransactionFormState[K]
   ) => void;
+  setAllFields: (data: Partial<TransactionFormFields>) => void;
 
   reset: () => void;
   getFormData: () => SubmitTransactionPayload;
@@ -28,7 +27,7 @@ interface TransactionFormState extends TransactionFormFields {
 
 const initialState: Omit<
   TransactionFormState,
-  'setField' | 'reset' | 'getFormData'
+  'setField' | 'setAllFields' | 'reset' | 'getFormData'
 > = {
   type: 'expense',
   amount: '',
@@ -37,8 +36,6 @@ const initialState: Omit<
   date: new Date().toISOString().slice(0, 10),
   note: '',
   description: '',
-  from: '',
-  to: '',
 };
 
 export const useTransactionFormStore = create<TransactionFormState>(
@@ -46,21 +43,23 @@ export const useTransactionFormStore = create<TransactionFormState>(
     ...initialState,
 
     setField: (key, value) => set((state) => ({ ...state, [key]: value })),
-
+    setAllFields: (data) =>
+      set((state) => ({
+        ...state,
+        ...data,
+        amount: String(data.amount ?? state.amount),
+        date: data.date ?? state.date,
+        note: data.note ?? '',
+        description: data.description ?? '',
+        accountId: data.accountId ?? '',
+        categoryId: data.categoryId ?? '',
+        type: data.type ?? state.type,
+      })),
     reset: () => set(() => ({ ...initialState })),
 
     getFormData: (): SubmitTransactionPayload => {
-      const {
-        type,
-        amount,
-        accountId,
-        categoryId,
-        date,
-        note,
-        description,
-        from,
-        to,
-      } = get();
+      const { type, amount, accountId, categoryId, date, note, description } =
+        get();
 
       const base = {
         type,
@@ -82,8 +81,6 @@ export const useTransactionFormStore = create<TransactionFormState>(
       return {
         ...base,
         type: 'transfer',
-        from,
-        to,
       };
     },
   })

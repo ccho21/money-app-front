@@ -1,20 +1,17 @@
 // 📄 경로: src/components/ui/DailyTransactionGroup.tsx
 'use client';
 
-import { GroupedTransactions, Transaction } from '@/features/transaction/types';
+import { TransactionSummary, Transaction } from '@/features/transaction/types';
 import DailyTransactionItem from './DailyTransactionItem';
+import { useRouter } from 'next/navigation';
 
 interface Props {
-  group: GroupedTransactions;
-  selected: boolean;
-  onSelect: () => void;
+  group: TransactionSummary;
 }
 
-export default function DailyTransactionGroup({
-  group,
-  selected,
-  onSelect,
-}: Props) {
+export default function DailyTransactionGroup({ group }: Props) {
+  const router = useRouter();
+
   const date = new Date(group.label);
   const day = date.getDate();
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -22,17 +19,14 @@ export default function DailyTransactionGroup({
   const incomeColor = 'text-[#3C50E0]'; // TailAdmin 파랑
   const expenseColor = 'text-[#fb5c4c]'; // TailAdmin 소프트레드
 
+  const handleClick = () => {
+    router.push('/transaction/new');
+  };
   return (
-    <div className='mb-4'>
+    <div className='mb-4' onClick={handleClick}>
       {/* 날짜 헤더 */}
       <div
-        className={`grid grid-cols-12 items-center px-3 py-2.5 rounded-md cursor-pointer transition-colors duration-200 border
-        ${
-          selected
-            ? 'bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700'
-            : 'hover:bg-zinc-50 dark:hover:bg-zinc-900 border-transparent'
-        }`}
-        onClick={onSelect}
+        className={`grid grid-cols-12 items-center px-3 py-2.5 rounded-md cursor-pointer transition-colors duration-200 border hover:bg-zinc-50 dark:hover:bg-zinc-900 border-transparent`}
       >
         {/* 날짜 */}
         <div className='col-span-1 text-lg font-bold text-gray-900 dark:text-white'>

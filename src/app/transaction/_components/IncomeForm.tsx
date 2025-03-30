@@ -31,7 +31,7 @@ export default function IncomeForm({ mode, id }: Props) {
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, id);
-      router.push('/dashboard');
+      router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }

@@ -1,23 +1,26 @@
 export type TransactionType = 'income' | 'expense';
 
 export interface TransactionCategory {
-  id?: string;
+  id: string;
   name: string;
   icon: string;
+}
+interface TransactionAccount {
+  id: string;
+  name: string;
+  type: string;
+  color?: string | null;
 }
 
 export interface Transaction {
   id: string;
   type: TransactionType;
   amount: number;
-  note: string;
   date: string; // ISO 형식 ('2025-03-20T00:00:00.000Z')
   category: TransactionCategory;
-  account: {
-    name: string;
-    type: string;
-    color?: string | null;
-  };
+  account: TransactionAccount;
+  note?: string;
+  description?: string;
 }
 
 export interface TransactionSummary {
@@ -58,8 +61,6 @@ export type TransactionFormFields = {
   date: string;
   note: string;
   description: string;
-  from: string;
-  to: string;
 };
 
 export type IncomeOrExpensePayload = {
@@ -75,8 +76,8 @@ export type IncomeOrExpensePayload = {
 export type TransferPayload = {
   type: 'transfer';
   amount: number;
-  from: string;
-  to: string;
+  // from: string;
+  // to: string;
   date: string;
   note?: string;
   description?: string;

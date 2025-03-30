@@ -4,10 +4,34 @@ import {
   fetchTransactionsAPI,
   fetchTransactionSummaryAPI,
   updateTransaction,
+  getTransactionById,
 } from '@/features/transaction/api';
-import { FetchTransactionSummaryParams } from '@/features/transaction/types';
+import {
+  FetchTransactionSummaryParams,
+  TransactionSummaryResponse,
+} from '@/features/transaction/types';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
+
+export const fetchTransactionById = async (id: string) => {
+  const { setSelectedTransaction, setLoading, setError } =
+    useTransactionStore.getState();
+
+  setLoading(true);
+  setError(null);
+
+  try {
+    const data = await getTransactionById(id);
+    setSelectedTransaction(data);
+    return data;
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : '트랜즈액션 불러오기 실패';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
   const { getFormData, reset } = useTransactionFormStore.getState();
@@ -96,8 +120,8 @@ export const fetchTransactionSummary = async (
   setError(null);
 
   try {
-    const data = await fetchTransactionSummaryAPI(params);
-    setTransactionSummary(data);
+    const res = await fetchTransactionSummaryAPI(params);
+    setTransactionSummary(res);
   } catch (err) {
     const message = err instanceof Error ? err.message : '요약 데이터 오류';
     setError(message);
@@ -121,5 +145,22 @@ export const fetchTransactionCalendar = async (year: string, month: string) => {
     setError(message);
   } finally {
     setLoading(false);
+  }
+};
+
+export const fetchTransactionSummaryWeekly = async (
+  params: FetchTransactionSummaryParams
+): Promise<TransactionSummaryResponse> => {
+  try {
+    const res: TransactionSummaryResponse = await fetchTransactionSummaryAPI(
+      params
+    );
+
+    return res;
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : '요약 데이터 조회 실패';
+    console.error('❌ fetchTransactionSummaryByRange error:', message);
+    throw new Error(message);
   }
 };
