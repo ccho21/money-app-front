@@ -41,7 +41,6 @@ export default function IncomeForm({ mode, id }: Props) {
     <div className='space-y-5 px-4 pt-5 pb-10'>
       <Input
         label='Amount'
-        placeholder='₩ 0'
         value={amount}
         onChange={(e) => setField('amount', e.target.value)}
         type='number'
@@ -54,6 +53,7 @@ export default function IncomeForm({ mode, id }: Props) {
         options={accounts}
         getOptionLabel={(a) => a.name}
         getOptionValue={(a) => a.id}
+        onEdit={() => router.push('/account')}
       />
 
       <Selector
@@ -63,31 +63,26 @@ export default function IncomeForm({ mode, id }: Props) {
         options={categories.filter((c) => c.type === 'income')}
         getOptionLabel={(c) => c.name}
         getOptionValue={(c) => c.id}
+        onEdit={() => router.push('/category')}
       />
 
-      <div>
-        <label className='text-sm text-gray-500 dark:text-gray-400 mb-1 block'>
-          Date
-        </label>
-        <DatePicker
-          value={new Date(date)}
-          onChange={(val) => setField('date', val.toISOString().slice(0, 10))}
-        />
-      </div>
+      <DatePicker
+        label='Date'
+        value={new Date(date)}
+        onChange={(val) => setField('date', val.toISOString().slice(0, 10))}
+      />
 
       <Input
         label='Note'
-        placeholder='간단한 메모 (선택)'
         value={note}
         onChange={(e) => setField('note', e.target.value)}
       />
 
       <Textarea
-        label='Description'
-        placeholder='상세 설명 (선택)'
+        placeholder='Description'
         value={description}
         onChange={(e) => setField('description', e.target.value)}
-        rows={3}
+        rows={1}
       />
 
       <Button onClick={handleSubmit} className='w-full mt-6'>

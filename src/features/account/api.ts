@@ -1,20 +1,34 @@
-import { get } from '@/features/shared/api';
+import { get, patch, post } from '@/features/shared/api';
 import {
   Account,
   AccountTransactionSummaryDto,
   AccountTransactionSummaryParams,
+  SubmitAccountPayload,
 } from '@/features/account/types';
+
+export const createAccountAPI = (payload: SubmitAccountPayload) => {
+  return post('/accounts', payload);
+};
+
+export const updateAccountAPI = (id: string, payload: SubmitAccountPayload) => {
+  return patch(`/accounts/${id}`, payload);
+};
 
 export const fetchAccountsAPI = () => {
   return get<Account[]>('/accounts');
+};
+
+export const fetchAccountsByIdAPI = (id: string) => {
+  return get<Account>(`/accounts/${id}`);
 };
 
 export const fetchAccountSummaryAPI = (
   params: AccountTransactionSummaryParams
 ) => {
   const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
+
+  if (params.startDate) query.append('startDate', params.startDate);
+  if (params.endDate) query.append('endDate', params.endDate);
 
   return get<AccountTransactionSummaryDto[]>(
     `/accounts/grouped-transactions?${query.toString()}`

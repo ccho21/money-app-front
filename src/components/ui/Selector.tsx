@@ -1,5 +1,6 @@
 'use client';
 
+import { Pencil, X } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 
 interface SelectorProps<T> {
@@ -35,14 +36,21 @@ export default function Selector<T>({
   }, []);
 
   return (
-    <div className='relative' ref={ref}>
-      <input
-        readOnly
-        value={value}
-        onClick={() => setOpen(true)}
-        placeholder={`Select ${label}`}
-        className='border-b w-full py-1 focus:outline-none'
-      />
+    <div className='grid grid-cols-12 items-center gap-2' ref={ref}>
+      {/* ⬅️ label col-span-2 */}
+      <label className='col-span-2 text-xs text-gray-500 dark:text-gray-400 font-medium'>
+        {label}
+      </label>
+
+      {/* ⬅️ input col-span-10 */}
+      <div className='col-span-10'>
+        <input
+          readOnly
+          value={value}
+          onClick={() => setOpen(true)}
+          className='border-b border-gray-300 w-full py-1 focus:outline-none bg-transparent focus:border-black'
+        />
+      </div>
 
       {open && (
         <div className='fixed left-0 right-0 bottom-0 z-30 bg-gray-300 border-t shadow-md min-h-[35vh]'>
@@ -51,11 +59,11 @@ export default function Selector<T>({
             <div className='flex gap-3'>
               {onEdit && (
                 <button onClick={onEdit} title='Edit'>
-                  ✏
+                  <Pencil />
                 </button>
               )}
               <button onClick={() => setOpen(false)} title='Cancel'>
-                ✕
+                <X />
               </button>
             </div>
           </div>

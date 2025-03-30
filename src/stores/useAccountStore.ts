@@ -7,11 +7,13 @@ import {
 
 interface AccountState {
   accounts: Account[];
+  selectedAccount: Account;
   summaries: AccountTransactionSummaryDto[];
   isLoading: boolean;
   error: string | null;
 
   setAccounts: (data: Account[]) => void;
+  setSelectedAccount: (acc: Account) => void;
   setSummaries: (data: AccountTransactionSummaryDto[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -27,6 +29,7 @@ export const useAccountStore = create<AccountState>()(
       error: null,
 
       setAccounts: (data) => set({ accounts: data }),
+      setSelectedAccount: (data) => set({ selectedAccount: data }),
       setSummaries: (data) => set({ summaries: data }),
       setLoading: (loading) => set({ isLoading: loading }),
       setError: (err) => set({ error: err }),
@@ -34,6 +37,7 @@ export const useAccountStore = create<AccountState>()(
       clear: () =>
         set({
           accounts: [],
+          selectedAccount: undefined,
           summaries: [],
           isLoading: false,
           error: null,

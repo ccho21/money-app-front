@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/Input';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {
+  label?: string;
   value: Date;
   onChange: (date: Date) => void;
 }
 
-export default function DatePicker({ value, onChange }: Props) {
+export default function DatePicker({ label, value, onChange }: Props) {
   const [localDate, setLocalDate] = useState<Date>(value);
 
   useEffect(() => {
@@ -33,20 +34,29 @@ export default function DatePicker({ value, onChange }: Props) {
       value={value}
       onClick={onClick}
       ref={ref}
-      className='cursor-pointer'
+      className='cursor-pointer w-full' // ✅ full width 보장
     />
   ));
   CustomInput.displayName = 'CustomDatePickerInput';
 
   return (
-    <ReactDatePicker
-      selected={localDate}
-      onChange={handleChange}
-      dateFormat='yyyy-MM-dd (eee)'
-      customInput={<CustomInput />}
-      popperPlacement='bottom-start'
-      showPopperArrow={false}
-      calendarClassName='rounded-xl shadow-lg border border-gray-200 bg-white dark:bg-gray-800 text-sm'
-    />
+    <div className='grid grid-cols-12 items-center gap-2'>
+      {label && (
+        <label className='col-span-2 text-xs text-gray-500 dark:text-gray-400 font-medium'>
+          {label}
+        </label>
+      )}
+      <div className='col-span-10'>
+        <ReactDatePicker
+          selected={localDate}
+          onChange={handleChange}
+          dateFormat='yyyy-MM-dd (eee)'
+          customInput={<CustomInput />}
+          popperPlacement='bottom-start'
+          showPopperArrow={false}
+          calendarClassName='rounded-xl shadow-lg border border-gray-200 bg-white dark:bg-gray-800 text-sm'
+        />
+      </div>
+    </div>
   );
 }

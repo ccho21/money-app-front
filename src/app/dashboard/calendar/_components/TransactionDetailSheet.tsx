@@ -2,7 +2,9 @@
 'use client';
 
 import BottomSheet from '@/components/ui/BottomSheet';
-import { TransactionSummary } from '@/features/transaction/types';
+import { Transaction, TransactionSummary } from '@/features/transaction/types';
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   open: boolean;
@@ -19,9 +21,15 @@ export default function TransactionDetailSheet({
   transactionSummary,
   onClose,
 }: Props) {
+  const router = useRouter();
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
   const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}`;
+  const { setSelectedTransaction } = useTransactionStore();
 
+  const handleClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    router.push(`/transaction/${transaction.id}/edit`);
+  };
   return (
     <BottomSheet open={open} onClose={onClose}>
       {/* Top Summary */}
@@ -67,6 +75,7 @@ export default function TransactionDetailSheet({
           <div className='overflow-y-auto mt-5 px-5 space-y-3 pb-32'>
             {transactionSummary.transactions.map((t) => (
               <div
+                onClick={() => handleClick(t)}
                 key={t.id}
                 className='grid grid-cols-12 items-center border-b border-gray-200 dark:border-zinc-700 py-2 px-1'
               >

@@ -7,6 +7,13 @@ export interface Account {
   type: AccountType;
   color?: string; // UI 색상
   balance: number; // 실수형 잔액
+  description?: string;
+}
+export interface SubmitAccountPayload {
+  name: string;
+  balance: number; // amount -> balance
+  type: AccountType;
+  description?: string;
 }
 export interface AccountSummary {
   accountId: string;
@@ -29,5 +36,5 @@ export interface AccountTransactionSummaryDto {
 
 export type AccountTransactionSummaryParams = {
   startDate: string;
-  endDate?: string;
+  endDate: string;
 };

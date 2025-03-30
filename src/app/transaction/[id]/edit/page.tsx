@@ -25,11 +25,10 @@ export default function TransactionEditPage() {
 
       await fetchAccounts();
       await fetchCategories();
+      const t = useTransactionStore.getState().selectedTransaction;
+      const tx = t.id === id ? t : await fetchTransactionById(id.toString());
 
-      const tx =
-        useTransactionStore.getState().selectedTransaction ??
-        (await fetchTransactionById(id.toString()));
-
+      console.log('######TX', tx);
       if (tx) {
         // ✅ 폼 필드 초기화
         setAllFields({

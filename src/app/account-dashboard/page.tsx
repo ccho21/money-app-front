@@ -4,13 +4,20 @@ import { useEffect } from 'react';
 import { useAccountStore } from '@/stores/useAccountStore';
 import SummaryBox from '@/components/ui/SummaryBox';
 import { CategoryListItem } from '../stats/_components/CategoryListItem';
+import { fetchTransactionSummary } from '@/services/transactionService';
+import { format } from 'date-fns';
 
-export default function AccountsPage()  {
-  const { summaries, isLoading, fetchGroupedSummaries } = useAccountStore();
+export default function AccountsPage() {
+  const { summaries, isLoading } = useAccountStore();
 
   useEffect(() => {
-    void fetchGroupedSummaries();
-  }, [fetchGroupedSummaries]);
+    const date = new Date();
+    fetchTransactionSummary({
+      groupBy: 'monthly',
+      startDate: format(date, 'yyyy-MM'),
+      endDate: format(date, 'yyyy-MM'),
+    });
+  }, []);
 
   const assetAccounts = summaries.filter(
     (a) => a.balance >= 0 && a.accountName.toUpperCase() !== 'CARD'
@@ -27,11 +34,11 @@ export default function AccountsPage()  {
   const netTotal = assetTotal + liabilityTotal;
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   return (
-    <div className="p-4 space-y-6">
+    <div className='p-4 space-y-6'>
       <SummaryBox
         items={[
           {
@@ -55,7 +62,7 @@ export default function AccountsPage()  {
         ]}
       />
 
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {['CASH', 'BANK', 'CARD'].map((type) => {
           const filtered = summaries.filter((a) =>
             a.accountName.toUpperCase().includes(type)
@@ -65,12 +72,12 @@ export default function AccountsPage()  {
 
           return (
             <div key={type}>
-              <h3 className="text-sm font-semibold text-gray-500 mb-2">
+              <h3 className='text-sm font-semibold text-gray-500 mb-2'>
                 {type === 'CASH' && 'Cash'}
                 {type === 'BANK' && 'Bank Accounts'}
                 {type === 'CARD' && 'Card'}
               </h3>
-              <div className="divide-y">
+              <div className='divide-y'>
                 {filtered.map((acc) => (
                   <CategoryListItem
                     key={acc.accountId}

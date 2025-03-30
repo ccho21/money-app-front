@@ -1,7 +1,9 @@
 'use client';
 
 import { TransactionSummary } from '@/features/transaction/types';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 interface MonthlyItemProps {
@@ -21,6 +23,8 @@ export default function MonthlyItem({
   weeklyData,
   onToggle,
 }: MonthlyItemProps) {
+  const router = useRouter();
+  const { setDate } = useDateFilterStore.getState();
   // ✅ 날짜 관련 정보 캐싱
   const parsedDate = useMemo(() => {
     try {
@@ -46,6 +50,14 @@ export default function MonthlyItem({
   const total = useMemo(() => income - expense, [income, expense]);
 
   if (!parsedDate) return null; // 컴포넌트 자체 렌더 차단
+
+  const handleClick = (e: React.MouseEvent, week: TransactionSummary) => {
+    e.stopPropagation();
+
+    setDate(new Date(week.label));
+    router.push('/dashboard/daily');
+    ///
+  };
 
   return (
     <div className='border-b border-gray-200 dark:border-zinc-800 px-4'>
@@ -94,6 +106,7 @@ export default function MonthlyItem({
 
             return (
               <div
+                onClick={(e) => handleClick(e, week)}
                 key={idx}
                 className='flex justify-between border-b border-gray-100 dark:border-zinc-700 pb-1'
               >

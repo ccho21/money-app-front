@@ -10,7 +10,11 @@ const tabs = [
     path: '/dashboard/daily',
   },
   { label: 'Stats', icon: <BarChart2 className='w-5 h-5' />, path: '/stats' },
-  { label: 'Accounts', icon: <Coins className='w-5 h-5' />, path: '/accounts' },
+  {
+    label: 'Accounts',
+    icon: <Coins className='w-5 h-5' />,
+    path: '/account-dashboard',
+  },
   {
     label: 'More',
     icon: <MoreHorizontal className='w-5 h-5' />,
