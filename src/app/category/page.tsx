@@ -10,7 +10,9 @@ import { deleteCategory, fetchCategories } from '@/services/categoryService';
 import { Button } from '@/components/ui/Button';
 
 export default function CategoryPage() {
-  const { categories } = useCategoryStore();
+  const {
+    state: { categories },
+  } = useCategoryStore();
   const router = useRouter();
 
   useEffect(() => {

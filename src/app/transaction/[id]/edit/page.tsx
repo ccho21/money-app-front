@@ -17,7 +17,10 @@ import { fetchTransactionById } from '@/services/transactionService';
 export default function TransactionEditPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { type, setAllFields } = useTransactionFormStore();
+  const {
+    state: { type },
+    actions: { setAllFields },
+  } = useTransactionFormStore();
 
   useEffect(() => {
     const run = async () => {
@@ -25,10 +28,10 @@ export default function TransactionEditPage() {
 
       await fetchAccounts();
       await fetchCategories();
-      const t = useTransactionStore.getState().selectedTransaction;
-      const tx = t.id === id ? t : await fetchTransactionById(id.toString());
+      const t = useTransactionStore.getState().state.selectedTransaction;
+      const tx =
+        t && t.id === id ? t : await fetchTransactionById(id.toString());
 
-      console.log('######TX', tx);
       if (tx) {
         // ✅ 폼 필드 초기화
         setAllFields({

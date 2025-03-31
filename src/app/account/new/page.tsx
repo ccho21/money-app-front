@@ -6,7 +6,9 @@ import AccountForm from '../_components/AccountForm';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 
 export default function AddAccountPage() {
-  const { getFormData, reset } = useAccountFormStore();
+  const {
+    actions: { getFormData, reset },
+  } = useAccountFormStore();
   const router = useRouter();
 
   const handleSave = async () => {

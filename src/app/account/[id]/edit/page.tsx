@@ -11,7 +11,9 @@ import { useAccountStore } from '@/stores/useAccountStore';
 export default function AccountEditPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { setAllFields, getFormData, reset } = useAccountFormStore();
+  const {
+    actions: { setAllFields, getFormData, reset },
+  } = useAccountFormStore();
 
   useEffect(() => {
     console.log('### IDIDID', id);
@@ -20,7 +22,7 @@ export default function AccountEditPage() {
 
       await fetchAccounts();
       const acc =
-        useAccountStore.getState().selectedAccount ??
+        useAccountStore.getState().state.selectedAccount ??
         (await fetchAccountById(id.toString()));
 
       if (acc) {

@@ -9,7 +9,9 @@ import { CategoryForm } from '../_components/CategoryForm';
 
 export default function AddCategoryPage() {
   const router = useRouter();
-  const { getFormData, reset } = useCategoryFormStore();
+  const {
+    actions: { getFormData, reset },
+  } = useCategoryFormStore();
 
   const handleSubmit = async () => {
     try {

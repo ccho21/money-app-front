@@ -7,26 +7,25 @@ import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated
 import toast from 'react-hot-toast';
 
 export default function SigninPage() {
-  const { signin } = useUserStore.getState();
   const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser);
-
+  const { actions } = useUserStore(); // ✅ 액션만 추출
   const [email, setEmail] = useState('seeduser@example.com');
   const [password, setPassword] = useState('secure123');
   const [error, setError] = useState('');
 
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await signin(email, password);
+
+    const success = await actions.signin(email, password);
     if (success) {
-      router.push('/dashboard/daily'); // 로그인 성공 시 이동
+      router.push('/dashboard/daily');
     } else {
       toast.error('이메일 또는 비밀번호가 올바르지 않습니다');
     }
   };
 
   const handleGoogleSignin = () => {
-    window.location.href = 'http://localhost:3000/auth/google'; // 백엔드 연동
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   return (
@@ -42,7 +41,6 @@ export default function SigninPage() {
             <div className='text-red-500 text-sm text-center'>{error}</div>
           )}
 
-          {/* 이메일 입력 */}
           <div className='space-y-2'>
             <label htmlFor='email' className='block text-sm font-medium'>
               이메일
@@ -57,7 +55,6 @@ export default function SigninPage() {
             />
           </div>
 
-          {/* 비밀번호 입력 */}
           <div className='space-y-2'>
             <label htmlFor='password' className='block text-sm font-medium'>
               비밀번호
@@ -72,7 +69,6 @@ export default function SigninPage() {
             />
           </div>
 
-          {/* 로그인 버튼 */}
           <button
             type='submit'
             className='w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded font-semibold'
@@ -80,7 +76,6 @@ export default function SigninPage() {
             로그인
           </button>
 
-          {/* 구분선 */}
           <div className='relative my-4'>
             <div className='absolute inset-0 flex items-center'>
               <div className='w-full border-t border-gray-300 dark:border-gray-700' />
@@ -92,7 +87,6 @@ export default function SigninPage() {
             </div>
           </div>
 
-          {/* Google 로그인 버튼 */}
           <button
             type='button'
             onClick={handleGoogleSignin}

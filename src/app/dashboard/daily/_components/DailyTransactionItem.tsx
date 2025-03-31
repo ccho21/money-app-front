@@ -8,7 +8,9 @@ export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
   const router = useRouter();
   const isIncome = tx.type === 'income';
 
-  const { setSelectedTransaction } = useTransactionStore();
+  const {
+    actions: { setSelectedTransaction },
+  } = useTransactionStore();
 
   const incomeColor = 'text-[#3C50E0]'; // TailAdmin primary
   const expenseColor = 'text-[#fb5c4c]'; // TailAdmin warning

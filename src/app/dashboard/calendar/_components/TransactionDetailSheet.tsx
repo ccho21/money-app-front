@@ -1,4 +1,3 @@
-// 📄 경로: src/app/dashboard/calendar/_components/TransactionDetailSheet.tsx
 'use client';
 
 import BottomSheet from '@/components/ui/BottomSheet';
@@ -24,12 +23,16 @@ export default function TransactionDetailSheet({
   const router = useRouter();
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
   const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}`;
-  const { setSelectedTransaction } = useTransactionStore();
+
+  const {
+    actions: { setSelectedTransaction },
+  } = useTransactionStore();
 
   const handleClick = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
     router.push(`/transaction/${transaction.id}/edit`);
   };
+
   return (
     <BottomSheet open={open} onClose={onClose}>
       {/* Top Summary */}
@@ -65,6 +68,7 @@ export default function TransactionDetailSheet({
             : 0}
         </div>
       </div>
+
       {!transactionSummary ? (
         <p className='text-center mt-10 text-gray-400 py-3 pb-12'>
           데이터가 없습니다
@@ -77,7 +81,7 @@ export default function TransactionDetailSheet({
               <div
                 onClick={() => handleClick(t)}
                 key={t.id}
-                className='grid grid-cols-12 items-center border-b border-gray-200 dark:border-zinc-700 py-2 px-1'
+                className='grid grid-cols-12 items-center border-b border-gray-200 dark:border-zinc-700 py-2 px-1 cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800'
               >
                 <div className='col-span-2 text-[15px] text-gray-700 dark:text-gray-200'>
                   {t.category.name}

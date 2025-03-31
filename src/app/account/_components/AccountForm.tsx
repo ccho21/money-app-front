@@ -19,7 +19,10 @@ interface Props {
 }
 
 export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
-  const { group, name, amount, description, setField } = useAccountFormStore();
+  const {
+    state: { group, name, amount, description },
+    actions: { setField },
+  } = useAccountFormStore();
 
   return (
     <div className='min-h-screen bg-white px-4 pt-4 pb-10'>

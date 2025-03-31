@@ -4,18 +4,35 @@ import { Category } from '@/features/category/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface CategoryState {
-  categories: Category[];
-
-  setCategories: (categories: Category[]) => void;
+interface CategoryStore {
+  state: {
+    categories: Category[];
+  };
+  actions: {
+    setCategories: (categories: Category[]) => void;
+  };
 }
 
-export const useCategoryStore = create<CategoryState>()(
-  devtools((set) => ({
-    categories: [],
-
-    setCategories: (categories) => {
-      set({ categories });
-    },
-  }))
+export const useCategoryStore = create<CategoryStore>()(
+  devtools(
+    (set) => ({
+      state: {
+        categories: [],
+      },
+      actions: {
+        setCategories: (categories) =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                categories,
+              },
+            }),
+            false,
+            'categories/setAll'
+          ),
+      },
+    }),
+    { name: 'useCategoryStore' }
+  )
 );

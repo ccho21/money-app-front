@@ -8,7 +8,10 @@ import { Account } from '@/features/account/types';
 
 export default function AccountEditPage() {
   const router = useRouter();
-  const { accounts, setSelectedAccount } = useAccountStore();
+  const {
+    state: { accounts },
+    actions: { setSelectedAccount },
+  } = useAccountStore();
 
   const accountGroups = useMemo(
     () => ({

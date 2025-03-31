@@ -2,24 +2,23 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '../../../stores/useUserStore';
+import { useUserStore } from '@/stores/useUserStore';
 
 const PUBLIC_ROUTES = ['/signin', '/signup'];
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const user = useUserStore((state) => state.user);
-
+  const { state } = useUserStore(); // ✅ 구조 분리로 접근
   const isPublic = PUBLIC_ROUTES.includes(pathname);
 
   useEffect(() => {
-    if (!user && !isPublic) {
+    if (!state.user && !isPublic) {
       router.replace('/signin');
     }
-  }, [user, isPublic]);
+  }, [state.user, isPublic, router]);
 
-  if (!user && !isPublic) return null;
+  if (!state.user && !isPublic) return null;
 
   return <>{children}</>;
 }

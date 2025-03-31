@@ -18,25 +18,24 @@ export default function TransactionLayout({
 }: {
   children: ReactNode;
 }) {
-  const pathname = usePathname();
-  const type = useTransactionFormStore((s) => s.type); // ✅ store에서 type 구독
-  const [activeTab, setActiveTab] = useState<string>(type || 'expense');
-  const setField = useTransactionFormStore((s) => s.setField);
   const router = useRouter();
+  const pathname = usePathname();
+  const { state, actions } = useTransactionFormStore(); // ✅ 구조 기반 접근
+
+  const [activeTab, setActiveTab] = useState<string>(state.type || 'expense');
 
   const handleTabChange = (key: string) => {
     if (['income', 'expense', 'transfer'].includes(key)) {
       setActiveTab(key);
-      setField('type', key as TransactionType);
+      actions.setField('type', key as TransactionType);
     }
   };
 
   useEffect(() => {
-    if (type && type !== activeTab) {
-      setActiveTab(type);
-      setField('type', type);
+    if (state.type && state.type !== activeTab) {
+      setActiveTab(state.type);
     }
-  }, [pathname, type, activeTab, setField]);
+  }, [pathname, state.type, activeTab]);
 
   return (
     <div className='min-h-screen flex flex-col h-full'>

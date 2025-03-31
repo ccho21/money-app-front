@@ -1,34 +1,36 @@
+// 📄 src/stores/transaction/transactionForm.store.ts
+
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   SubmitTransactionPayload,
   TransactionFormFields,
 } from '@/features/transaction/types';
-import { create } from 'zustand';
 
 type TransactionType = 'income' | 'expense' | 'transfer';
 
-interface TransactionFormState extends TransactionFormFields {
-  type: TransactionType;
-  amount: string;
-  accountId: string;
-  categoryId: string;
-  date: string;
-  note: string;
-  description: string;
-
-  setField: <K extends keyof TransactionFormState>(
-    key: K,
-    value: TransactionFormState[K]
-  ) => void;
-  setAllFields: (data: Partial<TransactionFormFields>) => void;
-
-  reset: () => void;
-  getFormData: () => SubmitTransactionPayload;
+interface TransactionFormState {
+  state: {
+    type: TransactionType;
+    amount: string;
+    accountId: string;
+    categoryId: string;
+    date: string;
+    note: string;
+    description: string;
+  };
+  actions: {
+    setField: <K extends keyof TransactionFormState['state']>(
+      key: K,
+      value: TransactionFormState['state'][K]
+    ) => void;
+    setAllFields: (data: Partial<TransactionFormFields>) => void;
+    reset: () => void;
+    getFormData: () => SubmitTransactionPayload;
+  };
 }
 
-const initialState: Omit<
-  TransactionFormState,
-  'setField' | 'setAllFields' | 'reset' | 'getFormData'
-> = {
+const initialFormState: TransactionFormState['state'] = {
   type: 'expense',
   amount: '',
   accountId: '',
@@ -38,50 +40,80 @@ const initialState: Omit<
   description: '',
 };
 
-export const useTransactionFormStore = create<TransactionFormState>(
-  (set, get) => ({
-    ...initialState,
+export const useTransactionFormStore = create<TransactionFormState>()(
+  devtools(
+    (set, get) => ({
+      state: { ...initialFormState },
+      actions: {
+        setField: (key, value) =>
+          set(
+            (s) => ({
+              state: { ...s.state, [key]: value },
+            }),
+            false,
+            `transactionForm/setField:${key}`
+          ),
 
-    setField: (key, value) => set((state) => ({ ...state, [key]: value })),
-    setAllFields: (data) =>
-      set((state) => ({
-        ...state,
-        ...data,
-        amount: String(data.amount ?? state.amount),
-        date: data.date ?? state.date,
-        note: data.note ?? '',
-        description: data.description ?? '',
-        accountId: data.accountId ?? '',
-        categoryId: data.categoryId ?? '',
-        type: data.type ?? state.type,
-      })),
-    reset: () => set(() => ({ ...initialState })),
+        setAllFields: (data) =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                ...data,
+                amount: String(data.amount ?? s.state.amount),
+                date: data.date ?? s.state.date,
+                note: data.note ?? '',
+                description: data.description ?? '',
+                accountId: data.accountId ?? '',
+                categoryId: data.categoryId ?? '',
+                type: data.type ?? s.state.type,
+              },
+            }),
+            false,
+            'transactionForm/setAllFields'
+          ),
 
-    getFormData: (): SubmitTransactionPayload => {
-      const { type, amount, accountId, categoryId, date, note, description } =
-        get();
+        reset: () =>
+          set(
+            () => ({ state: { ...initialFormState } }),
+            false,
+            'transactionForm/reset'
+          ),
 
-      const base = {
-        type,
-        amount: Number(amount),
-        date,
-        note: note || undefined,
-        description: description || undefined,
-      };
+        getFormData: (): SubmitTransactionPayload => {
+          const {
+            type,
+            amount,
+            accountId,
+            categoryId,
+            date,
+            note,
+            description,
+          } = get().state;
 
-      if (type === 'income' || type === 'expense') {
-        return {
-          ...base,
-          type,
-          accountId,
-          categoryId,
-        };
-      }
+          const base = {
+            type,
+            amount: Number(amount),
+            date,
+            note: note || undefined,
+            description: description || undefined,
+          };
 
-      return {
-        ...base,
-        type: 'transfer',
-      };
-    },
-  })
+          if (type === 'income' || type === 'expense') {
+            return {
+              ...base,
+              accountId,
+              categoryId,
+            };
+          }
+
+          return {
+            ...base,
+            type: 'transfer',
+          };
+        },
+      },
+    }),
+    { name: 'useTransactionFormStore' }
+  )
 );

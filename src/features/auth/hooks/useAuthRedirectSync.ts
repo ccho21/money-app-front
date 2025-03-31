@@ -1,34 +1,31 @@
+// 📄 src/hooks/useAuthRedirectSync.ts
+
+'use client';
+
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '../../../stores/useUserStore';
-import { authGet } from '../api';
-import { User } from '../types';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function useAuthRedirectSync() {
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
+  const { state, actions } = useUserStore();
   const pathname = usePathname();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
+    if (state.user) {
       setLoading(false);
       return;
     }
 
-    const fetchUser = async () => {
+    const fetchAndRedirect = async () => {
       try {
-        const res = await authGet<User>('/auth/me');
-        setUser({ id: res.id, email: res.email, timezone: res.timezone });
-      } catch (err: unknown) {
-        if (err) {
-          console.error(err);
-        }
-
-        const isPublicRoute = pathname === '/signin' || pathname === '/signup';
-        if (!isPublicRoute) {
+        await actions.fetchUser(); // ✅ 스토어 액션 사용
+      } catch (err) {
+        console.error('❌ 세션 복원 실패:', err);
+        const isPublic = pathname === '/signin' || pathname === '/signup';
+        if (!isPublic) {
           router.replace('/signin');
         }
       } finally {
@@ -36,8 +33,8 @@ export default function useAuthRedirectSync() {
       }
     };
 
-    fetchUser();
-  }, [user, setUser, pathname, router]);
+    fetchAndRedirect();
+  }, [state.user, pathname, router, actions]);
 
   return loading;
 }

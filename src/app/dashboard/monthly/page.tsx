@@ -22,8 +22,12 @@ export default function MonthlyPage() {
     [key: string]: TransactionSummary[];
   }>({});
 
-  const { transactionSummaryResponse, isLoading } = useTransactionStore();
-  const { date } = useDateFilterStore();
+  const {
+    state: { transactionSummaryResponse, isLoading },
+  } = useTransactionStore();
+  const {
+    state: { date },
+  } = useDateFilterStore();
 
   const dateRange = useMemo(
     () => getDateRange(date, { unit: 'year', amount: 0 }),
@@ -41,7 +45,7 @@ export default function MonthlyPage() {
       await fetchTransactionSummary(params);
     };
     run();
-  }, [dateRange]);
+  }, [dateRange, date]);
 
   const monthlyData = transactionSummaryResponse?.data || [];
 

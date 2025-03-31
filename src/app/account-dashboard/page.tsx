@@ -8,7 +8,9 @@ import { fetchTransactionSummary } from '@/services/transactionService';
 import { format } from 'date-fns';
 
 export default function AccountsPage() {
-  const { summaries, isLoading } = useAccountStore();
+  const {
+    state: { summaries, isLoading },
+  } = useAccountStore();
 
   useEffect(() => {
     const date = new Date();

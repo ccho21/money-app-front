@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 export default function AccountLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  // const { toggleEditMode } = useAccountFormStore();
+  // const { actions: {toggleEditMode} } = useAccountFormStore();
 
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>

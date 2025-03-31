@@ -5,8 +5,9 @@ import { AccountTransactionSummaryParams } from '@/features/account/types';
 export const fetchBudgetUsage = async (
   params: AccountTransactionSummaryParams
 ) => {
-  const { setBudgetUsageItems, setLoading, setError } =
-    useBudgetStore.getState();
+  const {
+    actions: { setBudgetUsageItems, setLoading, setError },
+  } = useBudgetStore.getState();
 
   setLoading(true);
   setError(null);

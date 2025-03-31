@@ -1,137 +1,176 @@
-// 📄 경로: src/stores/useUserStore.ts
-import { User } from "@/features/auth/types";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+// 📄 src/stores/useUserStore.ts
+
+import { User } from '@/features/auth/types';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
 
-interface UserState {
-  user: User | null;
-  isLoading: boolean;
-  error: string | null;
-
-  // 로그인된 사용자 직접 설정
-  setUser: (user: User) => void;
-
-  // 로그인
-  signin: (email: string, password: string) => Promise<boolean>;
-
-  // 회원가입
-  signup: (email: string, password: string) => Promise<void>;
-
-  // 사용자 정보 복원
-  fetchUser: () => Promise<void>;
-
-  // 로그아웃
-  signout: () => Promise<void>;
-
-  // 에러 처리
-  clearError: () => void;
+interface UserStore {
+  state: {
+    user: User | null;
+    isLoading: boolean;
+    error: string | null;
+  };
+  actions: {
+    setUser: (user: User) => void;
+    signin: (email: string, password: string) => Promise<boolean>;
+    signup: (email: string, password: string) => Promise<void>;
+    fetchUser: () => Promise<void>;
+    signout: () => Promise<void>;
+    clearError: () => void;
+  };
 }
 
-export const useUserStore = create<UserState>()(
+export const useUserStore = create<UserStore>()(
   devtools(
-    (set) => ({
-      user: null,
-      isLoading: false,
-      error: null,
-
-      // 로그인된 사용자 직접 설정
-      setUser: (user) => set({ user }, false, "setUser"),
-
-      // 로그인
-      signin: async (email, password) => {
-        set({ isLoading: true, error: null });
-        try {
-          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // 사용자의 로컬 타임존 가져오기
-          const res = await fetch(`${BASE_URL}/auth/signin`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ email, password, timezone }),
-          });
-
-          if (!res.ok) throw new Error("로그인 실패");
-
-          const data = await res.json();
-          set({ user: data, isLoading: false });
-          return true;
-        } catch (err) {
-          console.error(err instanceof Error ? err.message : "로그인 실패");
-          set({ error: err instanceof Error ? err.message : "로그인 실패", isLoading: false });
-          return false;
-        }
+    (set, get) => ({
+      state: {
+        user: null,
+        isLoading: false,
+        error: null,
       },
+      actions: {
+        setUser: (user) =>
+          set(
+            (s) => ({
+              state: { ...s.state, user },
+            }),
+            false,
+            'auth/setUser'
+          ),
 
-      // 회원가입
-      signup: async (email, password) => {
-        set({ isLoading: true, error: null });
-
-        try {
-          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // 사용자의 로컬 타임존 가져오기
-          const response = await fetch("/auth/signup", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password, timezone }),
-          });
-
-          if (!response.ok) {
-            throw new Error("회원가입 실패");
-          }
-
-          const result = await response.json();
-          set({ user: result.user, isLoading: false });
-        } catch (error) {
-          if (error instanceof Error) {
-            set({ error: error.message, isLoading: false });
-          }
-        }
-      },
-
-      // 사용자 정보 복원 (/auth/me)
-      fetchUser: async () => {
-        set({ isLoading: true, error: null });
-
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-            {
-              method: "GET",
-              credentials: "include",
-            }
+        signin: async (email, password) => {
+          set(
+            { state: { ...get().state, isLoading: true, error: null } },
+            false,
+            'auth/signin:start'
           );
-          if (!res.ok) throw new Error("사용자 정보 불러오기 실패");
+          try {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const res = await fetch(`${BASE_URL}/auth/signin`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ email, password, timezone }),
+            });
 
-          const data = await res.json();
-          set({ user: data, isLoading: false });
-        } catch (err) {
-          console.error(
-            err instanceof Error ? err.message : "사용자 복원 실패"
+            if (!res.ok) throw new Error('로그인 실패');
+
+            const data = await res.json();
+            set(
+              { state: { ...get().state, user: data, isLoading: false } },
+              false,
+              'auth/signin:success'
+            );
+            return true;
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : '로그인 실패';
+            console.error('❌ signin error:', msg);
+            set(
+              { state: { ...get().state, error: msg, isLoading: false } },
+              false,
+              'auth/signin:error'
+            );
+            return false;
+          }
+        },
+
+        signup: async (email, password) => {
+          set(
+            { state: { ...get().state, isLoading: true, error: null } },
+            false,
+            'auth/signup:start'
           );
-          set({ user: null, isLoading: false });
-        }
-      },
+          try {
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const res = await fetch(`${BASE_URL}/auth/signup`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password, timezone }),
+            });
 
-      // 로그아웃
-      signout: async () => {
-        try {
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signout`, {
-            method: "POST",
-            credentials: "include",
-          });
-        } catch (err) {
-          console.error(err instanceof Error ? err.message : "로그아웃 실패");
-        } finally {
-          set({ user: null });
-        }
-      },
+            if (!res.ok) throw new Error('회원가입 실패');
 
-      // 에러 처리
-      clearError: () => set({ error: null }),
+            const result = await res.json();
+            set(
+              {
+                state: { ...get().state, user: result.user, isLoading: false },
+              },
+              false,
+              'auth/signup:success'
+            );
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : '회원가입 실패';
+            console.error('❌ signup error:', msg);
+            set(
+              { state: { ...get().state, error: msg, isLoading: false } },
+              false,
+              'auth/signup:error'
+            );
+          }
+        },
+
+        fetchUser: async () => {
+          set(
+            { state: { ...get().state, isLoading: true, error: null } },
+            false,
+            'auth/fetchUser:start'
+          );
+          try {
+            const res = await fetch(`${BASE_URL}/auth/me`, {
+              method: 'GET',
+              credentials: 'include',
+            });
+
+            if (!res.ok) throw new Error('사용자 정보 불러오기 실패');
+
+            const data = await res.json();
+            set(
+              { state: { ...get().state, user: data, isLoading: false } },
+              false,
+              'auth/fetchUser:success'
+            );
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : '사용자 복원 실패';
+            console.error('❌ fetchUser error:', msg);
+            set(
+              { state: { ...get().state, user: null, isLoading: false } },
+              false,
+              'auth/fetchUser:error'
+            );
+          }
+        },
+
+        signout: async () => {
+          try {
+            await fetch(`${BASE_URL}/auth/signout`, {
+              method: 'POST',
+              credentials: 'include',
+            });
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : '로그아웃 실패';
+            console.error('❌ signout error:', msg);
+          } finally {
+            set(
+              { state: { ...get().state, user: null } },
+              false,
+              'auth/signout'
+            );
+          }
+        },
+
+        clearError: () =>
+          set(
+            (s) => ({
+              state: { ...s.state, error: null },
+            }),
+            false,
+            'auth/clearError'
+          ),
+      },
     }),
-    { name: "UserStore" }
+    { name: 'useUserStore' }
   )
 );

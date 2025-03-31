@@ -13,7 +13,10 @@ import { usePathname } from 'next/navigation';
 
 export default function DateNavigator() {
   const path = usePathname();
-  const { date, setDate } = useDateFilterStore();
+  const {
+    state: { date },
+    actions: { setDate },
+  } = useDateFilterStore();
 
   const resolveTypeFromPath = (
     path: string

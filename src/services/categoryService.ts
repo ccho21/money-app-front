@@ -1,5 +1,3 @@
-// 📄 src/services/category.service.ts
-
 import {
   createCategoryAPI,
   deleteCategoryAPI,
@@ -14,11 +12,11 @@ import {
 import { useCategoryFormStore } from '@/stores/useCategoryFormStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 
-// 전체 카테고리 리스트 가져오기
+// ✅ 전체 카테고리 리스트 가져오기
 export const fetchCategories = async () => {
   try {
     const data = await getCategoriesAPI();
-    useCategoryStore.getState().setCategories(data);
+    useCategoryStore.getState().actions.setCategories(data);
   } catch (err) {
     console.error(
       err instanceof Error ? err.message : '카테고리 목록 불러오기 실패'
@@ -26,19 +24,19 @@ export const fetchCategories = async () => {
   }
 };
 
-// 카테고리 생성
+// ✅ 카테고리 생성
 export const createCategory = async (input: CreateCategoryInput) => {
   try {
     await createCategoryAPI(input);
-    await fetchCategories(); // 성공 후 목록 리패치
-    useCategoryFormStore.getState().reset();
+    await fetchCategories();
+    useCategoryFormStore.getState().actions.reset();
   } catch (err) {
     console.error(err instanceof Error ? err.message : '카테고리 생성 실패');
     throw err;
   }
 };
 
-// 카테고리 수정
+// ✅ 카테고리 수정
 export const updateCategory = async (
   id: string,
   input: UpdateCategoryInput
@@ -52,7 +50,7 @@ export const updateCategory = async (
   }
 };
 
-// 카테고리 삭제
+// ✅ 카테고리 삭제
 export const deleteCategory = async (id: string) => {
   try {
     await deleteCategoryAPI(id);
@@ -62,11 +60,11 @@ export const deleteCategory = async (id: string) => {
   }
 };
 
-// 단일 카테고리 조회 → edit 시 초기값 세팅용
+// ✅ 단일 카테고리 조회 → edit 시 폼 초기화용
 export const fillCategoryForm = async (id: string) => {
   try {
     const data = await getCategoryByIdAPI(id);
-    useCategoryFormStore.getState().fillForm(data);
+    useCategoryFormStore.getState().actions.fillForm(data);
   } catch (err) {
     console.error(
       err instanceof Error ? err.message : '카테고리 불러오기 실패'

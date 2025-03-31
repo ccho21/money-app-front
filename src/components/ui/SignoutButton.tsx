@@ -4,11 +4,11 @@ import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'next/navigation';
 
 export default function SignoutButton() {
-  const logout = useUserStore((state) => state.signout);
   const router = useRouter();
+  const { actions } = useUserStore(); // ✅ 구조 기반 접근
 
-  const handleSignout = () => {
-    logout();
+  const handleSignout = async () => {
+    await actions.signout();
     router.push('/signin');
   };
 

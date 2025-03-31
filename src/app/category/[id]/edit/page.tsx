@@ -16,7 +16,9 @@ interface EditCategoryPageProps {
 
 export default function EditCategoryPage({ params }: EditCategoryPageProps) {
   const router = useRouter();
-  const { getFormData, reset } = useCategoryFormStore();
+  const {
+    actions: { getFormData, reset },
+  } = useCategoryFormStore();
 
   useEffect(() => {
     if (params.id) {

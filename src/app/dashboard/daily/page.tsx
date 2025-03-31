@@ -10,8 +10,12 @@ import { getDateRange } from '@/lib/utils';
 import { fetchTransactionSummary } from '@/services/transactionService';
 
 export default function DailyPage() {
-  const { transactionSummaryResponse, isLoading } = useTransactionStore();
-  const { date } = useDateFilterStore();
+  const {
+    state: { transactionSummaryResponse, isLoading },
+  } = useTransactionStore();
+  const {
+    state: { date },
+  } = useDateFilterStore();
 
   const dateRange = useMemo(
     () => getDateRange(date, { unit: 'month', amount: 0 }),

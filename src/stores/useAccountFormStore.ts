@@ -1,71 +1,104 @@
+// 📄 src/stores/account/accountForm.store.ts
+
 import { AccountType, SubmitAccountPayload } from '@/features/account/types';
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
-interface AccountFormState {
-  // ✅ 폼 상태
-  name: string;
-  amount: string;
-  group: AccountType;
-  description: string;
-
-  // ✅ UI 상태
-  isEditMode: boolean;
-
-  // ✅ 액션
-  setField: <K extends keyof AccountFormState>(
-    key: K,
-    value: AccountFormState[K]
-  ) => void;
-  setAllFields: (data: Partial<AccountFormState>) => void;
-  setEditMode: (val: boolean) => void;
-  toggleEditMode: () => void;
-
-  reset: () => void;
-  getFormData: () => SubmitAccountPayload;
+interface AccountFormStore {
+  state: {
+    name: string;
+    amount: string;
+    group: AccountType;
+    description: string;
+    isEditMode: boolean;
+  };
+  actions: {
+    setField: <K extends keyof AccountFormStore['state']>(
+      key: K,
+      value: AccountFormStore['state'][K]
+    ) => void;
+    setAllFields: (data: Partial<AccountFormStore['state']>) => void;
+    setEditMode: (val: boolean) => void;
+    toggleEditMode: () => void;
+    reset: () => void;
+    getFormData: () => SubmitAccountPayload;
+  };
 }
 
-const initialState: Omit<
-  AccountFormState,
-  | 'setField'
-  | 'setAllFields'
-  | 'reset'
-  | 'getFormData'
-  | 'isEditMode'
-  | 'setEditMode'
-  | 'toggleEditMode'
-> = {
+const initialFormState: AccountFormStore['state'] = {
   name: '',
   amount: '',
   group: 'CASH',
   description: '',
+  isEditMode: false,
 };
 
-export const useAccountFormStore = create<AccountFormState>((set, get) => ({
-  ...initialState,
-  isEditMode: false,
+export const useAccountFormStore = create<AccountFormStore>()(
+  devtools(
+    (set, get) => ({
+      state: { ...initialFormState },
+      actions: {
+        setField: (key, value) =>
+          set(
+            (s) => ({
+              state: { ...s.state, [key]: value },
+            }),
+            false,
+            `accountForm/setField:${key}`
+          ),
 
-  setField: (key, value) => set((state) => ({ ...state, [key]: value })),
+        setAllFields: (data) =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                ...data,
+                amount: String(data.amount ?? s.state.amount),
+              },
+            }),
+            false,
+            'accountForm/setAllFields'
+          ),
 
-  setAllFields: (data) =>
-    set((state) => ({
-      ...state,
-      ...data,
-      amount: String(data.amount),
-    })),
+        setEditMode: (val) =>
+          set(
+            (s) => ({
+              state: { ...s.state, isEditMode: val },
+            }),
+            false,
+            'accountForm/setEditMode'
+          ),
 
-  setEditMode: (val) => set({ isEditMode: val }),
+        toggleEditMode: () =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                isEditMode: !s.state.isEditMode,
+              },
+            }),
+            false,
+            'accountForm/toggleEditMode'
+          ),
 
-  toggleEditMode: () => set((state) => ({ isEditMode: !state.isEditMode })),
+        reset: () =>
+          set(
+            () => ({ state: { ...initialFormState } }),
+            false,
+            'accountForm/reset'
+          ),
 
-  reset: () => set(() => ({ ...initialState, isEditMode: false })),
-
-  getFormData: (): SubmitAccountPayload => {
-    const { name, amount, group, description } = get();
-    return {
-      name,
-      type: group, // ✅ group → type
-      balance: Number(amount), // amount -> balance
-      description: description || undefined,
-    };
-  },
-}));
+        getFormData: (): SubmitAccountPayload => {
+          const { name, amount, group, description } = get().state;
+          return {
+            name,
+            type: group,
+            balance: Number(amount),
+            description: description || undefined,
+          };
+        },
+      },
+    }),
+    { name: '📦 useAccountFormStore' }
+  )
+);

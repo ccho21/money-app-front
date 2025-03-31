@@ -19,11 +19,17 @@ type Props = {
 
 export default function IncomeForm({ mode, id }: Props) {
   const router = useRouter();
-  const { amount, accountId, categoryId, note, description, date, setField } =
-    useTransactionFormStore();
+  const {
+    state: { amount, accountId, categoryId, note, description, date },
+    actions: { setField },
+  } = useTransactionFormStore();
 
-  const { accounts = [] } = useAccountStore();
-  const { categories = [] } = useCategoryStore();
+  const {
+    state: { accounts = [] },
+  } = useAccountStore();
+  const {
+    state: { categories = [] },
+  } = useCategoryStore();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);

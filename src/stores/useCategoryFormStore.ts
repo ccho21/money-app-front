@@ -4,51 +4,71 @@ import { CategoryType, CreateCategoryInput } from '@/features/category/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface CategoryFormState {
-  name: string;
-  type: CategoryType;
-  icon: string;
-
-  setField: <
-    T extends keyof Omit<
-      CategoryFormState,
-      'setField' | 'reset' | 'fillForm' | 'getFormData'
-    >
-  >(
-    field: T,
-    value: CategoryFormState[T]
-  ) => void;
-
-  reset: () => void;
-  fillForm: (data: Partial<CategoryFormState>) => void;
-  getFormData: () => CreateCategoryInput;
+interface CategoryFormStore {
+  state: {
+    name: string;
+    type: CategoryType;
+    icon: string;
+  };
+  actions: {
+    setField: <K extends keyof CategoryFormStore['state']>(
+      key: K,
+      value: CategoryFormStore['state'][K]
+    ) => void;
+    reset: () => void;
+    fillForm: (data: Partial<CategoryFormStore['state']>) => void;
+    getFormData: () => CreateCategoryInput;
+  };
 }
 
-export const useCategoryFormStore = create<CategoryFormState>()(
-  devtools((set, get) => ({
-    name: '',
-    type: 'expense',
-    icon: '',
+const initialFormState: CategoryFormStore['state'] = {
+  name: '',
+  type: 'expense',
+  icon: '',
+};
 
-    setField: (field, value) => {
-      set({ [field]: value });
-    },
+export const useCategoryFormStore = create<CategoryFormStore>()(
+  devtools(
+    (set, get) => ({
+      state: { ...initialFormState },
+      actions: {
+        setField: (key, value) =>
+          set(
+            (s) => ({
+              state: { ...s.state, [key]: value },
+            }),
+            false,
+            `categoryForm/setField:${key}`
+          ),
 
-    reset: () => {
-      set({ name: '', type: 'expense', icon: '' });
-    },
+        reset: () =>
+          set(
+            () => ({
+              state: { ...initialFormState },
+            }),
+            false,
+            'categoryForm/reset'
+          ),
 
-    fillForm: (data) => {
-      set({
-        name: data.name ?? '',
-        type: data.type ?? 'expense',
-        icon: data.icon ?? '',
-      });
-    },
+        fillForm: (data) =>
+          set(
+            () => ({
+              state: {
+                name: data.name ?? '',
+                type: data.type ?? 'expense',
+                icon: data.icon ?? '',
+              },
+            }),
+            false,
+            'categoryForm/fillForm'
+          ),
 
-    getFormData: () => {
-      const { name, type, icon } = get();
-      return { name, type, icon };
-    },
-  }))
+        getFormData: () => {
+          const { name, type, icon } = get().state;
+          return { name, type, icon };
+        },
+      },
+    }),
+    { name: 'useCategoryFormStore' }
+  )
 );

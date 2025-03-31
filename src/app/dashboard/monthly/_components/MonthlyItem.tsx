@@ -24,7 +24,9 @@ export default function MonthlyItem({
   onToggle,
 }: MonthlyItemProps) {
   const router = useRouter();
-  const { setDate } = useDateFilterStore.getState();
+  const {
+    actions: { setDate },
+  } = useDateFilterStore.getState();
   // ✅ 날짜 관련 정보 캐싱
   const parsedDate = useMemo(() => {
     try {

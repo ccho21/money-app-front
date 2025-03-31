@@ -9,9 +9,11 @@ import { fetchAccounts } from '@/services/accountService';
 import { fetchCategories } from '@/services/categoryService';
 
 export default function TransactionNewPage() {
-  const type = useTransactionFormStore((s) => s.type);
-  const reset = useTransactionFormStore((s) => s.reset);
-  const { setField } = useTransactionFormStore();
+  const type = useTransactionFormStore((s) => s.state.type);
+  const reset = useTransactionFormStore((s) => s.actions.reset);
+  const {
+    actions: { setField },
+  } = useTransactionFormStore();
 
   useEffect(() => {
     reset();

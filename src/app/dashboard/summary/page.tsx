@@ -13,22 +13,20 @@ import { FetchTransactionSummaryParams } from '@/features/transaction/types';
 import { fetchBudgetUsage } from '@/services/budgetService';
 
 export default function SummaryPage() {
-  const { date } = useDateFilterStore();
+  const {
+    state: { date },
+  } = useDateFilterStore();
 
   const dateRange = useMemo(
     () => getDateRange(date, { unit: 'month', amount: 0 }),
     [date]
   );
   const {
-    summaries,
-    isLoading: isAccountLoading,
-    error: accountError,
+    state: { summaries, isLoading: isAccountLoading, error: accountError },
   } = useAccountStore();
 
   const {
-    budgetUsageItems,
-    isLoading: isBudgetLoading,
-    error: budgetError,
+    state: { budgetUsageItems, isLoading: isBudgetLoading, error: budgetError },
   } = useBudgetStore();
 
   // 📦 데이터 fetch

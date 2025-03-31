@@ -21,16 +21,18 @@ import {
 } from '@/features/transaction/types';
 
 export default function CalendarPage() {
-  const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
-    useTransactionStore();
-  const { date } = useDateFilterStore();
+  const {
+    state: { transactionCalendarItems, transactionSummaryResponse, isLoading },
+  } = useTransactionStore();
+  const {
+    state: { date },
+  } = useDateFilterStore();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTransactionSummary, setSelectedTransactionSummary] =
     useState<TransactionSummary>();
   const [open, setOpen] = useState(false);
 
-  // 🔁 매달 렌더링할 수 있도록 Map으로 변환
   const calendarMap = useMemo(() => {
     return new Map(
       transactionCalendarItems?.map((item) => [
@@ -40,7 +42,6 @@ export default function CalendarPage() {
     );
   }, [transactionCalendarItems]);
 
-  // 🔄 캘린더 거래 요약 fetch (월 단위)
   useEffect(() => {
     fetchTransactionCalendar(
       String(date.getFullYear()),
@@ -74,7 +75,7 @@ export default function CalendarPage() {
         const summary = res.data?.find((s) => s.label === dateStr);
         setSelectedTransactionSummary(summary);
       } catch (err) {
-        console.error('일간 거래 요약 가져오기 실패', err);
+        console.error('❌ 일간 거래 요약 가져오기 실패:', err);
         setSelectedTransactionSummary(undefined);
       }
     }
@@ -123,7 +124,6 @@ export default function CalendarPage() {
         }}
       />
 
-      {/* 🔽 거래 상세 Bottom Sheet */}
       {selectedDate && (
         <TransactionDetailSheet
           open={open}

@@ -12,7 +12,9 @@ import {
 } from '@/features/account/types';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
-  const { setLoading, setError } = useAccountStore.getState();
+  const {
+    actions: { setLoading, setError },
+  } = useAccountStore.getState();
   try {
     const data = await createAccountAPI(payload);
     return data;
@@ -28,7 +30,9 @@ export const updateAccount = async (
   id: string,
   payload: SubmitAccountPayload
 ) => {
-  const { setLoading, setError } = useAccountStore.getState();
+  const {
+    actions: { setLoading, setError },
+  } = useAccountStore.getState();
   console.log('##coming');
   try {
     console.log('##coming');
@@ -45,7 +49,9 @@ export const updateAccount = async (
 };
 
 export const fetchAccounts = async () => {
-  const { setAccounts, setLoading, setError } = useAccountStore.getState();
+  const {
+    actions: { setAccounts, setLoading, setError },
+  } = useAccountStore.getState();
 
   setLoading(true);
   setError(null);
@@ -62,8 +68,9 @@ export const fetchAccounts = async () => {
 };
 
 export const fetchAccountById = async (id: string) => {
-  const { setSelectedAccount, setLoading, setError } =
-    useAccountStore.getState();
+  const {
+    actions: { setSelectedAccount, setLoading, setError },
+  } = useAccountStore.getState();
 
   setLoading(true);
   setError(null);
@@ -84,7 +91,9 @@ export const fetchAccountById = async (id: string) => {
 export const fetchAccountTransactionSummary = async (
   params: AccountTransactionSummaryParams
 ) => {
-  const { setSummaries, setLoading, setError } = useAccountStore.getState();
+  const {
+    actions: { setSummaries, setLoading, setError },
+  } = useAccountStore.getState();
 
   setLoading(true);
   setError(null);
