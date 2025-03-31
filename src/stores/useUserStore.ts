@@ -1,5 +1,6 @@
 // 📄 src/stores/useUserStore.ts
 
+import { authGet } from '@/features/auth/api';
 import { User } from '@/features/auth/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -119,16 +120,12 @@ export const useUserStore = create<UserStore>()(
             'auth/fetchUser:start'
           );
           try {
-            const res = await fetch(`${BASE_URL}/auth/me`, {
-              method: 'GET',
-              credentials: 'include',
-            });
+            const res = await authGet<User>('/auth/me');
 
-            if (!res.ok) throw new Error('사용자 정보 불러오기 실패');
+            if (!res) throw new Error('사용자 정보 불러오기 실패');
 
-            const data = await res.json();
             set(
-              { state: { ...get().state, user: data, isLoading: false } },
+              { state: { ...get().state, user: res, isLoading: false } },
               false,
               'auth/fetchUser:success'
             );
