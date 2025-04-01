@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import '@/styles/custom-calendar.css';
+import { useEffect, useMemo, useState } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import "@/styles/custom-calendar.css";
 
-import TransactionDetailSheet from './_components/TransactionDetailSheet';
+import TransactionDetailSheet from "./_components/TransactionDetailSheet";
 
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { useTransactionStore } from "@/stores/useTransactionStore";
 
-import { format, addDays } from 'date-fns';
-import { getDateRange } from '@/lib/utils';
-import { get } from '@/features/shared/api';
-import { fetchTransactionCalendar } from '@/services/transactionService';
+import { format, addDays } from "date-fns";
+import { getDateRangeKey } from "@/lib/utils";
+import { get } from "@/features/shared/api";
+import { fetchTransactionCalendar } from "@/services/transactionService";
 
 import {
   TransactionSummary,
   TransactionSummaryResponse,
-} from '@/features/transaction/types';
+} from "@/features/transaction/types";
 
 export default function CalendarPage() {
   const {
@@ -26,6 +26,7 @@ export default function CalendarPage() {
   } = useTransactionStore();
   const {
     state: { date },
+    actions:{setRange}
   } = useDateFilterStore();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -43,15 +44,17 @@ export default function CalendarPage() {
   }, [transactionCalendarItems]);
 
   useEffect(() => {
+    setRange('Monthly');
+
     fetchTransactionCalendar(
       String(date.getFullYear()),
       String(date.getMonth() + 1)
     );
   }, [date]);
 
-  const getDateStr = (d: Date) => format(d, 'yyyy-MM-dd');
-  const dateRange = useMemo(
-    () => getDateRange(date, { unit: 'month', amount: 0 }),
+  const getDateStr = (d: Date) => format(d, "yyyy-MM-dd");
+  const dateRangeKey = useMemo(
+    () => getDateRangeKey(date, { unit: "month", amount: 0 }),
     [date]
   );
 
@@ -67,7 +70,12 @@ export default function CalendarPage() {
       setSelectedTransactionSummary(fromStore);
     } else {
       try {
-        const params = new URLSearchParams({ groupBy: 'daily', ...dateRange });
+        const [startDate, endDate] = dateRangeKey.split('_');
+        const params = new URLSearchParams({
+          groupBy: "daily",
+          startDate,
+          endDate,
+        });
         const res = await get<TransactionSummaryResponse>(
           `/transactions/summary?${params.toString()}`
         );
@@ -75,7 +83,7 @@ export default function CalendarPage() {
         const summary = res.data?.find((s) => s.label === dateStr);
         setSelectedTransactionSummary(summary);
       } catch (err) {
-        console.error('❌ 일간 거래 요약 가져오기 실패:', err);
+        console.error("❌ 일간 거래 요약 가져오기 실패:", err);
         setSelectedTransactionSummary(undefined);
       }
     }
@@ -84,13 +92,13 @@ export default function CalendarPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
   }
 
   return (
     <>
       <Calendar
-        calendarType='gregory'
+        calendarType="gregory"
         value={date}
         onClickDay={handleDateClick}
         showNavigation={false}
@@ -108,14 +116,14 @@ export default function CalendarPage() {
           if (!summary) return null;
 
           return (
-            <div className='text-[10px]'>
+            <div className="text-[10px]">
               {summary.income > 0 && (
-                <div className='text-blue-500'>
+                <div className="text-blue-500">
                   +₩{summary.income.toLocaleString()}
                 </div>
               )}
               {summary.expense > 0 && (
-                <div className='text-red-500'>
+                <div className="text-red-500">
                   -₩{summary.expense.toLocaleString()}
                 </div>
               )}

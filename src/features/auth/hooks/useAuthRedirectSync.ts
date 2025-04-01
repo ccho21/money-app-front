@@ -1,27 +1,29 @@
-// 📄 src/hooks/useAuthRedirectSync.ts
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { fetchUser } from '@/services/authService';
 import { useUserStore } from '@/stores/useUserStore';
 
 export default function useAuthRedirectSync() {
-  const { state, actions } = useUserStore();
+  const {
+    state: { user },
+  } = useUserStore();
+
   const pathname = usePathname();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (state.user) {
+    if (user) {
       setLoading(false);
       return;
     }
 
     const fetchAndRedirect = async () => {
       try {
-        await actions.fetchUser(); // ✅ 스토어 액션 사용
+        await fetchUser(); // ✅ 서비스 호출 (store 내부에서 상태 변경 처리함)
       } catch (err) {
         console.error('❌ 세션 복원 실패:', err);
         const isPublic = pathname === '/signin' || pathname === '/signup';
@@ -34,7 +36,7 @@ export default function useAuthRedirectSync() {
     };
 
     fetchAndRedirect();
-  }, [state.user, pathname, router, actions]);
+  }, [user, pathname, router]);
 
   return loading;
 }

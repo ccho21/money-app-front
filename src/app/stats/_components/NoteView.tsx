@@ -1,24 +1,40 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import React from 'react';
 
-const dummyNotes = [
-  { note: '커피', count: 2, amount: 4.48 },
-  { note: '뭔데?', count: 2, amount: 5.0 },
-  { note: '커피2', count: 1, amount: 3.0 },
-  { note: '', count: 1, amount: 20.0 },
-];
+const mockNoteData = {
+  expense: [
+    { note: '커피', count: 2, amount: 4.48 },
+    { note: '배달', count: 1, amount: 13.5 },
+    { note: '', count: 1, amount: 20.0 },
+  ],
+  income: [
+    { note: '급여', count: 1, amount: 3000000 },
+    { note: '보너스', count: 1, amount: 500000 },
+  ],
+};
 
 export default function NoteView() {
-  const total = dummyNotes.reduce((sum, item) => sum + item.amount, 0);
+  const searchParams = useSearchParams();
+  const tab = (searchParams.get('tab') || 'expense') as 'expense' | 'income';
+
+  const noteList = mockNoteData[tab];
+  const total = noteList.reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <div className='bg-white p-4 space-y-4'>
+    <div className='bg-white dark:bg-zinc-900 p-4 space-y-4 rounded-xl'>
       <div className='flex justify-between items-center'>
-        <span className='text-sm text-gray-400'>Income</span>
-        <span className='text-sm font-semibold text-red-500'>
-          Exp. {formatCurrency(total)}
+        <span className='text-sm text-gray-400'>
+          {tab === 'expense' ? 'Expense Notes' : 'Income Notes'}
+        </span>
+        <span
+          className={`text-sm font-semibold ${
+            tab === 'expense' ? 'text-red-500' : 'text-green-500'
+          }`}
+        >
+          {tab === 'expense' ? 'Exp.' : 'Inc.'} {formatCurrency(total)}
         </span>
       </div>
 
@@ -31,7 +47,7 @@ export default function NoteView() {
           </tr>
         </thead>
         <tbody className='text-gray-800 dark:text-gray-100'>
-          {dummyNotes.map((item, index) => (
+          {noteList.map((item, index) => (
             <tr
               key={index}
               className='border-b border-gray-100 dark:border-zinc-800'

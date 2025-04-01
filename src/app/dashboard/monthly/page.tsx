@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
-import MonthlyItem from './_components/MonthlyItem';
-import TransactionSummaryBox from '../_components/TransactionSummaryBox';
-import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { parse, startOfMonth, endOfMonth, format } from "date-fns";
+import MonthlyItem from "./_components/MonthlyItem";
+import TransactionSummaryBox from "../_components/TransactionSummaryBox";
+import { useTransactionStore } from "@/stores/useTransactionStore";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
 import {
   FetchTransactionSummaryParams,
   TransactionSummary,
-} from '@/features/transaction/types';
-import { getDateRange } from '@/lib/utils';
+} from "@/features/transaction/types";
+import { getDateRangeKey } from "@/lib/utils";
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
-} from '@/services/transactionService';
+} from "@/services/transactionService";
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -27,25 +27,28 @@ export default function MonthlyPage() {
   } = useTransactionStore();
   const {
     state: { date },
+    actions: {setRange}
   } = useDateFilterStore();
 
-  const dateRange = useMemo(
-    () => getDateRange(date, { unit: 'year', amount: 0 }),
+  const dateRangeKey = useMemo(
+    () => getDateRangeKey(date, { unit: "month", amount: 0 }),
     [date]
   );
 
   useEffect(() => {
-    console.log('### date', date);
-    console.log('### dateRange', dateRange);
+    setRange("Yearly");
+
+    const [startDate, endDate] = dateRangeKey.split("_");
     const params: FetchTransactionSummaryParams = {
-      groupBy: 'monthly',
-      ...dateRange,
+      groupBy: "monthly",
+      startDate,
+      endDate,
     };
     const run = async () => {
       await fetchTransactionSummary(params);
     };
     run();
-  }, [dateRange, date]);
+  }, [dateRangeKey]);
 
   const monthlyData = transactionSummaryResponse?.data || [];
 
@@ -56,12 +59,12 @@ export default function MonthlyPage() {
 
       const label = summary.label;
       if (openIndex !== index && !weeklySummaryByMonth[label]) {
-        const monthDate = parse(label, 'yyyy-MM', new Date());
-        const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
-        const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
+        const monthDate = parse(label, "yyyy-MM", new Date());
+        const startDate = format(startOfMonth(monthDate), "yyyy-MM-dd");
+        const endDate = format(endOfMonth(monthDate), "yyyy-MM-dd");
 
         const params: FetchTransactionSummaryParams = {
-          groupBy: 'weekly',
+          groupBy: "weekly",
           startDate,
           endDate,
         };
@@ -90,11 +93,11 @@ export default function MonthlyPage() {
   );
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
   }
 
   if (!transactionSummaryResponse || !transactionSummaryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
   }
 
   return (

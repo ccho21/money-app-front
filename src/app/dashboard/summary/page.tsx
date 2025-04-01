@@ -1,24 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
-import { useAccountStore } from '@/stores/useAccountStore';
-import { useBudgetStore } from '@/stores/useBudgetStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRange } from '@/lib/utils';
-import SummaryBox from '@/components/ui/SummaryBox';
-import AccountsBox from './_components/AccountsBox';
-import BudgetBox from './_components/BudgetBox';
-import { fetchAccountTransactionSummary } from '@/services/accountService';
-import { FetchTransactionSummaryParams } from '@/features/transaction/types';
-import { fetchBudgetUsage } from '@/services/budgetService';
+import { useEffect, useMemo } from "react";
+import { useAccountStore } from "@/stores/useAccountStore";
+import { useBudgetStore } from "@/stores/useBudgetStore";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+
+import SummaryBox from "@/components/ui/SummaryBox";
+import AccountsBox from "./_components/AccountsBox";
+import BudgetBox from "./_components/BudgetBox";
+import { fetchAccountTransactionSummary } from "@/services/accountService";
+import { fetchBudgetUsage } from "@/services/budgetService";
+import { AccountTransactionSummaryParams } from "@/features/account/types";
+import { getDateRangeKey } from "@/lib/utils";
 
 export default function SummaryPage() {
   const {
     state: { date },
   } = useDateFilterStore();
 
-  const dateRange = useMemo(
-    () => getDateRange(date, { unit: 'month', amount: 0 }),
+  const dateRangeKey = useMemo(
+    () => getDateRangeKey(date, { unit: "month", amount: 0 }),
     [date]
   );
   const {
@@ -32,15 +33,16 @@ export default function SummaryPage() {
   // 📦 데이터 fetch
   useEffect(() => {
     const run = async () => {
-      const params: FetchTransactionSummaryParams = {
-        groupBy: 'daily',
-        ...dateRange,
+      const [startDate, endDate] = dateRangeKey.split("_");
+      const params: AccountTransactionSummaryParams = {
+        startDate,
+        endDate,
       };
       await fetchAccountTransactionSummary(params);
-      await fetchBudgetUsage(dateRange);
+      await fetchBudgetUsage(params);
     };
     run();
-  }, [dateRange]);
+  }, [dateRangeKey]);
 
   // 💰 총합 계산
   const incomeTotal = useMemo(
@@ -72,8 +74,8 @@ export default function SummaryPage() {
   }, [budgetUsageItems]);
 
   const totalItem = {
-    categoryId: '',
-    categoryName: 'Total Budget',
+    categoryId: "",
+    categoryName: "Total Budget",
     budgetAmount: totalBudgetAmount,
     usedAmount: totalBudgetUsed,
     usedPercent: totalBudgetUsedPercent,
@@ -81,13 +83,13 @@ export default function SummaryPage() {
 
   // 🔄 로딩 중
   if (isAccountLoading || isBudgetLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
   }
 
   // ⚠️ 에러
   if (accountError || budgetError) {
     return (
-      <p className='text-center mt-10 text-red-500'>
+      <p className="text-center mt-10 text-red-500">
         {accountError ?? budgetError}
       </p>
     );
@@ -95,30 +97,30 @@ export default function SummaryPage() {
 
   // 🚫 데이터 없음
   if (!summaries.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
   }
 
   return (
-    <div className='px-4 space-y-6'>
+    <div className="px-4 space-y-6">
       <SummaryBox
         items={[
           {
-            label: 'Income',
+            label: "Income",
             value: incomeTotal,
-            color: incomeTotal > 0 ? 'text-[#3C50E0]' : 'text-gray-400',
-            prefix: '₩',
+            color: incomeTotal > 0 ? "text-[#3C50E0]" : "text-gray-400",
+            prefix: "₩",
           },
           {
-            label: 'Exp.',
+            label: "Exp.",
             value: expenseTotal,
-            color: expenseTotal > 0 ? 'text-[#fb5c4c]' : 'text-gray-400',
-            prefix: '₩',
+            color: expenseTotal > 0 ? "text-[#fb5c4c]" : "text-gray-400",
+            prefix: "₩",
           },
           {
-            label: 'Total',
+            label: "Total",
             value: incomeTotal - expenseTotal,
-            color: 'text-gray-900 dark:text-white',
-            prefix: '₩',
+            color: "text-gray-900 dark:text-white",
+            prefix: "₩",
           },
         ]}
       />
