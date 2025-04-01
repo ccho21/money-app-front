@@ -2,9 +2,9 @@ import { get, patch, post } from '@/features/shared/api';
 import {
   Account,
   AccountTransactionSummaryDto,
-  AccountTransactionSummaryParams,
   SubmitAccountPayload,
 } from '@/features/account/types';
+import { AccountTransactionSummaryParams } from '../shared/types';
 
 export const createAccountAPI = (payload: SubmitAccountPayload) => {
   return post('/accounts', payload);

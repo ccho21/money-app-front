@@ -1,6 +1,5 @@
 // 📄 경로: src/app/layout.tsx
 "use client";
-import { StrictMode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
@@ -36,9 +35,7 @@ export default function RootLayout({
             </span>
           </div>
         ) : (
-          <AuthGuard>
-            <StrictMode>{children}</StrictMode>
-          </AuthGuard>
+          <AuthGuard>{children}</AuthGuard>
         )}
         <Toaster position="top-right" reverseOrder={false} />
       </body>

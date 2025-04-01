@@ -7,14 +7,14 @@ import TransactionSummaryBox from "../_components/TransactionSummaryBox";
 import { useTransactionStore } from "@/stores/useTransactionStore";
 import { useDateFilterStore } from "@/stores/useDateFilterStore";
 import {
-  FetchTransactionSummaryParams,
   TransactionSummary,
 } from "@/features/transaction/types";
-import { getDateRangeKey } from "@/lib/utils";
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
 } from "@/services/transactionService";
+import { getDateRangeKey } from "@/lib/dateUtils";
+import { FetchTransactionSummaryParams } from "@/features/shared/types";
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -31,7 +31,7 @@ export default function MonthlyPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: "month", amount: 0 }),
+    () => getDateRangeKey(date, { unit: "Monthly", amount: 0 }),
     [date]
   );
 

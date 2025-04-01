@@ -1,23 +1,15 @@
-// 📄 src/stores/useDateFilterStore.ts
-
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { format, parseISO } from 'date-fns';
-
-export type RangeOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
-
-export const RANGE_OPTIONS: RangeOption[] = [
-  'Daily',
-  'Weekly',
-  'Monthly',
-  'Yearly',
-];
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { format, parseISO } from "date-fns";
+import { TransactionType } from "@/features/transaction/types";
+import { RangeOption } from "@/features/shared/types";
 
 interface DateFilterState {
   date: Date; // 기준일 (Local 기준)
   range: RangeOption; // 보기 범위
   startDate?: Date; // 범위 시작
   endDate?: Date; // 범위 끝
+  transactionType: TransactionType;
 }
 
 interface DateFilterActions {
@@ -28,7 +20,10 @@ interface DateFilterActions {
   getYear: () => string;
   getMonth: () => string;
   setRange: (range: RangeOption) => void;
+  setTransactionType: (transactionType: TransactionType) => void;
   setPeriodRange: (range: { start: Date; end: Date }) => void;
+  setRangeAndDate: (newDate?: Date, newRange?: RangeOption) => void;
+  getSyncedURLFromState: (withTransactionType?: boolean) => string;
   reset: () => void;
 }
 
@@ -38,16 +33,17 @@ interface DateFilterStore {
 }
 
 // 유틸 함수
-const toLocalDateString = (date: Date): string => format(date, 'yyyy-MM-dd'); // 항상 로컬 기준 문자열 반환
+const toLocalDateString = (date: Date): string => format(date, "yyyy-MM-dd"); // 항상 로컬 기준 문자열 반환
 
 export const useDateFilterStore = create<DateFilterStore>()(
   devtools(
     (set, get) => ({
       state: {
         date: new Date(),
-        range: 'Monthly',
+        range: "Monthly",
         startDate: undefined,
         endDate: undefined,
+        transactionType: "expense",
       },
       actions: {
         setDate: (date) =>
@@ -59,7 +55,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            'dateFilter/setDate'
+            "dateFilter/setDate"
           ),
 
         setDateFromString: (dateStr) =>
@@ -71,7 +67,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            'dateFilter/setDateFromString'
+            "dateFilter/setDateFromString"
           ),
 
         getDate: () => get().state.date,
@@ -81,7 +77,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
         getYear: () => String(get().state.date.getFullYear()),
 
         getMonth: () =>
-          String(get().state.date.getMonth() + 1).padStart(2, '0'),
+          String(get().state.date.getMonth() + 1).padStart(2, "0"),
 
         setRange: (range) =>
           set(
@@ -92,37 +88,45 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            'dateFilter/setRange'
+            "dateFilter/setRange"
           ),
 
-        setPeriodRange: ({ start, end }) =>
+        setTransactionType: (transactionType: TransactionType) =>
           set(
             (s) => ({
               state: {
                 ...s.state,
-                startDate: start,
-                endDate: end,
+                transactionType,
               },
             }),
             false,
-            'dateFilter/setPeriodRange'
+            "dateFilter/setTransactionType"
           ),
+        getSyncedURLFromState: (withTransactionType?: boolean) => {
+          const { date, range, transactionType } = get().state;
+          const params = new URLSearchParams();
+          params.set("date", toLocalDateString(date));
+          params.set("range", range);
+          if (withTransactionType) params.set("type", transactionType);
+          return `?${params.toString()}`;
+        },
 
         reset: () =>
           set(
             () => ({
               state: {
                 date: new Date(),
-                range: 'Monthly',
+                range: "Monthly",
                 startDate: undefined,
                 endDate: undefined,
+                transactionType: "expense",
               },
             }),
             false,
-            'dateFilter/reset'
+            "dateFilter/reset"
           ),
       },
     }),
-    { name: 'useDateFilterStore' }
+    { name: "useDateFilterStore" }
   )
 );

@@ -1,9 +1,8 @@
 // 📄 src/stores/stats/statsFilter.store.ts
 
+import { RangeOption } from '@/features/shared/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-
-export type RangeOption = 'Weekly' | 'Monthly' | 'Annually' | 'Period' | 'List' | 'Trend';
 
 interface StatsFilterStore {
   state: {

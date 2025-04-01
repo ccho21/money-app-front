@@ -5,9 +5,9 @@ import DailyTransactionGroup from './_components/DailyTransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { FetchTransactionSummaryParams } from '@/features/transaction/types';
 import { fetchTransactionSummary } from '@/services/transactionService';
 import { getDateRangeKey } from '@/lib/dateUtils';
+import { FetchTransactionSummaryParams } from '@/features/shared/types';
 
 export default function DailyPage() {
   const {
@@ -19,7 +19,7 @@ export default function DailyPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'month', amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'Monthly', amount: 0 }),
     [date]
   );
 

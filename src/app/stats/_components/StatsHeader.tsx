@@ -1,20 +1,16 @@
-'use client';
+"use client";
 
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BottomSheet from '@/components/ui/BottomSheet';
-import {
-  useDateFilterStore,
-  RangeOption,
-  RANGE_OPTIONS,
-} from '@/stores/useDateFilterStore';
+import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import BottomSheet from "@/components/ui/BottomSheet";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { RANGE_OPTIONS, RangeOption } from "@/features/shared/types";
 
 const tabs = [
-  { name: 'Stats', href: '/stats' },
-  { name: 'Budget', href: '/stats/budget' },
-  { name: 'Note', href: '/stats/note' },
+  { name: "Stats", href: "/stats" },
+  { name: "Budget", href: "/stats/budget" },
+  // { name: "Note", href: "/stats/note" },
 ];
 
 export default function StatsHeader() {
@@ -25,13 +21,13 @@ export default function StatsHeader() {
   const [showModal, setShowModal] = useState(false);
 
   const {
-    state: { range },
-    actions: { setRange },
+    state: { range, date },
+    actions: { setRange, getSyncedURLFromState },
   } = useDateFilterStore();
 
   // ✅ URL의 range 쿼리 → store 동기화
   useEffect(() => {
-    const urlRange = searchParams.get('range') as RangeOption | null;
+    const urlRange = searchParams.get("range") as RangeOption | null;
     if (urlRange && urlRange !== range) {
       setRange(urlRange);
     }
@@ -39,10 +35,9 @@ export default function StatsHeader() {
 
   // ✅ URLSearchParams 변경 핸들러
   const updateRange = (newRange: RangeOption) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('range', newRange);
-    router.replace(`?${params.toString()}`);
     setRange(newRange);
+    const syncedURL = getSyncedURLFromState();
+    router.replace(`?${syncedURL}`);
     setShowModal(false);
   };
 
@@ -56,10 +51,10 @@ export default function StatsHeader() {
               key={tab.name}
               onClick={() => router.push(tab.href)}
               className={cn(
-                'text-sm font-medium px-4 py-1 rounded-md',
+                "text-sm font-medium px-4 py-1 rounded-md",
                 pathname === tab.href
-                  ? 'bg-white dark:bg-black text-red-500'
-                  : 'text-gray-500 dark:text-gray-300'
+                  ? "bg-white dark:bg-black text-red-500"
+                  : "text-gray-500 dark:text-gray-300"
               )}
             >
               {tab.name}
@@ -86,10 +81,10 @@ export default function StatsHeader() {
               <button
                 key={option}
                 className={cn(
-                  'p-3 w-full text-left',
+                  "p-3 w-full text-left",
                   option === range
-                    ? 'bg-gray-100 dark:bg-zinc-800 font-semibold'
-                    : ''
+                    ? "bg-gray-100 dark:bg-zinc-800 font-semibold"
+                    : ""
                 )}
                 onClick={() => updateRange(option)}
               >

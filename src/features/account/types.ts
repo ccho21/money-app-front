@@ -33,8 +33,3 @@ export interface AccountTransactionSummaryDto {
   expenseTotal: number;
   transactions: Transaction[];
 }
-
-export type AccountTransactionSummaryParams = {
-  startDate: string;
-  endDate: string;
-};

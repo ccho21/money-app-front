@@ -1,17 +1,25 @@
 // 📄 src/stores/stats/stats.store.ts
 
-import { BudgetUsage } from '@/features/budget/types';
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import {
+  StatsByBudgetResponse,
+  StatsByCategoryResponse,
+  StatsByNoteResponse,
+} from "@/features/stats/types";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface StatsStore {
   state: {
-    items: BudgetUsage[];
+    categoryResponse?: StatsByCategoryResponse;
+    budgetResponse?: StatsByBudgetResponse;
+    noteResponse?: StatsByNoteResponse;
     isLoading: boolean;
     error: string | null;
   };
   actions: {
-    setItems: (data: BudgetUsage[]) => void;
+    setCategories: (data: StatsByCategoryResponse) => void;
+    setBudgetResponse: (data: StatsByBudgetResponse) => void;
+    setNoteResponse: (data: StatsByNoteResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
@@ -22,18 +30,34 @@ export const useStatsStore = create<StatsStore>()(
   devtools(
     (set) => ({
       state: {
-        items: [],
+        categories: [],
         isLoading: false,
         error: null,
       },
       actions: {
-        setItems: (data) =>
+        setCategories: (data) =>
           set(
             (s) => ({
-              state: { ...s.state, items: data },
+              state: { ...s.state, categoryResponse: data },
             }),
             false,
-            'stats/setItems'
+            "stats/setCategories"
+          ),
+        setBudgetResponse: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, budgetResponse: data },
+            }),
+            false,
+            "stats/setBudgetResponse"
+          ),
+        setNoteResponse: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, noteResponse: data },
+            }),
+            false,
+            "stats/setNoteResponse"
           ),
         setLoading: (loading) =>
           set(
@@ -41,7 +65,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, isLoading: loading },
             }),
             false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
+            loading ? "ui/loading:start" : "ui/loading:done"
           ),
         setError: (error) =>
           set(
@@ -49,22 +73,24 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, error },
             }),
             false,
-            'ui/setError'
+            "ui/setError"
           ),
         clear: () =>
           set(
             () => ({
               state: {
-                items: [],
+                categoryResponse: undefined,
+                budgetResponse: undefined,
+                noteResponse: undefined,
                 isLoading: false,
                 error: null,
               },
             }),
             false,
-            'stats/clearAll'
+            "stats/clearAll"
           ),
       },
     }),
-    { name: 'useStatsStore' }
+    { name: "useStatsStore" }
   )
 );

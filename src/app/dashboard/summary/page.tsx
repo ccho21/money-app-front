@@ -10,8 +10,8 @@ import AccountsBox from "./_components/AccountsBox";
 import BudgetBox from "./_components/BudgetBox";
 import { fetchAccountTransactionSummary } from "@/services/accountService";
 import { fetchBudgetUsage } from "@/services/budgetService";
-import { AccountTransactionSummaryParams } from "@/features/account/types";
-import { getDateRangeKey } from "@/lib/utils";
+import { getDateRangeKey } from "@/lib/dateUtils";
+import { AccountTransactionSummaryParams } from "@/features/shared/types";
 
 export default function SummaryPage() {
   const {
@@ -19,7 +19,7 @@ export default function SummaryPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: "month", amount: 0 }),
+    () => getDateRangeKey(date, { unit: "Monthly", amount: 0 }),
     [date]
   );
   const {

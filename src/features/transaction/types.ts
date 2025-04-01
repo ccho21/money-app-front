@@ -4,6 +4,7 @@ export interface TransactionCategory {
   id: string;
   name: string;
   icon: string;
+  color: string;
 }
 interface TransactionAccount {
   id: string;
@@ -47,11 +48,6 @@ export interface TransactionCalendarItem {
   expense: number;
 }
 
-export type FetchTransactionSummaryParams = {
-  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
-  startDate: string;
-  endDate?: string;
-};
 
 export type TransactionFormFields = {
   type: 'income' | 'expense' | 'transfer';

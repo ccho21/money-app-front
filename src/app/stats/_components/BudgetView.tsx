@@ -1,46 +1,58 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { Progress } from '@/components/ui/Progress';
-import { formatCurrency } from '@/lib/utils';
-
-const mockBudgetData = {
-  expense: [
-    { categoryName: 'Food', total: 300000, used: 120000, percent: 40 },
-    { categoryName: 'Transport', total: 100000, used: 32000, percent: 32 },
-  ],
-  income: [
-    { categoryName: 'Salary', total: 3000000, used: 2400000, percent: 80 },
-    { categoryName: 'Freelance', total: 1000000, used: 200000, percent: 20 },
-  ],
-};
+import { useEffect } from "react";
+import { useStatsStore } from "@/stores/useStatsStore";
+import { fetchStatsByBudget } from "@/services/statsService";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { getDateRangeKey } from "@/lib/dateUtils";
+import { TransactionType } from "@/features/transaction/types";
+import { CategoryListItem } from "./CategoryListItem";
+import { useRouter } from "next/navigation";
 
 export default function BudgetView() {
-  const searchParams = useSearchParams();
-  const tab = (searchParams.get('tab') || 'expense') as 'expense' | 'income';
+  const router = useRouter();
+  const {
+    state: { date, range, transactionType },
+  } = useDateFilterStore();
 
-  const budgetList = mockBudgetData[tab];
+  const {
+    state: { budgetResponse, isLoading },
+  } = useStatsStore();
 
-  const totalUsed = useMemo(() => {
-    return budgetList.reduce((sum, b) => sum + b.used, 0);
-  }, [budgetList]);
+  useEffect(() => {
+    const run = async () => {
+      const [startDate, endDate] = getDateRangeKey(date, {
+        unit: range,
+        amount: 0,
+      }).split("_");
+      await fetchStatsByBudget({
+        startDate,
+        endDate,
+        type: transactionType as TransactionType,
+      });
+    };
 
-  const totalBudget = useMemo(() => {
-    return budgetList.reduce((sum, b) => sum + b.total, 0);
-  }, [budgetList]);
+    run();
+  }, [date, transactionType, range]);
 
-  const remaining = totalBudget - totalUsed;
+  const handleClick = (id: string) => {
+    router.push(`/stats/budget/${id}`);
+  };
+  if (isLoading) return <p className="p-4">Loading...</p>;
+
+  if (!budgetResponse) {
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+  }
 
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Remaining ({tab === 'expense' ? 'Expense' : 'Income'})
+            Remaining ({transactionType === "expense" ? "Expense" : "Income"})
           </p>
           <p className="text-2xl font-semibold dark:text-white">
-            {formatCurrency(remaining)}
+            {budgetResponse.totalRemaining.toLocaleString()}원
           </p>
         </div>
 
@@ -51,33 +63,19 @@ export default function BudgetView() {
           Budget Setting
         </button>
       </div>
-
-      {budgetList.map((budget) => {
-        const left = budget.total - budget.used;
-        return (
-          <div
-            key={budget.categoryName}
-            className="rounded-lg bg-white dark:bg-zinc-900 p-4 space-y-2"
-          >
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium dark:text-white">
-                {budget.categoryName}
-              </p>
-              <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full text-gray-700 dark:text-gray-200">
-                {tab === 'expense' ? 'Spent' : 'Received'}
-              </span>
-            </div>
-
-            <Progress value={budget.percent} />
-
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-              <span>{formatCurrency(budget.total)}</span>
-              <span>{formatCurrency(budget.used)}</span>
-              <span>{formatCurrency(left)}</span>
-            </div>
-          </div>
-        );
-      })}
+      <div className="bg-white dark:bg-zinc-800 divide-y border-t border-gray-200 rounded-xl overflow-hidden">
+        {budgetResponse.data.map((item) => (
+          <CategoryListItem
+            key={item.categoryId}
+            name={item.categoryName}
+            percentage={item.rate}
+            amount={item.budget}
+            color={item.color}
+            onClick={() => handleClick(item.categoryId)}
+            variant="with-progress-a"
+          />
+        ))}
+      </div>
     </div>
   );
 }

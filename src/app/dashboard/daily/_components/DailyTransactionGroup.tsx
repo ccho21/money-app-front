@@ -26,7 +26,7 @@ export default function DailyTransactionGroup({ group }: Props) {
     <div className='mb-4' onClick={handleClick}>
       {/* 날짜 헤더 */}
       <div
-        className={`grid grid-cols-12 items-center px-3 py-2.5 rounded-md cursor-pointer transition-colors duration-200 border hover:bg-zinc-50 dark:hover:bg-zinc-900 border-transparent`}
+        className={`grid grid-cols-12 items-center px-3 py-2.5 cursor-pointer transition-colors duration-200 border hover:bg-zinc-50 dark:hover:bg-zinc-900 border-t border-b border-gray-300 border-x-0`}
       >
         {/* 날짜 */}
         <div className='col-span-1 text-lg font-bold text-gray-900 dark:text-white'>

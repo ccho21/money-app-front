@@ -7,9 +7,9 @@ import {
 } from '@/features/account/api';
 import { useAccountStore } from '@/stores/useAccountStore';
 import {
-  AccountTransactionSummaryParams,
   SubmitAccountPayload,
 } from '@/features/account/types';
+import { AccountTransactionSummaryParams } from '@/features/shared/types';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
   const {

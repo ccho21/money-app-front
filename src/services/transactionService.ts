@@ -1,5 +1,6 @@
 // 📄 src/services/transaction.service.ts
 
+import { FetchTransactionSummaryParams } from '@/features/shared/types';
 import {
   createTransaction,
   fetchTransactionCalendarAPI,
@@ -10,7 +11,6 @@ import {
 } from '@/features/transaction/api';
 
 import {
-  FetchTransactionSummaryParams,
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
 

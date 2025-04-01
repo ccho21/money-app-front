@@ -1,11 +1,11 @@
 import { post, get, patch } from '@/features/shared/api';
 import {
-  FetchTransactionSummaryParams,
   SubmitTransactionPayload,
   Transaction,
   TransactionCalendarItem,
   TransactionSummaryResponse,
 } from './types';
+import { FetchTransactionSummaryParams } from '../shared/types';
 
 export const createTransaction = (data: SubmitTransactionPayload) => {
   return post('/transactions', data);

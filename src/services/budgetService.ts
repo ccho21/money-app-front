@@ -1,6 +1,6 @@
 import { fetchBudgetUsageAPI } from '@/features/budget/api';
+import { AccountTransactionSummaryParams } from '@/features/shared/types';
 import { useBudgetStore } from '@/stores/useBudgetStore';
-import { AccountTransactionSummaryParams } from '@/features/account/types';
 
 export const fetchBudgetUsage = async (
   params: AccountTransactionSummaryParams

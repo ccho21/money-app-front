@@ -24,7 +24,7 @@ export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
   return (
     <li
       onClick={handleClick}
-      className='px-3 py-2.5 border-b border-gray-200 dark:border-zinc-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800 transition'
+      className='px-3 py-2.5 dark:border-zinc-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-800 transition'
     >
       <div className='grid grid-cols-12 items-center'>
         {/* 아이콘 */}

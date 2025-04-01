@@ -2,23 +2,32 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { BookText, BarChart2, Coins, MoreHorizontal } from 'lucide-react';
+import { format } from 'date-fns';
 
-const tabs = [
+const baseTabs = [
   {
-    label: '03-24',
+    key: 'daily',
+    label: 'Today', // 이건 실제 렌더링 시 format(date, 'MM-dd')로 바뀜
     icon: <BookText className='w-5 h-5' />,
-    path: '/dashboard/daily',
+    basePath: '/dashboard/daily',
   },
-  { label: 'Stats', icon: <BarChart2 className='w-5 h-5' />, path: '/stats' },
   {
+    key: 'stats',
+    label: 'Stats',
+    icon: <BarChart2 className='w-5 h-5' />,
+    basePath: '/stats',
+  },
+  {
+    key: 'accounts',
     label: 'Accounts',
     icon: <Coins className='w-5 h-5' />,
-    path: '/account-dashboard',
+    basePath: '/account-dashboard',
   },
   {
+    key: 'more',
     label: 'More',
     icon: <MoreHorizontal className='w-5 h-5' />,
-    path: '/more',
+    basePath: '/more',
   },
 ];
 
@@ -26,19 +35,29 @@ export default function BottomTabBar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const today = new Date();
+  const todayLabel = format(today, 'MM-dd');
+  const todayDateParam = format(today, 'yyyy-MM-dd');
+
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-gray-200 flex justify-around items-center h-[10vh]'>
-      {tabs.map((tab) => {
-        const isActive = pathname.startsWith(tab.path);
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-gray-200 flex justify-around items-center h-[10vh]">
+      {baseTabs.map((tab) => {
+        // 오늘 탭인 경우만 동적 path 설정
+        const isTodayTab = tab.key === 'daily';
+        const tabPath = isTodayTab
+          ? `${tab.basePath}?date=${todayDateParam}`
+          : tab.basePath;
+        const isActive = pathname.startsWith(tab.basePath);
+
         return (
           <button
-            key={tab.label}
-            onClick={() => router.push(tab.path)}
-            className='flex flex-col items-center text-xs text-gray-400 hover:text-black dark:hover:text-white'
+            key={tab.key}
+            onClick={() => router.push(tabPath)}
+            className="flex flex-col items-center text-xs text-gray-400 hover:text-black dark:hover:text-white"
           >
             <div className={isActive ? 'text-red-500' : ''}>{tab.icon}</div>
             <span className={isActive ? 'text-red-500 font-semibold' : ''}>
-              {tab.label}
+              {isTodayTab ? todayLabel : tab.label}
             </span>
           </button>
         );

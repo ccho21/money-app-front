@@ -1,60 +1,142 @@
-'use client';
+"use client";
 
-import { useSearchParams } from 'next/navigation';
-import { formatCurrency } from '@/lib/utils';
-import React from 'react';
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useStatsStore } from "@/stores/useStatsStore";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { getDateRangeKey } from "@/lib/dateUtils";
+import { TransactionType } from "@/features/transaction/types";
+import { formatCurrency } from "@/lib/utils";
+import { fetchStatsByNote } from "@/services/statsService";
 
-const mockNoteData = {
-  expense: [
-    { note: '커피', count: 2, amount: 4.48 },
-    { note: '배달', count: 1, amount: 13.5 },
-    { note: '', count: 1, amount: 20.0 },
-  ],
-  income: [
-    { note: '급여', count: 1, amount: 3000000 },
-    { note: '보너스', count: 1, amount: 500000 },
-  ],
-};
+type SortKey = "note" | "count" | "amount";
+type SortDirection = "asc" | "desc";
 
 export default function NoteView() {
   const searchParams = useSearchParams();
-  const tab = (searchParams.get('tab') || 'expense') as 'expense' | 'income';
+  const tab = (searchParams.get("tab") || "expense") as TransactionType;
 
-  const noteList = mockNoteData[tab];
-  const total = noteList.reduce((sum, item) => sum + item.amount, 0);
+  const {
+    state: { date, range },
+  } = useDateFilterStore();
+
+  const {
+    state: { noteResponse, isLoading },
+  } = useStatsStore();
+
+  const [sortKey, setSortKey] = useState<SortKey>("count");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  useEffect(() => {
+    const run = async () => {
+      const [startDate, endDate] = getDateRangeKey(date, {
+        unit: range,
+        amount: 0,
+      }).split("_");
+
+      await fetchStatsByNote({
+        startDate,
+        endDate,
+        type: tab,
+      });
+    };
+
+    run();
+  }, [date, range, tab]);
+
+  const rawList = noteResponse?.data || [];
+
+  const sortedList = useMemo(() => {
+    return [...rawList].sort((a, b) => {
+      const aVal = a[sortKey];
+      const bVal = b[sortKey];
+
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+      }
+
+      const aStr = (aVal || "").toString().toLowerCase();
+      const bStr = (bVal || "").toString().toLowerCase();
+      return sortDirection === "asc"
+        ? aStr.localeCompare(bStr)
+        : bStr.localeCompare(aStr);
+    });
+  }, [rawList, sortKey, sortDirection]);
+
+  const totalAmount =
+    tab === "income"
+      ? noteResponse?.totalIncome ?? 0
+      : noteResponse?.totalExpense ?? 0;
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDirection("desc");
+    }
+  };
+
+  const renderSortIcon = (key: SortKey) => {
+    if (key !== sortKey) return null;
+    return sortDirection === "asc" ? "↑" : "↓";
+  };
+
+  if (isLoading) return <p className="p-4">Loading...</p>;
+
+  if (!noteResponse || rawList.length === 0) {
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+  }
 
   return (
-    <div className='bg-white dark:bg-zinc-900 p-4 space-y-4 rounded-xl'>
-      <div className='flex justify-between items-center'>
-        <span className='text-sm text-gray-400'>
-          {tab === 'expense' ? 'Expense Notes' : 'Income Notes'}
+    <div className="bg-white dark:bg-zinc-900 p-4 space-y-4 rounded-xl">
+      {/* 상단 요약 */}
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-gray-400">
+          {tab === "expense" ? "Expense Notes" : "Income Notes"}
         </span>
         <span
           className={`text-sm font-semibold ${
-            tab === 'expense' ? 'text-red-500' : 'text-green-500'
+            tab === "expense" ? "text-red-500" : "text-green-500"
           }`}
         >
-          {tab === 'expense' ? 'Exp.' : 'Inc.'} {formatCurrency(total)}
+          {tab === "expense" ? "Exp." : "Inc."} {formatCurrency(totalAmount)}
         </span>
       </div>
 
-      <table className='w-full text-sm text-left'>
-        <thead className='text-gray-400 border-b border-gray-200 dark:border-zinc-700'>
+      {/* 테이블 */}
+      <table className="w-full text-sm text-left">
+        <thead className="text-gray-400 border-b border-gray-200 dark:border-zinc-700">
           <tr>
-            <th className='py-2'>Note</th>
-            <th className='py-2 text-center'>Count</th>
-            <th className='py-2 text-right'>Amount</th>
+            <th
+              className="py-2 cursor-pointer"
+              onClick={() => handleSort("note")}
+            >
+              Note {renderSortIcon("note")}
+            </th>
+            <th
+              className="py-2 text-center cursor-pointer"
+              onClick={() => handleSort("count")}
+            >
+              Count {renderSortIcon("count")}
+            </th>
+            <th
+              className="py-2 text-right cursor-pointer"
+              onClick={() => handleSort("amount")}
+            >
+              Amount {renderSortIcon("amount")}
+            </th>
           </tr>
         </thead>
-        <tbody className='text-gray-800 dark:text-gray-100'>
-          {noteList.map((item, index) => (
+        <tbody className="text-gray-800 dark:text-gray-100">
+          {sortedList.map((item, index) => (
             <tr
               key={index}
-              className='border-b border-gray-100 dark:border-zinc-800'
+              className="border-b border-gray-100 dark:border-zinc-800"
             >
-              <td className='py-2'>{item.note || '-'}</td>
-              <td className='py-2 text-center'>{item.count}</td>
-              <td className='py-2 text-right'>{formatCurrency(item.amount)}</td>
+              <td className="py-2">{item.note || "-"}</td>
+              <td className="py-2 text-center">{item.count}</td>
+              <td className="py-2 text-right">{formatCurrency(item.amount)}</td>
             </tr>
           ))}
         </tbody>

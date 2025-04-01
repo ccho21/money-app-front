@@ -1,6 +1,6 @@
 import { get } from '@/features/shared/api';
 import { BudgetUsage } from '@/features/budget/types';
-import { AccountTransactionSummaryParams } from '@/features/account/types';
+import { AccountTransactionSummaryParams } from '../shared/types';
 
 export const fetchBudgetUsageAPI = (
   params: AccountTransactionSummaryParams
