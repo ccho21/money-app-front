@@ -4,10 +4,13 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
+import { signup } from '@/services/authService';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { state, actions } = useUserStore(); // ✅ 구조 분리 접근
+  const {
+    state: { error, isLoading },
+  } = useUserStore(); // ✅ 구조 분리 접근
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,9 +25,9 @@ export default function SignupPage() {
 
     if (!isEmailValid || !isPasswordValid || !isConfirmValid) return;
 
-    await actions.signup(email, password);
+    await signup(email, password);
 
-    if (!state.error) {
+    if (!error) {
       router.push('/signin');
     }
   };
@@ -38,10 +41,8 @@ export default function SignupPage() {
         >
           <h1 className='text-2xl font-bold text-center'>회원가입</h1>
 
-          {state.error && (
-            <div className='text-red-500 text-sm text-center'>
-              {state.error}
-            </div>
+          {error && (
+            <div className='text-red-500 text-sm text-center'>{error}</div>
           )}
 
           {/* 이메일 */}
@@ -99,9 +100,9 @@ export default function SignupPage() {
           <button
             type='submit'
             className='w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded font-semibold'
-            disabled={state.isLoading}
+            disabled={isLoading}
           >
-            {state.isLoading ? '로딩 중...' : '회원가입'}
+            {isLoading ? '로딩 중...' : '회원가입'}
           </button>
 
           <p className='text-sm text-center text-gray-500'>

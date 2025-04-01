@@ -7,6 +7,8 @@ import DateNavigator from '@/components/ui/DateNavigator';
 import StatsHeader from './_components/StatsHeader';
 import TabMenu from '@/components/common/TabMenu';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { parseLocalDate } from '@/lib/dateUtils';
+import { isValid } from 'date-fns';
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -21,9 +23,10 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
   // ✅ 최초 마운트 시 URL의 date → store 동기화
   useEffect(() => {
     if (dateParam) {
-      const parsed = new Date(dateParam);
-      if (!isNaN(parsed.getTime())) {
-        setDate(parsed);
+      const parsed = parseLocalDate(dateParam); // ✅ 수정된 파싱
+
+      if (isValid(parsed)) {
+        setDate(parsed); // ⚠️ 이건 이미 Date 객체로 들어가서 문제 없음
       }
     }
   }, [dateParam, setDate]);
@@ -40,16 +43,16 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen pb-[10vh] flex flex-col h-full">
+    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
       <StatsHeader />
       <DateNavigator />
       <TabMenu
         tabs={tabs}
         active={currentTab}
         onChange={handleTabChange}
-        variant="underline"
+        variant='underline'
       />
-      <main className="flex-1 overflow-y-auto bg-gray-100">{children}</main>
+      <main className='flex-1 overflow-y-auto bg-gray-100'>{children}</main>
       <BottomTabBar />
     </div>
   );

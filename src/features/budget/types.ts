@@ -1,3 +1,5 @@
+import { CategoryType } from '../category/types';
+
 export interface BudgetAlert {
   category: string;
   budget: number;
@@ -24,10 +26,17 @@ export interface UpdateBudgetDto {
   // 다른 필드들(예: categoryId 등)도 선택적으로 업데이트 가능
 }
 
-export interface BudgetUsageItem {
+export type BudgetUsageParams = {
+  startDate: string;
+  endDate: string;
+};
+
+export interface BudgetUsage {
   categoryId: string;
   categoryName: string;
+  categoryIcon: string;
+  categoryType: CategoryType;
+  spentAmount: number;
   budgetAmount: number;
-  usedAmount: number;
-  usedPercent: number;
+  percentage: number;
 }

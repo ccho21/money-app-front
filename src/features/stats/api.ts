@@ -1,10 +1,13 @@
 import { get } from '@/features/shared/api';
-import { ExpenseStat, IncomeStat } from './types';
+import { StatsBudgetUsageParams } from './types';
+import { BudgetUsage } from '../budget/types';
 
-export const getExpenseStats = async (): Promise<ExpenseStat[]> => {
-  return await get<ExpenseStat[]>('/stats/expense');
-};
-
-export const getIncomeStats = async (): Promise<IncomeStat[]> => {
-  return await get<IncomeStat[]>('/stats/income');
+export const fetchStatsBudgetUsageAPI = (
+  params: StatsBudgetUsageParams
+): Promise<BudgetUsage[]> => {
+  const query = new URLSearchParams();
+  query.append('type', params.type);
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  return get(`/analysis/budget-usage?${query.toString()}`);
 };

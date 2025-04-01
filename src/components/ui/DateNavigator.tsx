@@ -8,15 +8,9 @@ import {
   ChevronsRight,
 } from 'lucide-react';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import {
-  format,
-  addYears,
-  addMonths,
-  addDays,
-  startOfWeek,
-  endOfWeek,
-} from 'date-fns';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getNextDateByRange } from '@/lib/dateUtils';
 
 export default function DateNavigator() {
   const {
@@ -29,29 +23,10 @@ export default function DateNavigator() {
 
   // ✅ 날짜 이동 핸들러 + URL 반영
   const handleChange = (diff: number) => {
-    let newDate = new Date(date);
+    const newDate = getNextDateByRange(date, diff, range);
 
-    switch (range) {
-      case 'Yearly':
-        newDate = addYears(newDate, diff);
-        break;
-      case 'Monthly':
-        newDate = addMonths(newDate, diff);
-        break;
-      case 'Weekly':
-        newDate = addDays(newDate, diff * 7);
-        break;
-      case 'Daily':
-        newDate = addDays(newDate, diff);
-        break;
-      default:
-        break;
-    }
-
-    // ✅ store 상태 업데이트
     setDate(newDate);
 
-    // ✅ URLSearchParams 업데이트
     const params = new URLSearchParams(searchParams);
     params.set('date', format(newDate, 'yyyy-MM-dd'));
     router.replace(`?${params.toString()}`);
@@ -80,9 +55,9 @@ export default function DateNavigator() {
   }
 
   return (
-    <div className="flex justify-between items-center px-5 py-3 text-base font-normal">
+    <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
       {/* 왼쪽 이동 */}
-      <div className="flex gap-3 text-gray-500">
+      <div className='flex gap-3 text-gray-500'>
         <button
           onClick={() =>
             handleChange(
@@ -98,20 +73,18 @@ export default function DateNavigator() {
       </div>
 
       {/* 라벨 */}
-      <span className="text-base font-medium text-gray-900 dark:text-white">
+      <span className='text-base font-medium text-gray-900 dark:text-white'>
         {label}
       </span>
 
       {/* 오른쪽 이동 */}
-      <div className="flex gap-3 text-gray-500">
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(1)}>
           <ChevronRight size={20} />
         </button>
         <button
           onClick={() =>
-            handleChange(
-              range === 'Yearly' ? 10 : range === 'Monthly' ? 12 : 1
-            )
+            handleChange(range === 'Yearly' ? 10 : range === 'Monthly' ? 12 : 1)
           }
         >
           <ChevronsRight size={20} />
