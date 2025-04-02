@@ -1,4 +1,4 @@
-import { CategoryType } from "../category/types";
+import { CategoryType } from '../category/types';
 
 export interface BaseDateFilterParams {
   startDate: string;
@@ -9,6 +9,7 @@ export type StatsParams = {
   type: CategoryType;
   startDate: string;
   endDate: string;
+  groupBy?: RangeOption;
 };
 
 export type BudgetUsageParams = {
@@ -22,18 +23,18 @@ export type AccountTransactionSummaryParams = {
 };
 
 export type FetchTransactionSummaryParams = {
-  groupBy: "daily" | "weekly" | "monthly" | "yearly";
+  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
   startDate: string;
   endDate?: string;
 };
 
-export type RangeOption = "Daily" | "Weekly" | "Monthly" | "Yearly";
+export type RangeOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 
 export const RANGE_OPTIONS: RangeOption[] = [
-  "Daily",
-  "Weekly",
-  "Monthly",
-  "Yearly",
+  'Daily',
+  'Weekly',
+  'Monthly',
+  'Yearly',
 ];
 
 export interface DateRangeOptions {

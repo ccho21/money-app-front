@@ -4,15 +4,17 @@ import {
   StatsByBudgetResponse,
   StatsByCategoryResponse,
   StatsByNoteResponse,
-} from "@/features/stats/types";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+} from '@/features/stats/types';
+import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface StatsStore {
   state: {
     categoryResponse?: StatsByCategoryResponse;
     budgetResponse?: StatsByBudgetResponse;
     noteResponse?: StatsByNoteResponse;
+    statsCategoryResponse?: TransactionSummaryResponse;
     isLoading: boolean;
     error: string | null;
   };
@@ -20,6 +22,7 @@ interface StatsStore {
     setCategories: (data: StatsByCategoryResponse) => void;
     setBudgetResponse: (data: StatsByBudgetResponse) => void;
     setNoteResponse: (data: StatsByNoteResponse) => void;
+    setStatsCategoryResponse: (data: TransactionSummaryResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
@@ -41,7 +44,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, categoryResponse: data },
             }),
             false,
-            "stats/setCategories"
+            'stats/setCategories'
           ),
         setBudgetResponse: (data) =>
           set(
@@ -49,7 +52,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, budgetResponse: data },
             }),
             false,
-            "stats/setBudgetResponse"
+            'stats/setBudgetResponse'
           ),
         setNoteResponse: (data) =>
           set(
@@ -57,7 +60,15 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, noteResponse: data },
             }),
             false,
-            "stats/setNoteResponse"
+            'stats/setNoteResponse'
+          ),
+        setStatsCategoryResponse: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, statsCategoryResponse: data },
+            }),
+            false,
+            'stats/setStatsCategoryResponse'
           ),
         setLoading: (loading) =>
           set(
@@ -65,7 +76,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, isLoading: loading },
             }),
             false,
-            loading ? "ui/loading:start" : "ui/loading:done"
+            loading ? 'ui/loading:start' : 'ui/loading:done'
           ),
         setError: (error) =>
           set(
@@ -73,7 +84,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, error },
             }),
             false,
-            "ui/setError"
+            'ui/setError'
           ),
         clear: () =>
           set(
@@ -82,15 +93,16 @@ export const useStatsStore = create<StatsStore>()(
                 categoryResponse: undefined,
                 budgetResponse: undefined,
                 noteResponse: undefined,
+                statsCategoryResponse: undefined,
                 isLoading: false,
                 error: null,
               },
             }),
             false,
-            "stats/clearAll"
+            'stats/clearAll'
           ),
       },
     }),
-    { name: "useStatsStore" }
+    { name: 'useStatsStore' }
   )
 );
