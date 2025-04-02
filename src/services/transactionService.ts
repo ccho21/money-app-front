@@ -2,17 +2,17 @@
 
 import { FetchTransactionSummaryParams } from '@/features/shared/types';
 import {
-  createTransaction,
+  createTransactionAPI,
   fetchTransactionCalendarAPI,
   fetchTransactionsAPI,
   fetchTransactionSummaryAPI,
-  updateTransaction,
-  getTransactionById,
+  updateTransactionAPI,
+  getTransactionByIdAPI,
+  createTransferTransactionAPI,
+  updateTransferTransactionAPI,
 } from '@/features/transaction/api';
 
-import {
-  TransactionSummaryResponse,
-} from '@/features/transaction/types';
+import { TransactionSummaryResponse } from '@/features/transaction/types';
 
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
@@ -26,7 +26,7 @@ export const fetchTransactionById = async (id: string) => {
   setError(null);
 
   try {
-    const data = await getTransactionById(id);
+    const data = await getTransactionByIdAPI(id);
     setSelectedTransaction(data);
     return data;
   } catch (err) {
@@ -48,11 +48,42 @@ export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
   try {
     switch (mode) {
       case 'new':
-        await createTransaction(data);
+        await createTransactionAPI(data);
         break;
       case 'edit':
         if (!id) throw new Error('수정할 거래 ID가 없습니다.');
-        await updateTransaction(id, data);
+        await updateTransactionAPI(id, data);
+        break;
+      default:
+        throw new Error(`지원하지 않는 모드: ${mode}`);
+    }
+
+    reset();
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : '거래 저장 중 오류 발생';
+    console.error('❌ submitTransaction error:', message);
+    throw new Error(message);
+  }
+};
+
+export const submitTransferTransaction = async (
+  mode: 'new' | 'edit',
+  id?: string
+) => {
+  const {
+    actions: { getFormData, reset },
+  } = useTransactionFormStore.getState();
+  const data = getFormData();
+
+  try {
+    switch (mode) {
+      case 'new':
+        await createTransferTransactionAPI(data);
+        break;
+      case 'edit':
+        if (!id) throw new Error('수정할 거래 ID가 없습니다.');
+        await updateTransferTransactionAPI(id, data);
         break;
       default:
         throw new Error(`지원하지 않는 모드: ${mode}`);

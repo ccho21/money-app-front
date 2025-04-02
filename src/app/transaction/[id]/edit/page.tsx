@@ -40,8 +40,10 @@ export default function TransactionEditPage() {
           date: tx.date,
           note: tx.note ?? '',
           description: tx.description ?? '',
-          accountId: tx.account?.id || '',
+          accountId: tx.account.id || '',
           categoryId: tx.category?.id || '',
+          from: tx.accountId || '',
+          to: tx.toAccountId ?? '',
         });
       } else {
         alert('해당 거래를 불러올 수 없습니다.');

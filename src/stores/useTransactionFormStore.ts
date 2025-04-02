@@ -1,5 +1,3 @@
-// 📄 src/stores/transaction/transactionForm.store.ts
-
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
@@ -78,6 +76,7 @@ export const useTransactionFormStore = create<TransactionFormState>()(
             false,
             'transactionForm/setAllFields'
           ),
+
         reset: () =>
           set(
             () => ({ state: { ...initialFormState } }),
@@ -99,27 +98,26 @@ export const useTransactionFormStore = create<TransactionFormState>()(
           } = get().state;
 
           const base = {
-            type,
             amount: Number(amount),
             date,
             note: note || undefined,
             description: description || undefined,
           };
 
-          if (type === 'income' || type === 'expense') {
+          if (type === 'transfer') {
             return {
               ...base,
-              type,
-              accountId,
-              categoryId,
+              type: 'transfer',
+              fromAccountId: from,
+              toAccountId: to,
             };
           }
 
           return {
             ...base,
-            type: 'transfer',
-            fromAccountId: from,
-            toAccountId: to,
+            type,
+            accountId,
+            categoryId,
           };
         },
       },

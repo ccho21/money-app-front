@@ -1,15 +1,17 @@
-export type TransactionType = 'income' | 'expense';
+export type TransactionType = 'income' | 'expense' | 'transfer';
 
-export interface TransactionCategory {
+export interface Category {
   id: string;
   name: string;
   icon: string;
-  color: string;
+  type: 'income' | 'expense';
+  color?: string | null;
 }
-interface TransactionAccount {
+
+export interface Account {
   id: string;
   name: string;
-  type: string;
+  type: 'CASH' | 'BANK' | 'CARD';
   color?: string | null;
 }
 
@@ -17,11 +19,17 @@ export interface Transaction {
   id: string;
   type: TransactionType;
   amount: number;
-  date: string; // ISO 형식 ('2025-03-20T00:00:00.000Z')
-  category: TransactionCategory;
-  account: TransactionAccount;
-  note?: string;
-  description?: string;
+  accountId: string;
+  toAccountId?: string;
+  linkedTransferId?: string;
+  note?: string | null;
+  description?: string | null;
+  date: string; // ISO 형식 문자열
+
+  category?: Category;
+
+  account: Account; // 출금 계좌
+  toAccount?: Account; // 입금 계좌 (transfer만)
 }
 
 export interface TransactionSummary {
@@ -33,13 +41,24 @@ export interface TransactionSummary {
   transactions: Transaction[];
 }
 
+// 날짜별 / 월별 그룹 데이터
+export interface TransactionSummary {
+  label: string; // 예: '2025-03-25', '2025-03'
+  rangeStart: string; // yyyy-MM-dd
+  rangeEnd: string; // yyyy-MM-dd
+  incomeTotal: number;
+  expenseTotal: number;
+  transactions: Transaction[];
+}
+
+// 전체 응답 DTO (백엔드 TransactionSummaryDTO)
 export interface TransactionSummaryResponse {
   type: 'daily' | 'weekly' | 'monthly' | 'yearly';
   startDate: string;
   endDate: string;
   incomeTotal: number;
   expenseTotal: number;
-  data: TransactionSummary[]; // ✅ 날짜/월/연 단위로 그룹된 데이터 목록
+  data: TransactionSummary[];
 }
 
 export interface TransactionCalendarItem {

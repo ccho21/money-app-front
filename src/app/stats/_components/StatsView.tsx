@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from "recharts";
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
 
-import { CategoryListItem } from "./CategoryListItem";
-import { useStatsStore } from "@/stores/useStatsStore";
-import { fetchStatsByCatgory } from "@/services/statsService";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { TransactionType } from "@/features/transaction/types";
-import { getDateRangeKey } from "@/lib/dateUtils";
+import { CategoryListItem } from './CategoryListItem';
+import { useStatsStore } from '@/stores/useStatsStore';
+import { fetchStatsByCatgory } from '@/services/statsService';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { getDateRangeKey } from '@/lib/dateUtils';
+import { CategoryType } from '@/features/category/types';
 
 interface CategoryChartData {
   name: string;
@@ -43,7 +43,7 @@ const renderActiveShape = (props: any) => {
   const my = cy + (outerRadius + 30) * sin;
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
-  const textAnchor = cos >= 0 ? "start" : "end";
+  const textAnchor = cos >= 0 ? 'start' : 'end';
 
   return (
     <g>
@@ -51,9 +51,9 @@ const renderActiveShape = (props: any) => {
         x={cx}
         y={cy}
         dy={8}
-        textAnchor="middle"
+        textAnchor='middle'
         fill={fill}
-        className="text-sm"
+        className='text-sm'
       >
         {payload.name}
       </text>
@@ -74,15 +74,15 @@ const renderActiveShape = (props: any) => {
       <path
         d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
         stroke={fill}
-        fill="none"
+        fill='none'
       />
       <circle cx={ex} cy={ey} r={2} fill={fill} />
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
-        className="text-xs"
+        fill='#333'
+        className='text-xs'
       >
         {value.toLocaleString()}원
       </text>
@@ -91,8 +91,8 @@ const renderActiveShape = (props: any) => {
         y={ey}
         dy={18}
         textAnchor={textAnchor}
-        fill="#999"
-        className="text-xs"
+        fill='#999'
+        className='text-xs'
       >
         {`(${(percent * 100).toFixed(1)}%)`}
       </text>
@@ -127,11 +127,11 @@ export default function StatsView() {
       const [startDate, endDate] = getDateRangeKey(date, {
         unit: range,
         amount: 0,
-      }).split("_");
+      }).split('_');
       await fetchStatsByCatgory({
         startDate,
         endDate,
-        type: transactionType as TransactionType,
+        type: transactionType as CategoryType,
       });
     };
 
@@ -142,27 +142,28 @@ export default function StatsView() {
     router.push(`/stats/${id}`);
   };
 
-  if (isLoading) return <p className="p-4">Loading...</p>;
+  if (isLoading)
+    return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
 
-  if (!categoryResponse || !categoryResponse.data) {
-    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+  if (!categoryResponse || !categoryResponse.data.length) {
+    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
   return (
-    <div className="p-4">
+    <div className='p-4'>
       {categoryResponse.data.length > 0 && (
-        <div className="w-full h-64 px-3 py-6 mb-4 bg-white dark:bg-zinc-800 rounded-xl">
+        <div className='w-full h-64 px-3 py-6 mb-4 bg-white dark:bg-zinc-800 rounded-xl'>
           <ResponsiveContainer>
             <PieChart>
               <Pie
                 activeIndex={activeIndex}
                 activeShape={renderActiveShape}
                 data={categoryChart}
-                cx="50%"
-                cy="50%"
+                cx='50%'
+                cy='50%'
                 innerRadius={60}
                 outerRadius={80}
-                dataKey="value"
+                dataKey='value'
                 onMouseEnter={(_, index) => setActiveIndex(index)}
               >
                 {categoryResponse.data.map((entry, index) => (
@@ -178,7 +179,7 @@ export default function StatsView() {
       )}
 
       {/* 카테고리 리스트 (공통) */}
-      <div className="bg-white dark:bg-zinc-800 divide-y border-t border-gray-200 rounded-xl overflow-hidden">
+      <div className='bg-white dark:bg-zinc-800 divide-y border-t border-gray-200 rounded-xl overflow-hidden'>
         {categoryResponse.data.map((item) => (
           <CategoryListItem
             key={item.categoryId}

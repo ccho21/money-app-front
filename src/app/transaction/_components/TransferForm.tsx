@@ -8,7 +8,7 @@ import DatePicker from '@/components/ui/DatePicker';
 import { Textarea } from '@/components/ui/Textarea';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { useAccountStore } from '@/stores/useAccountStore';
-import { submitTransaction } from '@/services/transactionService';
+import { submitTransferTransaction } from '@/services/transactionService';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -31,7 +31,7 @@ export default function TransferForm({ mode, id }: Props) {
 
   const handleSubmit = async () => {
     try {
-      await submitTransaction(mode, id);
+      await submitTransferTransaction(mode, id);
       router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '이체 저장 실패');

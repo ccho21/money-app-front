@@ -1,4 +1,4 @@
-import { post, get, patch } from '@/features/shared/api';
+import { post, get, put } from '@/features/shared/api';
 import {
   SubmitTransactionPayload,
   Transaction,
@@ -7,18 +7,30 @@ import {
 } from './types';
 import { FetchTransactionSummaryParams } from '../shared/types';
 
-export const createTransaction = (data: SubmitTransactionPayload) => {
+export const createTransactionAPI = (data: SubmitTransactionPayload) => {
   return post('/transactions', data);
 };
 
-export const updateTransaction = (
+export const updateTransactionAPI = (
   id: string,
   data: SubmitTransactionPayload
 ) => {
-  return patch(`/transactions/${id}`, data);
+  return put(`/transactions/${id}`, data);
+};
+export const createTransferTransactionAPI = (
+  data: SubmitTransactionPayload
+) => {
+  return post('/transactions/transfer', data);
 };
 
-export const getTransactionById = (id: string): Promise<Transaction> => {
+export const updateTransferTransactionAPI = (
+  id: string,
+  data: SubmitTransactionPayload
+) => {
+  return put(`/transactions/transfer/${id}`, data);
+};
+
+export const getTransactionByIdAPI = (id: string): Promise<Transaction> => {
   return get<Transaction>(`/transactions/${id}`);
 };
 
