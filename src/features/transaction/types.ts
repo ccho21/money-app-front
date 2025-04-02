@@ -48,7 +48,6 @@ export interface TransactionCalendarItem {
   expense: number;
 }
 
-
 export type TransactionFormFields = {
   type: 'income' | 'expense' | 'transfer';
   amount: string;
@@ -57,6 +56,8 @@ export type TransactionFormFields = {
   date: string;
   note: string;
   description: string;
+  from: string;
+  to: string;
 };
 
 export type IncomeOrExpensePayload = {
@@ -72,8 +73,8 @@ export type IncomeOrExpensePayload = {
 export type TransferPayload = {
   type: 'transfer';
   amount: number;
-  // from: string;
-  // to: string;
+  fromAccountId: string;
+  toAccountId: string;
   date: string;
   note?: string;
   description?: string;

@@ -18,6 +18,8 @@ interface TransactionFormState {
     date: string;
     note: string;
     description: string;
+    from: string; // ✅ transfer 전용
+    to: string; // ✅ transfer 전용
   };
   actions: {
     setField: <K extends keyof TransactionFormState['state']>(
@@ -38,6 +40,8 @@ const initialFormState: TransactionFormState['state'] = {
   date: new Date().toISOString().slice(0, 10),
   note: '',
   description: '',
+  from: '',
+  to: '',
 };
 
 export const useTransactionFormStore = create<TransactionFormState>()(
@@ -66,13 +70,14 @@ export const useTransactionFormStore = create<TransactionFormState>()(
                 description: data.description ?? '',
                 accountId: data.accountId ?? '',
                 categoryId: data.categoryId ?? '',
+                from: data.from ?? '',
+                to: data.to ?? '',
                 type: data.type ?? s.state.type,
               },
             }),
             false,
             'transactionForm/setAllFields'
           ),
-
         reset: () =>
           set(
             () => ({ state: { ...initialFormState } }),
@@ -89,6 +94,8 @@ export const useTransactionFormStore = create<TransactionFormState>()(
             date,
             note,
             description,
+            from,
+            to,
           } = get().state;
 
           const base = {
@@ -102,6 +109,7 @@ export const useTransactionFormStore = create<TransactionFormState>()(
           if (type === 'income' || type === 'expense') {
             return {
               ...base,
+              type,
               accountId,
               categoryId,
             };
@@ -110,6 +118,8 @@ export const useTransactionFormStore = create<TransactionFormState>()(
           return {
             ...base,
             type: 'transfer',
+            fromAccountId: from,
+            toAccountId: to,
           };
         },
       },
