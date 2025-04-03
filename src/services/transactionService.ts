@@ -1,6 +1,6 @@
 // 📄 src/services/transaction.service.ts
 
-import { FetchTransactionSummaryParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/features/shared/types';
 import {
   createTransactionAPI,
   fetchTransactionCalendarAPI,
@@ -148,9 +148,7 @@ export const fetchTransactions = async () => {
   }
 };
 
-export const fetchTransactionSummary = async (
-  params: FetchTransactionSummaryParams
-) => {
+export const fetchTransactionSummary = async (params: DateFilterParams) => {
   const {
     actions: { setTransactionSummary, setLoading, setError },
   } = useTransactionStore.getState();
@@ -191,7 +189,7 @@ export const fetchTransactionCalendar = async (year: string, month: string) => {
 };
 
 export const fetchTransactionSummaryWeekly = async (
-  params: FetchTransactionSummaryParams
+  params: DateFilterParams
 ): Promise<TransactionSummaryResponse> => {
   try {
     const res: TransactionSummaryResponse = await fetchTransactionSummaryAPI(

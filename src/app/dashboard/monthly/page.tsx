@@ -12,7 +12,7 @@ import {
   fetchTransactionSummaryWeekly,
 } from '@/services/transactionService';
 import { getDateRangeKey } from '@/lib/dateUtils';
-import { FetchTransactionSummaryParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/features/shared/types';
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -37,7 +37,7 @@ export default function MonthlyPage() {
     setRange('yearly');
 
     const [startDate, endDate] = dateRangeKey.split('_');
-    const params: FetchTransactionSummaryParams = {
+    const params: DateFilterParams = {
       groupBy: 'monthly',
       startDate,
       endDate,
@@ -61,7 +61,7 @@ export default function MonthlyPage() {
         const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
         const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
 
-        const params: FetchTransactionSummaryParams = {
+        const params: DateFilterParams = {
           groupBy: 'weekly',
           startDate,
           endDate,

@@ -10,7 +10,7 @@ import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
 import { fetchAccountTransactionSummary } from '@/services/accountService';
 import { getDateRangeKey } from '@/lib/dateUtils';
-import { AccountTransactionSummaryParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/features/shared/types';
 import { fetchBudgetSummary } from '@/services/budgetService';
 import { BudgetSummary } from '@/features/budget/types';
 
@@ -39,7 +39,7 @@ export default function SummaryPage() {
   useEffect(() => {
     const run = async () => {
       const [startDate, endDate] = dateRangeKey.split('_');
-      const params: AccountTransactionSummaryParams = {
+      const params: DateFilterParams = {
         startDate,
         endDate,
       };

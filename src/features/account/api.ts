@@ -4,7 +4,7 @@ import {
   AccountTransactionSummaryDto,
   SubmitAccountPayload,
 } from '@/features/account/types';
-import { AccountTransactionSummaryParams } from '../shared/types';
+import { DateFilterParams } from '../shared/types';
 
 export const createAccountAPI = (payload: SubmitAccountPayload) => {
   return post('/accounts', payload);
@@ -22,9 +22,7 @@ export const fetchAccountsByIdAPI = (id: string) => {
   return get<Account>(`/accounts/${id}`);
 };
 
-export const fetchAccountSummaryAPI = (
-  params: AccountTransactionSummaryParams
-) => {
+export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
 
   if (params.startDate) query.append('startDate', params.startDate);

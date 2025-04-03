@@ -1,18 +1,21 @@
 // 📄 src/stores/budget/budget.store.ts
 
-import { Budget, BudgetSummaryResponse } from '@/features/budget/types';
+import {
+  BudgetCategoryResponse,
+  BudgetSummaryResponse,
+} from '@/features/budget/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 interface BudgetStoreState {
-  budgets: Budget[];
+  budgetCategoryResponse?: BudgetCategoryResponse;
   budgetSummaryResponse?: BudgetSummaryResponse;
   isLoading: boolean;
   error: string | null;
 }
 
 interface BudgetStoreActions {
-  setBudgets: (data: Budget[]) => void;
+  setBudgetCategoryResponse: (data: BudgetCategoryResponse) => void;
   setBudgetSummaryResponse: (data: BudgetSummaryResponse) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -28,25 +31,31 @@ export const useBudgetStore = create<BudgetStore>()(
   devtools(
     (set) => ({
       state: {
-        budgets: [],
+        budgetCategoryResponse: undefined,
         budgetSummaryResponse: undefined,
         isLoading: false,
         error: null,
       },
       actions: {
-        setBudgets: (data) =>
+        setBudgetCategoryResponse: (data) =>
           set(
             (s) => ({
-              state: { ...s.state, budgets: data },
+              state: {
+                ...s.state,
+                budgetCategoryResponse: data,
+              },
             }),
             false,
-            'budget/setBudgets'
+            'budget/setBudgetCategoryResponse'
           ),
 
         setBudgetSummaryResponse: (data) =>
           set(
             (s) => ({
-              state: { ...s.state, budgetSummaryResponse: data },
+              state: {
+                ...s.state,
+                budgetSummaryResponse: data,
+              },
             }),
             false,
             'budget/setBudgetSummaryResponse'
@@ -55,7 +64,10 @@ export const useBudgetStore = create<BudgetStore>()(
         setLoading: (loading) =>
           set(
             (s) => ({
-              state: { ...s.state, isLoading: loading },
+              state: {
+                ...s.state,
+                isLoading: loading,
+              },
             }),
             false,
             loading ? 'ui/loading:start' : 'ui/loading:done'
@@ -64,7 +76,10 @@ export const useBudgetStore = create<BudgetStore>()(
         setError: (error) =>
           set(
             (s) => ({
-              state: { ...s.state, error },
+              state: {
+                ...s.state,
+                error,
+              },
             }),
             false,
             'ui/setError'
@@ -74,7 +89,7 @@ export const useBudgetStore = create<BudgetStore>()(
           set(
             () => ({
               state: {
-                budgets: [],
+                budgetCategoryResponse: undefined,
                 budgetSummaryResponse: undefined,
                 isLoading: false,
                 error: null,

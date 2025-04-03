@@ -1,5 +1,5 @@
 import { get } from '@/features/shared/api';
-import { StatsParams } from '../shared/types';
+import { DateFilterParams } from '../shared/types';
 import {
   StatsByBudgetResponse,
   StatsByCategoryResponse,
@@ -8,7 +8,7 @@ import {
 import { TransactionSummaryResponse } from '../transaction/types';
 
 export const fetchStatsByCategoryAPI = (
-  params: StatsParams
+  params: DateFilterParams
 ): Promise<StatsByCategoryResponse> => {
   const query = new URLSearchParams();
   query.append('type', params.type);
@@ -18,7 +18,7 @@ export const fetchStatsByCategoryAPI = (
 };
 
 export const fetchStatsByBudgetAPI = (
-  params: StatsParams
+  params: DateFilterParams
 ): Promise<StatsByBudgetResponse> => {
   const query = new URLSearchParams();
   query.append('type', params.type);
@@ -28,7 +28,7 @@ export const fetchStatsByBudgetAPI = (
 };
 
 export const fetchStatsByNoteAPI = (
-  params: StatsParams
+  params: DateFilterParams
 ): Promise<StatsByNoteResponse> => {
   const query = new URLSearchParams();
   query.append('type', params.type);
@@ -39,7 +39,7 @@ export const fetchStatsByNoteAPI = (
 
 export async function fetchStatCategoryByCategoryIdAPI(
   categoryId: string,
-  params: StatsParams
+  params: DateFilterParams
 ) {
   const query = new URLSearchParams();
   query.append('type', params.type);
@@ -52,7 +52,7 @@ export async function fetchStatCategoryByCategoryIdAPI(
 
 export async function fetchStatBudgetByCategoryIdAPI(
   categoryId: string,
-  params: StatsParams
+  params: DateFilterParams
 ) {
   const query = new URLSearchParams();
   query.append('type', params.type);

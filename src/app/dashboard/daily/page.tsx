@@ -7,7 +7,7 @@ import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { fetchTransactionSummary } from '@/services/transactionService';
 import { getDateRangeKey } from '@/lib/dateUtils';
-import { FetchTransactionSummaryParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/features/shared/types';
 
 export default function DailyPage() {
   const {
@@ -28,7 +28,7 @@ export default function DailyPage() {
     setRange('monthly');
 
     const [startDate, endDate] = dateRangeKey.split('_');
-    const params: FetchTransactionSummaryParams = {
+    const params: DateFilterParams = {
       groupBy: 'daily',
       startDate,
       endDate,
@@ -37,7 +37,7 @@ export default function DailyPage() {
       await fetchTransactionSummary(params);
     };
     run();
-  }, [dateRangeKey]);
+  }, [dateRangeKey, setRange]);
 
   if (isLoading) {
     return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;

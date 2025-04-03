@@ -1,18 +1,21 @@
-import { fetchBudgetsAPI, fetchBudgetSummaryAPI } from '@/features/budget/api';
-import { AccountTransactionSummaryParams } from '@/features/shared/types';
+import {
+  fetchBudgetSummaryAPI,
+  fetchBudgetsByCategoryAPI,
+} from '@/features/budget/api';
+import { DateFilterParams } from '@/features/shared/types';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 
-export const fetchBudgets = async () => {
+export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {
-    actions: { setBudgets, setLoading, setError },
+    actions: { setBudgetCategoryResponse, setLoading, setError },
   } = useBudgetStore.getState();
 
   setLoading(true);
   setError(null);
 
   try {
-    const data = await fetchBudgetsAPI();
-    setBudgets(data);
+    const data = await fetchBudgetsByCategoryAPI(params);
+    setBudgetCategoryResponse(data);
   } catch (err) {
     const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
     setError(message);
@@ -21,9 +24,7 @@ export const fetchBudgets = async () => {
   }
 };
 
-export const fetchBudgetSummary = async (
-  params: AccountTransactionSummaryParams
-) => {
+export const fetchBudgetSummary = async (params: DateFilterParams) => {
   const {
     actions: { setBudgetSummaryResponse, setLoading, setError },
   } = useBudgetStore.getState();

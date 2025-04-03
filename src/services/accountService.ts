@@ -6,10 +6,8 @@ import {
   updateAccountAPI,
 } from '@/features/account/api';
 import { useAccountStore } from '@/stores/useAccountStore';
-import {
-  SubmitAccountPayload,
-} from '@/features/account/types';
-import { AccountTransactionSummaryParams } from '@/features/shared/types';
+import { SubmitAccountPayload } from '@/features/account/types';
+import { DateFilterParams } from '@/features/shared/types';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
   const {
@@ -89,7 +87,7 @@ export const fetchAccountById = async (id: string) => {
 };
 
 export const fetchAccountTransactionSummary = async (
-  params: AccountTransactionSummaryParams
+  params: DateFilterParams
 ) => {
   const {
     actions: { setSummaries, setLoading, setError },

@@ -1,3 +1,5 @@
+import { CategoryType } from '../category/types';
+
 export interface BudgetAlert {
   category: string;
   budget: number;
@@ -36,4 +38,35 @@ export interface BudgetSummaryResponse {
   totalExpense: number;
   rate: number;
   data: BudgetSummary[];
+}
+
+// src/features/budget/types.ts
+
+export interface BudgetCategory {
+  categoryId: string;
+  categoryName: string;
+  type: CategoryType;
+  icon: string;
+  color?: string;
+  budgetId: string | null;
+  budgetAmount: number;
+  startDate: string;
+  endDate: string;
+  isNew: boolean;
+}
+
+export interface BudgetCategoryResponse {
+  total: number;
+  data: BudgetCategory[];
+}
+
+export interface UpdateBudgetCategoryPayload {
+  amount?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface UpdateBudgetCategoryResponse {
+  budgetId: string;
+  message: string;
 }

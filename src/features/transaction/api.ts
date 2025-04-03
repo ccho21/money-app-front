@@ -5,7 +5,7 @@ import {
   TransactionCalendarItem,
   TransactionSummaryResponse,
 } from './types';
-import { FetchTransactionSummaryParams } from '../shared/types';
+import { DateFilterParams } from '../shared/types';
 
 export const createTransactionAPI = (data: SubmitTransactionPayload) => {
   return post('/transactions', data);
@@ -38,9 +38,7 @@ export const fetchTransactionsAPI = async (query: URLSearchParams) => {
   return get<Transaction[]>(`/transactions?${query.toString()}`);
 };
 
-export const fetchTransactionSummaryAPI = async (
-  params: FetchTransactionSummaryParams
-) => {
+export const fetchTransactionSummaryAPI = async (params: DateFilterParams) => {
   const query = new URLSearchParams();
   query.append('groupBy', params.groupBy);
   query.append('startDate', params.startDate);

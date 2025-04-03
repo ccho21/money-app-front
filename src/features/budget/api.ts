@@ -1,12 +1,18 @@
 import { get } from '@/features/shared/api';
-import { Budget, BudgetSummaryResponse } from './types';
-import { BudgetSummaryParams } from '../shared/types';
+import { BudgetCategoryResponse, BudgetSummaryResponse } from './types';
+import { DateFilterParams } from '../shared/types';
 
-export const fetchBudgetsAPI = () => {
-  return get<Budget[]>('/accounts');
+export const fetchBudgetsByCategoryAPI = (params: DateFilterParams) => {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+  return get<BudgetCategoryResponse>(
+    `/budgets/by-category?${query.toString()}`
+  );
 };
 
-export const fetchBudgetSummaryAPI = (params: BudgetSummaryParams) => {
+export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
