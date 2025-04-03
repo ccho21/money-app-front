@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { useAccountStore } from '@/stores/useAccountStore';
 import SummaryBox from '@/components/ui/SummaryBox';
-import { CategoryListItem } from '../stats/_components/CategoryListItem';
 import { fetchTransactionSummary } from '@/services/transactionService';
 import { format } from 'date-fns';
 
@@ -80,14 +79,14 @@ export default function AccountsPage() {
                 {type === 'CARD' && 'Card'}
               </h3>
               <div className='divide-y'>
-                {filtered.map((acc) => (
+                {/* {filtered.map((acc) => (
                   <CategoryListItem
                     key={acc.accountId}
                     name={acc.accountName}
                     amount={acc.balance}
                     isMatched={true} // ✅ 향후 잔고 정합성 비교 로직 연결 예정
                   />
-                ))}
+                ))} */}
               </div>
             </div>
           );

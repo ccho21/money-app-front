@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-import { format, parseISO } from "date-fns";
-import { TransactionType } from "@/features/transaction/types";
-import { RangeOption } from "@/features/shared/types";
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { format, parseISO } from 'date-fns';
+import { TransactionType } from '@/features/transaction/types';
+import { RangeOption } from '@/features/shared/types';
 
 interface DateFilterState {
   date: Date; // 기준일 (Local 기준)
@@ -33,17 +33,17 @@ interface DateFilterStore {
 }
 
 // 유틸 함수
-const toLocalDateString = (date: Date): string => format(date, "yyyy-MM-dd"); // 항상 로컬 기준 문자열 반환
+const toLocalDateString = (date: Date): string => format(date, 'yyyy-MM-dd'); // 항상 로컬 기준 문자열 반환
 
 export const useDateFilterStore = create<DateFilterStore>()(
   devtools(
     (set, get) => ({
       state: {
         date: new Date(),
-        range: "Monthly",
+        range: 'monthly',
         startDate: undefined,
         endDate: undefined,
-        transactionType: "expense",
+        transactionType: 'expense',
       },
       actions: {
         setDate: (date) =>
@@ -55,7 +55,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            "dateFilter/setDate"
+            'dateFilter/setDate'
           ),
 
         setDateFromString: (dateStr) =>
@@ -67,7 +67,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            "dateFilter/setDateFromString"
+            'dateFilter/setDateFromString'
           ),
 
         getDate: () => get().state.date,
@@ -77,7 +77,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
         getYear: () => String(get().state.date.getFullYear()),
 
         getMonth: () =>
-          String(get().state.date.getMonth() + 1).padStart(2, "0"),
+          String(get().state.date.getMonth() + 1).padStart(2, '0'),
 
         setRange: (range) =>
           set(
@@ -88,7 +88,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            "dateFilter/setRange"
+            'dateFilter/setRange'
           ),
 
         setTransactionType: (transactionType: TransactionType) =>
@@ -100,14 +100,14 @@ export const useDateFilterStore = create<DateFilterStore>()(
               },
             }),
             false,
-            "dateFilter/setTransactionType"
+            'dateFilter/setTransactionType'
           ),
         getSyncedURLFromState: (withTransactionType?: boolean) => {
           const { date, range, transactionType } = get().state;
           const params = new URLSearchParams();
-          params.set("date", toLocalDateString(date));
-          params.set("range", range);
-          if (withTransactionType) params.set("type", transactionType);
+          params.set('date', toLocalDateString(date));
+          params.set('range', range);
+          if (withTransactionType) params.set('type', transactionType);
           return `?${params.toString()}`;
         },
 
@@ -116,17 +116,17 @@ export const useDateFilterStore = create<DateFilterStore>()(
             () => ({
               state: {
                 date: new Date(),
-                range: "monthly",
+                range: 'monthly',
                 startDate: undefined,
                 endDate: undefined,
-                transactionType: "expense",
+                transactionType: 'expense',
               },
             }),
             false,
-            "dateFilter/reset"
+            'dateFilter/reset'
           ),
       },
     }),
-    { name: "useDateFilterStore" }
+    { name: 'useDateFilterStore' }
   )
 );

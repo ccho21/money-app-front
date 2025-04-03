@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Transaction } from '@/features/transaction/types';
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { ArrowLeftRight, LucideIcon, icons } from 'lucide-react';
+import { LucideIcon, icons } from 'lucide-react';
 
 export default function DailyTransactionItem({ tx }: { tx: Transaction }) {
   const router = useRouter();

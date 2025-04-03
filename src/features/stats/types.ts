@@ -1,13 +1,11 @@
-import { CategoryType } from "../category/types";
+import { CategoryType } from '../category/types';
 
 export interface StatsByCategory {
   categoryId: string;
   categoryName: string;
   categoryIcon: string;
   categoryType: CategoryType;
-  budget: number;
-  spent: number;
-  remaining: number;
+  expense: number;
   rate: number; // 퍼센트 단위, 소수점 포함
   color: string;
 }

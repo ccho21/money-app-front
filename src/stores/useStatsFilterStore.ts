@@ -18,7 +18,7 @@ export const useStatsFilterStore = create<StatsFilterStore>()(
   devtools(
     (set) => ({
       state: {
-        range: 'Monthly', // 초기값
+        range: 'monthly', // 초기값
       },
       actions: {
         setRange: (value) =>
@@ -31,7 +31,7 @@ export const useStatsFilterStore = create<StatsFilterStore>()(
           set(
             () => ({
               state: {
-                range: 'Monthly',
+                range: 'monthly',
               },
             }),
             false,

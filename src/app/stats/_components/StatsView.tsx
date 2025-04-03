@@ -115,7 +115,7 @@ export default function StatsView() {
     return (
       categoryResponse?.data.map((category) => ({
         name: category.categoryName,
-        value: category.budget,
+        value: category.expense,
         percent: category.rate,
         color: category.color,
       })) || []
@@ -139,7 +139,7 @@ export default function StatsView() {
   }, [date, transactionType, range]);
 
   const handleClick = (id: string) => {
-    router.push(`/stats/${id}`);
+    router.push(`/stats/category/${id}`);
   };
 
   if (isLoading)
@@ -150,9 +150,9 @@ export default function StatsView() {
   }
 
   return (
-    <div className='p-4'>
+    <div className=''>
       {categoryResponse.data.length > 0 && (
-        <div className='w-full h-64 px-3 py-6 mb-4 bg-white dark:bg-zinc-800 rounded-xl'>
+        <div className='w-full h-64 py-6 mb-4 bg-white dark:bg-zinc-800'>
           <ResponsiveContainer>
             <PieChart>
               <Pie
@@ -179,13 +179,13 @@ export default function StatsView() {
       )}
 
       {/* 카테고리 리스트 (공통) */}
-      <div className='bg-white dark:bg-zinc-800 divide-y border-t border-gray-200 rounded-xl overflow-hidden'>
+      <div className='bg-white dark:bg-zinc-800 divide-y border-t border-gray-100 overflow-hidden'>
         {categoryResponse.data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
             percentage={item.rate}
-            amount={item.budget}
+            amount={item.expense}
             onClick={() => handleClick(item.categoryId)}
             color={item.color}
           />

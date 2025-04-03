@@ -44,7 +44,7 @@ export default function CalendarPage() {
   }, [transactionCalendarItems]);
 
   useEffect(() => {
-    setRange('Monthly');
+    setRange('monthly');
 
     fetchTransactionCalendar(
       String(date.getFullYear()),
@@ -54,7 +54,7 @@ export default function CalendarPage() {
 
   const getDateStr = (d: Date) => format(d, 'yyyy-MM-dd');
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'Monthly', amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
     [date]
   );
 

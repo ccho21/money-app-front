@@ -1,15 +1,15 @@
 'use client';
 
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useStatsStore } from '@/stores/useStatsStore';
+import { useParams } from 'next/navigation';
+import { getDateRangeKey } from '@/lib/dateUtils';
+import { useEffect } from 'react';
+import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
 import { CategoryType } from '@/features/category/types';
 import DailyTransactionGroup from '@/app/dashboard/daily/_components/DailyTransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
-import BudgetBarChart from '../_components/BudgetBarChart';
-import { useParams } from 'next/navigation';
-import { useStatsStore } from '@/stores/useStatsStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useEffect } from 'react';
-import { getDateRangeKey } from '@/lib/dateUtils';
-import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
+import BudgetBarChart from '../../budget/_components/BudgetBarChart';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -26,11 +26,11 @@ const MOCK_BAR_DATA = [
   { month: 'Sep', value: 0 },
 ];
 
-export default function StatsBudgetDetailPage() {
+export default function StatsCategoryDetailPage() {
   const categoryId = useParams().id;
 
   const {
-    state: { budgetDetailResponse, isLoading },
+    state: { categoryDetailResponse, isLoading },
   } = useStatsStore();
 
   const {
@@ -45,7 +45,7 @@ export default function StatsBudgetDetailPage() {
         amount: 0,
       }).split('_');
 
-      await fetchStatsBudgetByCategoryId(String(categoryId), {
+      await fetchStatsCategoryByCategoryId(String(categoryId), {
         startDate,
         endDate,
         type: transactionType as CategoryType,
@@ -59,7 +59,7 @@ export default function StatsBudgetDetailPage() {
   if (isLoading)
     return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
 
-  if (!budgetDetailResponse || !budgetDetailResponse.data.length) {
+  if (!categoryDetailResponse || !categoryDetailResponse.data.length) {
     return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
@@ -76,18 +76,18 @@ export default function StatsBudgetDetailPage() {
         items={[
           {
             label: 'Income',
-            value: budgetDetailResponse.incomeTotal,
+            value: categoryDetailResponse.incomeTotal,
             color:
-              budgetDetailResponse.incomeTotal > 0
+              categoryDetailResponse.incomeTotal > 0
                 ? 'text-[#3C50E0]'
                 : 'text-gray-400',
             prefix: '₩',
           },
           {
             label: 'Exp.',
-            value: budgetDetailResponse.expenseTotal,
+            value: categoryDetailResponse.expenseTotal,
             color:
-              budgetDetailResponse.expenseTotal > 0
+              categoryDetailResponse.expenseTotal > 0
                 ? 'text-[#fb5c4c]'
                 : 'text-gray-400',
             prefix: '₩',
@@ -95,8 +95,8 @@ export default function StatsBudgetDetailPage() {
           {
             label: 'Total',
             value:
-              budgetDetailResponse.incomeTotal -
-              budgetDetailResponse.expenseTotal,
+              categoryDetailResponse.incomeTotal -
+              categoryDetailResponse.expenseTotal,
             color: 'text-gray-900 dark:text-white',
             prefix: '₩',
           },
@@ -113,7 +113,7 @@ export default function StatsBudgetDetailPage() {
 
       {/* 일별 거래 리스트 */}
       <div className='space-y-4'>
-        {budgetDetailResponse.data.map((group) => (
+        {categoryDetailResponse.data.map((group) => (
           <DailyTransactionGroup key={group.label} group={group} />
         ))}
       </div>

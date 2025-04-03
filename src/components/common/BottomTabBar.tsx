@@ -15,7 +15,7 @@ const baseTabs = [
     key: 'stats',
     label: 'Stats',
     icon: <BarChart2 className='w-5 h-5' />,
-    basePath: '/stats',
+    basePath: '/stats/category',
   },
   {
     key: 'accounts',
@@ -40,7 +40,7 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-gray-200 flex justify-around items-center h-[10vh]">
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-gray-200 flex justify-around items-center h-[10vh]'>
       {baseTabs.map((tab) => {
         // 오늘 탭인 경우만 동적 path 설정
         const isTodayTab = tab.key === 'daily';
@@ -53,7 +53,7 @@ export default function BottomTabBar() {
           <button
             key={tab.key}
             onClick={() => router.push(tabPath)}
-            className="flex flex-col items-center text-xs text-gray-400 hover:text-black dark:hover:text-white"
+            className='flex flex-col items-center text-xs text-gray-400 hover:text-black dark:hover:text-white'
           >
             <div className={isActive ? 'text-red-500' : ''}>{tab.icon}</div>
             <span className={isActive ? 'text-red-500 font-semibold' : ''}>
