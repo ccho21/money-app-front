@@ -49,3 +49,16 @@ export async function fetchStatCategoryByCategoryIdAPI(
   const res = await get(`/stats/category/${categoryId}?${query.toString()}`);
   return res as Promise<TransactionSummaryResponse>;
 }
+
+export async function fetchStatBudgetByCategoryIdAPI(
+  categoryId: string,
+  params: StatsParams
+) {
+  const query = new URLSearchParams();
+  query.append('type', params.type);
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+  const res = await get(`/stats/budget/${categoryId}?${query.toString()}`);
+  return res as Promise<TransactionSummaryResponse>;
+}

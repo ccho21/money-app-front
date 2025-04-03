@@ -1,37 +1,36 @@
-'use client';
+"use client";
 
-import DailyTransactionGroup from '@/app/dashboard/daily/_components/DailyTransactionGroup';
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { useStatsStore } from "@/stores/useStatsStore";
+import { useParams } from "next/navigation";
+import { getDateRangeKey } from "@/lib/dateUtils";
+import { useEffect } from "react";
+import { fetchStatsCategoryByCategoryId } from "@/services/statsService";
+import { CategoryType } from "@/features/category/types";
+import DailyTransactionGroup from "@/app/dashboard/daily/_components/DailyTransactionGroup";
+import SummaryBox from "@/components/ui/SummaryBox";
+import BudgetBarChart from "../budget/_components/BudgetBarChart";
 
 const MOCK_BAR_DATA = [
-  { month: 'Nov', value: 0 },
-  { month: 'Dec', value: 0 },
-  { month: 'Jan', value: 0 },
-  { month: 'Feb', value: 0 },
-  { month: 'Mar', value: 32.48 },
-  { month: 'Apr', value: 0 },
-  { month: 'May', value: 0 },
-  { month: 'Jun', value: 0 },
-  { month: 'July', value: 0 },
-  { month: 'Aug', value: 0 },
-  { month: 'Oct', value: 0 },
-  { month: 'Sep', value: 0 },
+  { month: "Nov", value: 0 },
+  { month: "Dec", value: 0 },
+  { month: "Jan", value: 0 },
+  { month: "Feb", value: 0 },
+  { month: "Mar", value: 32.48 },
+  { month: "Apr", value: 0 },
+  { month: "May", value: 0 },
+  { month: "Jun", value: 0 },
+  { month: "July", value: 0 },
+  { month: "Aug", value: 0 },
+  { month: "Oct", value: 0 },
+  { month: "Sep", value: 0 },
 ];
-
-import SummaryBox from '@/components/ui/SummaryBox';
-import BudgetBarChart from '../budget/_components/BudgetBarChart';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useStatsStore } from '@/stores/useStatsStore';
-import { useParams } from 'next/navigation';
-import { getDateRangeKey } from '@/lib/dateUtils';
-import { useEffect } from 'react';
-import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
-import { CategoryType } from '@/features/category/types';
 
 export default function StatsCategoryDetailPage() {
   const categoryId = useParams().id;
 
   const {
-    state: { statsCategoryResponse, isLoading },
+    state: { categoryDetailResponse, isLoading },
   } = useStatsStore();
 
   const {
@@ -44,7 +43,7 @@ export default function StatsCategoryDetailPage() {
       const [startDate, endDate] = getDateRangeKey(date, {
         unit: range,
         amount: 0,
-      }).split('_');
+      }).split("_");
 
       await fetchStatsCategoryByCategoryId(String(categoryId), {
         startDate,
@@ -58,63 +57,63 @@ export default function StatsCategoryDetailPage() {
   }, [date, transactionType, range, categoryId]);
 
   if (isLoading)
-    return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
+    return <p className="text-center mt-10 text-gray-400">Loading...</p>;
 
-  if (!statsCategoryResponse || !statsCategoryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+  if (!categoryDetailResponse || !categoryDetailResponse.data.length) {
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
   }
 
   return (
-    <div className='p-4 space-y-4 bg-white'>
+    <div className="p-4 space-y-4 bg-white">
       {/* 헤더 */}
-      <div className='text-center space-y-1'>
-        <h1 className='text-lg font-bold'>Food</h1>
-        <p className='text-sm text-gray-500'>Mar 2025</p>
+      <div className="text-center space-y-1">
+        <h1 className="text-lg font-bold">Food</h1>
+        <p className="text-sm text-gray-500">Mar 2025</p>
       </div>
 
       {/* 요약 */}
       <SummaryBox
         items={[
           {
-            label: 'Income',
-            value: statsCategoryResponse.incomeTotal,
+            label: "Income",
+            value: categoryDetailResponse.incomeTotal,
             color:
-              statsCategoryResponse.incomeTotal > 0
-                ? 'text-[#3C50E0]'
-                : 'text-gray-400',
-            prefix: '₩',
+              categoryDetailResponse.incomeTotal > 0
+                ? "text-[#3C50E0]"
+                : "text-gray-400",
+            prefix: "₩",
           },
           {
-            label: 'Exp.',
-            value: statsCategoryResponse.expenseTotal,
+            label: "Exp.",
+            value: categoryDetailResponse.expenseTotal,
             color:
-              statsCategoryResponse.expenseTotal > 0
-                ? 'text-[#fb5c4c]'
-                : 'text-gray-400',
-            prefix: '₩',
+              categoryDetailResponse.expenseTotal > 0
+                ? "text-[#fb5c4c]"
+                : "text-gray-400",
+            prefix: "₩",
           },
           {
-            label: 'Total',
+            label: "Total",
             value:
-              statsCategoryResponse.incomeTotal -
-              statsCategoryResponse.expenseTotal,
-            color: 'text-gray-900 dark:text-white',
-            prefix: '₩',
+              categoryDetailResponse.incomeTotal -
+              categoryDetailResponse.expenseTotal,
+            color: "text-gray-900 dark:text-white",
+            prefix: "₩",
           },
         ]}
       />
       {/* 바 차트 */}
-      <div className='w-full h-36'>
+      <div className="w-full h-36">
         <BudgetBarChart
           data={MOCK_BAR_DATA}
-          selectedMonth='Mar'
-          barColor='#FF6240'
+          selectedMonth="Mar"
+          barColor="#FF6240"
         />
       </div>
 
       {/* 일별 거래 리스트 */}
-      <div className='space-y-4'>
-        {statsCategoryResponse.data.map((group) => (
+      <div className="space-y-4">
+        {categoryDetailResponse.data.map((group) => (
           <DailyTransactionGroup key={group.label} group={group} />
         ))}
       </div>

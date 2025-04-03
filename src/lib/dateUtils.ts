@@ -20,18 +20,15 @@ import {
   endOfMonth,
 } from "date-fns";
 
-
-
 // 🔹 YYYY / YYYY-MM / YYYY-MM-DD 지원 (Local 기준)
 export const parseLocalDate = (dateStr: string): Date => {
-  const formatStr =
-    /^\d{4}$/.test(dateStr)
-      ? "yyyy"
-      : /^\d{4}-\d{2}$/.test(dateStr)
-      ? "yyyy-MM"
-      : /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
-      ? "yyyy-MM-dd"
-      : null;
+  const formatStr = /^\d{4}$/.test(dateStr)
+    ? "yyyy"
+    : /^\d{4}-\d{2}$/.test(dateStr)
+    ? "yyyy-MM"
+    : /^\d{4}-\d{2}-\d{2}$/.test(dateStr)
+    ? "yyyy-MM-dd"
+    : null;
 
   if (!formatStr) throw new Error(`Invalid date string: ${dateStr}`);
   return startOfDay(parse(dateStr, formatStr, new Date()));
@@ -47,17 +44,17 @@ export function getNextDateByRange(
   const dayOfMonth = getDate(baseDate);
 
   switch (range) {
-    case "Yearly": {
+    case "yearly": {
       return new Date(getYear(baseDate) + diff, getMonth(baseDate), dayOfMonth);
     }
-    case "Monthly": {
+    case "monthly": {
       const safeBase = setDate(baseDate, 1);
       const movedMonth = addMonths(safeBase, diff);
       return setDate(movedMonth, dayOfMonth);
     }
-    case "Weekly":
+    case "weekly":
       return addDays(baseDate, diff * 7);
-    case "Daily":
+    case "daily":
       return addDays(baseDate, diff);
     default:
       return baseDate;
@@ -71,19 +68,19 @@ export const getDateRange = (
   let start: Date, end: Date;
 
   switch (unit) {
-    case "Yearly":
+    case "yearly":
       start = startOfYear(baseDate);
       end = endOfYear(addYears(baseDate, amount));
       break;
-    case "Monthly":
+    case "monthly":
       start = startOfMonth(baseDate);
       end = endOfMonth(addMonths(baseDate, amount));
       break;
-    case "Weekly":
+    case "weekly":
       start = startOfWeek(baseDate, { weekStartsOn: 0 });
       end = endOfWeek(addWeeks(baseDate, amount), { weekStartsOn: 0 });
       break;
-    case "Daily":
+    case "daily":
       start = startOfDay(baseDate);
       end = endOfDay(addDays(baseDate, amount));
       break;
@@ -117,16 +114,16 @@ export const normalizeToLocalMidnight = (date: Date): Date => {
 
 export const getDateLabelByRange = (date: Date, range: RangeOption): string => {
   switch (range) {
-    case "Yearly":
+    case "yearly":
       return format(date, "yyyy");
-    case "Monthly":
+    case "monthly":
       return format(date, "MMM yyyy");
-    case "Weekly": {
+    case "weekly": {
       const start = startOfWeek(date, { weekStartsOn: 0 });
       const end = endOfWeek(date, { weekStartsOn: 0 });
       return `${format(start, "MMM d")} ~ ${format(end, "MMM d, yyyy")}`;
     }
-    case "Daily":
+    case "daily":
       return format(date, "yyyy.MM.dd (EEE)");
     default:
       return format(date, "yyyy.MM.dd");
@@ -135,9 +132,9 @@ export const getDateLabelByRange = (date: Date, range: RangeOption): string => {
 
 export const getStepByRange = (range: RangeOption): number => {
   switch (range) {
-    case "Yearly":
+    case "yearly":
       return 10;
-    case "Monthly":
+    case "monthly":
       return 12;
     default:
       return 1;

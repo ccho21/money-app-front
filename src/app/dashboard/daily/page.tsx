@@ -19,13 +19,13 @@ export default function DailyPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'Monthly', amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
     [date]
   );
 
   // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
-    setRange('Monthly');
+    setRange('monthly');
 
     const [startDate, endDate] = dateRangeKey.split('_');
     const params: FetchTransactionSummaryParams = {

@@ -116,7 +116,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
             () => ({
               state: {
                 date: new Date(),
-                range: "Monthly",
+                range: "monthly",
                 startDate: undefined,
                 endDate: undefined,
                 transactionType: "expense",

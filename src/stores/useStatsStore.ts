@@ -4,25 +4,27 @@ import {
   StatsByBudgetResponse,
   StatsByCategoryResponse,
   StatsByNoteResponse,
-} from '@/features/stats/types';
-import { TransactionSummaryResponse } from '@/features/transaction/types';
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+} from "@/features/stats/types";
+import { TransactionSummaryResponse } from "@/features/transaction/types";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface StatsStore {
   state: {
     categoryResponse?: StatsByCategoryResponse;
     budgetResponse?: StatsByBudgetResponse;
     noteResponse?: StatsByNoteResponse;
-    statsCategoryResponse?: TransactionSummaryResponse;
+    categoryDetailResponse?: TransactionSummaryResponse;
+    budgetDetailResponse?: TransactionSummaryResponse;
     isLoading: boolean;
     error: string | null;
   };
   actions: {
-    setCategories: (data: StatsByCategoryResponse) => void;
+    setCategoryResponse: (data: StatsByCategoryResponse) => void;
     setBudgetResponse: (data: StatsByBudgetResponse) => void;
     setNoteResponse: (data: StatsByNoteResponse) => void;
-    setStatsCategoryResponse: (data: TransactionSummaryResponse) => void;
+    setCategoryDetailResponse: (data: TransactionSummaryResponse) => void;
+    setBudgetDetailResponse: (data: TransactionSummaryResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
@@ -33,18 +35,17 @@ export const useStatsStore = create<StatsStore>()(
   devtools(
     (set) => ({
       state: {
-        categories: [],
         isLoading: false,
         error: null,
       },
       actions: {
-        setCategories: (data) =>
+        setCategoryResponse: (data) =>
           set(
             (s) => ({
               state: { ...s.state, categoryResponse: data },
             }),
             false,
-            'stats/setCategories'
+            "stats/setCategoryResponse"
           ),
         setBudgetResponse: (data) =>
           set(
@@ -52,7 +53,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, budgetResponse: data },
             }),
             false,
-            'stats/setBudgetResponse'
+            "stats/setBudgetResponse"
           ),
         setNoteResponse: (data) =>
           set(
@@ -60,15 +61,23 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, noteResponse: data },
             }),
             false,
-            'stats/setNoteResponse'
+            "stats/setNoteResponse"
           ),
-        setStatsCategoryResponse: (data) =>
+        setCategoryDetailResponse: (data) =>
           set(
             (s) => ({
-              state: { ...s.state, statsCategoryResponse: data },
+              state: { ...s.state, categoryDetailResponse: data },
             }),
             false,
-            'stats/setStatsCategoryResponse'
+            "stats/setCategoryDetailResponse"
+          ),
+        setBudgetDetailResponse: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, budgetDetailResponse: data },
+            }),
+            false,
+            "stats/setBudgetDetailResponse"
           ),
         setLoading: (loading) =>
           set(
@@ -76,7 +85,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, isLoading: loading },
             }),
             false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
+            loading ? "ui/loading:start" : "ui/loading:done"
           ),
         setError: (error) =>
           set(
@@ -84,7 +93,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, error },
             }),
             false,
-            'ui/setError'
+            "ui/setError"
           ),
         clear: () =>
           set(
@@ -93,16 +102,17 @@ export const useStatsStore = create<StatsStore>()(
                 categoryResponse: undefined,
                 budgetResponse: undefined,
                 noteResponse: undefined,
-                statsCategoryResponse: undefined,
+                categoryDetailResponse: undefined,
+                budgetDetailResponse: undefined,
                 isLoading: false,
                 error: null,
               },
             }),
             false,
-            'stats/clearAll'
+            "stats/clearAll"
           ),
       },
     }),
-    { name: 'useStatsStore' }
+    { name: "useStatsStore" }
   )
 );
