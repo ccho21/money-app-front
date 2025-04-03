@@ -5,10 +5,10 @@ import { useStatsStore } from '@/stores/useStatsStore';
 import { fetchStatsByBudget } from '@/services/statsService';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { getDateRangeKey } from '@/lib/dateUtils';
-import { TransactionType } from '@/features/transaction/types';
 import { CategoryListItem } from './CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { CategoryType } from '@/features/category/types';
 
 export default function BudgetView() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function BudgetView() {
       await fetchStatsByBudget({
         startDate,
         endDate,
-        type: transactionType as TransactionType,
+        type: transactionType as CategoryType,
       });
     };
 
@@ -60,6 +60,7 @@ export default function BudgetView() {
         <Button
           className='text-xs px-3 rounded-sm border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300'
           variant='outline'
+          onClick={() => router.push('/budget')}
         >
           Budget Setting
         </Button>

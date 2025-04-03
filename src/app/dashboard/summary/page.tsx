@@ -9,9 +9,10 @@ import SummaryBox from '@/components/ui/SummaryBox';
 import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
 import { fetchAccountTransactionSummary } from '@/services/accountService';
-import { fetchBudgetUsage } from '@/services/budgetService';
 import { getDateRangeKey } from '@/lib/dateUtils';
 import { AccountTransactionSummaryParams } from '@/features/shared/types';
+import { fetchBudgetSummary } from '@/services/budgetService';
+import { BudgetSummary } from '@/features/budget/types';
 
 export default function SummaryPage() {
   const {
@@ -27,7 +28,11 @@ export default function SummaryPage() {
   } = useAccountStore();
 
   const {
-    state: { budgetUsageItems, isLoading: isBudgetLoading, error: budgetError },
+    state: {
+      budgetSummaryResponse,
+      isLoading: isBudgetLoading,
+      error: budgetError,
+    },
   } = useBudgetStore();
 
   // 📦 데이터 fetch
@@ -39,7 +44,7 @@ export default function SummaryPage() {
         endDate,
       };
       await fetchAccountTransactionSummary(params);
-      await fetchBudgetUsage(params);
+      await fetchBudgetSummary(params);
     };
     run();
   }, [dateRangeKey]);
@@ -54,32 +59,6 @@ export default function SummaryPage() {
     () => summaries.reduce((acc, s) => acc + s.expenseTotal, 0),
     [summaries]
   );
-
-  const totalBudgetAmount = useMemo(
-    () => budgetUsageItems.reduce((acc, b) => acc + b.budgetAmount, 0),
-    [budgetUsageItems]
-  );
-
-  const totalBudgetUsed = useMemo(
-    () => budgetUsageItems.reduce((acc, b) => acc + b.usedAmount, 0),
-    [budgetUsageItems]
-  );
-
-  const totalBudgetUsedPercent = useMemo(() => {
-    if (budgetUsageItems.length === 0) return 0;
-    return (
-      budgetUsageItems.reduce((acc, b) => acc + b.usedPercent, 0) /
-      budgetUsageItems.length
-    );
-  }, [budgetUsageItems]);
-
-  const totalItem = {
-    categoryId: '',
-    categoryName: 'Total Budget',
-    budgetAmount: totalBudgetAmount,
-    usedAmount: totalBudgetUsed,
-    usedPercent: totalBudgetUsedPercent,
-  };
 
   // 🔄 로딩 중
   if (isAccountLoading || isBudgetLoading) {
@@ -96,7 +75,7 @@ export default function SummaryPage() {
   }
 
   // 🚫 데이터 없음
-  if (!summaries.length) {
+  if (!budgetSummaryResponse || !budgetSummaryResponse.data.length) {
     return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
@@ -126,7 +105,9 @@ export default function SummaryPage() {
       />
 
       <AccountsBox accounts={summaries} />
-      <BudgetBox item={totalItem} />
+      {budgetSummaryResponse.data.map((summary: BudgetSummary) => (
+        <BudgetBox key={summary.categoryId} item={summary} />
+      ))}
     </div>
   );
 }
