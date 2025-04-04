@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { format, parseISO } from 'date-fns';
 import { TransactionType } from '@/features/transaction/types';
 import { RangeOption } from '@/features/shared/types';
+import { formatDate } from '@/lib/date.util';
 
 interface DateFilterState {
   date: Date; // 기준일 (Local 기준)
@@ -16,7 +17,7 @@ interface DateFilterActions {
   setDate: (date: Date) => void;
   setDateFromString: (dateStr: string) => void;
   getDate: () => Date;
-  getDateString: () => string;
+  formatDateing: () => string;
   getYear: () => string;
   getMonth: () => string;
   setRange: (range: RangeOption) => void;
@@ -31,9 +32,6 @@ interface DateFilterStore {
   state: DateFilterState;
   actions: DateFilterActions;
 }
-
-// 유틸 함수
-const toLocalDateString = (date: Date): string => format(date, 'yyyy-MM-dd'); // 항상 로컬 기준 문자열 반환
 
 export const useDateFilterStore = create<DateFilterStore>()(
   devtools(
@@ -72,7 +70,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
 
         getDate: () => get().state.date,
 
-        getDateString: () => toLocalDateString(get().state.date),
+        formatDateing: () => formatDate(get().state.date),
 
         getYear: () => String(get().state.date.getFullYear()),
 
@@ -105,7 +103,7 @@ export const useDateFilterStore = create<DateFilterStore>()(
         getSyncedURLFromState: (withTransactionType?: boolean) => {
           const { date, range, transactionType } = get().state;
           const params = new URLSearchParams();
-          params.set('date', toLocalDateString(date));
+          params.set('date', formatDate(date));
           params.set('range', range);
           if (withTransactionType) params.set('type', transactionType);
           return `?${params.toString()}`;

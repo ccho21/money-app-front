@@ -1,10 +1,12 @@
 // 📄 경로: src/app/layout.tsx
 "use client";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import useAuthRedirectSync from "@features/auth/hooks/useAuthRedirectSync";
 import AuthGuard from "@features/auth/components/AuthGuard";
+import { StrictMode } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +37,9 @@ export default function RootLayout({
             </span>
           </div>
         ) : (
-          <AuthGuard>{children}</AuthGuard>
+          <AuthGuard>
+            <StrictMode>{children}</StrictMode>
+          </AuthGuard>
         )}
         <Toaster position="top-right" reverseOrder={false} />
       </body>

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { fetchStatsByBudget } from '@/services/statsService';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/dateUtils';
+import { getDateRangeKey } from '@/lib/date.util';
 import { CategoryListItem } from './CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
@@ -60,7 +60,7 @@ export default function BudgetView() {
         <Button
           className='text-xs px-3 rounded-sm border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300'
           variant='outline'
-          onClick={() => router.push('/budget')}
+          onClick={() => router.push('/budget/settings')}
         >
           Budget Setting
         </Button>

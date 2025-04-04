@@ -8,7 +8,7 @@ import { CategoryListItem } from './CategoryListItem';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { fetchStatsByCatgory } from '@/services/statsService';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/dateUtils';
+import { getDateRangeKey } from '@/lib/date.util';
 import { CategoryType } from '@/features/category/types';
 
 interface CategoryChartData {

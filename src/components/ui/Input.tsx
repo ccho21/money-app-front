@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             {label}
           </label>
         )}
-        <div className='col-span-10'>
+        <div className={label ? 'col-span-10' : 'col-span-12'}>
           <input
             ref={ref}
             className={cn(

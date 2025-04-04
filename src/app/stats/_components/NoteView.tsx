@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useStatsStore } from "@/stores/useStatsStore";
 import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { getDateRangeKey } from "@/lib/dateUtils";
+import { getDateRangeKey } from "@/lib/date.util";
 import { TransactionType } from "@/features/transaction/types";
 import { formatCurrency } from "@/lib/utils";
 import { fetchStatsByNote } from "@/services/statsService";

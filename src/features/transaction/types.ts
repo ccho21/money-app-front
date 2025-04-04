@@ -1,17 +1,17 @@
-export type TransactionType = 'income' | 'expense' | 'transfer';
+export type TransactionType = "income" | "expense" | "transfer";
 
 export interface Category {
   id: string;
   name: string;
   icon: string;
-  type: 'income' | 'expense';
+  type: "income" | "expense";
   color?: string | null;
 }
 
 export interface Account {
   id: string;
   name: string;
-  type: 'CASH' | 'BANK' | 'CARD';
+  type: "CASH" | "BANK" | "CARD";
   color?: string | null;
 }
 
@@ -25,11 +25,10 @@ export interface Transaction {
   note?: string | null;
   description?: string | null;
   date: string; // ISO 형식 문자열
-
   category?: Category;
-
   account: Account; // 출금 계좌
   toAccount?: Account; // 입금 계좌 (transfer만)
+  createdAt?: string;
 }
 
 export interface TransactionSummary {
@@ -53,7 +52,7 @@ export interface TransactionSummary {
 
 // 전체 응답 DTO (백엔드 TransactionSummaryDTO)
 export interface TransactionSummaryResponse {
-  type: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  type: "daily" | "weekly" | "monthly" | "yearly";
   startDate: string;
   endDate: string;
   incomeTotal: number;
@@ -68,7 +67,7 @@ export interface TransactionCalendarItem {
 }
 
 export type TransactionFormFields = {
-  type: 'income' | 'expense' | 'transfer';
+  type: "income" | "expense" | "transfer";
   amount: string;
   accountId: string;
   categoryId: string;
@@ -80,7 +79,7 @@ export type TransactionFormFields = {
 };
 
 export type IncomeOrExpensePayload = {
-  type: 'income' | 'expense';
+  type: "income" | "expense";
   amount: number;
   accountId: string;
   categoryId: string;
@@ -90,7 +89,7 @@ export type IncomeOrExpensePayload = {
 };
 
 export type TransferPayload = {
-  type: 'transfer';
+  type: "transfer";
   amount: number;
   fromAccountId: string;
   toAccountId: string;

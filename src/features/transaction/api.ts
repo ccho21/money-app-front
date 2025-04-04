@@ -1,14 +1,14 @@
-import { post, get, put } from '@/features/shared/api';
+import { post, get, put } from "@/features/shared/api";
 import {
   SubmitTransactionPayload,
   Transaction,
   TransactionCalendarItem,
   TransactionSummaryResponse,
-} from './types';
-import { DateFilterParams } from '../shared/types';
+} from "./types";
+import { DateFilterParams } from "../shared/types";
 
 export const createTransactionAPI = (data: SubmitTransactionPayload) => {
-  return post('/transactions', data);
+  return post("/transactions", data);
 };
 
 export const updateTransactionAPI = (
@@ -20,7 +20,7 @@ export const updateTransactionAPI = (
 export const createTransferTransactionAPI = (
   data: SubmitTransactionPayload
 ) => {
-  return post('/transactions/transfer', data);
+  return post("/transactions/transfer", data);
 };
 
 export const updateTransferTransactionAPI = (
@@ -40,9 +40,9 @@ export const fetchTransactionsAPI = async (query: URLSearchParams) => {
 
 export const fetchTransactionSummaryAPI = async (params: DateFilterParams) => {
   const query = new URLSearchParams();
-  query.append('groupBy', params.groupBy);
-  query.append('startDate', params.startDate);
-  if (params.endDate) query.append('endDate', params.endDate);
+  query.append("startDate", params.startDate);
+  if (params.endDate) query.append("endDate", params.endDate);
+  if (params.groupBy) query.append("groupBy", params.groupBy);
   return get<TransactionSummaryResponse>(
     `/transactions/summary?${query.toString()}`
   );

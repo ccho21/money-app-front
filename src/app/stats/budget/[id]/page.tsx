@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useEffect } from 'react';
-import { getDateRangeKey } from '@/lib/dateUtils';
+import { getDateRangeKey } from '@/lib/date.util';
 import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
 
 const MOCK_BAR_DATA = [

@@ -3,7 +3,7 @@
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useParams } from 'next/navigation';
-import { getDateRangeKey } from '@/lib/dateUtils';
+import { getDateRangeKey } from '@/lib/date.util';
 import { useEffect } from 'react';
 import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
 import { CategoryType } from '@/features/category/types';
