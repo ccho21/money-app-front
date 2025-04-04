@@ -21,14 +21,13 @@ export default function BudgetPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
+    () => getDateRangeKey(date, { unit: range, amount: 0 }),
     [date]
   );
 
   // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
-    if (range !== 'monthly')
-      useDateFilterStore.getState().actions.setRange('monthly');
+    console.log('####BUDGET PAGE');
 
     const run = async () => {
       const [startDate, endDate] = dateRangeKey.split('_');
@@ -37,15 +36,18 @@ export default function BudgetPage() {
         startDate,
         endDate,
       };
+      console.log('### PARAM', params);
       await fetchBudgetsByCategory(params);
     };
     run();
   }, [dateRangeKey, setRange, range]);
 
   const handleClick = (categoryId: string, isNew: boolean) => {
-    isNew
-      ? router.push(`/budget/settings/${categoryId}/new`)
-      : router.push(`/budget/settings/${categoryId}/edit`);
+    if (isNew) {
+      router.push(`/budget/settings/${categoryId}/new`);
+    } else {
+      router.push(`/budget/settings/${categoryId}/edit`);
+    }
   };
 
   if (isLoading) {

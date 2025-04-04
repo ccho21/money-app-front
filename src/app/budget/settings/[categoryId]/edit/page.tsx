@@ -2,34 +2,33 @@
 
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useBudgetStore } from '../../_components/useBudgetStore';
-import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { fetchBudgetCategoriesByCategoryId } from '../../_components/budgetService';
+import { useParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { useBudgetStore } from '../../_components/useBudgetStore';
+import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
 
 export default function EditBudgetPage() {
-  const router = useRouter();
   const { categoryId } = useParams();
   const {
-    state: { budgetCategory, isLoading },
-  } = useBudgetStore();
-  const {
     state: { date, range },
-    actions: { setRange },
   } = useDateFilterStore();
 
   const {
-    actions: { setField },
-  } = useBudgetCategoryFormStore();
+    state: { budgetCategoryGroupResponse },
+  } = useBudgetStore();
+  const { setField, reset } = useBudgetCategoryFormStore((s) => s.actions);
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    [date]
+    () => getDateRangeKey(date, { unit: range, amount: 0 }),
+    [date, range]
   );
+
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   useEffect(() => {
     const run = async () => {
@@ -41,11 +40,28 @@ export default function EditBudgetPage() {
         groupBy: range,
       };
       await fetchBudgetCategoriesByCategoryId(String(categoryId), filter);
+      reset();
+      setSelectedKey(null);
     };
-    run();
-  }, [dateRangeKey, setRange, range]);
 
-  if (!categoryId) return <div>잘못된 접근입니다</div>;
+    run();
+  }, [categoryId, dateRangeKey, range, reset]);
+
+  const budgets = budgetCategoryGroupResponse?.budgets ?? [];
+
+  console.log('### BUDGETS', budgets);
+  console.log('### BUDGETS', budgetCategoryGroupResponse);
+
+  const handleSelect = (item: (typeof budgets)[0]) => {
+    setSelectedKey(`${item.startDate}_${item.endDate}`);
+    setField('categoryId', String(categoryId));
+    setField('amount', item.budgetAmount.toString());
+    setField('startDate', item.startDate);
+    setField('endDate', item.endDate);
+    setField('groupBy', range);
+  };
+
+  if (!categoryId) return <div className='p-4'>잘못된 접근입니다</div>;
 
   return (
     <div className='min-h-screen bg-white dark:bg-black text-black dark:text-white'>
@@ -57,35 +73,26 @@ export default function EditBudgetPage() {
         </div>
 
         {/* 예산 리스트 */}
-        {/* <div className="space-y-2">
-          {filtered.map((b) => {
+        <div className='space-y-2'>
+          {budgets.map((b) => {
             const key = `${b.startDate}_${b.endDate}`;
             return (
               <button
                 key={key}
                 onClick={() => handleSelect(b)}
                 className={cn(
-                  "w-full flex justify-between items-center rounded-lg border px-4 py-3",
+                  'w-full flex justify-between items-center rounded-lg border px-4 py-3',
                   selectedKey === key
-                    ? "border-red-500 text-red-500"
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    ? 'border-red-500 text-red-500'
+                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                 )}
               >
-                <span>
-                  {b.startDate} ~ {b.endDate}
-                </span>
-                <span>${b.amount.toFixed(2)}</span>
+                <span>{b.label}</span>
+                <span>${b.budgetAmount.toFixed(2)}</span>
               </button>
             );
           })}
-        </div> */}
-
-        {/* 선택 시 폼 렌더링 */}
-        {/* {selectedKey && (
-          <div className="mt-6 border-t pt-4">
-            <BudgetCategoryForm />
-          </div>
-        )} */}
+        </div>
       </main>
     </div>
   );

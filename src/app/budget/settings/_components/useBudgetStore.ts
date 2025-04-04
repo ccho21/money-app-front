@@ -1,13 +1,15 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   BudgetCategory,
   BudgetCategoryResponse,
   BudgetSummaryResponse,
-} from "./budget/types";
+  BudgetCategoryGroupResponse,
+} from './budget/types';
 
 interface BudgetStoreState {
   budgetCategoryResponse?: BudgetCategoryResponse;
+  budgetCategoryGroupResponse?: BudgetCategoryGroupResponse;
   budgetCategory?: BudgetCategory;
   budgetSummaryResponse?: BudgetSummaryResponse;
   isLoading: boolean;
@@ -16,6 +18,7 @@ interface BudgetStoreState {
 
 interface BudgetStoreActions {
   setBudgetCategoryResponse: (data: BudgetCategoryResponse) => void;
+  setBudgetCategoryGroupResponse: (data: BudgetCategoryGroupResponse) => void;
   setBudgetCategory: (data: BudgetCategory) => void;
   setBudgetSummaryResponse: (data: BudgetSummaryResponse) => void;
   setLoading: (loading: boolean) => void;
@@ -33,7 +36,8 @@ export const useBudgetStore = create<BudgetStore>()(
     (set) => ({
       state: {
         budgetCategoryResponse: undefined,
-        budgetCategory: undefined, // ✅ 추가
+        budgetCategoryGroupResponse: undefined,
+        budgetCategory: undefined,
         budgetSummaryResponse: undefined,
         isLoading: false,
         error: null,
@@ -48,7 +52,19 @@ export const useBudgetStore = create<BudgetStore>()(
               },
             }),
             false,
-            "budget/setBudgetCategoryResponse"
+            'budget/setBudgetCategoryResponse'
+          ),
+
+        setBudgetCategoryGroupResponse: (data) =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                budgetCategoryGroupResponse: data,
+              },
+            }),
+            false,
+            'budget/setBudgetCategoryGroupResponse'
           ),
 
         setBudgetCategory: (data) =>
@@ -60,7 +76,7 @@ export const useBudgetStore = create<BudgetStore>()(
               },
             }),
             false,
-            "budget/setBudgetCategory"
+            'budget/setBudgetCategory'
           ),
 
         setBudgetSummaryResponse: (data) =>
@@ -72,7 +88,7 @@ export const useBudgetStore = create<BudgetStore>()(
               },
             }),
             false,
-            "budget/setBudgetSummaryResponse"
+            'budget/setBudgetSummaryResponse'
           ),
 
         setLoading: (loading) =>
@@ -84,7 +100,7 @@ export const useBudgetStore = create<BudgetStore>()(
               },
             }),
             false,
-            loading ? "ui/loading:start" : "ui/loading:done"
+            loading ? 'ui/loading:start' : 'ui/loading:done'
           ),
 
         setError: (error) =>
@@ -96,7 +112,7 @@ export const useBudgetStore = create<BudgetStore>()(
               },
             }),
             false,
-            "ui/setError"
+            'ui/setError'
           ),
 
         clear: () =>
@@ -104,17 +120,18 @@ export const useBudgetStore = create<BudgetStore>()(
             () => ({
               state: {
                 budgetCategoryResponse: undefined,
-                budgetCategory: undefined, // ✅ 초기화에도 추가
+                budgetCategoryGroupResponse: undefined,
+                budgetCategory: undefined,
                 budgetSummaryResponse: undefined,
                 isLoading: false,
                 error: null,
               },
             }),
             false,
-            "budget/clearAll"
+            'budget/clearAll'
           ),
       },
     }),
-    { name: "useBudgetStore" }
+    { name: 'useBudgetStore' }
   )
 );

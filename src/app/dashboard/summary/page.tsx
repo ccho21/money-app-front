@@ -34,7 +34,7 @@ export default function SummaryPage() {
 
   const dateRangeKey = useMemo(
     () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    []
+    [date]
   );
 
   const fetchedKeyRef = useRef<string | null>(null);

@@ -1,9 +1,9 @@
-import { RangeOption } from "@/features/shared/types";
-import { getDateRangeKey } from "@/lib/date.util";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-import { BudgetCategory } from "./budget/types";
+import { RangeOption } from '@/features/shared/types';
+import { getDateRangeKey } from '@/lib/date.util';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { BudgetCategory } from './budget/types';
 
 interface BudgetCategoryFormState {
   categoryId: string;
@@ -33,11 +33,11 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
   devtools(
     (set, get) => ({
       state: {
-        categoryId: "",
-        amount: "",
-        startDate: "",
-        endDate: "",
-        groupBy: "monthly",
+        categoryId: '',
+        amount: '',
+        startDate: '',
+        endDate: '',
+        groupBy: 'monthly',
       },
       actions: {
         setField: (key, value) =>
@@ -61,21 +61,20 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
                     : s.state.amount,
                 startDate: data.startDate ?? s.state.startDate,
                 endDate: data.endDate ?? s.state.endDate,
-                groupBy: (data as any).groupBy ?? s.state.groupBy, // fallback 처리
               },
             }),
             false,
-            "budgetCategoryForm/setAllFields"
+            'budgetCategoryForm/setAllFields'
           ),
 
         reset: () =>
           set(() => ({
             state: {
-              categoryId: "",
-              amount: "",
-              startDate: "",
-              endDate: "",
-              groupBy: "monthly",
+              categoryId: '',
+              amount: '',
+              startDate: '',
+              endDate: '',
+              groupBy: 'monthly',
             },
           })),
 
@@ -92,7 +91,7 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
             unit: range,
             amount: 0,
           });
-          const [startDate, endDate] = dateRangeKey.split("_");
+          const [startDate, endDate] = dateRangeKey.split('_');
           set((s) => ({
             state: {
               ...s.state,
@@ -104,6 +103,6 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
         },
       },
     }),
-    { name: "BudgetCategoryFormStore" }
+    { name: 'BudgetCategoryFormStore' }
   )
 );

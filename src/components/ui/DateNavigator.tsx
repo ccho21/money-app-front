@@ -24,6 +24,8 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
     }))
   );
 
+  console.log('### DATEA NAVIGATOM', range);
+
   // ✅ 다음/이전 날짜 계산 후 상태 변경 + URL replace
   const handleChange = useCallback(
     (diff: number) => {
@@ -39,21 +41,21 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   const label = useMemo(() => getDateLabelByRange(date, range), [date, range]);
 
   return (
-    <div className="flex justify-between items-center px-5 py-3 text-base font-normal">
+    <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
       {/* 왼쪽 이동 */}
-      <div className="flex gap-3 text-gray-500">
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(-1)}>
           <ChevronLeft size={20} />
         </button>
       </div>
 
       {/* 라벨 */}
-      <span className="text-base font-medium text-gray-900 dark:text-white">
+      <span className='text-base font-medium text-gray-900 dark:text-white'>
         {label}
       </span>
 
       {/* 오른쪽 이동 */}
-      <div className="flex gap-3 text-gray-500">
+      <div className='flex gap-3 text-gray-500'>
         <button onClick={() => handleChange(1)}>
           <ChevronRight size={20} />
         </button>

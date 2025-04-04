@@ -1,11 +1,14 @@
-import { useEffect } from "react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { toast } from "react-hot-toast";
-import { useBudgetCategoryFormStore } from "./useBudgetCategoryFormStore";
-import { createBudgetCategory } from "./budgetService";
+import { useEffect } from 'react';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { toast } from 'react-hot-toast';
+import { useBudgetCategoryFormStore } from './useBudgetCategoryFormStore';
+import { createBudgetCategory } from './budgetService';
+import { useRouter } from 'next/navigation';
 
 export const BudgetCategoryForm = () => {
+  const router = useRouter();
+
   const {
     state: { amount },
     actions: { syncWithDateFilter, getFormData, reset, setField },
@@ -13,7 +16,7 @@ export const BudgetCategoryForm = () => {
 
   useEffect(() => {
     syncWithDateFilter();
-  }, []);
+  }, [syncWithDateFilter]);
 
   const handleSubmit = async () => {
     try {
@@ -25,29 +28,30 @@ export const BudgetCategoryForm = () => {
         endDate: data.endDate,
         groupBy: data.groupBy,
       });
-      toast.success("예산이 저장되었습니다.");
+      toast.success('예산이 저장되었습니다.');
+      router.push('/budget/settings');
       reset();
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "예산 저장 중 오류가 발생했습니다";
+        err instanceof Error ? err.message : '예산 저장 중 오류가 발생했습니다';
       toast.error(message);
     }
   };
 
   return (
-    <div className="space-y-4 p-4">
+    <div className='space-y-4 p-4'>
       {/* 금액 입력 */}
       <Input
-        type="number"
-        inputMode="numeric"
-        placeholder="금액 입력"
+        type='number'
+        inputMode='numeric'
+        placeholder='금액 입력'
         value={amount}
-        className="text-center"
-        onChange={(e) => setField("amount", e.target.value)}
+        className='text-center'
+        onChange={(e) => setField('amount', e.target.value)}
       />
 
       {/* 저장 버튼 */}
-      <Button className="w-full" onClick={handleSubmit}>
+      <Button className='w-full' onClick={handleSubmit}>
         저장
       </Button>
     </div>
