@@ -1,7 +1,7 @@
 // 📄 src/services/transaction.service.ts
 
-import { handleAsync } from "@/features/shared/api";
-import { DateFilterParams } from "@/features/shared/types";
+import { handleAsync } from '@/features/shared/api';
+import { DateFilterParams } from '@/features/shared/types';
 import {
   createTransactionAPI,
   fetchTransactionCalendarAPI,
@@ -11,12 +11,12 @@ import {
   getTransactionByIdAPI,
   createTransferTransactionAPI,
   updateTransferTransactionAPI,
-} from "@/features/transaction/api";
+} from '@/features/transaction/api';
 
-import { TransactionSummaryResponse } from "@/features/transaction/types";
+import { TransactionSummaryResponse } from '@/features/transaction/types';
 
-import { useTransactionFormStore } from "@/stores/useTransactionFormStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
+import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useTransactionStore } from '@/stores/useTransactionStore';
 
 export const fetchTransactionById = async (id: string) => {
   const {
@@ -32,17 +32,17 @@ export const fetchTransactionById = async (id: string) => {
   return data;
 };
 
-export const submitTransaction = async (mode: "new" | "edit", id?: string) => {
+export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
   const {
     actions: { getFormData, reset },
   } = useTransactionFormStore.getState();
   const data = getFormData();
 
   try {
-    if (mode === "new") {
+    if (mode === 'new') {
       await createTransactionAPI(data);
-    } else if (mode === "edit") {
-      if (!id) throw new Error("수정할 거래 ID가 없습니다.");
+    } else if (mode === 'edit') {
+      if (!id) throw new Error('수정할 거래 ID가 없습니다.');
       await updateTransactionAPI(id, data);
     } else {
       throw new Error(`지원하지 않는 모드: ${mode}`);
@@ -50,14 +50,14 @@ export const submitTransaction = async (mode: "new" | "edit", id?: string) => {
     reset();
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "거래 저장 중 오류 발생";
-    console.error("❌ submitTransaction error:", message);
+      err instanceof Error ? err.message : '거래 저장 중 오류 발생';
+    console.error('❌ submitTransaction error:', message);
     throw new Error(message);
   }
 };
 
 export const submitTransferTransaction = async (
-  mode: "new" | "edit",
+  mode: 'new' | 'edit',
   id?: string
 ) => {
   const {
@@ -66,10 +66,10 @@ export const submitTransferTransaction = async (
   const data = getFormData();
 
   try {
-    if (mode === "new") {
+    if (mode === 'new') {
       await createTransferTransactionAPI(data);
-    } else if (mode === "edit") {
-      if (!id) throw new Error("수정할 거래 ID가 없습니다.");
+    } else if (mode === 'edit') {
+      if (!id) throw new Error('수정할 거래 ID가 없습니다.');
       await updateTransferTransactionAPI(id, data);
     } else {
       throw new Error(`지원하지 않는 모드: ${mode}`);
@@ -77,8 +77,8 @@ export const submitTransferTransaction = async (
     reset();
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "거래 저장 중 오류 발생";
-    console.error("❌ submitTransaction error:", message);
+      err instanceof Error ? err.message : '거래 저장 중 오류 발생';
+    console.error('❌ submitTransaction error:', message);
     throw new Error(message);
   }
 };
@@ -94,14 +94,14 @@ export const fetchTransactions = async () => {
     type: undefined,
     categoryId: undefined,
     search: undefined,
-    sort: "date",
-    order: "desc",
+    sort: 'date',
+    order: 'desc',
     page: 1,
     limit: 20,
   });
 
   if (!filters.startDate || !filters.endDate) {
-    console.warn("❗ 필수 날짜(startDate 또는 endDate)가 없습니다.");
+    console.warn('❗ 필수 날짜(startDate 또는 endDate)가 없습니다.');
     return;
   }
 
@@ -127,7 +127,7 @@ export const fetchTransactions = async () => {
 };
 
 // ✅ 중복 호출 방지용 key 저장
-let lastSummaryKey = "";
+let lastSummaryKey = '';
 
 export const fetchTransactionSummary = async (params: DateFilterParams) => {
   const {
@@ -143,8 +143,6 @@ export const fetchTransactionSummary = async (params: DateFilterParams) => {
     setLoading,
     setError
   );
-
-  console.log("### DATA", data);
 
   if (data) setTransactionSummaryResponse(data);
 };
@@ -171,8 +169,8 @@ export const fetchTransactionSummaryWeekly = async (
     return await fetchTransactionSummaryAPI(params);
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "요약 데이터 조회 실패";
-    console.error("❌ fetchTransactionSummaryWeekly error:", message);
+      err instanceof Error ? err.message : '요약 데이터 조회 실패';
+    console.error('❌ fetchTransactionSummaryWeekly error:', message);
     throw new Error(message);
   }
 };

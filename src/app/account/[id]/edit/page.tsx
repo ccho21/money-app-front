@@ -16,7 +16,6 @@ export default function AccountEditPage() {
   } = useAccountFormStore();
 
   useEffect(() => {
-    console.log('### IDIDID', id);
     const run = async () => {
       if (!id) return;
 
@@ -41,10 +40,8 @@ export default function AccountEditPage() {
   }, [id, setAllFields, router]);
 
   const handleUpdate = async () => {
-    console.log('### handle update');
     try {
       const payload = getFormData();
-      console.log('!!! payload', payload);
       await updateAccount(id as string, payload);
       reset();
       router.back();

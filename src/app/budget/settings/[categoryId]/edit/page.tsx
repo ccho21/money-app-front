@@ -1,15 +1,15 @@
 // 📄 경로: src/app/budget/settings/edit/page.tsx
 
-"use client";
+'use client';
 
-import { useEffect, useMemo } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { useBudgetStore } from "../../_components/useBudgetStore";
-import { useBudgetCategoryFormStore } from "../../_components/useBudgetCategoryFormStore";
-import { getDateRangeKey } from "@/lib/date.util";
-import { DateFilterParams } from "@/features/shared/types";
-import { fetchBudgetCategoriesByCategoryId } from "../../_components/budgetService";
+import { useEffect, useMemo } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useBudgetStore } from '../../_components/useBudgetStore';
+import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
+import { getDateRangeKey } from '@/lib/date.util';
+import { DateFilterParams } from '@/features/shared/types';
+import { fetchBudgetCategoriesByCategoryId } from '../../_components/budgetService';
 
 export default function EditBudgetPage() {
   const router = useRouter();
@@ -27,21 +27,19 @@ export default function EditBudgetPage() {
   } = useBudgetCategoryFormStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: "monthly", amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
     [date]
   );
 
   useEffect(() => {
-    console.log("## categoryId", categoryId);
     const run = async () => {
       if (!categoryId) return;
-      const [startDate, endDate] = dateRangeKey.split("_");
+      const [startDate, endDate] = dateRangeKey.split('_');
       const filter: DateFilterParams = {
         startDate,
         endDate,
         groupBy: range,
       };
-      console.log("### filter", filter);
       await fetchBudgetCategoriesByCategoryId(String(categoryId), filter);
     };
     run();
@@ -49,12 +47,11 @@ export default function EditBudgetPage() {
 
   if (!categoryId) return <div>잘못된 접근입니다</div>;
 
-  console.log("##3", budgetCategory);
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
-      <main className="p-4 space-y-4">
+    <div className='min-h-screen bg-white dark:bg-black text-black dark:text-white'>
+      <main className='p-4 space-y-4'>
         {/* 안내 메시지 */}
-        <div className="rounded-md bg-gray-100 dark:bg-gray-800 p-4 text-sm text-gray-600 dark:text-gray-300">
+        <div className='rounded-md bg-gray-100 dark:bg-gray-800 p-4 text-sm text-gray-600 dark:text-gray-300'>
           You can set the budget settings for each month. If you change the
           default budget, it will be applied starting next month.
         </div>

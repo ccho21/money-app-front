@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo } from "react";
-import { DateFilterParams } from "@/features/shared/types";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { getDateRangeKey } from "@/lib/date.util";
-import { BudgetCategory } from "./_components/budget/types";
-import { CategoryListItem } from "@/app/stats/_components/CategoryListItem";
-import { fetchBudgetsByCategory } from "./_components/budgetService";
-import { useBudgetStore } from "./_components/useBudgetStore";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from 'react';
+import { DateFilterParams } from '@/features/shared/types';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { getDateRangeKey } from '@/lib/date.util';
+import { BudgetCategory } from './_components/budget/types';
+import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
+import { fetchBudgetsByCategory } from './_components/budgetService';
+import { useBudgetStore } from './_components/useBudgetStore';
+import { useRouter } from 'next/navigation';
 
 export default function BudgetPage() {
   const router = useRouter();
@@ -21,23 +21,22 @@ export default function BudgetPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: "monthly", amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
     [date]
   );
 
   // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
-    if (range !== "monthly")
-      useDateFilterStore.getState().actions.setRange("monthly");
+    if (range !== 'monthly')
+      useDateFilterStore.getState().actions.setRange('monthly');
 
     const run = async () => {
-      const [startDate, endDate] = dateRangeKey.split("_");
+      const [startDate, endDate] = dateRangeKey.split('_');
       const params: DateFilterParams = {
         groupBy: range,
         startDate,
         endDate,
       };
-      console.log("### params", params);
       await fetchBudgetsByCategory(params);
     };
     run();
@@ -50,12 +49,12 @@ export default function BudgetPage() {
   };
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   // 🚫 데이터 없음
   if (!budgetCategoryResponse || !budgetCategoryResponse.data.length) {
-    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
   }
 
   return (

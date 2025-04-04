@@ -31,10 +31,7 @@ export const updateAccount = async (
   const {
     actions: { setLoading, setError },
   } = useAccountStore.getState();
-  console.log('##coming');
   try {
-    console.log('##coming');
-
     const data = await updateAccountAPI(id, payload);
     return data;
   } catch (err) {
@@ -43,7 +40,6 @@ export const updateAccount = async (
   } finally {
     setLoading(false);
   }
-  console.log('##done');
 };
 
 export const fetchAccounts = async () => {

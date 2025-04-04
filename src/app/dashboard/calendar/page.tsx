@@ -15,18 +15,22 @@ import { useShallow } from 'zustand/react/shallow';
 import { get } from '@/features/shared/api';
 import { fetchTransactionCalendar } from '@/services/transactionService';
 
-import { TransactionSummary, TransactionSummaryResponse } from '@/features/transaction/types';
+import {
+  TransactionSummary,
+  TransactionSummaryResponse,
+} from '@/features/transaction/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { formatDate } from '@/lib/date.util';
 
 export default function CalendarPage() {
-  const { transactionCalendarItems, transactionSummaryResponse, isLoading } = useTransactionStore(
-    useShallow((s) => ({
-      transactionCalendarItems: s.transactionCalendarItems,
-      transactionSummaryResponse: s.transactionSummaryResponse,
-      isLoading: s.isLoading,
-    }))
-  );
+  const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
+    useTransactionStore(
+      useShallow((s) => ({
+        transactionCalendarItems: s.transactionCalendarItems,
+        transactionSummaryResponse: s.transactionSummaryResponse,
+        isLoading: s.isLoading,
+      }))
+    );
   const { setTransactionSummaryResponse } = useTransactionStore().actions;
 
   const {
@@ -35,7 +39,8 @@ export default function CalendarPage() {
   } = useDateFilterStore();
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTransactionSummary, setSelectedTransactionSummary] = useState<TransactionSummary>();
+  const [selectedTransactionSummary, setSelectedTransactionSummary] =
+    useState<TransactionSummary>();
   const [open, setOpen] = useState(false);
 
   const fetchedYearMonthRef = useRef<string | null>(null);
@@ -51,14 +56,14 @@ export default function CalendarPage() {
 
       map.set(
         item.date,
-        <div className="text-[10px]">
+        <div className='text-[10px]'>
           {hasIncome && (
-            <div className="text-blue-500">
+            <div className='text-blue-500'>
               +₩{item.income.toLocaleString()}
             </div>
           )}
           {hasExpense && (
-            <div className="text-red-500">
+            <div className='text-red-500'>
               -₩{item.expense.toLocaleString()}
             </div>
           )}
@@ -81,11 +86,13 @@ export default function CalendarPage() {
     const year = String(date.getFullYear());
     const month = String(date.getMonth() + 1);
     const currentKey = `${year}-${month}`;
-
     if (fetchedYearMonthRef.current === currentKey) return;
-
-    fetchTransactionCalendar(year, month);
-    fetchedYearMonthRef.current = currentKey;
+    const run = async () => {
+      console.log('### CALENDAR fetchTransactionSummary');
+      await fetchTransactionCalendar(year, month);
+      fetchedYearMonthRef.current = currentKey;
+    };
+    run();
   }, [date]);
 
   const dateRangeKey = useMemo(
@@ -97,7 +104,9 @@ export default function CalendarPage() {
     const dateStr = formatDate(clickedDate);
     setSelectedDate(clickedDate);
 
-    const fromStore = transactionSummaryResponse?.data.find((g) => g.label === dateStr);
+    const fromStore = transactionSummaryResponse?.data.find(
+      (g) => g.label === dateStr
+    );
     if (fromStore) {
       setSelectedTransactionSummary(fromStore);
       setOpen(true);
@@ -137,13 +146,13 @@ export default function CalendarPage() {
   };
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   return (
     <>
       <Calendar
-        calendarType="gregory"
+        calendarType='gregory'
         value={date}
         onClickDay={handleDateClick}
         showNavigation={false}
