@@ -4,14 +4,11 @@ import {
   fetchAccountsByIdAPI,
   createAccountAPI,
   updateAccountAPI,
-} from "@/app/account-dashboard/_components/account/api";
-import { useAccountStore } from "@/app/account-dashboard/_components/useAccountStore";
-import {
-  AccountDashboardResponse,
-  SubmitAccountPayload,
-} from "@/app/account-dashboard/_components/account/types";
-import { DateFilterParams } from "@/features/shared/types";
-import { fetchAccountsDashboardAPI } from "@/app/budget/settings/_components/budget/api";
+} from '@/app/account-dashboard/_components/account/api';
+import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
+import { SubmitAccountPayload } from '@/app/account-dashboard/_components/account/types';
+import { DateFilterParams } from '@/features/shared/types';
+import { fetchAccountsDashboardAPI } from '@/app/budget/settings/_components/budget/api';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
   const {
@@ -21,7 +18,7 @@ export const createAccount = async (payload: SubmitAccountPayload) => {
     const data = await createAccountAPI(payload);
     return data;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "계좌 불러오기 실패";
+    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
     setError(message);
   } finally {
     setLoading(false);
@@ -39,7 +36,7 @@ export const updateAccount = async (
     const data = await updateAccountAPI(id, payload);
     return data;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "계좌 불러오기 실패";
+    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
     setError(message);
   } finally {
     setLoading(false);
@@ -58,7 +55,7 @@ export const fetchAccounts = async () => {
     const data = await fetchAccountsAPI();
     setAccounts(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "계좌 불러오기 실패";
+    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
     setError(message);
   } finally {
     setLoading(false);
@@ -79,7 +76,7 @@ export const fetchAccountById = async (id: string) => {
     return data;
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "트랜즈액션 불러오기 실패";
+      err instanceof Error ? err.message : '트랜즈액션 불러오기 실패';
     setError(message);
   } finally {
     setLoading(false);
@@ -101,7 +98,7 @@ export const fetchAccountTransactionSummary = async (
     setSummaries(data);
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "계좌 요약 데이터 오류";
+      err instanceof Error ? err.message : '계좌 요약 데이터 오류';
     setError(message);
   } finally {
     setLoading(false);
@@ -121,7 +118,7 @@ export const fetchAccountDashboard = async () => {
     setAccountDashboard(data);
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : "계좌 정보를 불러오지 못했습니다.";
+      err instanceof Error ? err.message : '계좌 정보를 불러오지 못했습니다.';
     setError(message); // ✅ 누락된 에러 설정
   } finally {
     setLoading(false); // ✅ 항상 로딩 해제

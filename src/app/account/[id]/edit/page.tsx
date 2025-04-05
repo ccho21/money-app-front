@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchAccounts, fetchAccountById } from '@/app/account-dashboard/_components/accountService';
+import { fetchAccountById } from '@/app/account-dashboard/_components/accountService';
 import { updateAccount } from '@/app/account-dashboard/_components/accountService';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 import AccountForm from '../../_components/AccountForm';
@@ -19,7 +19,6 @@ export default function AccountEditPage() {
     const run = async () => {
       if (!id) return;
 
-      await fetchAccounts();
       const acc =
         useAccountStore.getState().state.selectedAccount ??
         (await fetchAccountById(id.toString()));

@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 export default function AccountsPage() {
   const router = useRouter();
   const {
+    actions: { setSelectedAccount },
     state: { accountDashboard, isLoading },
   } = useAccountStore();
 
@@ -26,7 +27,14 @@ export default function AccountsPage() {
   const { CASH, BANK, CARD } = data;
 
   const handleClick = (acc: AccountDashboardItem) => {
-    console.log('### ACC', acc);
+    setSelectedAccount({
+      id: acc.id,
+      type: acc.type,
+      name: acc.name,
+      balance: acc.amount,
+      settlementDate: acc.settlementDate,
+      paymentDate: acc.paymentDate,
+    });
     router.push(`/account/${acc.id}/edit`);
   };
   return (

@@ -9,6 +9,8 @@ export interface Account {
   color?: string; // UI 색상
   balance: number; // 실수형 잔액
   description?: string;
+  settlementDate?: number;
+  paymentDate?: number;
 }
 export interface SubmitAccountPayload {
   name: string;
@@ -43,8 +45,10 @@ export type AccountDashboardItem = {
   type: AccountType;
   financialType: FinancialType;
   amount: number;
-  balancePayable?: number;
   outstandingBalance?: number;
+  balancePayable?: number;
+  settlementDate?: number;
+  paymentDate?: number;
 };
 
 export type AccountDashboardResponse = {
