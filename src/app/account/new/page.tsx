@@ -1,6 +1,6 @@
 'use client';
 
-import { createAccount } from '@/services/accountService';
+import { createAccount } from '@/app/account-dashboard/_components/accountService';
 import { useRouter } from 'next/navigation';
 import AccountForm from '../_components/AccountForm';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';

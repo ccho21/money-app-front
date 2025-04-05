@@ -1,6 +1,6 @@
 // 📄 src/stores/account/accountForm.store.ts
 
-import { AccountType, SubmitAccountPayload } from '@/features/account/types';
+import { AccountType, SubmitAccountPayload } from '@/app/account-dashboard/_components/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 

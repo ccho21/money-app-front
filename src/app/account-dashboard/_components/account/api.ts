@@ -3,8 +3,8 @@ import {
   Account,
   AccountTransactionSummaryDto,
   SubmitAccountPayload,
-} from '@/features/account/types';
-import { DateFilterParams } from '../shared/types';
+} from '@/app/account-dashboard/_components/account/types';
+import { DateFilterParams } from '../../../../features/shared/types';
 
 export const createAccountAPI = (payload: SubmitAccountPayload) => {
   return post('/accounts', payload);

@@ -5,7 +5,7 @@ import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import IncomeForm from '../_components/IncomeForm';
 import TransferForm from '../_components/TransferForm';
 import ExpenseForm from '../_components/ExpenseForm';
-import { fetchAccounts } from '@/services/accountService';
+import { fetchAccounts } from '@/app/account-dashboard/_components/accountService';
 import { fetchCategories } from '@/services/categoryService';
 
 export default function TransactionNewPage() {

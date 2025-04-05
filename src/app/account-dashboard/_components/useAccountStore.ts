@@ -1,17 +1,17 @@
-// 📄 src/stores/account/account.store.ts
-
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
   Account,
   AccountTransactionSummaryDto,
-} from '@/features/account/types';
+  AccountDashboardResponse,
+} from '@/app/account-dashboard/_components/account/types';
 
 interface AccountStoreState {
   state: {
     accounts: Account[];
     selectedAccount?: Account;
     summaries: AccountTransactionSummaryDto[];
+    accountDashboard: AccountDashboardResponse | null;
     isLoading: boolean;
     error: string | null;
   };
@@ -19,6 +19,7 @@ interface AccountStoreState {
     setAccounts: (data: Account[]) => void;
     setSelectedAccount: (acc: Account) => void;
     setSummaries: (data: AccountTransactionSummaryDto[]) => void;
+    setAccountDashboard: (data: AccountDashboardResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
@@ -32,6 +33,7 @@ export const useAccountStore = create<AccountStoreState>()(
         accounts: [],
         selectedAccount: undefined,
         summaries: [],
+        accountDashboard: null,
         isLoading: false,
         error: null,
       },
@@ -57,6 +59,13 @@ export const useAccountStore = create<AccountStoreState>()(
             'accounts/setSummaries'
           ),
 
+        setAccountDashboard: (data) =>
+          set(
+            (s) => ({ state: { ...s.state, accountDashboard: data } }),
+            false,
+            'accounts/setAccountDashboard'
+          ),
+
         setLoading: (loading) =>
           set(
             (s) => ({ state: { ...s.state, isLoading: loading } }),
@@ -78,6 +87,7 @@ export const useAccountStore = create<AccountStoreState>()(
                 accounts: [],
                 selectedAccount: undefined,
                 summaries: [],
+                accountDashboard: null,
                 isLoading: false,
                 error: null,
               },

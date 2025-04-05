@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo } from 'react';
-import { DateFilterParams } from '@/features/shared/types';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/date.util';
-import { BudgetCategory } from './_components/budget/types';
-import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
-import { fetchBudgetsByCategory } from './_components/budgetService';
-import { useBudgetStore } from './_components/useBudgetStore';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo } from "react";
+import { DateFilterParams } from "@/features/shared/types";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { getDateRangeKey } from "@/lib/date.util";
+import { BudgetCategory } from "./_components/budget/types";
+import { CategoryListItem } from "@/app/stats/_components/CategoryListItem";
+import { fetchBudgetsByCategory } from "./_components/budgetService";
+import { useBudgetStore } from "./_components/useBudgetStore";
+import { useRouter } from "next/navigation";
+import TopNav from "@/components/common/TopNav";
+import DateNavigator from "@/components/ui/DateNavigator";
 
 export default function BudgetPage() {
   const router = useRouter();
@@ -27,16 +29,15 @@ export default function BudgetPage() {
 
   // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
-    console.log('####BUDGET PAGE');
-
     const run = async () => {
-      const [startDate, endDate] = dateRangeKey.split('_');
+      const [startDate, endDate] = dateRangeKey.split("_");
       const params: DateFilterParams = {
         groupBy: range,
         startDate,
         endDate,
       };
-      console.log('### PARAM', params);
+      console.log("### PARAM", params);
+
       await fetchBudgetsByCategory(params);
     };
     run();
@@ -46,32 +47,31 @@ export default function BudgetPage() {
     if (isNew) {
       router.push(`/budget/settings/${categoryId}/new`);
     } else {
-      router.push(`/budget/settings/${categoryId}/edit`);
+      router.push(`/budget/settings/${categoryId}/list`);
     }
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
   }
 
-  // 🚫 데이터 없음
   if (!budgetCategoryResponse || !budgetCategoryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
   }
 
   return (
-    <>
-      <div>
-        {budgetCategoryResponse?.data.map((item: BudgetCategory) => (
-          <CategoryListItem
-            key={item.categoryId}
-            name={item.categoryName}
-            amount={item.budgetAmount}
-            color={item.color}
-            onClick={() => handleClick(item.categoryId, item.isNew)}
-          ></CategoryListItem>
-        ))}
-      </div>
-    </>
+    <div>
+      <TopNav title="Budget Setting" onBack={() => router.back()} />
+      <DateNavigator withTransactionType={true} />
+      {budgetCategoryResponse?.data.map((item: BudgetCategory) => (
+        <CategoryListItem
+          key={item.categoryId}
+          name={item.categoryName}
+          amount={item.budgetAmount}
+          color={item.color}
+          onClick={() => handleClick(item.categoryId, item.isNew)}
+        ></CategoryListItem>
+      ))}
+    </div>
   );
 }

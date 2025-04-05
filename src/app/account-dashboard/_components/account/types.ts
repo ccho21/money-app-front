@@ -1,5 +1,6 @@
-import { Transaction } from '../transaction/types';
-export type AccountType = 'CASH' | 'BANK' | 'CARD';
+import { Transaction } from "../../../../features/transaction/types";
+export type AccountType = "CASH" | "BANK" | "CARD";
+export type FinancialType = "ASSET" | "LIABILITY";
 
 export interface Account {
   id: string;
@@ -18,7 +19,7 @@ export interface SubmitAccountPayload {
 export interface AccountSummary {
   accountId: string;
   name: string;
-  type: 'CASH' | 'CARD' | 'BANK'; // AccountType enum 기준
+  type: "CASH" | "CARD" | "BANK"; // AccountType enum 기준
   color: string;
   totalIncome: number;
   totalExpense: number;
@@ -33,3 +34,24 @@ export interface AccountTransactionSummaryDto {
   expenseTotal: number;
   transactions: Transaction[];
 }
+
+export type AccountDashboardItem = {
+  id: string;
+  name: string;
+  type: AccountType;
+  financialType: FinancialType;
+  amount: number;
+  balancePayable?: number;
+  outstandingBalance?: number;
+};
+
+export type AccountDashboardResponse = {
+  asset: number;
+  liability: number;
+  total: number;
+  data: {
+    CASH: AccountDashboardItem[];
+    BANK: AccountDashboardItem[];
+    CARD: AccountDashboardItem[];
+  }
+};

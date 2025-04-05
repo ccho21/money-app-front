@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useAccountStore } from '@/stores/useAccountStore';
+import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { submitTransaction } from '@/services/transactionService';

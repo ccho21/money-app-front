@@ -10,7 +10,7 @@ import IncomeForm from "../../_components/IncomeForm";
 import TransferForm from "../../_components/TransferForm";
 import ExpenseForm from "../../_components/ExpenseForm";
 
-import { fetchAccounts } from "@/services/accountService";
+import { fetchAccounts } from "@/app/account-dashboard/_components/accountService";
 import { fetchCategories } from "@/services/categoryService";
 import { fetchTransactionById } from "@/services/transactionService";
 
@@ -28,7 +28,7 @@ export default function TransactionEditPage() {
 
       await fetchAccounts();
       await fetchCategories();
-      const t = useTransactionStore.getState().state.selectedTransaction;
+      const t = useTransactionStore.getState().selectedTransaction;
       const tx =
         t && t.id === id ? t : await fetchTransactionById(id.toString());
 

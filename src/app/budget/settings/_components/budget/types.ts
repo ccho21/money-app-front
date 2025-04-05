@@ -1,5 +1,5 @@
-import { CategoryType } from '@/features/category/types';
-import { RangeOption } from '@/features/shared/types';
+import { CategoryType } from "@/features/category/types";
+import { RangeOption } from "@/features/shared/types";
 
 export interface BudgetAlert {
   category: string;
@@ -93,7 +93,7 @@ export interface BudgetCategoryGroupItem {
   endDate: string;
   budgetAmount: number;
   isCurrent: boolean;
-  isNew: boolean;
+  categoryId?: string | null;
 }
 
 export interface BudgetCategoryGroupResponse {

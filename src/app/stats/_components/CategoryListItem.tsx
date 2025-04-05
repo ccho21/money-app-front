@@ -12,6 +12,8 @@ interface CategoryListItemProps {
   isMatched?: boolean;
   onClick: () => void;
   variant?: 'default' | 'with-progress-a' | 'with-progress-b';
+  outstandingBalance?: number;
+  balancePayable?: number;
 }
 
 export function CategoryListItem({
@@ -23,14 +25,18 @@ export function CategoryListItem({
   isMatched = true,
   onClick,
   variant = 'default',
+  outstandingBalance,
+  balancePayable,
 }: CategoryListItemProps) {
   const showPercentage = percentage !== undefined;
   const isProgressA = variant === 'with-progress-a';
   const isProgressB = variant === 'with-progress-b';
 
+  const hasCardInfo = outstandingBalance !== undefined || balancePayable !== undefined;
+
   return (
     <div
-    onClick={onClick}
+      onClick={onClick}
       className={cn(
         'px-4 py-3 border-b space-y-1',
         'bg-white dark:bg-zinc-900',
@@ -41,12 +47,12 @@ export function CategoryListItem({
       )}
     >
       {variant === 'default' && (
-        <div className='flex items-center justify-between'>
+        <div className="flex items-center justify-between">
           {/* 좌측 색상 + 이름 */}
-          <div className='flex items-center gap-3'>
+          <div className="flex items-center gap-3">
             {showPercentage && (
               <div
-                className='text-xs font-semibold text-white px-2 py-0.5 rounded-full'
+                className="text-xs font-semibold text-white px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: color }}
               >
                 {formatCurrency(percentage)}%
@@ -121,6 +127,24 @@ export function CategoryListItem({
           </div>
           <Progress value={percentage as number} className="h-2 rounded-full" />
         </>
+      )}
+
+      {/* ✅ 카드 정보 (outstandingBalance / balancePayable) 표시 */}
+      {hasCardInfo && (
+        <div className="mt-2 space-y-1 text-xs text-gray-600 dark:text-gray-400">
+          {balancePayable !== undefined && (
+            <div className="flex justify-between">
+              <span>Balance Payable</span>
+              <span>{formatCurrency(balancePayable)}</span>
+            </div>
+          )}
+          {outstandingBalance !== undefined && (
+            <div className="flex justify-between">
+              <span>Outstanding Balance</span>
+              <span>{formatCurrency(outstandingBalance)}</span>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

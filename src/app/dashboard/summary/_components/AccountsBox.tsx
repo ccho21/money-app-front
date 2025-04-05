@@ -1,7 +1,7 @@
 // ✅ 파일 경로: src/app/dashboard/summary/_components/AccountsBox.tsx
 
 import { Card } from '@/components/ui/Card';
-import { AccountTransactionSummaryDto } from '@/features/account/types';
+import { AccountTransactionSummaryDto } from '@/app/account-dashboard/_components/account/types';
 import React from 'react';
 
 interface AccountsBoxProps {

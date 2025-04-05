@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { parse, startOfMonth, endOfMonth, format } from "date-fns";
 
-import MonthlyItem from './_components/MonthlyItem';
-import TransactionSummaryBox from '../_components/TransactionSummaryBox';
+import MonthlyItem from "./_components/MonthlyItem";
+import TransactionSummaryBox from "../_components/TransactionSummaryBox";
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useTransactionStore } from "@/stores/useTransactionStore";
+import { useDateFilterStore } from "@/stores/useDateFilterStore";
+import { useShallow } from "zustand/react/shallow";
 
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
-} from '@/services/transactionService';
-import { TransactionSummary } from '@/features/transaction/types';
-import { DateFilterParams } from '@/features/shared/types';
-import { getDateRangeKey } from '@/lib/date.util';
+} from "@/services/transactionService";
+import { TransactionSummary } from "@/features/transaction/types";
+import { DateFilterParams } from "@/features/shared/types";
+import { getDateRangeKey } from "@/lib/date.util";
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -37,25 +37,23 @@ export default function MonthlyPage() {
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
+    () => getDateRangeKey(date, { unit: "monthly", amount: 0 }),
     [date]
   );
 
-  useEffect(() => {
-    if (range !== 'yearly')
-      useDateFilterStore.getState().actions.setRange('yearly');
-  }, []);
   // ✅ 최초 로딩 시 monthly 데이터 fetch
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
+    const [startDate, endDate] = dateRangeKey.split("_");
     const params: DateFilterParams = {
-      groupBy: 'monthly',
+      groupBy: "monthly",
       startDate,
       endDate,
     };
 
+    if (range !== "yearly")
+      useDateFilterStore.getState().actions.setRange("yearly");
     const run = async () => {
-      console.log('### MONTHLY fetchTransactionSummary');
+      console.log("### MONTHLY fetchTransactionSummary");
       await fetchTransactionSummary(params);
     };
     run();
@@ -73,12 +71,12 @@ export default function MonthlyPage() {
 
       // 열리는 항목이며, 아직 캐시에 없는 경우만 요청
       if (isOpening && !weeklySummaryByMonth[label]) {
-        const monthDate = parse(label, 'yyyy-MM', new Date());
-        const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
-        const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
+        const monthDate = parse(label, "yyyy-MM", new Date());
+        const startDate = format(startOfMonth(monthDate), "yyyy-MM-dd");
+        const endDate = format(endOfMonth(monthDate), "yyyy-MM-dd");
 
         const params: DateFilterParams = {
-          groupBy: 'weekly',
+          groupBy: "weekly",
           startDate,
           endDate,
         };
@@ -96,11 +94,11 @@ export default function MonthlyPage() {
   );
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
   }
 
   if (!transactionSummaryResponse || !transactionSummaryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
   }
 
   return (

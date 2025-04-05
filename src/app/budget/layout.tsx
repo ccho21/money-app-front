@@ -11,8 +11,6 @@ export default function BudgetLayout({ children }: { children: ReactNode }) {
   console.log('####BUDGET LAYOUT');
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
-      <TopNav title='Budget Setting' onBack={() => router.back()} />
-      <DateNavigator withTransactionType={true} />
       <main className='flex-1 overflow-y-auto bg-gray-100'>{children}</main>
       <BottomTabBar />
     </div>

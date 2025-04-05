@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
-import { useAccountStore } from '@/stores/useAccountStore';
+import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
 import { useBudgetStore } from '@/app/budget/settings/_components/useBudgetStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 
@@ -9,7 +9,7 @@ import SummaryBox from '@/components/ui/SummaryBox';
 import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
 
-import { fetchAccountTransactionSummary } from '@/services/accountService';
+import { fetchAccountTransactionSummary } from '@/app/account-dashboard/_components/accountService';
 import { fetchBudgetSummary } from '@/app/budget/settings/_components/budgetService';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
