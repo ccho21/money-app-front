@@ -1,6 +1,6 @@
-import { Transaction } from "../../../../features/transaction/types";
-export type AccountType = "CASH" | "BANK" | "CARD";
-export type FinancialType = "ASSET" | "LIABILITY";
+import { Transaction } from '../../../../features/transaction/types';
+export type AccountType = 'CASH' | 'BANK' | 'CARD';
+export type FinancialType = 'ASSET' | 'LIABILITY';
 
 export interface Account {
   id: string;
@@ -14,12 +14,14 @@ export interface SubmitAccountPayload {
   name: string;
   balance: number; // amount -> balance
   type: AccountType;
+  settlementDate?: number;
+  paymentDate?: number;
   description?: string;
 }
 export interface AccountSummary {
   accountId: string;
   name: string;
-  type: "CASH" | "CARD" | "BANK"; // AccountType enum 기준
+  type: 'CASH' | 'CARD' | 'BANK'; // AccountType enum 기준
   color: string;
   totalIncome: number;
   totalExpense: number;
@@ -53,5 +55,5 @@ export type AccountDashboardResponse = {
     CASH: AccountDashboardItem[];
     BANK: AccountDashboardItem[];
     CARD: AccountDashboardItem[];
-  }
+  };
 };

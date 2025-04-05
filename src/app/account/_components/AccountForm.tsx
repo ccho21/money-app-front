@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 import { AccountType } from '@/app/account-dashboard/_components/account/types';
+// import { Switch } from '@/components/ui/Switch'; // ✅ 자동결제 toggle용
 
 const GROUP_OPTIONS = [
   { label: 'Cash', value: 'CASH' },
@@ -20,9 +21,11 @@ interface Props {
 
 export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
   const {
-    state: { group, name, amount, description },
+    state: { group, name, amount, description, settlementDate, paymentDate },
     actions: { setField },
   } = useAccountFormStore();
+
+  const isCard = group === 'CARD';
 
   return (
     <div className='min-h-screen bg-white px-4 pt-4 pb-10'>
@@ -55,6 +58,34 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
           placeholder='Description'
           rows={1}
         />
+
+        {/* ✅ 카드 선택 시 추가 필드 렌더링 */}
+        {isCard && (
+          <div className='space-y-4 border-t pt-4'>
+            <Input
+              label='Settlement Date'
+              type='number'
+              value={settlementDate ?? ''}
+              onChange={(e) =>
+                setField('settlementDate', Number(e.target.value))
+              }
+            />
+            <Input
+              label='Payment Date'
+              type='number'
+              value={paymentDate ?? ''}
+              onChange={(e) => setField('paymentDate', Number(e.target.value))}
+            />
+
+            <div className='flex items-center justify-between'>
+              <span className='text-sm text-gray-600'>Auto Payment</span>
+              {/* <Switch
+        checked={autoPayment}
+        onCheckedChange={(val) => setField('autoPayment', val)}
+      /> */}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className=''>

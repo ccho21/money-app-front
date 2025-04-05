@@ -1,13 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useAccountStore } from "@/app/account-dashboard/_components/useAccountStore";
-import SummaryBox from "@/components/ui/SummaryBox";
-import { fetchAccountDashboard } from "./_components/accountService";
-import { CategoryListItem } from "../stats/_components/CategoryListItem";
-import { AccountDashboardItem } from "./_components/account/types";
+import { useEffect } from 'react';
+import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
+import SummaryBox from '@/components/ui/SummaryBox';
+import { fetchAccountDashboard } from './_components/accountService';
+import { CategoryListItem } from '../stats/_components/CategoryListItem';
+import { AccountDashboardItem } from './_components/account/types';
+import { useRouter } from 'next/navigation';
 
 export default function AccountsPage() {
+  const router = useRouter();
   const {
     state: { accountDashboard, isLoading },
   } = useAccountStore();
@@ -17,57 +19,58 @@ export default function AccountsPage() {
   }, []);
 
   if (isLoading || !accountDashboard) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   const { asset, liability, total, data } = accountDashboard;
   const { CASH, BANK, CARD } = data;
 
   const handleClick = (acc: AccountDashboardItem) => {
-    console.log("### ACC", acc);
+    console.log('### ACC', acc);
+    router.push(`/account/${acc.id}/edit`);
   };
   return (
-    <div className="p-4 space-y-6 bg-white">
+    <div className='p-4 space-y-6 bg-white'>
       <SummaryBox
         items={[
           {
-            label: "Assets",
+            label: 'Assets',
             value: asset,
-            color: "text-blue-600",
-            prefix: "₩",
+            color: 'text-blue-600',
+            prefix: '₩',
           },
           {
-            label: "Liabilities",
+            label: 'Liabilities',
             value: liability,
-            color: "text-red-500",
-            prefix: "₩",
+            color: 'text-red-500',
+            prefix: '₩',
           },
           {
-            label: "Total",
+            label: 'Total',
             value: total,
-            color: "text-black dark:text-white",
-            prefix: "₩",
+            color: 'text-black dark:text-white',
+            prefix: '₩',
           },
         ]}
       />
 
-      <div className="space-y-6">
+      <div className='space-y-6'>
         {[
-          ["CASH", CASH],
-          ["BANK", BANK],
-          ["CARD", CARD],
+          ['CASH', CASH],
+          ['BANK', BANK],
+          ['CARD', CARD],
         ].map(([label, items]) => {
           const typedItems = items as typeof CASH;
           if (typedItems.length === 0) return null;
 
           return (
             <div key={label as string}>
-              <h3 className="text-sm font-semibold text-gray-500 mb-2">
-                {label === "CASH" && "Cash"}
-                {label === "BANK" && "Bank Accounts"}
-                {label === "CARD" && "Card"}
+              <h3 className='text-sm font-semibold text-gray-500 mb-2'>
+                {label === 'CASH' && 'Cash'}
+                {label === 'BANK' && 'Bank Accounts'}
+                {label === 'CARD' && 'Card'}
               </h3>
-              <div className="divide-y">
+              <div className='divide-y'>
                 {typedItems.map((acc) => (
                   <CategoryListItem
                     key={acc.id}

@@ -1,6 +1,7 @@
-// 📄 src/stores/account/accountForm.store.ts
-
-import { AccountType, SubmitAccountPayload } from '@/app/account-dashboard/_components/account/types';
+import {
+  AccountType,
+  SubmitAccountPayload,
+} from '@/app/account-dashboard/_components/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -11,6 +12,11 @@ interface AccountFormStore {
     group: AccountType;
     description: string;
     isEditMode: boolean;
+
+    // ✅ 카드 계좌용 필드 추가
+    settlementDate: number | null;
+    paymentDate: number | null;
+    autoPayment: boolean;
   };
   actions: {
     setField: <K extends keyof AccountFormStore['state']>(
@@ -31,6 +37,11 @@ const initialFormState: AccountFormStore['state'] = {
   group: 'CASH',
   description: '',
   isEditMode: false,
+
+  // ✅ 초기화 값 추가
+  settlementDate: null,
+  paymentDate: null,
+  autoPayment: false,
 };
 
 export const useAccountFormStore = create<AccountFormStore>()(
@@ -89,12 +100,24 @@ export const useAccountFormStore = create<AccountFormStore>()(
           ),
 
         getFormData: (): SubmitAccountPayload => {
-          const { name, amount, group, description } = get().state;
+          const {
+            name,
+            amount,
+            group,
+            description,
+            settlementDate,
+            paymentDate,
+          } = get().state;
+
           return {
             name,
             type: group,
             balance: Number(amount),
             description: description || undefined,
+            settlementDate:
+              group === 'CARD' ? settlementDate ?? undefined : undefined,
+            paymentDate:
+              group === 'CARD' ? paymentDate ?? undefined : undefined,
           };
         },
       },
