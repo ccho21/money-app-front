@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
 import { submitTransferTransaction } from '@/services/transactionService';
+import { startOfDay } from 'date-fns';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -67,8 +68,10 @@ export default function TransferForm({ mode, id }: Props) {
       />
       <DatePicker
         label='Date'
-        value={new Date(date)}
-        onChange={(val) => setField('date', val.toISOString().slice(0, 10))}
+        value={startOfDay(date)}
+        onChange={(val: Date) => {
+          setField('date', val.toISOString());
+        }}
       />
       <Input
         label='Note'

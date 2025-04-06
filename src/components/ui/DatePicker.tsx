@@ -38,7 +38,7 @@ export default function DatePicker({ label, value, onChange }: Props) {
     />
   ));
   CustomInput.displayName = 'CustomDatePickerInput';
-
+  console.log('### VALUe date picker', value);
   return (
     <div className='grid grid-cols-12 items-center gap-2'>
       {label && (
@@ -49,7 +49,7 @@ export default function DatePicker({ label, value, onChange }: Props) {
       <div className='col-span-10'>
         <ReactDatePicker
           selected={localDate}
-          onChange={handleChange}
+          onChange={(date: Date | null) => handleChange(date)}
           dateFormat='yyyy-MM-dd (eee)'
           customInput={<CustomInput />}
           popperPlacement='bottom-start'

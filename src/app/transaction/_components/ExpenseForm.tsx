@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import Selector from '@/components/ui/Selector';
 import { Textarea } from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
+import { startOfDay } from 'date-fns';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -74,8 +75,10 @@ export default function ExpenseForm({ mode, id }: Props) {
 
       <DatePicker
         label='Date'
-        value={new Date(date)}
-        onChange={(val) => setField('date', val.toISOString().slice(0, 10))}
+        value={startOfDay(date)}
+        onChange={(val: Date) => {
+          setField('date', val.toISOString());
+        }}
       />
 
       <Input

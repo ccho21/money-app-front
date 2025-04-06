@@ -31,13 +31,13 @@ export default function DailyPage() {
   useEffect(() => {
     if (range !== 'monthly')
       useDateFilterStore.getState().actions.setRange('monthly');
-  }, []);
+  }, [range]);
 
   // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
     const params: DateFilterParams = {
-      groupBy: range,
+      groupBy: 'daily',
       startDate,
       endDate,
     };
