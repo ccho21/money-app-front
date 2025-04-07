@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
-interface BottomSheetProps {
+interface SlideUpPanelProps {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -12,13 +12,13 @@ interface BottomSheetProps {
   backdropClassName?: string;
 }
 
-export default function BottomSheet({
+export default function SlideUpPanel({
   open,
   onClose,
   children,
   className,
   backdropClassName,
-}: BottomSheetProps) {
+}: SlideUpPanelProps) {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if ((e.target as HTMLElement).id === 'sheet-backdrop') onClose();

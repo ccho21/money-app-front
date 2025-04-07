@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { TransactionType } from '@/features/transaction/types';
 import { RangeOption } from '@/features/shared/types';
 import { formatDate } from '@/lib/date.util';

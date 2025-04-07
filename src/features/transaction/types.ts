@@ -1,3 +1,5 @@
+import { Account } from "../account/types";
+
 export type TransactionType = "income" | "expense" | "transfer";
 
 export interface Category {
@@ -5,13 +7,6 @@ export interface Category {
   name: string;
   icon: string;
   type: "income" | "expense";
-  color?: string | null;
-}
-
-export interface Account {
-  id: string;
-  name: string;
-  type: "CASH" | "BANK" | "CARD";
   color?: string | null;
 }
 

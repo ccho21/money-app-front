@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
+import { useAccountStore } from '@/stores/useAccountStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { submitTransaction } from '@/services/transactionService';
@@ -36,24 +35,15 @@ export default function ExpenseForm({ mode, id }: Props) {
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);
 
-  // ✅ date가 없으면 초기화 (방어용)
-  useEffect(() => {
-    console.log('@#$@#$@#$', date);
-    if (!date) {
-      const today = new Date().toISOString().slice(0, 10);
-      setField('date', today);
-    }
-  }, [date, setField]);
-
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, id);
       router.push('/dashboard/daily');
+      router.refresh(); // 👈 추가
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }
   };
-  // console.log('## DAT', date);
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
       <Input

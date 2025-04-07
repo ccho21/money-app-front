@@ -10,6 +10,7 @@ import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useEffect } from 'react';
 import { getDateRangeKey } from '@/lib/date.util';
 import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -60,7 +61,7 @@ export default function StatsBudgetDetailPage() {
     return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
 
   if (!budgetDetailResponse || !budgetDetailResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (

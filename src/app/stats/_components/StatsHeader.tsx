@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BottomSheet from '@/components/ui/BottomSheet';
+import SlideUpPanel from '@/components/ui/SlideUpPanel';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
 
@@ -21,7 +21,7 @@ export default function StatsHeader() {
   const [showModal, setShowModal] = useState(false);
 
   const {
-    state: { range, date },
+    state: { range },
     actions: { setRange, getSyncedURLFromState },
   } = useDateFilterStore();
 
@@ -75,7 +75,7 @@ export default function StatsHeader() {
       </div>
 
       {/* 하단 모달: 기간 옵션 선택 */}
-      <BottomSheet open={showModal} onClose={() => setShowModal(false)}>
+      <SlideUpPanel open={showModal} onClose={() => setShowModal(false)}>
         <div>
           <h2 className='pt-4 p-3 text-md font-semibold border-b border-gray-200 dark:border-zinc-700'>
             Period
@@ -97,7 +97,7 @@ export default function StatsHeader() {
             ))}
           </div>
         </div>
-      </BottomSheet>
+      </SlideUpPanel>
     </div>
   );
 }

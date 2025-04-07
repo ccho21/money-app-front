@@ -5,7 +5,7 @@ import {
   BudgetCategoryResponse,
   BudgetSummaryResponse,
   BudgetCategoryGroupResponse,
-} from './budget/types';
+} from '../features/budget/types';
 
 interface BudgetStoreState {
   budgetCategoryResponse?: BudgetCategoryResponse;

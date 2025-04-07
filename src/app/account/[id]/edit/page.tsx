@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchAccountById } from '@/app/account-dashboard/_components/accountService';
-import { updateAccount } from '@/app/account-dashboard/_components/accountService';
+import { fetchAccountById } from '@/services/accountService';
+import { updateAccount } from '@/services/accountService';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 import AccountForm from '../../_components/AccountForm';
-import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
+import { useAccountStore } from '@/stores/useAccountStore';
 
 export default function AccountEditPage() {
   const { id } = useParams();

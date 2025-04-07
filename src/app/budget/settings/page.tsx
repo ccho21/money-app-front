@@ -4,10 +4,10 @@ import { useEffect, useMemo } from "react";
 import { DateFilterParams } from "@/features/shared/types";
 import { useDateFilterStore } from "@/stores/useDateFilterStore";
 import { getDateRangeKey } from "@/lib/date.util";
-import { BudgetCategory } from "./_components/budget/types";
+import { BudgetCategory } from "../../../features/budget/types";
 import { CategoryListItem } from "@/app/stats/_components/CategoryListItem";
-import { fetchBudgetsByCategory } from "./_components/budgetService";
-import { useBudgetStore } from "./_components/useBudgetStore";
+import { fetchBudgetsByCategory } from "../../../services/budgetService";
+import { useBudgetStore } from "../../../stores/useBudgetStore";
 import { useRouter } from "next/navigation";
 import TopNav from "@/components/common/TopNav";
 import DateNavigator from "@/components/ui/DateNavigator";
@@ -24,7 +24,7 @@ export default function BudgetPage() {
 
   const dateRangeKey = useMemo(
     () => getDateRangeKey(date, { unit: range, amount: 0 }),
-    [date]
+    [date, range]
   );
 
   // 🚀 페이지 마운트 시 데이터 fetch

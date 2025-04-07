@@ -1,4 +1,5 @@
-import { Transaction } from '../../../../features/transaction/types';
+import { Transaction } from "../transaction/types";
+
 export type AccountType = 'CASH' | 'BANK' | 'CARD';
 export type FinancialType = 'ASSET' | 'LIABILITY';
 

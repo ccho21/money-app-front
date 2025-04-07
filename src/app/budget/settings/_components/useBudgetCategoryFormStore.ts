@@ -3,7 +3,7 @@ import { getDateRangeKey } from '@/lib/date.util';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { BudgetCategory } from './budget/types';
+import { BudgetCategory } from '../../../../features/budget/types';
 
 interface BudgetCategoryFormState {
   categoryId: string;

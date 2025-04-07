@@ -1,3 +1,6 @@
+export default function StatsNoteDetailPage() {
+  return <div>Note detail page</div>;
+}
 // "use client";
 
 // import DailyTransactionGroup from "@/app/dashboard/daily/_components/DailyTransactionGroup";

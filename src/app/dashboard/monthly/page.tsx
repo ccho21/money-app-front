@@ -1,22 +1,25 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { parse, startOfMonth, endOfMonth, format } from "date-fns";
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
-import MonthlyItem from "./_components/MonthlyItem";
-import TransactionSummaryBox from "../_components/TransactionSummaryBox";
+import MonthlyItem from './_components/MonthlyItem';
+import TransactionSummaryBox from '../_components/TransactionSummaryBox';
 
-import { useTransactionStore } from "@/stores/useTransactionStore";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { useShallow } from "zustand/react/shallow";
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useShallow } from 'zustand/react/shallow';
 
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
-} from "@/services/transactionService";
-import { TransactionSummary } from "@/features/transaction/types";
-import { DateFilterParams } from "@/features/shared/types";
-import { getDateRangeKey } from "@/lib/date.util";
+} from '@/services/transactionService';
+import { TransactionSummary } from '@/features/transaction/types';
+import { DateFilterParams } from '@/features/shared/types';
+import { getDateRangeKey } from '@/lib/date.util';
+import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
+import SummaryBox from '@/components/ui/SummaryBox';
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -32,32 +35,34 @@ export default function MonthlyPage() {
     }))
   );
 
-  const {
-    state: { date, range },
-  } = useDateFilterStore();
+  // ✅ date, range, setRange 선택적으로 구독
+  const { date, range, setRange } = useDateFilterStore(
+    useShallow((s) => ({
+      date: s.state.date,
+      range: s.state.range,
+      setRange: s.actions.setRange,
+    }))
+  );
 
   const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: "monthly", amount: 0 }),
+    () => getDateRangeKey(date, { unit: 'yearly', amount: 0 }),
     [date]
   );
 
-  // ✅ 최초 로딩 시 monthly 데이터 fetch
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split("_");
+    const [startDate, endDate] = dateRangeKey.split('_');
     const params: DateFilterParams = {
-      groupBy: "monthly",
+      groupBy: 'monthly',
       startDate,
       endDate,
     };
 
-    if (range !== "yearly")
-      useDateFilterStore.getState().actions.setRange("yearly");
-    const run = async () => {
-      console.log("### MONTHLY fetchTransactionSummary");
-      await fetchTransactionSummary(params);
-    };
-    run();
-  }, [dateRangeKey]);
+    if (range !== 'yearly') {
+      setRange('yearly'); // 최초 한 번만 변경
+    } else {
+      fetchTransactionSummary(params);
+    }
+  }, [dateRangeKey, range, setRange]);
 
   const monthlyData = transactionSummaryResponse?.data || [];
 
@@ -69,14 +74,13 @@ export default function MonthlyPage() {
 
       const label = summary.label;
 
-      // 열리는 항목이며, 아직 캐시에 없는 경우만 요청
       if (isOpening && !weeklySummaryByMonth[label]) {
-        const monthDate = parse(label, "yyyy-MM", new Date());
-        const startDate = format(startOfMonth(monthDate), "yyyy-MM-dd");
-        const endDate = format(endOfMonth(monthDate), "yyyy-MM-dd");
+        const monthDate = parse(label, 'yyyy-MM', new Date());
+        const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
+        const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
 
         const params: DateFilterParams = {
-          groupBy: "weekly",
+          groupBy: 'weekly',
           startDate,
           endDate,
         };
@@ -94,35 +98,63 @@ export default function MonthlyPage() {
   );
 
   if (isLoading) {
-    return <p className="text-center mt-10 text-gray-500">불러오는 중...</p>;
+    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   if (!transactionSummaryResponse || !transactionSummaryResponse.data.length) {
-    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
-
   return (
-    <div>
-      <TransactionSummaryBox
-        incomeTotal={transactionSummaryResponse.incomeTotal}
-        expenseTotal={transactionSummaryResponse.expenseTotal}
-      />
-
-      {monthlyData.map((summary, index) => (
-        <MonthlyItem
-          key={summary.label}
-          date={summary.label}
-          income={summary.incomeTotal}
-          expense={summary.expenseTotal}
-          open={openIndex === index}
-          onToggle={() => handleToggle(index, summary)}
-          weeklyData={
-            openIndex === index && weeklySummaryByMonth[summary.label]
-              ? weeklySummaryByMonth[summary.label]
-              : []
-          }
+    <>
+      <Panel>
+        <SummaryBox
+          items={[
+            {
+              label: 'Income',
+              value: transactionSummaryResponse.incomeTotal,
+              color:
+                transactionSummaryResponse.incomeTotal > 0
+                  ? 'text-[#3C50E0]'
+                  : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Exp.',
+              value: transactionSummaryResponse.expenseTotal,
+              color:
+                transactionSummaryResponse.expenseTotal > 0
+                  ? 'text-[#fb5c4c]'
+                  : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Total',
+              value:
+                transactionSummaryResponse.incomeTotal -
+                transactionSummaryResponse.expenseTotal,
+              color: 'text-gray-900 dark:text-white',
+              prefix: '₩',
+            },
+          ]}
         />
-      ))}
-    </div>
+      </Panel>
+      <Panel>
+        {monthlyData.map((summary, index) => (
+          <MonthlyItem
+            key={summary.label}
+            date={summary.label}
+            income={summary.incomeTotal}
+            expense={summary.expenseTotal}
+            open={openIndex === index}
+            onToggle={() => handleToggle(index, summary)}
+            weeklyData={
+              openIndex === index && weeklySummaryByMonth[summary.label]
+                ? weeklySummaryByMonth[summary.label]
+                : []
+            }
+          />
+        ))}
+      </Panel>
+    </>
   );
 }

@@ -1,13 +1,13 @@
 import { DateFilterParams } from '@/features/shared/types';
-import { useBudgetStore } from '@/app/budget/settings/_components/useBudgetStore';
+import { useBudgetStore } from '@/stores/useBudgetStore';
 import {
   createBudgetCategoryAPI,
   fetchBudgetsByCategoryAPI,
   fetchBudgetSummaryAPI,
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
-} from './budget/api';
-import { CreateBudgetCategory, UpdateBudgetCategory } from './budget/types';
+} from '../features/budget/api';
+import { CreateBudgetCategory, UpdateBudgetCategory } from '../features/budget/types';
 
 export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {

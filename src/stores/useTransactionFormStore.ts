@@ -13,7 +13,7 @@ interface TransactionFormState {
     amount: string;
     accountId: string;
     categoryId: string;
-    date: string;
+    date: string; // ISO date
     note: string;
     description: string;
     from: string;
@@ -36,7 +36,7 @@ const initialFormState: TransactionFormState['state'] = {
   amount: '',
   accountId: '',
   categoryId: '',
-  date: new Date().toISOString().slice(0, 10),
+  date: new Date().toISOString(),
   note: '',
   description: '',
   from: '',

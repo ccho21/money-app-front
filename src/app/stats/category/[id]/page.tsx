@@ -10,6 +10,7 @@ import { CategoryType } from '@/features/category/types';
 import DailyTransactionGroup from '@/app/dashboard/daily/_components/TransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import BudgetBarChart from '../../budget/_components/BudgetBarChart';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -60,7 +61,7 @@ export default function StatsCategoryDetailPage() {
     return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
 
   if (!categoryDetailResponse || !categoryDetailResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (

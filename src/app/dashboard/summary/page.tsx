@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
-import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
-import { useBudgetStore } from '@/app/budget/settings/_components/useBudgetStore';
+import { useAccountStore } from '@/stores/useAccountStore';
+import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 
 import SummaryBox from '@/components/ui/SummaryBox';
 import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
 
-import { fetchAccountTransactionSummary } from '@/app/account-dashboard/_components/accountService';
-import { fetchBudgetSummary } from '@/app/budget/settings/_components/budgetService';
+import { fetchAccountTransactionSummary } from '@/services/accountService';
+import { fetchBudgetSummary } from '@/services/budgetService';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
-import { BudgetSummary } from '@/app/budget/settings/_components/budget/types';
+import { BudgetSummary } from '@/features/budget/types';
+import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
 
 export default function SummaryPage() {
   const {
@@ -82,39 +84,45 @@ export default function SummaryPage() {
 
   // ✅ 데이터 없음
   if (!budgetSummaryResponse || !budgetSummaryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (
-    <div className='px-4 space-y-6'>
-      <SummaryBox
-        items={[
-          {
-            label: 'Income',
-            value: incomeTotal,
-            color: incomeTotal > 0 ? 'text-[#3C50E0]' : 'text-gray-400',
-            prefix: '₩',
-          },
-          {
-            label: 'Exp.',
-            value: expenseTotal,
-            color: expenseTotal > 0 ? 'text-[#fb5c4c]' : 'text-gray-400',
-            prefix: '₩',
-          },
-          {
-            label: 'Total',
-            value: incomeTotal - expenseTotal,
-            color: 'text-gray-900 dark:text-white',
-            prefix: '₩',
-          },
-        ]}
-      />
+    <div className=''>
+      <Panel>
+        <SummaryBox
+          items={[
+            {
+              label: 'Income',
+              value: incomeTotal,
+              color: incomeTotal > 0 ? 'text-[#3C50E0]' : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Exp.',
+              value: expenseTotal,
+              color: expenseTotal > 0 ? 'text-[#fb5c4c]' : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Total',
+              value: incomeTotal - expenseTotal,
+              color: 'text-gray-900 dark:text-white',
+              prefix: '₩',
+            },
+          ]}
+        />
+      </Panel>
 
-      <AccountsBox accounts={summaries} />
+      <Panel>
+        <AccountsBox accounts={summaries} />
+      </Panel>
 
-      {budgetSummaryResponse.data.map((summary: BudgetSummary) => (
-        <BudgetBox key={summary.categoryId} item={summary} />
-      ))}
+      <Panel>
+        {budgetSummaryResponse.data.map((summary: BudgetSummary) => (
+          <BudgetBox key={summary.categoryId} item={summary} />
+        ))}
+      </Panel>
     </div>
   );
 }

@@ -1,13 +1,11 @@
 'use client';
 
 import { JSX, useEffect, useMemo, useState } from 'react';
-import Calendar from 'react-calendar';
 import { addDays } from 'date-fns';
 
 import 'react-calendar/dist/Calendar.css';
 import '@/styles/custom-calendar.css';
 
-import TransactionDetailSheet from './_components/TransactionDetailSheet';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -21,6 +19,9 @@ import {
 } from '@/features/transaction/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { formatDate } from '@/lib/date.util';
+import CalendarWithTransactions from './_components/CalendarWithTransactions';
+import TransactionDetailView from './_components/TransactionDetailView';
+import Panel from '@/components/ui/Panel';
 
 export default function CalendarPage() {
   const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
@@ -38,10 +39,11 @@ export default function CalendarPage() {
     actions: { setRange },
   } = useDateFilterStore();
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTransactionSummary, setSelectedTransactionSummary] =
-    useState<TransactionSummary>();
-  const [open, setOpen] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<{
+    date: Date;
+    summary?: TransactionSummary;
+    open: boolean;
+  } | null>(null);
 
   const calendarTileMap = useMemo(() => {
     const map = new Map<string, JSX.Element>();
@@ -95,14 +97,12 @@ export default function CalendarPage() {
 
   const handleDateClick = async (clickedDate: Date) => {
     const dateStr = formatDate(clickedDate);
-    setSelectedDate(clickedDate);
 
     const fromStore = transactionSummaryResponse?.data.find(
       (g) => g.label === dateStr
     );
     if (fromStore) {
-      setSelectedTransactionSummary(fromStore);
-      setOpen(true);
+      setSelectedDetail({ date: clickedDate, summary: fromStore, open: true });
       return;
     }
 
@@ -126,16 +126,18 @@ export default function CalendarPage() {
             data: [...transactionSummaryResponse.data, summary],
           });
         }
-        setSelectedTransactionSummary(summary);
+        setSelectedDetail({ date: clickedDate, summary, open: true });
       } else {
-        setSelectedTransactionSummary(undefined);
+        setSelectedDetail({
+          date: clickedDate,
+          summary: undefined,
+          open: true,
+        });
       }
     } catch (err) {
       console.error('❌ 일간 거래 요약 가져오기 실패:', err);
-      setSelectedTransactionSummary(undefined);
+      setSelectedDetail({ date: clickedDate, summary: undefined, open: true });
     }
-
-    setOpen(true);
   };
 
   if (isLoading) {
@@ -144,33 +146,32 @@ export default function CalendarPage() {
 
   return (
     <>
-      <Calendar
-        calendarType='gregory'
-        value={date}
-        onClickDay={handleDateClick}
-        showNavigation={false}
-        prevLabel={null}
-        nextLabel={null}
-        prev2Label={null}
-        next2Label={null}
-        tileDisabled={({ date: tileDate }) =>
-          tileDate.getMonth() !== date.getMonth()
-        }
-        tileContent={({ date }) =>
-          calendarTileMap.get(formatDate(date)) ?? null
-        }
-      />
-
-      {selectedDate && (
-        <TransactionDetailSheet
-          open={open}
-          date={selectedDate}
-          transactionSummary={selectedTransactionSummary}
-          onClose={() => setOpen(false)}
-          onPrev={() => setSelectedDate((prev) => prev && addDays(prev, -1))}
-          onNext={() => setSelectedDate((prev) => prev && addDays(prev, 1))}
+      <Panel>
+        <CalendarWithTransactions
+          date={date}
+          tileContentMap={calendarTileMap}
+          onSelectDate={handleDateClick}
         />
-      )}
+
+        {selectedDetail && (
+          <TransactionDetailView
+            open={selectedDetail.open}
+            date={selectedDetail.date}
+            transactionSummary={selectedDetail.summary}
+            onClose={() => setSelectedDetail(null)}
+            onPrev={() =>
+              setSelectedDetail((prev) =>
+                prev ? { ...prev, date: addDays(prev.date, -1) } : null
+              )
+            }
+            onNext={() =>
+              setSelectedDetail((prev) =>
+                prev ? { ...prev, date: addDays(prev.date, 1) } : null
+              )
+            }
+          />
+        )}
+      </Panel>
     </>
   );
 }

@@ -10,6 +10,7 @@ import { fetchStatsByCatgory } from '@/services/statsService';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { getDateRangeKey } from '@/lib/date.util';
 import { CategoryType } from '@/features/category/types';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 interface CategoryChartData {
   name: string;
@@ -18,8 +19,24 @@ interface CategoryChartData {
   color: string;
 }
 
+type PieActiveShapeProps = {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload: {
+    name: string;
+  } & Record<string, unknown>;
+  percent: number;
+  value: number;
+};
+
 // 🧠 Pie 강조 렌더 함수
-const renderActiveShape = (props: any) => {
+const renderActiveShape = (props: PieActiveShapeProps) => {
   const RADIAN = Math.PI / 180;
   const {
     cx,
@@ -146,7 +163,7 @@ export default function StatsView() {
     return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
 
   if (!categoryResponse || !categoryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (

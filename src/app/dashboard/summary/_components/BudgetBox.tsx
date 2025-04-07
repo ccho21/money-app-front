@@ -15,7 +15,7 @@ export default function BudgetBox({ item }: Props) {
       : 'bg-green-500';
 
   return (
-    <div className='bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border dark:border-gray-700'>
+    <div className='bg-white dark:bg-gray-900 p-4 shadow-sm border-b border-gray-200'>
       <div className='flex justify-between items-center mb-2'>
         <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
           {item.categoryName}

@@ -24,7 +24,7 @@ export default function SummaryBox({
   return (
     <div
       className={cn(
-        `grid grid-cols-${columns} gap-2 text-sm font-medium px-3 pb-2 border-b border-gray-200 dark:border-gray-700`,
+        `grid grid-cols-${columns} gap-2 text-sm font-medium px-3 border-b border-gray-200 dark:border-gray-700 py-1`,
         className
       )}
     >

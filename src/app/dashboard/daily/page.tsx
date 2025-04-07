@@ -1,36 +1,40 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+
 import SummaryBox from '@/components/ui/SummaryBox';
+import TransactionGroup from './_components/TransactionGroup';
+
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { fetchTransactionSummary } from '@/services/transactionService';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { useShallow } from 'zustand/shallow';
-import TransactionGroup from './_components/TransactionGroup';
-import { useRouter } from 'next/navigation';
-import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
-import { parse, startOfDay } from 'date-fns';
+import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
 
 export default function DailyPage() {
   const router = useRouter();
-  const { isLoading, transactionSummaryResponse } = useTransactionStore(
+  const pathname = usePathname(); // ✅ 추가된 부분
+
+  const { isLoading } = useTransactionStore(
     useShallow((state) => ({
       isLoading: state.isLoading,
-      transactionSummaryResponse: state.transactionSummaryResponse,
     }))
   );
+
+  const transactionSummaryResponse = useTransactionStore((state) => {
+    return state.transactionSummaryResponse;
+  });
 
   const { setSelectedTransaction } = useTransactionStore(
     (state) => state.actions
   );
 
-  const { setField } = useTransactionFormStore((state) => state.actions);
-
   const {
     state: { date, range },
-    actions: { setRange },
   } = useDateFilterStore();
 
   const dateRangeKey = useMemo(
@@ -39,11 +43,11 @@ export default function DailyPage() {
   );
 
   useEffect(() => {
-    if (range !== 'monthly')
+    if (range !== 'monthly') {
       useDateFilterStore.getState().actions.setRange('monthly');
+    }
   }, [range]);
 
-  // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
     const params: DateFilterParams = {
@@ -52,54 +56,55 @@ export default function DailyPage() {
       endDate,
     };
     const run = async () => {
-      console.log('### DAILY fetchTransactionSummary');
       await fetchTransactionSummary(params);
     };
     run();
-  }, [dateRangeKey, setRange, range]);
+  }, [dateRangeKey, pathname]); // ✅ pathname 포함해서 라우팅 변경 시도 포함
 
   if (isLoading) {
     return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
   }
 
   if (!transactionSummaryResponse) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (
     <>
-      <SummaryBox
-        items={[
-          {
-            label: 'Income',
-            value: transactionSummaryResponse.incomeTotal,
-            color:
-              transactionSummaryResponse.incomeTotal > 0
-                ? 'text-[#3C50E0]'
-                : 'text-gray-400',
-            prefix: '₩',
-          },
-          {
-            label: 'Exp.',
-            value: transactionSummaryResponse.expenseTotal,
-            color:
-              transactionSummaryResponse.expenseTotal > 0
-                ? 'text-[#fb5c4c]'
-                : 'text-gray-400',
-            prefix: '₩',
-          },
-          {
-            label: 'Total',
-            value:
-              transactionSummaryResponse.incomeTotal -
-              transactionSummaryResponse.expenseTotal,
-            color: 'text-gray-900 dark:text-white',
-            prefix: '₩',
-          },
-        ]}
-      />
+      <Panel>
+        <SummaryBox
+          items={[
+            {
+              label: 'Income',
+              value: transactionSummaryResponse.incomeTotal,
+              color:
+                transactionSummaryResponse.incomeTotal > 0
+                  ? 'text-[#3C50E0]'
+                  : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Exp.',
+              value: transactionSummaryResponse.expenseTotal,
+              color:
+                transactionSummaryResponse.expenseTotal > 0
+                  ? 'text-[#fb5c4c]'
+                  : 'text-gray-400',
+              prefix: '₩',
+            },
+            {
+              label: 'Total',
+              value:
+                transactionSummaryResponse.incomeTotal -
+                transactionSummaryResponse.expenseTotal,
+              color: 'text-gray-900 dark:text-white',
+              prefix: '₩',
+            },
+          ]}
+        />
+      </Panel>
 
-      <div className='mt-4 space-y-4'>
+      <Panel>
         {transactionSummaryResponse.data.map((group) => (
           <TransactionGroup
             key={group.label}
@@ -109,22 +114,16 @@ export default function DailyPage() {
             incomeTotal={group.incomeTotal}
             expenseTotal={group.expenseTotal}
             transactions={group.transactions}
-            // showRange={type === 'weekly'}
             onTransactionClick={(tx) => {
               setSelectedTransaction(tx);
               router.push(`/transaction/${tx.id}/edit`);
             }}
             onHeaderClick={() => {
-              const parsed = parse(group.label, 'yyyy-MM-dd', new Date());
-              useTransactionFormStore.getState().actions.init({
-                type: 'expense',
-                date: parsed.toISOString(),
-              });
-              router.push('/transaction/new');
+              router.push(`/transaction/new?date=${group.label}`);
             }}
           />
         ))}
-      </div>
+      </Panel>
     </>
   );
 }

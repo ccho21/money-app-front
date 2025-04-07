@@ -7,7 +7,7 @@ import Selector from '@/components/ui/Selector';
 import DatePicker from '@/components/ui/DatePicker';
 import { Textarea } from '@/components/ui/Textarea';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
-import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
+import { useAccountStore } from '@/stores/useAccountStore';
 import { submitTransferTransaction } from '@/services/transactionService';
 import { startOfDay } from 'date-fns';
 

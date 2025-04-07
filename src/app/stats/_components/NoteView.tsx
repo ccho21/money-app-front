@@ -8,6 +8,7 @@ import { getDateRangeKey } from "@/lib/date.util";
 import { TransactionType } from "@/features/transaction/types";
 import { formatCurrency } from "@/lib/utils";
 import { fetchStatsByNote } from "@/services/statsService";
+import EmptyMessage from "@/components/ui/EmptyMessage";
 
 type SortKey = "note" | "count" | "amount";
 type SortDirection = "asc" | "desc";
@@ -44,7 +45,7 @@ export default function NoteView() {
     run();
   }, [date, range, tab]);
 
-  const rawList = noteResponse?.data || [];
+  const rawList = useMemo(() => noteResponse?.data || [], [noteResponse]);
 
   const sortedList = useMemo(() => {
     return [...rawList].sort((a, b) => {
@@ -85,7 +86,7 @@ export default function NoteView() {
   if (isLoading) return <p className="p-4">Loading...</p>;
 
   if (!noteResponse || rawList.length === 0) {
-    return <p className="text-center mt-10 text-gray-400">데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (

@@ -1,14 +1,8 @@
-import {
-  fetchAccountsAPI,
-  fetchAccountSummaryAPI,
-  fetchAccountsByIdAPI,
-  createAccountAPI,
-  updateAccountAPI,
-} from '@/app/account-dashboard/_components/account/api';
-import { useAccountStore } from '@/app/account-dashboard/_components/useAccountStore';
-import { SubmitAccountPayload } from '@/app/account-dashboard/_components/account/types';
+import { useAccountStore } from '@/stores/useAccountStore';
 import { DateFilterParams } from '@/features/shared/types';
-import { fetchAccountsDashboardAPI } from '@/app/budget/settings/_components/budget/api';
+import { fetchAccountsDashboardAPI } from '@/features/budget/api';
+import { SubmitAccountPayload } from '@/features/account/types';
+import { createAccountAPI, fetchAccountsAPI, fetchAccountsByIdAPI, fetchAccountSummaryAPI, updateAccountAPI } from '@/features/account/api';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
   const {

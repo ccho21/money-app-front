@@ -1,10 +1,6 @@
+import { Account, AccountDashboardResponse, AccountTransactionSummaryDto } from '@/features/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import {
-  Account,
-  AccountTransactionSummaryDto,
-  AccountDashboardResponse,
-} from '@/app/account-dashboard/_components/account/types';
 
 interface AccountStoreState {
   state: {

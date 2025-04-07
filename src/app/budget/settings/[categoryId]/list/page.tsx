@@ -8,9 +8,9 @@ import { fromUTCToLocal, getDateRangeKey } from "@/lib/date.util";
 import { DateFilterParams } from "@/features/shared/types";
 import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useBudgetStore } from "../../_components/useBudgetStore";
+import { useBudgetStore } from "../../../../../stores/useBudgetStore";
 import { useBudgetCategoryFormStore } from "../../_components/useBudgetCategoryFormStore";
-import { fetchBudgetCategoriesByCategoryId } from "../../_components/budgetService";
+import { fetchBudgetCategoriesByCategoryId } from "../../../../../services/budgetService";
 import TopNav from "@/components/common/TopNav";
 import DateNavigator from "@/components/ui/DateNavigator";
 

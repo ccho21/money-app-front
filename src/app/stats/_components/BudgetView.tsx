@@ -9,6 +9,7 @@ import { CategoryListItem } from './CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { CategoryType } from '@/features/category/types';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 export default function BudgetView() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function BudgetView() {
   if (isLoading) return <p className='p-4'>Loading...</p>;
 
   if (!budgetResponse) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return <EmptyMessage />;
   }
 
   return (

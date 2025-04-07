@@ -126,17 +126,10 @@ export const fetchTransactions = async () => {
   if (data) setTransactions(data);
 };
 
-// ✅ 중복 호출 방지용 key 저장
-let lastSummaryKey = '';
-
 export const fetchTransactionSummary = async (params: DateFilterParams) => {
   const {
     actions: { setTransactionSummaryResponse, setLoading, setError },
   } = useTransactionStore.getState();
-
-  const key = `${params.groupBy}_${params.startDate}_${params.endDate}`;
-  if (key === lastSummaryKey) return;
-  lastSummaryKey = key;
 
   const data = await handleAsync(
     () => fetchTransactionSummaryAPI(params),

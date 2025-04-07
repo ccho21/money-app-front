@@ -7,8 +7,6 @@ import DateNavigator from "@/components/ui/DateNavigator";
 import StatsHeader from "./_components/StatsHeader";
 import TabMenu from "@/components/common/TabMenu";
 import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { parseLocalDate } from "@/lib/date.util";
-import { isValid } from "date-fns";
 import { TransactionType } from "@/features/transaction/types";
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
@@ -26,7 +24,7 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     if (typeParam) {
       setTransactionType(typeParam as TransactionType);
     }
-  }, [typeParam, transactionType]);
+  }, [typeParam, transactionType, setTransactionType]);
 
   const tabs = [
     { key: "expense", label: "Expense" },
