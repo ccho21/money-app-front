@@ -147,13 +147,13 @@ export const fetchTransactionSummary = async (params: DateFilterParams) => {
   if (data) setTransactionSummaryResponse(data);
 };
 
-export const fetchTransactionCalendar = async (year: string, month: string) => {
+export const fetchTransactionCalendar = async (date: string) => {
   const {
     actions: { setCalendarItems, setLoading, setError },
   } = useTransactionStore.getState();
 
   const data = await handleAsync(
-    () => fetchTransactionCalendarAPI(year, month),
+    () => fetchTransactionCalendarAPI(date),
     setLoading,
     setError
   );

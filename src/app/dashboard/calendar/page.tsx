@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useEffect, useMemo, useRef, useState } from 'react';
+import { JSX, useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import { addDays } from 'date-fns';
 
@@ -43,8 +43,6 @@ export default function CalendarPage() {
     useState<TransactionSummary>();
   const [open, setOpen] = useState(false);
 
-  const fetchedYearMonthRef = useRef<string | null>(null);
-
   const calendarTileMap = useMemo(() => {
     const map = new Map<string, JSX.Element>();
 
@@ -83,14 +81,9 @@ export default function CalendarPage() {
 
   // ✅ 이미 호출한 월이면 다시 요청하지 않음
   useEffect(() => {
-    const year = String(date.getFullYear());
-    const month = String(date.getMonth() + 1);
-    const currentKey = `${year}-${month}`;
-    if (fetchedYearMonthRef.current === currentKey) return;
     const run = async () => {
       console.log('### CALENDAR fetchTransactionSummary');
-      await fetchTransactionCalendar(year, month);
-      fetchedYearMonthRef.current = currentKey;
+      await fetchTransactionCalendar(date.toISOString());
     };
     run();
   }, [date]);

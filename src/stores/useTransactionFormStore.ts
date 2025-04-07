@@ -16,8 +16,8 @@ interface TransactionFormState {
     date: string;
     note: string;
     description: string;
-    from: string; // ✅ transfer 전용
-    to: string; // ✅ transfer 전용
+    from: string;
+    to: string;
   };
   actions: {
     setField: <K extends keyof TransactionFormState['state']>(
@@ -25,6 +25,7 @@ interface TransactionFormState {
       value: TransactionFormState['state'][K]
     ) => void;
     setAllFields: (data: Partial<TransactionFormFields>) => void;
+    init: (data?: Partial<TransactionFormFields>) => void;
     reset: () => void;
     getFormData: () => SubmitTransactionPayload;
   };
@@ -49,9 +50,7 @@ export const useTransactionFormStore = create<TransactionFormState>()(
       actions: {
         setField: (key, value) =>
           set(
-            (s) => ({
-              state: { ...s.state, [key]: value },
-            }),
+            (s) => ({ state: { ...s.state, [key]: value } }),
             false,
             `transactionForm/setField:${key}`
           ),
@@ -63,18 +62,23 @@ export const useTransactionFormStore = create<TransactionFormState>()(
                 ...s.state,
                 ...data,
                 amount: String(data.amount ?? s.state.amount),
-                date: data.date ?? s.state.date,
-                note: data.note ?? '',
-                description: data.description ?? '',
-                accountId: data.accountId ?? '',
-                categoryId: data.categoryId ?? '',
-                from: data.from ?? '',
-                to: data.to ?? '',
-                type: data.type ?? s.state.type,
               },
             }),
             false,
             'transactionForm/setAllFields'
+          ),
+
+        init: (preset = {}) =>
+          set(
+            () => ({
+              state: {
+                ...initialFormState,
+                ...preset,
+                amount: String(preset.amount ?? ''),
+              },
+            }),
+            false,
+            'transactionForm/init'
           ),
 
         reset: () =>
@@ -84,7 +88,7 @@ export const useTransactionFormStore = create<TransactionFormState>()(
             'transactionForm/reset'
           ),
 
-        getFormData: (): SubmitTransactionPayload => {
+        getFormData: () => {
           const {
             type,
             amount,

@@ -7,7 +7,7 @@ import { getDateRangeKey } from '@/lib/date.util';
 import { useEffect } from 'react';
 import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
 import { CategoryType } from '@/features/category/types';
-import DailyTransactionGroup from '@/app/dashboard/daily/_components/DailyTransactionGroup';
+import DailyTransactionGroup from '@/app/dashboard/daily/_components/TransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import BudgetBarChart from '../../budget/_components/BudgetBarChart';
 

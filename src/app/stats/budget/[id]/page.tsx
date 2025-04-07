@@ -1,7 +1,7 @@
 'use client';
 
 import { CategoryType } from '@/features/category/types';
-import DailyTransactionGroup from '@/app/dashboard/daily/_components/DailyTransactionGroup';
+import DailyTransactionGroup from '@/app/dashboard/daily/_components/TransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import BudgetBarChart from '../_components/BudgetBarChart';
 import { useParams } from 'next/navigation';

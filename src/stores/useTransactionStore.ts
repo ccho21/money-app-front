@@ -1,18 +1,18 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   Transaction,
   TransactionSummary,
   TransactionSummaryResponse,
   TransactionCalendarItem,
-} from "@/features/transaction/types";
+} from '@/features/transaction/types';
 
 interface TransactionFilters {
-  type?: "income" | "expense";
+  type?: 'income' | 'expense';
   categoryId?: string;
   search?: string;
-  sort?: "date" | "amount";
-  order?: "asc" | "desc";
+  sort?: 'date' | 'amount';
+  order?: 'asc' | 'desc';
   page?: number;
   limit?: number;
   startDate?: string;
@@ -20,8 +20,8 @@ interface TransactionFilters {
 }
 
 const defaultFilters: TransactionFilters = {
-  sort: "date",
-  order: "desc",
+  sort: 'date',
+  order: 'desc',
   page: 1,
   limit: 20,
 };
@@ -64,30 +64,30 @@ export const useTransactionStore = create<
     error: null,
     actions: {
       setTransactions: (txs) =>
-        set((state) => ({ transactions: txs }), false, "transactions/set"),
+        set(() => ({ transactions: txs }), false, 'transactions/set'),
       setSelectedTransaction: (tx) =>
         set(
-          (state) => ({ selectedTransaction: tx }),
+          () => ({ selectedTransaction: tx }),
           false,
-          "transactions/selectOne"
+          'transactions/selectOne'
         ),
       setTransactionSummaryResponse: (data) =>
         set(
-          (state) => ({ transactionSummaryResponse: data }),
+          () => ({ transactionSummaryResponse: data }),
           false,
-          "summary/setTransactionSummaryResponse"
+          'summary/setTransactionSummaryResponse'
         ),
       setTransactionSummary: (data) =>
         set(
-          (state) => ({ transactionSummary: data }),
+          () => ({ transactionSummary: data }),
           false,
-          "summary/setTransactionSummary"
+          'summary/setTransactionSummary'
         ),
       setCalendarItems: (items) =>
         set(
-          (state) => ({ transactionCalendarItems: items }),
+          () => ({ transactionCalendarItems: items }),
           false,
-          "calendar/setItems"
+          'calendar/setItems'
         ),
       setFilters: (filters) =>
         set(
@@ -95,25 +95,25 @@ export const useTransactionStore = create<
             filters: { ...state.filters, ...filters },
           }),
           false,
-          "filters/updatePartial"
+          'filters/updatePartial'
         ),
       resetFilters: () =>
-        set(() => ({ filters: { ...defaultFilters } }), false, "filters/reset"),
+        set(() => ({ filters: { ...defaultFilters } }), false, 'filters/reset'),
       setDateRange: (start, end) =>
         set(
           (state) => ({
             filters: { ...state.filters, startDate: start, endDate: end },
           }),
           false,
-          "filters/setDateRange"
+          'filters/setDateRange'
         ),
       setLoading: (isLoading) =>
         set(
           () => ({ isLoading }),
           false,
-          isLoading ? "ui/loading:start" : "ui/loading:done"
+          isLoading ? 'ui/loading:start' : 'ui/loading:done'
         ),
-      setError: (err) => set(() => ({ error: err }), false, "ui/setError"),
+      setError: (err) => set(() => ({ error: err }), false, 'ui/setError'),
       clear: () =>
         set(
           () => ({
@@ -127,7 +127,7 @@ export const useTransactionStore = create<
             error: null,
           }),
           false,
-          "transactions/clearAll"
+          'transactions/clearAll'
         ),
     },
   }))

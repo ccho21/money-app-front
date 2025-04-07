@@ -38,7 +38,6 @@ export default function DatePicker({ label, value, onChange }: Props) {
     />
   ));
   CustomInput.displayName = 'CustomDatePickerInput';
-  console.log('### VALUe date picker', value);
   return (
     <div className='grid grid-cols-12 items-center gap-2'>
       {label && (

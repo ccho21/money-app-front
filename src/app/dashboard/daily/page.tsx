@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import DailyTransactionGroup from './_components/DailyTransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
@@ -9,14 +8,25 @@ import { fetchTransactionSummary } from '@/services/transactionService';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { useShallow } from 'zustand/shallow';
+import TransactionGroup from './_components/TransactionGroup';
+import { useRouter } from 'next/navigation';
+import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { parse, startOfDay } from 'date-fns';
 
 export default function DailyPage() {
+  const router = useRouter();
   const { isLoading, transactionSummaryResponse } = useTransactionStore(
     useShallow((state) => ({
       isLoading: state.isLoading,
       transactionSummaryResponse: state.transactionSummaryResponse,
     }))
   );
+
+  const { setSelectedTransaction } = useTransactionStore(
+    (state) => state.actions
+  );
+
+  const { setField } = useTransactionFormStore((state) => state.actions);
 
   const {
     state: { date, range },
@@ -91,7 +101,28 @@ export default function DailyPage() {
 
       <div className='mt-4 space-y-4'>
         {transactionSummaryResponse.data.map((group) => (
-          <DailyTransactionGroup key={group.label} group={group} />
+          <TransactionGroup
+            key={group.label}
+            label={group.label}
+            rangeStart={group.rangeStart}
+            rangeEnd={group.rangeEnd}
+            incomeTotal={group.incomeTotal}
+            expenseTotal={group.expenseTotal}
+            transactions={group.transactions}
+            // showRange={type === 'weekly'}
+            onTransactionClick={(tx) => {
+              setSelectedTransaction(tx);
+              router.push(`/transaction/${tx.id}/edit`);
+            }}
+            onHeaderClick={() => {
+              const parsed = parse(group.label, 'yyyy-MM-dd', new Date());
+              useTransactionFormStore.getState().actions.init({
+                type: 'expense',
+                date: parsed.toISOString(),
+              });
+              router.push('/transaction/new');
+            }}
+          />
         ))}
       </div>
     </>
