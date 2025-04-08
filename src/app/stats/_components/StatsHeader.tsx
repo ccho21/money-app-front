@@ -42,7 +42,7 @@ export default function StatsHeader() {
   };
 
   return (
-    <div className='p-4 space-y-2'>
+    <div className='p-2'>
       {/* 탭 버튼 + 드롭다운 */}
       <div className='flex justify-between items-center rounded-md bg-gray-100 dark:bg-zinc-800 py-1 px-2'>
         <div className='flex gap-2'>

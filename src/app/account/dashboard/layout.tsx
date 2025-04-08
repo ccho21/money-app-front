@@ -1,14 +1,12 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { TransactionType } from '@/features/transaction/types';
-import TopNav from '@/components/common/TopNav';
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type');
 
@@ -26,10 +24,10 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
-      <TopNav
+      {/* <TopNav
         title={'Accounts'}
         onAdd={() => router.push('/account/new')}
-      ></TopNav>
+      ></TopNav> */}
       <main className='flex-1 overflow-y-auto bg-gray-100'>{children}</main>
       <BottomTabBar />
     </div>

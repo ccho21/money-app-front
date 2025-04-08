@@ -1,12 +1,20 @@
-import { Account, AccountDashboardResponse, AccountTransactionSummaryDto } from '@/features/account/types';
+// ✅ useAccountStore.ts (기존 구조에 따라 fetchSummary 기능 확장)
+
+import {
+  Account,
+  AccountDashboardResponse,
+  AccountTransactionSummaryDto,
+} from '@/features/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { DateFilterParams } from '@/features/shared/types';
 
 interface AccountStoreState {
   state: {
     accounts: Account[];
     selectedAccount?: Account;
-    summaries: AccountTransactionSummaryDto[];
+    summaryResponse: TransactionSummaryResponse;
     accountDashboard: AccountDashboardResponse | null;
     isLoading: boolean;
     error: string | null;
@@ -19,6 +27,7 @@ interface AccountStoreState {
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
+    fetchSummary: (params: DateFilterParams) => Promise<void>;
   };
 }
 
@@ -59,21 +68,21 @@ export const useAccountStore = create<AccountStoreState>()(
           set(
             (s) => ({ state: { ...s.state, accountDashboard: data } }),
             false,
-            'accounts/setAccountDashboard'
+            'accounts/setDashboard'
           ),
 
         setLoading: (loading) =>
           set(
             (s) => ({ state: { ...s.state, isLoading: loading } }),
             false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
+            'accounts/setLoading'
           ),
 
-        setError: (err) =>
+        setError: (error) =>
           set(
-            (s) => ({ state: { ...s.state, error: err } }),
+            (s) => ({ state: { ...s.state, error } }),
             false,
-            'ui/setError'
+            'accounts/setError'
           ),
 
         clear: () =>
@@ -82,17 +91,49 @@ export const useAccountStore = create<AccountStoreState>()(
               state: {
                 accounts: [],
                 selectedAccount: undefined,
-                summaries: [],
+                summaryResponse: undefined,
                 accountDashboard: null,
                 isLoading: false,
                 error: null,
               },
             }),
             false,
-            'accounts/clearAll'
+            'accounts/clear'
           ),
+
+        // ✅ 신규 추가: fetchSummary
+        fetchSummary: async (params) => {
+          set(
+            (s) => ({ state: { ...s.state, isLoading: true, error: null } }),
+            false,
+            'accounts/fetchSummary'
+          );
+          try {
+            const result = await fetch(params);
+            set(
+              (s) => ({ state: { ...s.state, summaries: result } }),
+              false,
+              'accounts/setSummaryResult'
+            );
+          } catch (err) {
+            console.error('[AccountStore] fetchSummary error:', err);
+            set(
+              (s) => ({
+                state: { ...s.state, error: 'Failed to load summary' },
+              }),
+              false,
+              'accounts/setSummaryError'
+            );
+          } finally {
+            set(
+              (s) => ({ state: { ...s.state, isLoading: false } }),
+              false,
+              'accounts/setLoadingFalse'
+            );
+          }
+        },
       },
     }),
-    { name: 'useAccountStore' }
+    { name: 'AccountStore' }
   )
 );

@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-import { CategoryListItem } from './CategoryListItem';
 import { useStatsStore } from '@/stores/useStatsStore';
-import { fetchStatsByCatgory } from '@/services/statsService';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { fetchStatsByCatgory } from '@/services/statsService';
 import { getDateRangeKey } from '@/lib/date.util';
 import { CategoryType } from '@/features/category/types';
 import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
+import { CategoryListItem } from './CategoryListItem';
+
+const RADIAN = Math.PI / 180;
 
 interface CategoryChartData {
   name: string;
@@ -19,107 +22,9 @@ interface CategoryChartData {
   color: string;
 }
 
-type PieActiveShapeProps = {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  startAngle: number;
-  endAngle: number;
-  fill: string;
-  payload: {
-    name: string;
-  } & Record<string, unknown>;
-  percent: number;
-  value: number;
-};
-
-// 🧠 Pie 강조 렌더 함수
-const renderActiveShape = (props: PieActiveShapeProps) => {
-  const RADIAN = Math.PI / 180;
-  const {
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    payload,
-    percent,
-    value,
-  } = props;
-
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  const ey = my;
-  const textAnchor = cos >= 0 ? 'start' : 'end';
-
-  return (
-    <g>
-      <text
-        x={cx}
-        y={cy}
-        dy={8}
-        textAnchor='middle'
-        fill={fill}
-        className='text-sm'
-      >
-        {payload.name}
-      </text>
-      <Sector
-        {...{ cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill }}
-      />
-      <Sector
-        {...{
-          cx,
-          cy,
-          startAngle,
-          endAngle,
-          innerRadius: outerRadius + 6,
-          outerRadius: outerRadius + 10,
-          fill,
-        }}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill='none'
-      />
-      <circle cx={ex} cy={ey} r={2} fill={fill} />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill='#333'
-        className='text-xs'
-      >
-        {value.toLocaleString()}원
-      </text>
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill='#999'
-        className='text-xs'
-      >
-        {`(${(percent * 100).toFixed(1)}%)`}
-      </text>
-    </g>
-  );
-};
-
 export default function StatsView() {
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(0);
+
   const {
     state: { isLoading, categoryResponse },
   } = useStatsStore();
@@ -138,6 +43,47 @@ export default function StatsView() {
       })) || []
     );
   }, [categoryResponse]);
+
+  const renderCustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+    index,
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const name = categoryChart[index]?.name;
+
+    return (
+      <g>
+        <text
+          x={x}
+          y={y - 10}
+          fill='white'
+          textAnchor='middle'
+          dominantBaseline='central'
+          className='text-sm font-semibold'
+        >
+          {name}
+        </text>
+        <text
+          x={x}
+          y={y + 10}
+          fill='white'
+          textAnchor='middle'
+          dominantBaseline='central'
+          className='text-xs'
+        >
+          {`${Math.round(percent * 100)}%`}
+        </text>
+      </g>
+    );
+  };
 
   useEffect(() => {
     const run = async () => {
@@ -159,44 +105,43 @@ export default function StatsView() {
     router.push(`/stats/category/${id}`);
   };
 
-  if (isLoading)
+  if (isLoading) {
     return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
+  }
 
   if (!categoryResponse || !categoryResponse.data.length) {
     return <EmptyMessage />;
   }
 
   return (
-    <div className=''>
-      {categoryResponse.data.length > 0 && (
-        <div className='w-full h-64 py-6 mb-4 bg-white dark:bg-zinc-800'>
+    <div>
+      {/* ✅ 파이 차트 영역만 개선 */}
+      <Panel className='mb-2 relative'>
+        <div className='w-full h-72'>
           <ResponsiveContainer>
             <PieChart>
               <Pie
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
                 data={categoryChart}
                 cx='50%'
                 cy='50%'
-                innerRadius={60}
-                outerRadius={80}
+                outerRadius={100} // ✅ 더 크게
+                labelLine={false}
+                label={renderCustomLabel}
                 dataKey='value'
-                onMouseEnter={(_, index) => setActiveIndex(index)}
               >
-                {categoryResponse.data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={categoryResponse.data[index].color}
-                  />
+                {categoryChart.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-        </div>
-      )}
 
-      {/* 카테고리 리스트 (공통) */}
-      <div className='bg-white dark:bg-zinc-800 divide-y border-t border-gray-100 overflow-hidden'>
+          {/* 중앙 텍스트 (추후 Total 표시할 수도 있음) */}
+        </div>
+      </Panel>
+
+      {/* ✅ 하단 리스트는 원래 코드 그대로 유지 */}
+      <Panel>
         {categoryResponse.data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
@@ -207,7 +152,7 @@ export default function StatsView() {
             color={item.color}
           />
         ))}
-      </div>
+      </Panel>
     </div>
   );
 }

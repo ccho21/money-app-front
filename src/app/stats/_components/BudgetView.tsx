@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { CategoryType } from '@/features/category/types';
 import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
 
 export default function BudgetView() {
   const router = useRouter();
@@ -47,26 +48,32 @@ export default function BudgetView() {
   }
 
   return (
-    <div className=''>
-      <div className='flex items-center justify-between p-3 pt-5'>
-        <div>
-          <p className='text-xs text-gray-500 dark:text-gray-400'>
-            Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
-          </p>
-          <p className='text-2xl font-semibold dark:text-white'>
-            {budgetResponse.totalRemaining.toLocaleString()}원
-          </p>
-        </div>
+    <>
+      <Panel className='p-3 mb-1'>
+        <div className='grid grid-cols-12 items-center'>
+          {/* 왼쪽: Remaining 정보 */}
+          <div className='col-span-6'>
+            <p className='text-xs text-gray-500 dark:text-gray-400'>
+              Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
+            </p>
+            <p className='text-base font-semibold text-gray-900 dark:text-white mt-0.5'>
+              {budgetResponse.totalRemaining.toLocaleString()}원
+            </p>
+          </div>
 
-        <Button
-          className='text-xs px-3 rounded-sm border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300'
-          variant='outline'
-          onClick={() => router.push('/budget/settings')}
-        >
-          Budget Setting
-        </Button>
-      </div>
-      <div className='bg-white dark:bg-zinc-800 divide-y border-t border-gray-200 overflow-hidden'>
+          {/* 오른쪽: 버튼 */}
+          <div className='col-span-6 flex justify-end'>
+            <Button
+              className='text-xs px-2 py-1 h-auto rounded-sm border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300'
+              variant='outline'
+              onClick={() => router.push('/budget/settings')}
+            >
+              Budget Setting
+            </Button>
+          </div>
+        </div>
+      </Panel>
+      <Panel>
         {budgetResponse.data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
@@ -78,7 +85,7 @@ export default function BudgetView() {
             variant='with-progress-a'
           />
         ))}
-      </div>
-    </div>
+      </Panel>
+    </>
   );
 }

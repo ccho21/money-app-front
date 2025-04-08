@@ -82,14 +82,14 @@ export default function MonthlyItem({
         <div className='text-right space-y-1'>
           <div className='flex justify-end gap-2 text-sm font-medium'>
             <span className='text-blue-500'>
-              ₩{income?.toLocaleString?.() ?? 0}
+              ${income?.toLocaleString?.() ?? 0}
             </span>
             <span className='text-red-500'>
-              ₩{expense?.toLocaleString?.() ?? 0}
+              ${expense?.toLocaleString?.() ?? 0}
             </span>
           </div>
           <div className='text-xs text-gray-400 dark:text-gray-500'>
-            Total ₩{total?.toLocaleString?.() ?? 0}
+            Total ${total?.toLocaleString?.() ?? 0}
           </div>
         </div>
       </button>
@@ -116,12 +116,12 @@ export default function MonthlyItem({
                 <div className='flex gap-2 text-sm'>
                   {week.incomeTotal > 0 && (
                     <span className='text-blue-500'>
-                      ₩{week.incomeTotal?.toLocaleString?.() ?? 0}
+                      ${week.incomeTotal?.toLocaleString?.() ?? 0}
                     </span>
                   )}
                   {week.expenseTotal > 0 && (
                     <span className='text-red-500'>
-                      ₩{week.expenseTotal?.toLocaleString?.() ?? 0}
+                      ${week.expenseTotal?.toLocaleString?.() ?? 0}
                     </span>
                   )}
                 </div>

@@ -31,8 +31,8 @@ export default function BudgetBox({ item }: Props) {
         />
       </div>
       <div className='flex justify-between text-xs text-gray-500 mt-1 dark:text-gray-400'>
-        <span>₩{item.usedAmount.toLocaleString()}</span>
-        <span>₩{item.budgetAmount.toLocaleString()}</span>
+        <span>${item.usedAmount.toLocaleString()}</span>
+        <span>${item.budgetAmount.toLocaleString()}</span>
       </div>
     </div>
   );

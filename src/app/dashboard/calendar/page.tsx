@@ -59,12 +59,12 @@ export default function CalendarPage() {
         <div className='text-[10px]'>
           {hasIncome && (
             <div className='text-blue-500'>
-              +₩{item.income.toLocaleString()}
+              +${item.income.toLocaleString()}
             </div>
           )}
           {hasExpense && (
             <div className='text-red-500'>
-              -₩{item.expense.toLocaleString()}
+              -${item.expense.toLocaleString()}
             </div>
           )}
         </div>

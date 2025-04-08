@@ -21,15 +21,15 @@ export default function TransactionSummaryBox({
     <div className='grid grid-cols-12 text-sm px-3 pb-2 border-b border-gray-200 dark:border-zinc-700'>
       <div className='col-span-4 flex flex-col items-start'>
         <span className='text-xs text-muted-foreground'>Income</span>
-        <span className={incomeColor}>₩{incomeTotal.toLocaleString()}</span>
+        <span className={incomeColor}>${incomeTotal.toLocaleString()}</span>
       </div>
       <div className='col-span-4 flex flex-col items-center'>
         <span className='text-xs text-muted-foreground'>Exp.</span>
-        <span className={expenseColor}>₩{expenseTotal.toLocaleString()}</span>
+        <span className={expenseColor}>${expenseTotal.toLocaleString()}</span>
       </div>
       <div className='col-span-4 flex flex-col items-end'>
         <span className='text-xs text-muted-foreground'>Total</span>
-        <span className={totalColor}>₩{total.toLocaleString()}</span>
+        <span className={totalColor}>${total.toLocaleString()}</span>
       </div>
     </div>
   );

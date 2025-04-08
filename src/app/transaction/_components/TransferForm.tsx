@@ -43,7 +43,7 @@ export default function TransferForm({ mode, id }: Props) {
     <div className='space-y-5 px-4 pt-5 pb-10'>
       <Input
         label='Amount'
-        placeholder='₩ 0'
+        placeholder='$ 0'
         value={amount}
         onChange={(e) => setField('amount', e.target.value)}
         type='number'

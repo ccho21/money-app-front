@@ -82,7 +82,7 @@ export default function StatsCategoryDetailPage() {
               categoryDetailResponse.incomeTotal > 0
                 ? 'text-[#3C50E0]'
                 : 'text-gray-400',
-            prefix: '₩',
+            prefix: '$',
           },
           {
             label: 'Exp.',
@@ -91,7 +91,7 @@ export default function StatsCategoryDetailPage() {
               categoryDetailResponse.expenseTotal > 0
                 ? 'text-[#fb5c4c]'
                 : 'text-gray-400',
-            prefix: '₩',
+            prefix: '$',
           },
           {
             label: 'Total',
@@ -99,7 +99,7 @@ export default function StatsCategoryDetailPage() {
               categoryDetailResponse.incomeTotal -
               categoryDetailResponse.expenseTotal,
             color: 'text-gray-900 dark:text-white',
-            prefix: '₩',
+            prefix: '$',
           },
         ]}
       />

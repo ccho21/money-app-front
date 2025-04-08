@@ -8,7 +8,7 @@ interface PanelContentProps {
 
 export default function PanelContent({ children }: PanelContentProps) {
   return (
-    <div className="overflow-y-auto px-5 pb-24 max-h-[calc(80vh-60px)]">
+    <div className='overflow-y-auto px-3 pb-24 max-h-[calc(80vh-60px)]'>
       {children}
     </div>
   );

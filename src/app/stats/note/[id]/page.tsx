@@ -171,7 +171,7 @@ export default function StatsNoteDetailPage() {
 //               MOCK_TRANSACTIONS.incomeTotal > 0
 //                 ? "text-[#3C50E0]"
 //                 : "text-gray-400",
-//             prefix: "₩",
+//             prefix: "$",
 //           },
 //           {
 //             label: "Exp.",
@@ -180,14 +180,14 @@ export default function StatsNoteDetailPage() {
 //               MOCK_TRANSACTIONS.expenseTotal > 0
 //                 ? "text-[#fb5c4c]"
 //                 : "text-gray-400",
-//             prefix: "₩",
+//             prefix: "$",
 //           },
 //           {
 //             label: "Total",
 //             value:
 //               MOCK_TRANSACTIONS.incomeTotal - MOCK_TRANSACTIONS.expenseTotal,
 //             color: "text-gray-900 dark:text-white",
-//             prefix: "₩",
+//             prefix: "$",
 //           },
 //         ]}
 //       />

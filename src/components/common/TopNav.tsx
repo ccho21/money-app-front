@@ -32,7 +32,7 @@ export default function TopNav({
   onAdd,
 }: TopNavProps) {
   return (
-    <div className='relative flex items-center justify-between px-5 py-5 border-b border-gray-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm'>
+    <div className='relative flex items-center justify-between px-2 py-2 border-b border-gray-200 dark:border-zinc-700 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm'>
       {/* 왼쪽 영역 */}
       <div className='flex items-center gap-3 z-10'>
         {showSearchButton && (
@@ -56,7 +56,7 @@ export default function TopNav({
 
       {/* 타이틀 */}
       {center ? (
-        <div className='absolute inset-0 flex justify-center items-center pointer-events-none'>
+        <div className='flex justify-center items-center pointer-events-none'>
           <h1 className='text-xl font-semibold text-gray-900 dark:text-white'>
             {title}
           </h1>

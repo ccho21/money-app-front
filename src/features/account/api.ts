@@ -1,10 +1,11 @@
 import { get, patch, post } from '@/features/shared/api';
 import {
   Account,
+  // AccountDashboardResponse,
   AccountTransactionSummaryDto,
   SubmitAccountPayload,
-} from '@/app/account-dashboard/_components/account/types';
-import { DateFilterParams } from '../../../../features/shared/types';
+} from './types';
+import { DateFilterParams } from '../shared/types';
 
 export const createAccountAPI = (payload: SubmitAccountPayload) => {
   return post('/accounts', payload);
@@ -32,3 +33,12 @@ export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
     `/accounts/grouped-transactions?${query.toString()}`
   );
 };
+
+// export function fetchAccountSummaryByAccountIdAPI(paramsdc: DateFilterParams) {
+//   const { accountId, ...params } = params;
+//   const query = new URLSearchParams();
+
+//   if (params.startDate) query.append('startDate', params.startDate);
+//   if (params.endDate) query.append('endDate', params.endDate);
+//   return post(`/account/${accountId}/summary`, dateFilter);
+// }

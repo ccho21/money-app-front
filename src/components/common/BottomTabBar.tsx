@@ -21,7 +21,7 @@ const baseTabs = [
     key: 'accounts',
     label: 'Accounts',
     icon: <Coins className='w-5 h-5' />,
-    basePath: '/account-dashboard',
+    basePath: '/account/dashboard',
   },
   {
     key: 'more',
