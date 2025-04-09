@@ -33,8 +33,7 @@ export default function TransactionEditPage() {
         t && t.id === id ? t : await fetchTransactionById(id.toString());
 
       if (tx) {
-        // ✅ 폼 필드 초기화
-        setAllFields({
+        const preset = {
           type: tx.type,
           amount: String(tx.amount),
           date: tx.date,
@@ -44,7 +43,11 @@ export default function TransactionEditPage() {
           categoryId: tx.category?.id || '',
           from: tx.accountId || '',
           to: tx.toAccountId ?? '',
-        });
+        };
+
+        // ✅ 폼 필드 초기화
+        setAllFields(preset);
+        useTransactionFormStore.getState().actions.init(preset);
       } else {
         alert('해당 거래를 불러올 수 없습니다.');
         router.push('/dashboard/daily');

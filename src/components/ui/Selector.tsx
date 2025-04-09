@@ -7,7 +7,7 @@ interface SelectorProps<T> {
   label: string;
   value: string;
   onChange: (val: string) => void;
-  options: T[];
+  options: T[] | readonly T[];
   getOptionLabel: (option: T) => string;
   getOptionValue: (option: T) => string;
   onEdit?: () => void;

@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { getDateRangeKey } from '@/lib/date.util';
 import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
 import EmptyMessage from '@/components/ui/EmptyMessage';
-import TransactionGroup from '@/app/dashboard/daily/_components/TransactionGroup';
+import TransactionGroup from '@/components/common/TransactionGroup';
 import Panel from '@/components/ui/Panel';
 
 const MOCK_BAR_DATA = [

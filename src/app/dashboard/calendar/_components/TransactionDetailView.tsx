@@ -8,7 +8,7 @@ import { Transaction, TransactionSummary } from '@/features/transaction/types';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter } from 'next/navigation';
 import { PlusIcon, MinusIcon } from 'lucide-react';
-import TransactionItem from '../../daily/_components/TransactionItem';
+import TransactionItem from '../../../../components/common/TransactionItem';
 import { formatCurrency } from '@/lib/utils';
 
 interface Props {

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 type SummaryItem = {
   label: string;
   value: number;
-  color?: string;
+  color?: string;     // 있으면 우선 사용
   prefix?: string;
   suffix?: string;
 };
@@ -13,7 +13,7 @@ type SummaryItem = {
 interface SummaryBoxProps {
   items: SummaryItem[];
   className?: string;
-  columns?: number; // 기본값 3, 향후 유연한 grid 지원
+  columns?: number;
 }
 
 export default function SummaryBox({
@@ -28,21 +28,30 @@ export default function SummaryBox({
         className
       )}
     >
-      {items.map((item, index) => (
-        <div
-          key={`${item.label}-${index}`}
-          className='flex flex-col items-center'
-        >
-          <span className='text-xs text-muted-foreground dark:text-gray-400'>
-            {item.label}
-          </span>
-          <span className={cn(item.color ?? 'text-gray-900 dark:text-white')}>
-            {item.prefix ?? ''}
-            {item.value.toLocaleString()}
-            {item.suffix ?? ''}
-          </span>
-        </div>
-      ))}
+      {items.map((item, index) => {
+        const computedColor = item.color
+          ?? (item.value > 0
+              ? 'text-blue-600 dark:text-white'        // 양수: 파란 계열 강조
+              : item.value === 0
+              ? 'text-gray-500'                         // 0: 중간 회색
+              : 'text-[#fb5c4c]');                      // 음수: 빨간색
+
+        return (
+          <div
+            key={`${item.label}-${index}`}
+            className='flex flex-col items-center'
+          >
+            <span className='text-xs text-muted-foreground dark:text-gray-400'>
+              {item.label}
+            </span>
+            <span className={cn(computedColor)}>
+              {item.prefix ?? ''}
+              {item.value.toLocaleString()}
+              {item.suffix ?? ''}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

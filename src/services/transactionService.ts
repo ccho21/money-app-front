@@ -11,6 +11,7 @@ import {
   getTransactionByIdAPI,
   createTransferTransactionAPI,
   updateTransferTransactionAPI,
+  deleteTransactionAPI,
 } from '@/features/transaction/api';
 
 import { TransactionSummaryResponse } from '@/features/transaction/types';
@@ -165,5 +166,14 @@ export const fetchTransactionSummaryWeekly = async (
       err instanceof Error ? err.message : '요약 데이터 조회 실패';
     console.error('❌ fetchTransactionSummaryWeekly error:', message);
     throw new Error(message);
+  }
+};
+
+export const deleteTransaction = async (id: string) => {
+  try {
+    // 1. 트랜잭션 삭제 요청 (linkedTransfer 포함 처리됨)
+    await deleteTransactionAPI(id);
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : '삭제 실패');
   }
 };

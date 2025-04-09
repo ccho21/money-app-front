@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
-import { AccountType } from '@/app/account-dashboard/_components/account/types';
+import { AccountType } from '@/features/account/types';
 // import { Switch } from '@/components/ui/Switch'; // ✅ 자동결제 toggle용
 
 const GROUP_OPTIONS = [

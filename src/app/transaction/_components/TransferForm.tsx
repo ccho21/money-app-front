@@ -10,6 +10,8 @@ import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { submitTransferTransaction } from '@/services/transactionService';
 import { startOfDay } from 'date-fns';
+import { deleteTransaction } from '@/services/transactionService';
+import { useEffect, useState } from 'react';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -20,12 +22,18 @@ export default function TransferForm({ mode, id }: Props) {
   const router = useRouter();
   const {
     state: { amount, from, to, note, description, date },
-    actions: { setField },
+    actions: { setField, isDirty },
   } = useTransactionFormStore();
 
   const {
     state: { accounts = [] },
   } = useAccountStore();
+
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    setDirty(isDirty());
+  }, [amount, from, to, note, description, date, isDirty]);
 
   const fromAccount = accounts.find((a) => a.id === from);
   const toAccount = accounts.find((a) => a.id === to);
@@ -36,6 +44,16 @@ export default function TransferForm({ mode, id }: Props) {
       router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '이체 저장 실패');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteTransaction(id);
+      router.back();
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '삭제 실패');
     }
   };
 
@@ -89,6 +107,12 @@ export default function TransferForm({ mode, id }: Props) {
       <Button onClick={handleSubmit} className='w-full mt-6'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
+
+      {mode === 'edit' && !dirty && id && (
+        <Button onClick={() => handleDelete(id)} className='w-full mt-4'>
+          Delete
+        </Button>
+      )}
     </div>
   );
 }

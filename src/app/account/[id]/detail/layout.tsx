@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const accountId = useParams().id;
   const router = useRouter();
 
-  const current = pathname.split('/')[2] || 'daily';
+  const current = pathname.split('/')[4]   || 'daily';
   const dateParam = searchParams.get('date');
 
   const {

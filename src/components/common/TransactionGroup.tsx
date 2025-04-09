@@ -2,9 +2,9 @@
 
 import { cn, formatCurrency } from '@/lib/utils';
 import { Transaction } from '@/features/transaction/types';
-import TransactionItem from './TransactionItem';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
 import { PlusIcon, MinusIcon } from 'lucide-react';
+import TransactionItem from './TransactionItem';
 
 interface TransactionGroupProps {
   label: string;

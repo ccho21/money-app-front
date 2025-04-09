@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
@@ -12,6 +14,7 @@ import Selector from '@/components/ui/Selector';
 import { Textarea } from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
 import { startOfDay } from 'date-fns';
+import { deleteTransaction } from '@/services/transactionService';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -20,14 +23,16 @@ type Props = {
 
 export default function IncomeForm({ mode, id }: Props) {
   const router = useRouter();
+
   const {
     state: { amount, accountId, categoryId, note, description, date },
-    actions: { setField },
+    actions: { setField, isDirty },
   } = useTransactionFormStore();
 
   const {
     state: { accounts = [] },
   } = useAccountStore();
+
   const {
     state: { categories = [] },
   } = useCategoryStore();
@@ -35,12 +40,28 @@ export default function IncomeForm({ mode, id }: Props) {
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);
 
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    setDirty(isDirty());
+  }, [amount, accountId, categoryId, note, description, date, isDirty]);
+
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, id);
       router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteTransaction(id);
+      router.back();
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '삭제 실패');
     }
   };
 
@@ -75,7 +96,7 @@ export default function IncomeForm({ mode, id }: Props) {
 
       <DatePicker
         label='Date'
-        value={startOfDay(date)}
+        value={startOfDay(new Date(date))}
         onChange={(val: Date) => {
           setField('date', val.toISOString());
         }}
@@ -94,9 +115,15 @@ export default function IncomeForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button onClick={handleSubmit} className='w-full mt-6'>
+      <Button onClick={handleSubmit} disabled={!dirty} className='w-full mt-6'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
+
+      {mode === 'edit' && !dirty && id && (
+        <Button onClick={() => handleDelete(id)} className='w-full mt-4'>
+          Delete
+        </Button>
+      )}
     </div>
   );
 }

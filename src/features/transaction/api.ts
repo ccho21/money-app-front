@@ -1,4 +1,4 @@
-import { post, get, put } from '@/features/shared/api';
+import { post, get, put, del } from '@/features/shared/api';
 import {
   SubmitTransactionPayload,
   Transaction,
@@ -50,4 +50,12 @@ export const fetchTransactionSummaryAPI = async (params: DateFilterParams) => {
 
 export const fetchTransactionCalendarAPI = async (date: string) => {
   return get<TransactionCalendarItem[]>(`/transactions/calendar?date=${date}`);
+};
+
+export const deleteTransactionAPI = async (id: string) => {
+  try {
+    await del(`/transactions/${id}`);
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : '삭제 실패');
+  }
 };
