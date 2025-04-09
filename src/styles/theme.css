@@ -1,0 +1,39 @@
+/* ===== 기본 색상 변수 ===== */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-primary: #22c55e; /* 기본 green */
+}
+
+/* ===== 테마 컬러 클래스들 ===== */
+.theme-white {
+  --color-primary: #f1f1f1;
+}
+.theme-red {
+  --color-primary: #f97316;
+}
+.theme-pink {
+  --color-primary: #fb7185;
+}
+.theme-green {
+  --color-primary: #22c55e;
+}
+.theme-blue {
+  --color-primary: #3b82f6;
+}
+.theme-black {
+  --color-primary: #1f2937;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* 변경 ✅ */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}

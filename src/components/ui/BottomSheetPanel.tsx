@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface SlideInPanelProps {
   isOpen: boolean;
@@ -11,7 +10,7 @@ interface SlideInPanelProps {
   title?: string;
 }
 
-export default function SlideInPanel({
+export default function BottomSheetPanel({
   isOpen,
   onClose,
   children,
@@ -30,18 +29,19 @@ export default function SlideInPanel({
             onClick={onClose}
           />
 
-          {/* Side Slide-in panel (Right → Left entry) */}
+          {/* Bottom sheet panel */}
           <motion.div
-            className='fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-white dark:bg-zinc-900 flex flex-col shadow-lg'
-            initial={{ x: '100%' }} // 시작은 오른쪽 바깥
-            animate={{ x: 0 }} // 화면 안으로 슬라이드 인
-            exit={{ x: '100%' }} // 오른쪽으로 나감
+            className='fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 rounded-t-2xl shadow-lg'
+            initial={{ y: '100%' }} // 아래에서 시작
+            animate={{ y: 0 }} // 위로 슬라이드 인
+            exit={{ y: '100%' }} // 다시 아래로 나감
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className='flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-800'>
               <h2 className='text-base font-semibold text-gray-900 dark:text-white'>
-                {title ?? 'Settings'}
+                {title ?? '설정'}
               </h2>
               <button
                 onClick={onClose}
@@ -52,7 +52,7 @@ export default function SlideInPanel({
             </div>
 
             {/* Content */}
-            <div className='flex-1 overflow-y-auto p-4'>{children}</div>
+            <div className='max-h-[70vh] overflow-y-auto p-4'>{children}</div>
           </motion.div>
         </>
       )}

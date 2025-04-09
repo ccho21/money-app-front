@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import SlideUpPanel from '@/components/ui/SlideUpPanel';
+import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
 
@@ -75,11 +75,8 @@ export default function StatsHeader() {
       </div>
 
       {/* 하단 모달: 기간 옵션 선택 */}
-      <SlideUpPanel open={showModal} onClose={() => setShowModal(false)}>
+      <BottomSheetPanel isOpen={showModal} onClose={() => setShowModal(false)}>
         <div>
-          <h2 className='pt-4 p-3 text-md font-semibold border-b border-gray-200 dark:border-zinc-700'>
-            Period
-          </h2>
           <div className='text-sm divide-y border-b border-gray-200 dark:border-zinc-700'>
             {RANGE_OPTIONS.map((option) => (
               <button
@@ -97,7 +94,7 @@ export default function StatsHeader() {
             ))}
           </div>
         </div>
-      </SlideUpPanel>
+      </BottomSheetPanel>
     </div>
   );
 }

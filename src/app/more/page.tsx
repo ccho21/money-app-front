@@ -15,11 +15,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUserSettingStore } from '@/stores/useUserSettingStore';
-import {
-  useOptionModalStore,
-  SettingKey,
-  SettingValueMap,
-} from '@/stores/useOptionModalStore';
+import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
 import { usePanelStore } from '@/stores/usePanelStore';
 import OptionSelectorModal from '@/components/ui/OptionSelectorModal';
 import SlideInPanelRenderer from '@/components/common/SlideInPanelRenderer';

@@ -13,6 +13,7 @@ import MainCurrencyPanel from './panels/MainCurrencyPanel';
 import SubCurrencyPanel from './panels/SubCurrencyPanel';
 import BackupResetPanel from './panels/BackupResetPanel';
 import AccountGroupPanel from './panels/AccountGroupPanel';
+import SlideInPanel from '../ui/SlideInPanel';
 
 export default function SlideInPanelRenderer() {
   const { currentPanel, closePanel } = usePanelStore();
@@ -73,7 +74,9 @@ export default function SlideInPanelRenderer() {
             <X className='w-5 h-5 text-gray-500 dark:text-gray-300' />
           </button>
         </div>
-        {renderPanelContent()}
+        <SlideInPanel isOpen={true} onClose={closePanel} title='설정'>
+          {renderPanelContent()}
+        </SlideInPanel>
       </div>
     </div>,
     document.body

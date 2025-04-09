@@ -3,7 +3,7 @@
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import PanelContent from '@/components/ui/PanelContent';
 import PanelHeader from '@/components/ui/PanelHeader';
-import SlideUpPanel from '@/components/ui/SlideUpPanel';
+import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
 import { Transaction, TransactionSummary } from '@/features/transaction/types';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter } from 'next/navigation';
@@ -40,7 +40,7 @@ export default function TransactionDetailView({
   };
 
   return (
-    <SlideUpPanel open={open} onClose={onClose}>
+    <BottomSheetPanel isOpen={open} onClose={onClose}>
       <PanelHeader>
         <div className='grid grid-cols-12 items-center px-3 pt-3 pb-1'>
           {/* 날짜 (8칸) */}
@@ -97,6 +97,6 @@ export default function TransactionDetailView({
           </div>
         )}
       </PanelContent>
-    </SlideUpPanel>
+    </BottomSheetPanel>
   );
 }
