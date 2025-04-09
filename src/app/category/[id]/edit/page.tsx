@@ -18,8 +18,6 @@ export default function EditCategoryPage() {
   // 경로에서 id 추출 (e.g. /category/abc123/edit → abc123)
   const id = pathname.split('/')[2];
 
- 
-
   useEffect(() => {
     fillCategoryForm(id);
   }, [id]);
@@ -37,8 +35,8 @@ export default function EditCategoryPage() {
   };
 
   return (
-    <div className="pt-4">
-      <h2 className="text-xl font-semibold px-4 pb-2">카테고리 수정</h2>
+    <div className='pt-4'>
+      <h2 className='text-md font-semibold px-4 pb-2'>카테고리 수정</h2>
       <CategoryForm onSubmit={handleSubmit} isEdit />
     </div>
   );

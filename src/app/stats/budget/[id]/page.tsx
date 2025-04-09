@@ -70,7 +70,7 @@ export default function StatsBudgetDetailPage() {
       <Panel>
         {/* 헤더 */}
         <div className='text-center space-y-1'>
-          <h1 className='text-lg font-bold'>Food</h1>
+          <h1 className='text-md font-bold'>Food</h1>
           <p className='text-sm text-gray-500'>Mar 2025</p>
         </div>
 

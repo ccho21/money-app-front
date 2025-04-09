@@ -5,7 +5,6 @@ import { fetchAccounts } from '@/services/accountService';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useRouter } from 'next/navigation';
 import { Account } from '@/features/account/types';
-import { formatCurrency } from '@/lib/utils';
 
 export default function AccountEditPage() {
   const router = useRouter();
@@ -43,7 +42,7 @@ export default function AccountEditPage() {
             </h2>
 
             <div>
-              {list.map((acc, idx) => (
+              {list.map((acc) => (
                 <div
                   key={acc.id}
                   onClick={() => handleClick(acc)}
@@ -54,14 +53,6 @@ export default function AccountEditPage() {
                     <div className='text-sm font-medium text-gray-900 truncate'>
                       {acc.name}
                     </div>
-                    <div className='text-xs text-gray-400 truncate'>
-                      {acc.description ?? ''}
-                    </div>
-                  </div>
-
-                  {/* 오른쪽: 잔액 */}
-                  <div className='text-sm font-semibold text-right text-gray-800 whitespace-nowrap'>
-                    {formatCurrency(acc.balance)}
                   </div>
                 </div>
               ))}

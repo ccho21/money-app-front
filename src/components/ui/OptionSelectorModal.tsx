@@ -56,7 +56,7 @@ export default function OptionSelectorModal<T extends string | number>({
               <button
                 key={String(option.value)}
                 className={clsx(
-                  'w-full flex items-center justify-between px-6 py-4 text-lg',
+                  'w-full flex items-center justify-between px-6 py-4 text-md',
                   selected === option.value
                     ? 'text-red-500 font-semibold'
                     : 'text-gray-800 dark:text-gray-200'

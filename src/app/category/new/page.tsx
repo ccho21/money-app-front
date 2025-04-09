@@ -27,7 +27,7 @@ export default function AddCategoryPage() {
 
   return (
     <div className='pt-4'>
-      <h2 className='text-xl font-semibold px-4 pb-2'>카테고리 추가</h2>
+      <h2 className='text-md font-semibold px-4 pb-2'>카테고리 추가</h2>
       <CategoryForm onSubmit={handleSubmit} />
     </div>
   );

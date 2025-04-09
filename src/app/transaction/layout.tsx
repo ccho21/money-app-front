@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import TopNav from '@/components/common/TopNav';
 import TabMenu from '@/components/common/TabMenu';
+import { useUIStore } from '@/stores/useUIStore';
 
 const TABS = [
   { key: 'income', label: 'Income' },
@@ -32,6 +33,18 @@ export default function TransactionLayout({
   };
 
   useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Trans.',
+      onBack: () => router.back(),
+      // onAdd: () => router.push('/category/new'),
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+    };
+  }, [router]);
+
+  useEffect(() => {
     if (state.type && state.type !== activeTab) {
       setActiveTab(state.type);
     }
@@ -40,10 +53,7 @@ export default function TransactionLayout({
   return (
     <div className='min-h-screen flex flex-col h-full'>
       {/* ✅ 공통 TopNav 사용 */}
-      <TopNav
-        title={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-        onBack={router.back}
-      />
+      <TopNav />
 
       {/* ✅ 공통 TabMenu 사용 */}
       <TabMenu

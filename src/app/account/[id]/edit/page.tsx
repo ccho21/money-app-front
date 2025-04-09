@@ -7,6 +7,7 @@ import { updateAccount } from '@/services/accountService';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 import AccountForm from '../../_components/AccountForm';
 import { useAccountStore } from '@/stores/useAccountStore';
+import { useUIStore } from '@/stores/useUIStore';
 
 export default function AccountEditPage() {
   const { id } = useParams();
@@ -14,6 +15,19 @@ export default function AccountEditPage() {
   const {
     actions: { setAllFields, getFormData, reset },
   } = useAccountFormStore();
+
+  useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Account Edit.',
+      onBack: () => {
+        router.back();
+      },
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+    };
+  }, [router]);
 
   useEffect(() => {
     const run = async () => {

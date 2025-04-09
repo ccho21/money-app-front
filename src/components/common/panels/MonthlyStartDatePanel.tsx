@@ -16,7 +16,7 @@ export default function MonthlyStartDatePanel() {
 
   return (
     <div className='p-4'>
-      <h2 className='text-lg font-semibold text-center mb-6'>
+      <h2 className='text-md font-semibold text-center mb-6'>
         Monthly Start Date
       </h2>
 

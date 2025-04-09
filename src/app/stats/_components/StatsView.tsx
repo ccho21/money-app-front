@@ -79,7 +79,7 @@ export default function StatsView() {
           dominantBaseline='central'
           className='text-xs'
         >
-          {`${Math.round(percent * 100)}%`}
+          {`${percent.toFixed(2)}%`}
         </text>
       </g>
     );

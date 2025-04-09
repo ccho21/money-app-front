@@ -9,7 +9,6 @@ import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { fetchBudgetsByCategory } from '../../../services/budgetService';
 import { useBudgetStore } from '../../../stores/useBudgetStore';
 import { useRouter } from 'next/navigation';
-import TopNav from '@/components/common/TopNav';
 import DateNavigator from '@/components/ui/DateNavigator';
 import Panel from '@/components/ui/Panel';
 
@@ -62,7 +61,6 @@ export default function BudgetPage() {
 
   return (
     <div>
-      <TopNav title='Budget Setting' onBack={() => router.back()} />
       <DateNavigator withTransactionType={true} />
 
       <Panel>

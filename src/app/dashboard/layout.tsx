@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { parseLocalDate } from '@/lib/date.util';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { formatDate } from '@/lib/date.util';
+import { useUIStore } from '@/stores/useUIStore';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -27,6 +28,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     state: { date },
     actions: { setDate },
   } = useDateFilterStore();
+
+  useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Trans.',
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+    };
+  }, [router]);
 
   useEffect(() => {
     if (!dateParam) return;
@@ -54,7 +65,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-white'>
       {/* 상단: 네비게이션 */}
       <div className=''>
-        <TopNav title='Trans.' />
+        <TopNav />
         <DateNavigator />
         <TabMenu
           tabs={tabs}

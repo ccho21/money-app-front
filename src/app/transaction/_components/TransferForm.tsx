@@ -74,6 +74,7 @@ export default function TransferForm({ mode, id }: Props) {
         options={accounts}
         getOptionLabel={(a) => a.name}
         getOptionValue={(a) => a.id}
+        onEdit={() => router.push('/account')}
       />
 
       <Selector
@@ -83,6 +84,7 @@ export default function TransferForm({ mode, id }: Props) {
         options={accounts}
         getOptionLabel={(a) => a.name}
         getOptionValue={(a) => a.id}
+        onEdit={() => router.push('/account')}
       />
       <DatePicker
         label='Date'

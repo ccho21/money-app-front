@@ -17,6 +17,8 @@ import { Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { parseLocalDate } from '@/lib/date.util';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useUIStore } from '@/stores/useUIStore';
+import { useAccountFormStore } from '@/stores/useAccountFormStore';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -24,8 +26,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const accountId = useParams().id;
   const router = useRouter();
 
-  const current = pathname.split('/')[4]   || 'daily';
+  const current = pathname.split('/')[4] || 'daily';
   const dateParam = searchParams.get('date');
+
+  const {
+    actions: { reset },
+  } = useAccountFormStore();
 
   const {
     state: { date },
@@ -51,6 +57,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     { key: 'yearly', label: 'Yearly' },
   ];
 
+  useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Accounts.',
+      onBack: () => router.back(),
+      onAdd: () => {
+        reset();
+        router.push('/account/new');
+      },
+      onEdit: () => router.push(`/account/${accountId}/edit`),
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+    };
+  }, [router, reset, accountId]);
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-white'>
       {/* 상단: 네비게이션 */}

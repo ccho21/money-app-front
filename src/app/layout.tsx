@@ -7,7 +7,7 @@ import './globals.css';
 import useAuthRedirectSync from '@features/auth/hooks/useAuthRedirectSync';
 import AuthGuard from '@features/auth/components/AuthGuard';
 import { StrictMode } from 'react';
-
+import RouteTracker from '@/components/common/tracker/RouteTracker';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -38,6 +38,7 @@ export default function RootLayout({
           </div>
         ) : (
           <AuthGuard>
+            <RouteTracker />
             <StrictMode>{children}</StrictMode>
           </AuthGuard>
         )}
