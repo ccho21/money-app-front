@@ -28,7 +28,7 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
   const isCard = group === 'CARD';
 
   return (
-    <div className='min-h-screen bg-white px-4 pt-4 pb-10'>
+    <div className='min-h-screen  px-4 pt-4 pb-10'>
       <div className='space-y-4'>
         <Selector
           label='Group'
@@ -76,14 +76,6 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
               value={paymentDate ?? ''}
               onChange={(e) => setField('paymentDate', Number(e.target.value))}
             />
-
-            <div className='flex items-center justify-between'>
-              <span className='text-sm text-gray-600'>Auto Payment</span>
-              {/* <Switch
-        checked={autoPayment}
-        onCheckedChange={(val) => setField('autoPayment', val)}
-      /> */}
-            </div>
           </div>
         )}
       </div>

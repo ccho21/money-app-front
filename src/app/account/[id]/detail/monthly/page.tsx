@@ -88,7 +88,6 @@ export default function AccountMonthlyPage() {
     [openIndex, weeklySummaryByMonth]
   );
 
-  
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
   const items = [
@@ -96,16 +95,19 @@ export default function AccountMonthlyPage() {
       label: 'Income',
       value: totalIncome,
       prefix: '$',
+      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
       prefix: '$',
+      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
       prefix: '$',
+      color: 'text-success',
     },
   ];
 

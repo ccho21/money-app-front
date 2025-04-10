@@ -33,6 +33,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     applyTheme(); // 초기 적용
 
+    console.log('### ROOT', root.classList);
+
     const onSystemChange = () => {
       if (theme === 'system') applyTheme();
     };

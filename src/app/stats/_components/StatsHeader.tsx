@@ -44,7 +44,7 @@ export default function StatsHeader() {
   return (
     <div className='p-2'>
       {/* 탭 버튼 + 드롭다운 */}
-      <div className='flex justify-between items-center rounded-md bg-gray-100 dark:bg-zinc-800 py-1 px-2'>
+      <div className='flex justify-between items-center rounded-md bg-surface py-1 px-2'>
         <div className='flex gap-2'>
           {tabs.map((tab) => {
             const isActive = pathname.startsWith(tab.href);
@@ -54,10 +54,10 @@ export default function StatsHeader() {
                 key={tab.name}
                 onClick={() => router.push(tab.href)}
                 className={cn(
-                  'text-sm font-medium px-4 py-1 rounded-md',
+                  'text-sm font-medium px-4 py-1 rounded-md transition-all',
                   isActive
-                    ? 'bg-white dark:bg-black text-red-500'
-                    : 'text-gray-500 dark:text-gray-300'
+                    ? 'bg-background text-primary'
+                    : 'text-muted hover:text-foreground'
                 )}
               >
                 {tab.name}
@@ -68,7 +68,7 @@ export default function StatsHeader() {
 
         <button
           onClick={() => setShowModal(true)}
-          className='text-xs border px-2 py-1 rounded-md text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600'
+          className='text-xs border px-2 py-1 rounded-md text-muted border-border hover:text-foreground'
         >
           {range}
         </button>
@@ -76,23 +76,21 @@ export default function StatsHeader() {
 
       {/* 하단 모달: 기간 옵션 선택 */}
       <BottomSheetPanel isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div>
-          <div className='text-sm divide-y border-b border-gray-200 dark:border-zinc-700'>
-            {RANGE_OPTIONS.map((option) => (
-              <button
-                key={option}
-                className={cn(
-                  'p-3 w-full text-left',
-                  option === range
-                    ? 'bg-gray-100 dark:bg-zinc-800 font-semibold'
-                    : ''
-                )}
-                onClick={() => updateRange(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
+        <div className='text-sm divide-y border-b border-border'>
+          {RANGE_OPTIONS.map((option) => (
+            <button
+              key={option}
+              className={cn(
+                'p-3 w-full text-left transition-all',
+                option === range
+                  ? 'bg-surface font-semibold text-foreground'
+                  : 'text-muted hover:text-foreground'
+              )}
+              onClick={() => updateRange(option)}
+            >
+              {option}
+            </button>
+          ))}
         </div>
       </BottomSheetPanel>
     </div>

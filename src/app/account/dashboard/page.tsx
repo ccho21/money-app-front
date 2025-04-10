@@ -3,11 +3,12 @@
 import { useEffect } from 'react';
 import { useAccountStore } from '@/stores/useAccountStore';
 import SummaryBox from '@/components/ui/SummaryBox';
-import { fetchAccountDashboard } from '../../../services/accountService';
-import { CategoryListItem } from '../../stats/_components/CategoryListItem';
+import { fetchAccountDashboard } from '@/services/accountService';
+import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { AccountDashboardItem } from '@/features/account/types';
 import Panel from '@/components/ui/Panel';
+import { useUIStore } from '@/stores/useUIStore';
 
 export default function AccountsPage() {
   const router = useRouter();
@@ -17,11 +18,21 @@ export default function AccountsPage() {
   } = useAccountStore();
 
   useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Accounts.',
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav();
+    };
+  }, [router]);
+
+  useEffect(() => {
     fetchAccountDashboard(); // ✅ 새 API 연동
   }, []);
 
   if (isLoading || !accountDashboard) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
   const { asset, liability, total, data } = accountDashboard;
@@ -38,36 +49,36 @@ export default function AccountsPage() {
     });
     router.push(`/account/${acc.id}/detail/daily`);
   };
+
   return (
-    <div className='space-y-4 bg-white'>
+    <div className='space-y-4 bg-surface min-h-screen text-foreground'>
       <Panel>
-        <div className=''>
-          <SummaryBox
-            items={[
-              {
-                label: 'Assets',
-                value: asset,
-                color: 'text-blue-600',
-                prefix: '$',
-              },
-              {
-                label: 'Liabilities',
-                value: liability,
-                color: 'text-red-500',
-                prefix: '$',
-              },
-              {
-                label: 'Total',
-                value: total,
-                color: 'text-black dark:text-white',
-                prefix: '$',
-              },
-            ]}
-          />
-        </div>
+        <SummaryBox
+          items={[
+            {
+              label: 'Assets',
+              value: asset,
+              color: 'text-info',
+              prefix: '$',
+            },
+            {
+              label: 'Liabilities',
+              value: liability,
+              color: 'text-error',
+              prefix: '$',
+            },
+            {
+              label: 'Total',
+              value: total,
+              color: 'text-success',
+              prefix: '$',
+            },
+          ]}
+        />
       </Panel>
+
       <Panel>
-        <div className='space-y-4'>
+        <div className='space-y-6'>
           {[
             ['CASH', CASH],
             ['BANK', BANK],
@@ -78,12 +89,12 @@ export default function AccountsPage() {
 
             return (
               <div key={label as string}>
-                <h3 className='text-sm font-semibold text-gray-500 mb-2 px-3'>
+                <h3 className='text-xs font-semibold text-muted px-3 mb-2 tracking-wide uppercase'>
                   {label === 'CASH' && 'Cash'}
                   {label === 'BANK' && 'Bank Accounts'}
                   {label === 'CARD' && 'Card'}
                 </h3>
-                <div className='divide-y'>
+                <div className='divide-y divide-border'>
                   {typedItems.map((acc) => (
                     <CategoryListItem
                       key={acc.id}

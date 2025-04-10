@@ -1,4 +1,3 @@
-// 📄 경로: src/components/ui/Button.tsx
 'use client';
 
 import { ButtonHTMLAttributes, forwardRef } from 'react';
@@ -11,22 +10,23 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'solid', color = 'primary', ...props }, ref) => {
-    const base = 'text-sm font-semibold py-3 rounded-md';
+    const base =
+      'text-sm font-semibold py-1 px-2 rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1';
 
     const variants = {
       solid: {
-        primary: 'bg-[#FF5B38] text-white',
-        danger: 'bg-red-500 text-white',
-        gray: 'bg-gray-500 text-white',
+        primary: 'bg-primary text-on-primary hover:bg-primary/90',
+        danger: 'bg-error text-white hover:bg-error/90',
+        gray: 'bg-muted text-white hover:bg-muted/80',
       },
       outline: {
-        primary: 'border border-[#FF5B38] text-[#FF5B38] bg-white',
-        danger: 'border border-red-500 text-red-500 bg-white',
-        gray: 'border border-gray-300 text-gray-600 bg-white',
+        primary:
+          'border border-primary text-primary bg-surface hover:bg-primary/10',
+        danger: 'border border-error text-error bg-surface hover:bg-error/10',
+        gray: 'border border-border text-muted bg-surface hover:bg-muted/10',
       },
     };
 
-    // 스타일 안전 처리
     const safeVariant = variant in variants ? variant : 'solid';
     const safeColor = color in variants[safeVariant] ? color : 'primary';
 
@@ -35,7 +35,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={cn(base, variantClass, className)} // className 항상 마지막!
+        className={cn(base, variantClass, className)}
         {...props}
       />
     );

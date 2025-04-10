@@ -1,3 +1,4 @@
+// 📄 src/components/common/TransactionItem.tsx
 'use client';
 
 import { Transaction } from '@/features/transaction/types';
@@ -31,7 +32,7 @@ export default function TransactionItem({
 
     if (isIncome)
       return (
-        <span className='inline-flex items-center text-blue-600 dark:text-blue-400'>
+        <span className="inline-flex items-center text-primary">
           <PlusIcon size={13} />
           {amount}
         </span>
@@ -39,14 +40,14 @@ export default function TransactionItem({
 
     if (isExpense)
       return (
-        <span className='inline-flex items-center text-red-500 dark:text-red-400'>
+        <span className="inline-flex items-center text-error">
           <MinusIcon size={13} />
           {amount}
         </span>
       );
 
     return (
-      <span className='inline-flex items-center text-gray-600 dark:text-gray-300'>
+      <span className="inline-flex items-center text-muted">
         <ArrowRightLeftIcon size={13} />
         {amount}
       </span>
@@ -57,33 +58,33 @@ export default function TransactionItem({
     <li
       onClick={handleClick}
       className={cn(
-        'px-3 py-2 cursor-pointer transition hover:bg-gray-50 dark:hover:bg-zinc-800',
+        'px-3 py-2 cursor-pointer transition-colors hover:bg-muted/10 dark:hover:bg-zinc-800',
         className
       )}
     >
-      <div className='grid grid-cols-12 gap-1 items-start'>
+      <div className="grid grid-cols-12 gap-1 items-start">
         {/* 좌측 10칸: 어카운트 + 노트 + 카테고리 */}
-        <div className='col-span-10 overflow-hidden'>
+        <div className="col-span-10 overflow-hidden">
           {/* 어카운트 + 노트 (1줄) */}
-          <div className='flex items-center gap-1 text-sm text-gray-900 dark:text-gray-100 truncate leading-tight'>
-            <span className='font-medium truncate text-gray-700 dark:text-gray-300'>
+          <div className="flex items-center gap-1 text-sm text-foreground truncate leading-tight">
+            <span className="font-medium truncate text-muted-foreground">
               {tx.account?.name}
             </span>
             {tx.note && (
-              <span className='text-gray-500 dark:text-gray-400 truncate'>
+              <span className="text-muted truncate">
                 · {tx.note}
               </span>
             )}
           </div>
 
           {/* 카테고리 (2줄) */}
-          <div className='text-xs text-gray-400 dark:text-gray-500 truncate'>
+          <div className="text-xs text-muted dark:text-muted-foreground truncate">
             {isTransfer && showTransferLabel ? 'Transfer' : tx.category?.name}
           </div>
         </div>
 
         {/* 우측 2칸: 금액 */}
-        <div className='col-span-2 flex justify-end items-center text-sm font-medium text-right'>
+        <div className="col-span-2 flex justify-end items-center text-sm font-medium text-right">
           {renderAmount()}
         </div>
       </div>

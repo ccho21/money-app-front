@@ -33,26 +33,26 @@ export default function YearlyItem({
   if (!parsedDate) return null;
 
   return (
-    <div className='border-b border-gray-200 dark:border-zinc-800 px-4'>
+    <div className='border-b border-border bg-surface text-foreground px-4'>
       <button
         onClick={onClick}
         className='w-full flex justify-between items-center py-3'
       >
+        {/* 좌측: 연도 + 범위 */}
         <div className='text-left'>
-          <div className='text-base font-semibold text-black dark:text-white'>
-            {label}
-          </div>
-          <div className='text-xs text-gray-400 dark:text-gray-500'>
+          <div className='text-base font-semibold text-foreground'>{label}</div>
+          <div className='text-xs text-muted-foreground'>
             {start} ~ {end}
           </div>
         </div>
 
+        {/* 우측: 수입/지출/합계 */}
         <div className='text-right space-y-1'>
           <div className='flex justify-end gap-2 text-sm font-medium'>
-            <span className='text-blue-500'>${income.toLocaleString()}</span>
-            <span className='text-red-500'>${expense.toLocaleString()}</span>
+            <span className='text-info'>${income.toLocaleString()}</span>
+            <span className='text-error'>${expense.toLocaleString()}</span>
           </div>
-          <div className='text-xs text-gray-400 dark:text-gray-500'>
+          <div className='text-xs text-muted-foreground'>
             Total ${total.toLocaleString()}
           </div>
         </div>

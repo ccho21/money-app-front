@@ -1,3 +1,4 @@
+// 📄 src/components/ui/CalendarWithTransactions.tsx
 'use client';
 
 import Calendar from 'react-calendar';
@@ -20,7 +21,7 @@ export default function CalendarWithTransactions({
 }: CalendarWithTransactionsProps) {
   return (
     <Calendar
-      calendarType='gregory'
+      calendarType="gregory"
       value={date}
       onClickDay={onSelectDate}
       showNavigation={false}
@@ -28,10 +29,11 @@ export default function CalendarWithTransactions({
       nextLabel={null}
       prev2Label={null}
       next2Label={null}
-      tileDisabled={({ date: tileDate }) =>
-        tileDate.getMonth() !== date.getMonth()
-      }
-      tileContent={({ date }) => tileContentMap.get(formatDate(date)) ?? null}
+      tileDisabled={({ date: tileDate }) => tileDate.getMonth() !== date.getMonth()}
+      tileContent={({ date }) => {
+        return tileContentMap.get(formatDate(date)) ?? null;
+      }}
+      
     />
   );
 }

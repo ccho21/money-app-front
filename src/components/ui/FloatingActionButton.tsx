@@ -11,14 +11,14 @@ interface Props {
 
 export default function FloatingActionButton({
   onClick,
-  icon = <Plus className='w-5 h-5 text-white' />,
+  icon = <Plus className='w-5 h-5 text-primary-foreground' />,
   className = '',
 }: Props) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        'fixed bottom-6 right-6 z-50 bg-red-500 hover:bg-red-600 rounded-full p-4 shadow-lg',
+        'fixed bottom-6 right-6 z-50 bg-primary hover:bg-primary/90 rounded-full p-4 shadow-lg',
         className
       )}
     >

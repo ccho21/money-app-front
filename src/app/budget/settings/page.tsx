@@ -1,3 +1,4 @@
+// 📄 경로: src/app/budget/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -27,7 +28,6 @@ export default function BudgetPage() {
     [date, range]
   );
 
-  // 🚀 페이지 마운트 시 데이터 fetch
   useEffect(() => {
     const run = async () => {
       const [startDate, endDate] = dateRangeKey.split('_');
@@ -36,8 +36,6 @@ export default function BudgetPage() {
         startDate,
         endDate,
       };
-      console.log('### PARAM', params);
-
       await fetchBudgetsByCategory(params);
     };
     run();
@@ -52,15 +50,17 @@ export default function BudgetPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
   if (!budgetCategoryResponse || !budgetCategoryResponse.data.length) {
-    return <p className='text-center mt-10 text-gray-400'>데이터가 없습니다</p>;
+    return (
+      <p className='text-center mt-10 text-muted'>예산 데이터가 없습니다</p>
+    );
   }
 
   return (
-    <div>
+    <div className='bg-background min-h-screen pb-[10vh]'>
       <DateNavigator withTransactionType={true} />
 
       <Panel>
@@ -71,7 +71,7 @@ export default function BudgetPage() {
             amount={item.budgetAmount}
             color={item.color}
             onClick={() => handleClick(item.categoryId, item.isNew)}
-          ></CategoryListItem>
+          />
         ))}
       </Panel>
     </div>

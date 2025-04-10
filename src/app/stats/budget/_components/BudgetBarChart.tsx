@@ -14,7 +14,7 @@ interface BudgetBarChartProps {
   data: { month: string; value: number }[];
   selectedMonth?: string;
   onSelect?: (month: string) => void;
-  barColor?: string;
+  barColor?: string; // optional override
   bgColor?: string;
 }
 
@@ -22,19 +22,24 @@ export default function BudgetBarChart({
   data,
   selectedMonth,
   onSelect,
-  barColor = '#FF6240',
-  bgColor = '#F9FAFB',
+  barColor,
+  bgColor,
 }: BudgetBarChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const defaultBarColor = barColor ?? 'var(--color-primary)';
+  const inactiveColor = 'var(--color-border)';
+  const backgroundColor = bgColor ?? 'var(--color-surface)';
+  // const tickColor = theme === 'dark' ? '#999' : '#666';
+
   return (
     <div
-      className='w-full overflow-x-auto scrollbar-hide bg-white'
+      className='w-full overflow-x-auto scrollbar-hide bg-surface'
       ref={containerRef}
     >
       <div
         className='min-w-[600px] h-36 rounded-xl'
-        style={{ backgroundColor: bgColor }}
+        style={{ backgroundColor }}
       >
         <ResponsiveContainer width='100%' height='100%'>
           <BarChart
@@ -49,7 +54,7 @@ export default function BudgetBarChart({
               tickLine={false}
               tick={{
                 fontSize: 12,
-                fill: '#888',
+                fill: undefined,
               }}
             />
             <Tooltip
@@ -64,7 +69,7 @@ export default function BudgetBarChart({
                 return (
                   <Cell
                     key={`bar-${index}`}
-                    fill={isSelected ? barColor : '#E5E7EB'}
+                    fill={isSelected ? defaultBarColor : inactiveColor}
                     cursor='pointer'
                     onClick={() => onSelect?.(entry.month)}
                   />

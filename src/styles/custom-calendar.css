@@ -1,62 +1,20 @@
-/* .react-calendar {
-  border: none;
-  font-family: inherit;
-  width: 100%;
-  max-width: 100%;
-  background-color: transparent;
-}
+/* 📄 src/styles/custom-calendar.css */
 
-.react-calendar__month-view__days {
-  display: grid !important;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-
-
-.react-calendar__tile:enabled:hover {
-  background-color: #f3f4f6;
-}
-
-.react-calendar__tile--now {
-  border: 1px solid #3c50e0 !important;
-}
-
-.react-calendar__tile--active {
-  background-color: #3c50e0 !important;
-  color: white !important;
-  border-radius: 8px;
-}
-
-.react-calendar__tile--neighboringMonth {
-  background-color: #f9fafb;
-  color: #9ca3af;
-}
-
-.react-calendar__month-view__weekdays {
-  text-transform: lowercase;
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 4px;
-  border-bottom: 1px solid #e5e7eb; 
-}
-
-.react-calendar__month-view__weekdays__weekday {
-  text-align: center;
-  padding: 6px 0;
-  border-bottom: 1px solid #e5e7eb;
-} */
-
+/* 📌 요일 헤더 */
 .react-calendar__month-view__weekdays {
   padding-bottom: 0.2rem;
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid var(--color-border) !important;
   text-transform: capitalize;
+  background-color: inherit !important;
 }
+
 .react-calendar__month-view__weekdays abbr {
   text-decoration: none !important;
   border-bottom: none !important;
+  color: var(--color-text) !important;
 }
 
+/* 📌 캘린더 전체 */
 .react-calendar {
   border: none;
   font-family: inherit;
@@ -64,9 +22,10 @@
   max-width: 100%;
   height: 100%;
   background-color: transparent;
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid var(--color-border) !important;
 }
 
+/* 📌 날짜 셀 */
 .react-calendar__tile {
   display: flex;
   flex-direction: column;
@@ -78,11 +37,22 @@
   cursor: pointer;
   transition: all 0.15s ease-in-out;
   border-radius: 0;
-  border-right: 1px solid #e5e7eb !important;
-  border-bottom: 1px solid #e5e7eb !important;
+
+  border-right: 1px solid var(--color-border) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+
   padding: 0;
   padding-top: 0.1rem;
   padding-left: 0.1rem;
+
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+}
+
+/* 📌 타일 호버 시 */
+.react-calendar__tile:hover {
+  background-color: var(--color-primary) !important;
+  color: var(--color-on-primary) !important;
 }
 
 /* 🔸 일요일(7번째 칸마다) → 오른쪽 보더 제거 */

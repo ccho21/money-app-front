@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import { useStatsStore } from "@/stores/useStatsStore";
-import { useDateFilterStore } from "@/stores/useDateFilterStore";
-import { getDateRangeKey } from "@/lib/date.util";
-import { TransactionType } from "@/features/transaction/types";
-import { formatCurrency } from "@/lib/utils";
-import { fetchStatsByNote } from "@/services/statsService";
-import EmptyMessage from "@/components/ui/EmptyMessage";
+import { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useStatsStore } from '@/stores/useStatsStore';
+import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { getDateRangeKey } from '@/lib/date.util';
+import { TransactionType } from '@/features/transaction/types';
+import { formatCurrency } from '@/lib/utils';
+import { fetchStatsByNote } from '@/services/statsService';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
-type SortKey = "note" | "count" | "amount";
-type SortDirection = "asc" | "desc";
+type SortKey = 'note' | 'count' | 'amount';
+type SortDirection = 'asc' | 'desc';
 
 export default function NoteView() {
   const searchParams = useSearchParams();
-  const tab = (searchParams.get("tab") || "expense") as TransactionType;
+  const tab = (searchParams.get('tab') || 'expense') as TransactionType;
 
   const {
     state: { date, range },
@@ -25,15 +25,15 @@ export default function NoteView() {
     state: { noteResponse, isLoading },
   } = useStatsStore();
 
-  const [sortKey, setSortKey] = useState<SortKey>("count");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [sortKey, setSortKey] = useState<SortKey>('count');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   useEffect(() => {
     const run = async () => {
       const [startDate, endDate] = getDateRangeKey(date, {
         unit: range,
         amount: 0,
-      }).split("_");
+      }).split('_');
 
       await fetchStatsByNote({
         startDate,
@@ -52,92 +52,92 @@ export default function NoteView() {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
 
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
       }
 
-      const aStr = (aVal || "").toString().toLowerCase();
-      const bStr = (bVal || "").toString().toLowerCase();
-      return sortDirection === "asc"
+      const aStr = (aVal || '').toString().toLowerCase();
+      const bStr = (bVal || '').toString().toLowerCase();
+      return sortDirection === 'asc'
         ? aStr.localeCompare(bStr)
         : bStr.localeCompare(aStr);
     });
   }, [rawList, sortKey, sortDirection]);
 
   const totalAmount =
-    tab === "income"
+    tab === 'income'
       ? noteResponse?.totalIncome ?? 0
       : noteResponse?.totalExpense ?? 0;
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortKey(key);
-      setSortDirection("desc");
+      setSortDirection('desc');
     }
   };
 
   const renderSortIcon = (key: SortKey) => {
     if (key !== sortKey) return null;
-    return sortDirection === "asc" ? "↑" : "↓";
+    return sortDirection === 'asc' ? '↑' : '↓';
   };
 
-  if (isLoading) return <p className="p-4">Loading...</p>;
+  if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
 
   if (!noteResponse || rawList.length === 0) {
     return <EmptyMessage />;
   }
 
   return (
-    <div className="bg-white dark:bg-zinc-900 p-4 space-y-4 rounded-xl">
+    <div className='p-4 space-y-4 bg-surface rounded-xl'>
       {/* 상단 요약 */}
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-400">
-          {tab === "expense" ? "Expense Notes" : "Income Notes"}
+      <div className='flex justify-between items-center'>
+        <span className='text-sm text-muted'>
+          {tab === 'expense' ? 'Expense Notes' : 'Income Notes'}
         </span>
         <span
           className={`text-sm font-semibold ${
-            tab === "expense" ? "text-red-500" : "text-green-500"
+            tab === 'expense' ? 'text-error' : 'text-success'
           }`}
         >
-          {tab === "expense" ? "Exp." : "Inc."} {formatCurrency(totalAmount)}
+          {tab === 'expense' ? 'Exp.' : 'Inc.'} {formatCurrency(totalAmount)}
         </span>
       </div>
 
       {/* 테이블 */}
-      <table className="w-full text-sm text-left">
-        <thead className="text-gray-400 border-b border-gray-200 dark:border-zinc-700">
+      <table className='w-full text-sm text-left'>
+        <thead className='text-muted border-b border-border'>
           <tr>
             <th
-              className="py-2 cursor-pointer"
-              onClick={() => handleSort("note")}
+              className='py-2 cursor-pointer'
+              onClick={() => handleSort('note')}
             >
-              Note {renderSortIcon("note")}
+              Note {renderSortIcon('note')}
             </th>
             <th
-              className="py-2 text-center cursor-pointer"
-              onClick={() => handleSort("count")}
+              className='py-2 text-center cursor-pointer'
+              onClick={() => handleSort('count')}
             >
-              Count {renderSortIcon("count")}
+              Count {renderSortIcon('count')}
             </th>
             <th
-              className="py-2 text-right cursor-pointer"
-              onClick={() => handleSort("amount")}
+              className='py-2 text-right cursor-pointer'
+              onClick={() => handleSort('amount')}
             >
-              Amount {renderSortIcon("amount")}
+              Amount {renderSortIcon('amount')}
             </th>
           </tr>
         </thead>
-        <tbody className="text-gray-800 dark:text-gray-100">
+        <tbody className='text-foreground'>
           {sortedList.map((item, index) => (
             <tr
               key={index}
-              className="border-b border-gray-100 dark:border-zinc-800"
+              className='border-b border-border hover:bg-muted/5 transition'
             >
-              <td className="py-2">{item.note || "-"}</td>
-              <td className="py-2 text-center">{item.count}</td>
-              <td className="py-2 text-right">{formatCurrency(item.amount)}</td>
+              <td className='py-2'>{item.note || '-'}</td>
+              <td className='py-2 text-center'>{item.count}</td>
+              <td className='py-2 text-right'>{formatCurrency(item.amount)}</td>
             </tr>
           ))}
         </tbody>

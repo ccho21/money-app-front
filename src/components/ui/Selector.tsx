@@ -37,38 +37,40 @@ export default function Selector<T>({
 
   return (
     <div className='grid grid-cols-12 items-center gap-2' ref={ref}>
-      {/* ⬅️ label col-span-2 */}
-      <label className='col-span-2 text-xs text-gray-500 dark:text-gray-400 font-medium'>
+      {/* Label */}
+      <label className='col-span-2 text-xs font-medium text-muted-foreground'>
         {label}
       </label>
 
-      {/* ⬅️ input col-span-10 */}
+      {/* Input */}
       <div className='col-span-10'>
         <input
           readOnly
           value={value}
           onClick={() => setOpen(true)}
-          className='border-b border-gray-300 w-full py-1 focus:outline-none bg-transparent focus:border-black'
+          className='w-full py-1 border-b border-border text-foreground bg-transparent focus:outline-none focus:border-primary cursor-pointer'
         />
       </div>
 
       {open && (
-        <div className='fixed left-0 right-0 bottom-0 z-30 bg-gray-300 border-t shadow-md min-h-[35vh]'>
-          <div className='flex justify-between items-center px-4 py-2 bg-black text-white text-sm'>
+        <div className='fixed left-0 right-0 bottom-0 z-30 bg-surface border-t border-border shadow-md min-h-[35vh]'>
+          {/* Header */}
+          <div className='flex justify-between items-center px-4 py-2 bg-surface border-b border-border text-sm text-foreground'>
             <span>{label}</span>
             <div className='flex gap-3'>
               {onEdit && (
                 <button onClick={onEdit} title='Edit'>
-                  <Pencil />
+                  <Pencil className='w-5 h-5 text-muted-foreground' />
                 </button>
               )}
               <button onClick={() => setOpen(false)} title='Cancel'>
-                <X />
+                <X className='w-5 h-5 text-muted-foreground' />
               </button>
             </div>
           </div>
 
-          <div className='grid grid-cols-3 gap-px bg-gray-300 text-sm'>
+          {/* Options */}
+          <div className='grid grid-cols-3 gap-px bg-border text-sm'>
             {options.map((item, idx) => (
               <button
                 key={idx}
@@ -76,7 +78,7 @@ export default function Selector<T>({
                   onChange(getOptionValue(item));
                   setOpen(false);
                 }}
-                className='bg-white p-3 text-center'
+                className='p-3 text-center bg-surface hover:bg-accent hover:text-primary transition'
               >
                 {getOptionLabel(item)}
               </button>

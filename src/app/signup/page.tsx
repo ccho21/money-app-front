@@ -1,114 +1,117 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
-import { signup } from '@/services/authService';
+import toast from 'react-hot-toast';
+import { signin } from '@/services/authService';
 
-export default function SignupPage() {
+export default function SigninPage() {
   const router = useRouter();
   const {
-    state: { error, isLoading },
-  } = useUserStore(); // ✅ 구조 분리 접근
+    state: { error },
+  } = useUserStore();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
+  const [email, setEmail] = useState('seeduser@example.com');
+  const [password, setPassword] = useState('secure123');
 
-  const isEmailValid = /\S+@\S+\.\S+/.test(email);
-  const isPasswordValid = password.length >= 6;
-  const isConfirmValid = password === confirm;
-
-  const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!isEmailValid || !isPasswordValid || !isConfirmValid) return;
-
-    await signup(email, password);
-
-    if (!error) {
-      router.push('/signin');
+    const success = await signin(email, password);
+    if (success) {
+      router.push('/dashboard/daily');
+    } else {
+      toast.error('이메일 또는 비밀번호가 올바르지 않습니다');
     }
+  };
+
+  const handleGoogleSignin = () => {
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   return (
     <RedirectIfAuthenticated>
-      <div className='flex items-center justify-center bg-gray-50 dark:bg-black px-4'>
+      <div className='flex items-center justify-center min-h-screen bg-background px-4'>
         <form
-          onSubmit={handleSignup}
-          className='w-full max-w-md space-y-6 p-8 bg-white dark:bg-zinc-900 shadow rounded-lg'
+          onSubmit={handleSignin}
+          className='w-full max-w-md space-y-6 p-8 bg-surface border border-border shadow rounded-xl'
         >
-          <h1 className='text-2xl font-bold text-center'>회원가입</h1>
+          <h1 className='text-2xl font-bold text-center text-foreground'>
+            로그인
+          </h1>
 
           {error && (
-            <div className='text-red-500 text-sm text-center'>{error}</div>
+            <div className='text-sm text-error text-center'>{error}</div>
           )}
 
-          {/* 이메일 */}
+          {/* 이메일 입력 */}
           <div className='space-y-2'>
-            <label htmlFor='email' className='block text-sm font-medium'>
+            <label
+              htmlFor='email'
+              className='block text-sm font-medium text-foreground'
+            >
               이메일
             </label>
             <input
               id='email'
               type='email'
-              className={`w-full px-4 py-2 border rounded dark:bg-zinc-800 ${
-                email && !isEmailValid ? 'border-red-500' : ''
-              }`}
+              className='w-full px-4 py-2 border border-border rounded bg-transparent text-foreground'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          {/* 비밀번호 */}
+          {/* 비밀번호 입력 */}
           <div className='space-y-2'>
-            <label htmlFor='password' className='block text-sm font-medium'>
+            <label
+              htmlFor='password'
+              className='block text-sm font-medium text-foreground'
+            >
               비밀번호
             </label>
             <input
               id='password'
               type='password'
-              className={`w-full px-4 py-2 border rounded dark:bg-zinc-800 ${
-                password && !isPasswordValid ? 'border-red-500' : ''
-              }`}
+              className='w-full px-4 py-2 border border-border rounded bg-transparent text-foreground'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          {/* 비밀번호 확인 */}
-          <div className='space-y-2'>
-            <label htmlFor='confirm' className='block text-sm font-medium'>
-              비밀번호 확인
-            </label>
-            <input
-              id='confirm'
-              type='password'
-              className={`w-full px-4 py-2 border rounded dark:bg-zinc-800 ${
-                confirm && !isConfirmValid ? 'border-red-500' : ''
-              }`}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* 버튼 */}
+          {/* 로그인 버튼 */}
           <button
             type='submit'
-            className='w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded font-semibold'
-            disabled={isLoading}
+            className='w-full bg-primary hover:opacity-90 text-white py-2 rounded font-semibold transition'
           >
-            {isLoading ? '로딩 중...' : '회원가입'}
+            로그인
           </button>
 
-          <p className='text-sm text-center text-gray-500'>
-            이미 계정이 있으신가요?{' '}
-            <a href='/signin' className='text-red-500 font-medium'>
-              로그인
+          {/* 구분선 */}
+          <div className='relative my-4'>
+            <div className='absolute inset-0 flex items-center'>
+              <div className='w-full border-t border-border' />
+            </div>
+            <div className='relative flex justify-center text-sm'>
+              <span className='bg-surface px-2 text-muted'>또는</span>
+            </div>
+          </div>
+
+          {/* Google 로그인 */}
+          <button
+            type='button'
+            onClick={handleGoogleSignin}
+            className='w-full flex items-center justify-center gap-3 border border-border py-2 rounded hover:bg-border/40 transition text-sm font-medium text-foreground'
+          >
+            Google 계정으로 로그인
+          </button>
+
+          <p className='text-sm text-center text-muted'>
+            아직 계정이 없으신가요?{' '}
+            <a href='/signup' className='text-primary font-medium'>
+              회원가입
             </a>
           </p>
         </form>

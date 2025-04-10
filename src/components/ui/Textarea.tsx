@@ -10,25 +10,30 @@ type Props = {
 } & TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ error, description, className, ...props }, ref) => {
+  ({ label, error, description, className, ...props }, ref) => {
     return (
       <div className='grid grid-cols-12 items-start gap-2'>
-        <div className='col-span-12'>
+        {label && (
+          <label className='col-span-2 text-xs text-muted font-medium px-1'>
+            {label}
+          </label>
+        )}
+        <div className={label ? 'col-span-10' : 'col-span-12'}>
           <textarea
             ref={ref}
             className={cn(
-              'w-full border-0 border-b border-gray-300 text-sm py-2 px-1 bg-transparent resize-none',
-              'focus:outline-none focus:ring-0 focus:border-black dark:focus:border-white',
-              'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-              error && 'border-b-red-500',
+              'w-full border-0 border-b border-border text-sm py-2 px-1 bg-transparent resize-none',
+              'focus:outline-none focus:ring-0 focus:border-foreground',
+              'placeholder:text-muted',
+              error && 'border-b-error',
               className
             )}
             {...props}
           />
           {description && (
-            <p className='text-xs text-gray-400 px-1 mt-1'>{description}</p>
+            <p className='text-xs text-muted px-1 mt-1'>{description}</p>
           )}
-          {error && <p className='text-xs text-red-500 px-1 mt-1'>{error}</p>}
+          {error && <p className='text-xs text-error px-1 mt-1'>{error}</p>}
         </div>
       </div>
     );

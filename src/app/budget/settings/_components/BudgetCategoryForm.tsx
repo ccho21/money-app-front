@@ -1,9 +1,11 @@
+'use client';
+
 import { useEffect } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'react-hot-toast';
 import { useBudgetCategoryFormStore } from './useBudgetCategoryFormStore';
-import { createBudgetCategory } from '../../../../services/budgetService';
+import { createBudgetCategory } from '@/services/budgetService';
 import { useRouter } from 'next/navigation';
 
 export const BudgetCategoryForm = () => {
@@ -39,7 +41,7 @@ export const BudgetCategoryForm = () => {
   };
 
   return (
-    <div className='space-y-4 p-4'>
+    <div className='space-y-4 bg-surface text-foreground p-4 rounded-md shadow-sm'>
       {/* 금액 입력 */}
       <Input
         type='number'

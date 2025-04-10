@@ -57,28 +57,24 @@ export default function DailyPage() {
       label: 'Income',
       value: totalIncome,
       prefix: '$',
-      color: 'text-blue-600',
+      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
       prefix: '$',
-      color: 'text-red-400',
+      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
       prefix: '$',
-      color: 'text-gray-900',
+      color: 'text-success',
     },
   ];
 
   return (
     <>
-      <div className='text-primary'>✅ 이 텍스트가 primary 색상이어야 함</div>
-      <div className='bg-background text-foreground border border-primary p-4 rounded-xl'>
-        This is a themed box.
-      </div>
       <DailyView
         isLoading={isLoading}
         data={transactionSummaryResponse}

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { CheckCircle, Circle, Moon, Sun, Settings2 } from 'lucide-react';
 import clsx from 'clsx';
 import { useUserSettingStore } from '@/stores/useUserSettingStore';
@@ -18,10 +17,9 @@ const colorOptions: { color: ThemeColor; hex: string }[] = [
 
 export default function ThemeSettingPanel() {
   const theme = useUserSettingStore((s) => s.theme);
+  const themeColor = useUserSettingStore((s) => s.themeColor);
   const setTheme = useUserSettingStore((s) => s.setTheme);
-
-  // ⚠️ 아직 color는 zustand에 없음 (추가 필요)
-  const [selectedColor, setSelectedColor] = useState<ThemeColor>('green');
+  const setThemeColor = useUserSettingStore((s) => s.setThemeColor);
 
   const ModeRow = ({
     label,
@@ -34,23 +32,23 @@ export default function ThemeSettingPanel() {
   }) => (
     <button
       onClick={() => setTheme(value)}
-      className='flex items-center justify-between py-4 px-4 w-full'
+      className='flex items-center justify-between w-full py-4 px-4 border-b border-border last:border-0'
     >
-      <div className='flex items-center gap-3 text-gray-800 dark:text-white'>
+      <div className='flex items-center gap-3 text-foreground'>
         {icon}
         <span className='text-sm'>{label}</span>
       </div>
       {theme === value ? (
-        <CheckCircle className='text-green-500 w-5 h-5' />
+        <CheckCircle className='text-success w-5 h-5' />
       ) : (
-        <Circle className='text-gray-300 w-5 h-5' />
+        <Circle className='text-muted w-5 h-5' />
       )}
     </button>
   );
 
   return (
-    <div className='pb-6'>
-      <div className='border-t border-b border-gray-200 dark:border-zinc-700'>
+    <div className='bg-surface text-foreground'>
+      <div className='border-t border-border'>
         <ModeRow
           label='System Mode'
           value='system'
@@ -60,18 +58,19 @@ export default function ThemeSettingPanel() {
         <ModeRow label='Light Mode' value='light' icon={<Sun size={16} />} />
       </div>
 
-      <div className='flex flex-wrap gap-4 px-4 pt-6'>
+      <div className='flex flex-wrap gap-4 px-4 pt-6 pb-4'>
         {colorOptions.map(({ color, hex }) => {
-          const isActive = selectedColor === color;
+          const isActive = themeColor === color;
           return (
             <button
               key={color}
               className={clsx(
-                'w-8 h-8 rounded-full border-2',
-                isActive ? 'border-green-500' : 'border-transparent'
+                'w-8 h-8 rounded-full border-2 transition-all',
+                isActive ? 'border-success' : 'border-border'
               )}
               style={{ backgroundColor: hex }}
-              onClick={() => setSelectedColor(color)}
+              onClick={() => setThemeColor(color)}
+              aria-label={`Change theme color to ${color}`}
             />
           );
         })}

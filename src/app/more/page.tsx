@@ -13,6 +13,7 @@ import {
   Menu,
   RotateCcw,
 } from 'lucide-react';
+
 import { useRouter } from 'next/navigation';
 import { useUserSettingStore } from '@/stores/useUserSettingStore';
 import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
@@ -27,8 +28,8 @@ const Section = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <div className='mt-3'>
-    <h3 className='text-xs text-gray-400 font-semibold mb-2 px-4'>{title}</h3>
+  <div className='mt-4'>
+    <h3 className='text-xs text-muted font-semibold mb-2 px-4'>{title}</h3>
     <div className='space-y-[1px]'>{children}</div>
   </div>
 );
@@ -46,20 +47,18 @@ const SettingItem = ({
 }) => (
   <button
     onClick={onClick}
-    className='flex items-center justify-between w-full px-4 py-3 bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-zinc-800 transition hover:bg-gray-50 dark:hover:bg-zinc-800'
+    className='flex items-center justify-between w-full px-4 py-3 bg-surface border-b border-border transition hover:bg-muted/10'
   >
     <div className='flex items-center gap-3'>
       {icon}
       <div className='text-left'>
-        <p className='text-sm font-medium text-gray-900 dark:text-white'>
-          {title}
-        </p>
+        <p className='text-sm font-medium text-foreground'>{title}</p>
         {subtitle && (
-          <p className='text-xs text-gray-400 truncate w-[220px]'>{subtitle}</p>
+          <p className='text-xs text-muted truncate w-[220px]'>{subtitle}</p>
         )}
       </div>
     </div>
-    <ChevronRight size={16} className='text-gray-400' />
+    <ChevronRight size={16} className='text-muted' />
   </button>
 );
 
@@ -73,7 +72,6 @@ export default function MorePage() {
     subCurrency,
     startScreen,
     monthlyStartDate,
-
     setWeeklyStartDay,
     setInputOrder,
     setStartScreen,
@@ -117,7 +115,7 @@ export default function MorePage() {
   };
 
   return (
-    <div className='bg-gray-50 dark:bg-black min-h-screen py-3 pb-[10vh]'>
+    <div className='bg-surface text-foreground min-h-screen py-3 pb-[10vh]'>
       {/* Transaction Settings */}
       <Section title='Transaction'>
         <SettingItem
@@ -208,14 +206,15 @@ export default function MorePage() {
         />
       </Section>
 
+      {/* Panels & Modals */}
       <SlideInPanelRenderer />
-      {/* OptionSelectorModal */}
+
       <OptionSelectorModal
         isOpen={currentModal !== null}
         title={currentModal ? titleMap[currentModal] : ''}
         options={
           currentModal && currentModal in optionsMap
-            ? [...optionsMap[currentModal as keyof typeof optionsMap]] // ✅ readonly 제거
+            ? [...optionsMap[currentModal as keyof typeof optionsMap]]
             : []
         }
         selected={

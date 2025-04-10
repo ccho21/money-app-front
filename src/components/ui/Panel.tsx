@@ -1,4 +1,4 @@
-// src/components/ui/Panel.tsx
+// 📄 경로: src/components/ui/Panel.tsx
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils'; // Tailwind class merge util
 
@@ -20,9 +20,9 @@ export default function Panel({
   return (
     <div
       className={cn(
-        'bg-white dark:bg-gray-900',
+        'bg-surface text-foreground',
         rounded && 'rounded-2xl',
-        bordered && 'border border-gray-200 dark:border-gray-700',
+        bordered && 'border border-border',
         shadow && 'shadow-sm',
         className
       )}

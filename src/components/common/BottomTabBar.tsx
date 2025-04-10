@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 const baseTabs = [
   {
     key: 'daily',
-    label: 'Today', // 이건 실제 렌더링 시 format(date, 'MM-dd')로 바뀜
+    label: 'Today',
     icon: <BookText className='w-5 h-5' />,
     basePath: '/dashboard/daily',
   },
@@ -40,9 +40,8 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-gray-200 flex justify-around items-center h-[10vh]'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
       {baseTabs.map((tab) => {
-        // 오늘 탭인 경우만 동적 path 설정
         const isTodayTab = tab.key === 'daily';
         const tabPath = isTodayTab
           ? `${tab.basePath}?date=${todayDateParam}`
@@ -53,10 +52,16 @@ export default function BottomTabBar() {
           <button
             key={tab.key}
             onClick={() => router.push(tabPath)}
-            className='flex flex-col items-center text-xs text-gray-400 hover:text-black dark:hover:text-white'
+            className='flex flex-col items-center text-xs'
           >
-            <div className={isActive ? 'text-red-500' : ''}>{tab.icon}</div>
-            <span className={isActive ? 'text-red-500 font-semibold' : ''}>
+            <div className={isActive ? 'text-primary' : 'text-muted'}>
+              {tab.icon}
+            </div>
+            <span
+              className={`mt-1 ${
+                isActive ? 'text-primary font-semibold' : 'text-muted'
+              }`}
+            >
               {isTodayTab ? todayLabel : tab.label}
             </span>
           </button>

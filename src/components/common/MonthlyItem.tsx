@@ -1,6 +1,7 @@
 'use client';
 
 import { TransactionSummary } from '@/features/transaction/types';
+import { formatCurrency } from '@/lib/utils';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -27,7 +28,7 @@ export default function MonthlyItem({
   const {
     actions: { setDate },
   } = useDateFilterStore.getState();
-  // ✅ 날짜 관련 정보 캐싱
+
   const parsedDate = useMemo(() => {
     try {
       const d = parse(date, 'yyyy-MM', new Date());
@@ -37,66 +38,59 @@ export default function MonthlyItem({
     }
   }, [date]);
 
-  const label = useMemo(() => {
-    return parsedDate ? format(parsedDate, 'MMM') : 'Invalid';
-  }, [parsedDate]);
-
-  const start = useMemo(() => {
-    return parsedDate ? format(startOfMonth(parsedDate), 'MM-dd') : '??';
-  }, [parsedDate]);
-
-  const end = useMemo(() => {
-    return parsedDate ? format(endOfMonth(parsedDate), 'MM-dd') : '??';
-  }, [parsedDate]);
+  const label = useMemo(
+    () => (parsedDate ? format(parsedDate, 'MMM') : 'Invalid'),
+    [parsedDate]
+  );
+  const start = useMemo(
+    () => (parsedDate ? format(startOfMonth(parsedDate), 'MM-dd') : '??'),
+    [parsedDate]
+  );
+  const end = useMemo(
+    () => (parsedDate ? format(endOfMonth(parsedDate), 'MM-dd') : '??'),
+    [parsedDate]
+  );
 
   const total = useMemo(() => income - expense, [income, expense]);
 
-  if (!parsedDate) return null; // 컴포넌트 자체 렌더 차단
+  if (!parsedDate) return null;
 
   const handleClick = (e: React.MouseEvent, week: TransactionSummary) => {
     e.stopPropagation();
-
     setDate(new Date(week.label));
     router.push('/dashboard/daily');
-    ///
   };
 
   return (
-    <div className='border-b border-gray-200 dark:border-zinc-800 px-4'>
+    <div className='px-4 border-b border-border transition-colors'>
       {/* 아코디언 헤더 */}
       <button
         onClick={onToggle}
         className='w-full flex justify-between items-center py-3'
       >
-        {/* Left: Month Label */}
+        {/* 좌측: 월 정보 */}
         <div className='text-left'>
-          <div className='text-base font-semibold text-black dark:text-white'>
-            {label}
-          </div>
-          <div className='text-xs text-gray-400 dark:text-gray-500'>
+          <div className='text-base font-semibold text-foreground'>{label}</div>
+          <div className='text-xs text-muted'>
             {start} ~ {end}
           </div>
         </div>
 
-        {/* Right: Income / Expense / Total */}
+        {/* 우측: 수입 / 지출 / 합계 */}
         <div className='text-right space-y-1'>
           <div className='flex justify-end gap-2 text-sm font-medium'>
-            <span className='text-blue-500'>
-              ${income?.toLocaleString?.() ?? 0}
-            </span>
-            <span className='text-red-500'>
-              ${expense?.toLocaleString?.() ?? 0}
-            </span>
+            <span className='text-info'>{formatCurrency(income ?? 0)}</span>
+            <span className='text-error'>{formatCurrency(expense ?? 0)}</span>
           </div>
-          <div className='text-xs text-gray-400 dark:text-gray-500'>
-            Total ${total?.toLocaleString?.() ?? 0}
+          <div className='text-xs text-muted'>
+            Total {formatCurrency(total ?? 0)}
           </div>
         </div>
       </button>
 
-      {/* 아코디언 내용 - 주차별 요약 */}
+      {/* 아코디언 내용 */}
       {open && weeklyData?.length > 0 && (
-        <div className='px-2 pb-3 text-sm text-gray-600 dark:text-gray-400 space-y-2'>
+        <div className='pl-2 pb-3 space-y-2 text-sm text-muted'>
           {weeklyData.map((week, idx) => {
             const rangeLabel =
               week.rangeStart && week.rangeEnd
@@ -108,20 +102,20 @@ export default function MonthlyItem({
 
             return (
               <div
-                onClick={(e) => handleClick(e, week)}
                 key={idx}
-                className='flex justify-between border-b border-gray-100 dark:border-zinc-700 pb-1'
+                onClick={(e) => handleClick(e, week)}
+                className='flex justify-between items-center pb-1 hover:bg-muted/10 dark:hover:bg-zinc-800 rounded-sm cursor-pointer transition'
               >
-                <span className='text-xs text-gray-500'>{rangeLabel}</span>
-                <div className='flex gap-2 text-sm'>
+                <span className='text-xs text-muted'>{rangeLabel}</span>
+                <div className='flex gap-2 text-sm text-right font-medium'>
                   {week.incomeTotal > 0 && (
-                    <span className='text-blue-500'>
-                      ${week.incomeTotal?.toLocaleString?.() ?? 0}
+                    <span className='text-info'>
+                      {formatCurrency(week.incomeTotal ?? 0)}
                     </span>
                   )}
                   {week.expenseTotal > 0 && (
-                    <span className='text-red-500'>
-                      ${week.expenseTotal?.toLocaleString?.() ?? 0}
+                    <span className='text-error'>
+                      {formatCurrency(week.expenseTotal ?? 0)}
                     </span>
                   )}
                 </div>

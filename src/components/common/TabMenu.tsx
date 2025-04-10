@@ -24,9 +24,7 @@ function TabMenuBase({
 }: TabMenuProps) {
   const handleClick = useCallback(
     (key: string) => () => {
-      if (key !== active) {
-        onChange(key);
-      }
+      if (key !== active) onChange(key);
     },
     [onChange, active]
   );
@@ -34,34 +32,36 @@ function TabMenuBase({
   return (
     <div
       className={cn(
-        'flex',
-        variant === 'pill'
-          ? 'justify-around py-2 border-b text-sm dark:border-gray-700'
-          : 'border-b border-gray-200'
+        'flex border-b border-border text-sm bg-surface',
+        variant === 'pill' && 'justify-around py-2'
       )}
     >
       {tabs.map((tab) => {
         const isActive = active === tab.key;
 
-        const buttonClass = cn(
-          'transition-all duration-150',
-          variant === 'pill'
-            ? cn(
-                'px-4 py-1 rounded-full border',
-                isActive
-                  ? 'border-black text-black dark:border-white dark:text-white font-semibold'
-                  : 'text-gray-400 border-transparent'
-              )
-            : cn(
-                'flex-1 py-2 text-sm font-medium',
-                isActive
-                  ? 'border-b-2 border-red-500 text-red-500'
-                  : 'text-gray-400'
-              )
+        const baseStyle = 'transition-all duration-150';
+        const pillStyle = cn(
+          'px-4 py-1 rounded-full border',
+          isActive
+            ? 'text-foreground border-foreground font-semibold bg-muted/10'
+            : 'text-muted border-transparent hover:bg-muted/5'
+        );
+        const underlineStyle = cn(
+          'flex-1 py-2 text-sm font-medium text-center',
+          isActive
+            ? 'border-b-2 border-primary text-primary'
+            : 'text-muted hover:text-foreground'
         );
 
         return (
-          <button key={tab.key} onClick={handleClick(tab.key)} className={buttonClass}>
+          <button
+            key={tab.key}
+            onClick={handleClick(tab.key)}
+            className={cn(
+              baseStyle,
+              variant === 'pill' ? pillStyle : underlineStyle
+            )}
+          >
             {tab.label}
           </button>
         );
@@ -70,6 +70,5 @@ function TabMenuBase({
   );
 }
 
-// ✅ memo 적용으로 리렌더 최소화
 const TabMenu = memo(TabMenuBase);
 export default TabMenu;

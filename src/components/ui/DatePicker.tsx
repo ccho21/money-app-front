@@ -34,7 +34,7 @@ export default function DatePicker({ label, value, onChange }: Props) {
       value={value}
       onClick={onClick}
       ref={ref}
-      className='cursor-pointer w-full' // ✅ full width 보장
+      className='cursor-pointer w-full'
     />
   ));
   CustomInput.displayName = 'CustomDatePickerInput';
@@ -42,7 +42,7 @@ export default function DatePicker({ label, value, onChange }: Props) {
   return (
     <div className='grid grid-cols-12 items-center gap-2'>
       {label && (
-        <label className='col-span-2 text-xs text-gray-500 dark:text-gray-400 font-medium'>
+        <label className='col-span-2 text-xs text-muted font-medium'>
           {label}
         </label>
       )}
@@ -54,7 +54,7 @@ export default function DatePicker({ label, value, onChange }: Props) {
           customInput={<CustomInput />}
           popperPlacement='bottom-start'
           showPopperArrow={false}
-          calendarClassName='rounded-xl shadow-lg border border-gray-200 bg-white dark:bg-gray-800 text-sm'
+          calendarClassName='rounded-xl shadow-lg border border-border bg-surface text-sm'
         />
       </div>
     </div>

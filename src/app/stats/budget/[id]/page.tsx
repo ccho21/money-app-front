@@ -1,3 +1,5 @@
+// 📄 경로: src/app/stats/category/[id]/page.tsx
+
 'use client';
 
 import { CategoryType } from '@/features/category/types';
@@ -59,19 +61,19 @@ export default function StatsBudgetDetailPage() {
   }, [date, transactionType, range, categoryId]);
 
   if (isLoading)
-    return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
 
   if (!budgetDetailResponse || !budgetDetailResponse.data.length) {
     return <EmptyMessage />;
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 bg-background pb-[10vh]'>
       <Panel>
         {/* 헤더 */}
         <div className='text-center space-y-1'>
-          <h1 className='text-md font-bold'>Food</h1>
-          <p className='text-sm text-gray-500'>Mar 2025</p>
+          <h1 className='text-md font-bold text-foreground'>Food</h1>
+          <p className='text-sm text-muted'>Mar 2025</p>
         </div>
 
         {/* 요약 */}
@@ -82,8 +84,8 @@ export default function StatsBudgetDetailPage() {
               value: budgetDetailResponse.incomeTotal,
               color:
                 budgetDetailResponse.incomeTotal > 0
-                  ? 'text-[#3C50E0]'
-                  : 'text-gray-400',
+                  ? 'text-primary'
+                  : 'text-muted',
               prefix: '$',
             },
             {
@@ -91,8 +93,8 @@ export default function StatsBudgetDetailPage() {
               value: budgetDetailResponse.expenseTotal,
               color:
                 budgetDetailResponse.expenseTotal > 0
-                  ? 'text-[#fb5c4c]'
-                  : 'text-gray-400',
+                  ? 'text-error'
+                  : 'text-muted',
               prefix: '$',
             },
             {
@@ -100,22 +102,24 @@ export default function StatsBudgetDetailPage() {
               value:
                 budgetDetailResponse.incomeTotal -
                 budgetDetailResponse.expenseTotal,
-              color: 'text-gray-900 dark:text-white',
+              color: 'text-foreground',
               prefix: '$',
             },
           ]}
         />
       </Panel>
+
       <Panel>
         {/* 바 차트 */}
         <div className='w-full h-36'>
           <BudgetBarChart
             data={MOCK_BAR_DATA}
             selectedMonth='Mar'
-            barColor='#FF6240'
+            barColor='var(--color-error)' // ✅ Tailwind에서 --color-error 활용
           />
         </div>
       </Panel>
+
       <Panel>
         {/* 일별 거래 리스트 */}
         <div className='space-y-4'>
@@ -128,13 +132,6 @@ export default function StatsBudgetDetailPage() {
               incomeTotal={group.incomeTotal}
               expenseTotal={group.expenseTotal}
               transactions={group.transactions}
-              // onTransactionClick={(tx) => {
-              //   setSelectedTransaction(tx);
-              //   router.push(`/transaction/${tx.id}/edit`);
-              // }}
-              // onHeaderClick={() => {
-              //   router.push(`/transaction/new?date=${group.label}`);
-              // }}
             />
           ))}
         </div>

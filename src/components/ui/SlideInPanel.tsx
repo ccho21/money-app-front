@@ -21,7 +21,7 @@ export default function SlideInPanel({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Dimmed background */}
+          {/* Dimmed Background */}
           <motion.div
             className='fixed inset-0 z-40 bg-black/40'
             initial={{ opacity: 0 }}
@@ -30,22 +30,22 @@ export default function SlideInPanel({
             onClick={onClose}
           />
 
-          {/* Side Slide-in panel (Right → Left entry) */}
+          {/* Slide-in Panel */}
           <motion.div
-            className='fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-white dark:bg-zinc-900 flex flex-col shadow-lg'
-            initial={{ x: '100%' }} // 시작은 오른쪽 바깥
-            animate={{ x: 0 }} // 화면 안으로 슬라이드 인
-            exit={{ x: '100%' }} // 오른쪽으로 나감
+            className='fixed top-0 right-0 bottom-0 z-50 w-full max-w-md bg-surface flex flex-col shadow-lg'
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             {/* Header */}
-            <div className='flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-800'>
-              <h2 className='text-base font-semibold text-gray-900 dark:text-white'>
+            <div className='flex items-center justify-between p-4 border-b border-border'>
+              <h2 className='text-base font-semibold text-foreground'>
                 {title ?? 'Settings'}
               </h2>
               <button
                 onClick={onClose}
-                className='p-1 text-gray-500 hover:text-gray-800 dark:hover:text-white'
+                className='p-1 text-muted hover:text-foreground'
               >
                 <X size={20} />
               </button>

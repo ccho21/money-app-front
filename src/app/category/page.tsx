@@ -1,5 +1,3 @@
-// 📄 src/app/category/page.tsx
-
 'use client';
 
 import { useEffect } from 'react';
@@ -33,28 +31,32 @@ export default function CategoryPage() {
   const expenseCategories = categories.filter((c) => c.type === 'expense');
 
   const renderList = (title: string, items: typeof categories) => (
-    <div className='mb-4'>
-      <h3 className='text-sm font-semibold text-gray-700 px-3 pb-1'>{title}</h3>
-      <ul className='divide-y border-t border-gray-200'>
+    <div className='mb-6'>
+      <h3 className='text-xs font-semibold text-muted px-3 pb-2 tracking-wide'>
+        {title}
+      </h3>
+      <ul className='divide-y divide-border border-t border-border'>
         {items.map((cat) => (
           <li
             key={cat.id}
-            className='flex items-center justify-between px-3 py-2 text-sm'
+            className='flex items-center justify-between px-3 py-2 bg-surface'
           >
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-2 overflow-hidden'>
               <button
-                className='text-red-500 hover:text-red-600'
+                className='text-destructive hover:opacity-80 shrink-0'
                 onClick={() => handleDelete(cat.id)}
               >
                 <MinusCircle size={16} />
               </button>
-              <span className='text-gray-800 truncate max-w-[140px]'>
+              <span className='text-sm text-foreground truncate max-w-[160px]'>
                 {cat.name}
               </span>
             </div>
+
             <Button
               variant='outline'
-              className='text-green-600 px-1 hover:text-green-700 border-none'
+              color='gray'
+              className='px-1 hover:text-primary'
               onClick={() => handleEdit(cat.id)}
             >
               <Pencil size={16} />
@@ -66,7 +68,7 @@ export default function CategoryPage() {
   );
 
   return (
-    <div className='pt-3 pb-6'>
+    <div className='pt-4 pb-[10vh] min-h-screen bg-surface'>
       {renderList('Expense Categories', expenseCategories)}
       {renderList('Income Categories', incomeCategories)}
     </div>

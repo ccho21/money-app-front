@@ -32,12 +32,12 @@ export default function AccountEditPage() {
   };
 
   return (
-    <div className='bg-white min-h-screen px-4 py-6'>
+    <div className='bg-surface min-h-screen px-4 py-6 text-foreground'>
       <div className='space-y-8'>
         {Object.entries(accountGroups).map(([group, list]) => (
           <div key={group}>
             {/* 그룹 타이틀 */}
-            <h2 className='text-xs text-gray-500 font-semibold mb-2 px-1 tracking-wide'>
+            <h2 className='text-xs text-muted font-semibold mb-2 px-1 tracking-wide'>
               {group}
             </h2>
 
@@ -46,11 +46,11 @@ export default function AccountEditPage() {
                 <div
                   key={acc.id}
                   onClick={() => handleClick(acc)}
-                  className='flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition cursor-pointer border-b border-gray-200'
+                  className='flex justify-between items-center px-2 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800 transition cursor-pointer border-b border-border'
                 >
                   {/* 왼쪽: 이름 + 설명 */}
                   <div className='flex flex-col overflow-hidden'>
-                    <div className='text-sm font-medium text-gray-900 truncate'>
+                    <div className='text-sm font-medium text-foreground truncate'>
                       {acc.name}
                     </div>
                   </div>
@@ -59,7 +59,7 @@ export default function AccountEditPage() {
 
               {/* 빈 그룹 처리 */}
               {list.length === 0 && (
-                <div className='text-sm text-gray-400 px-2 py-3 border-b border-gray-100'>
+                <div className='text-sm text-muted-foreground px-2 py-3 border-b border-border'>
                   No accounts
                 </div>
               )}

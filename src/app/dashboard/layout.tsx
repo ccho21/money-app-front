@@ -1,3 +1,4 @@
+// 📄 src/app/layout.tsx
 'use client';
 
 import { ReactNode, useEffect } from 'react';
@@ -62,7 +63,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-white'>
+    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
       {/* 상단: 네비게이션 */}
       <div className=''>
         <TopNav />
@@ -79,13 +80,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* 본문 */}
-      <div className='flex-1 overflow-y-auto bg-gray-100'>{children}</div>
+      <div className='flex-1 overflow-y-auto bg-surface'>{children}</div>
 
       {/* 하단: 탭 + 추가 버튼 */}
       <BottomTabBar />
       <Button
         variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-red-500 text-white rounded-full shadow-md z-50 text-center flex justify-center'
+        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 text-center flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80'
         onClick={() => router.push('/transaction/new')}
       >
         <Plus className='w-4 h-4' />

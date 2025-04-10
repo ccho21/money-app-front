@@ -41,11 +41,9 @@ export default function BudgetView() {
   const handleClick = (id: string) => {
     router.push(`/stats/budget/${id}`);
   };
-  if (isLoading) return <p className='p-4'>Loading...</p>;
 
-  if (!budgetResponse) {
-    return <EmptyMessage />;
-  }
+  if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
+  if (!budgetResponse) return <EmptyMessage />;
 
   return (
     <>
@@ -53,10 +51,10 @@ export default function BudgetView() {
         <div className='grid grid-cols-12 items-center'>
           {/* 왼쪽: Remaining 정보 */}
           <div className='col-span-6'>
-            <p className='text-xs text-gray-500 dark:text-gray-400'>
+            <p className='text-xs text-muted'>
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
-            <p className='text-base font-semibold text-gray-900 dark:text-white mt-0.5'>
+            <p className='text-base font-semibold text-foreground mt-0.5'>
               {budgetResponse.totalRemaining.toLocaleString()}원
             </p>
           </div>
@@ -64,7 +62,7 @@ export default function BudgetView() {
           {/* 오른쪽: 버튼 */}
           <div className='col-span-6 flex justify-end'>
             <Button
-              className='text-xs px-2 py-1 h-auto rounded-sm border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300'
+              className='text-xs px-2 py-1 h-auto rounded-sm border border-border text-muted'
               variant='outline'
               onClick={() => router.push('/budget/settings')}
             >
@@ -73,6 +71,7 @@ export default function BudgetView() {
           </div>
         </div>
       </Panel>
+
       <Panel>
         {budgetResponse.data.map((item) => (
           <CategoryListItem

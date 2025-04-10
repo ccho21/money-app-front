@@ -5,9 +5,7 @@ import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import YearlyItem from './YearlyItem';
 
-import {
-  TransactionSummaryResponse,
-} from '@/features/transaction/types';
+import { TransactionSummaryResponse } from '@/features/transaction/types';
 import { SummaryItem } from '@/lib/types';
 
 interface YearlyViewProps {
@@ -24,7 +22,9 @@ export default function YearlyView({
   onItemClick,
 }: YearlyViewProps) {
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return (
+      <p className='text-center mt-10 text-muted-foreground'>불러오는 중...</p>
+    );
   }
 
   if (!data || !data.data.length) {
@@ -37,7 +37,7 @@ export default function YearlyView({
         <SummaryBox items={summaryItems} />
       </Panel>
 
-      <Panel>
+      <Panel className='bg-surface text-foreground divide-y divide-border'>
         {data.data.map((summary) => (
           <YearlyItem
             key={summary.label}

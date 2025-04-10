@@ -1,3 +1,5 @@
+// 📄 경로: src/app/stats/category/[id]/page.tsx
+
 'use client';
 
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
@@ -58,18 +60,18 @@ export default function StatsCategoryDetailPage() {
   }, [date, transactionType, range, categoryId]);
 
   if (isLoading)
-    return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
 
   if (!categoryDetailResponse || !categoryDetailResponse.data.length) {
     return <EmptyMessage />;
   }
 
   return (
-    <div className='p-4 space-y-4 bg-white'>
+    <div className='bg-background p-4 pb-[10vh] space-y-4'>
       {/* 헤더 */}
       <div className='text-center space-y-1'>
-        <h1 className='text-lg font-bold'>Food</h1>
-        <p className='text-sm text-gray-500'>Mar 2025</p>
+        <h1 className='text-lg font-bold text-foreground'>Food</h1>
+        <p className='text-sm text-muted'>Mar 2025</p>
       </div>
 
       {/* 요약 */}
@@ -80,8 +82,8 @@ export default function StatsCategoryDetailPage() {
             value: categoryDetailResponse.incomeTotal,
             color:
               categoryDetailResponse.incomeTotal > 0
-                ? 'text-[#3C50E0]'
-                : 'text-gray-400',
+                ? 'text-primary'
+                : 'text-muted',
             prefix: '$',
           },
           {
@@ -89,8 +91,8 @@ export default function StatsCategoryDetailPage() {
             value: categoryDetailResponse.expenseTotal,
             color:
               categoryDetailResponse.expenseTotal > 0
-                ? 'text-[#fb5c4c]'
-                : 'text-gray-400',
+                ? 'text-error'
+                : 'text-muted',
             prefix: '$',
           },
           {
@@ -98,17 +100,18 @@ export default function StatsCategoryDetailPage() {
             value:
               categoryDetailResponse.incomeTotal -
               categoryDetailResponse.expenseTotal,
-            color: 'text-gray-900 dark:text-white',
+            color: 'text-foreground',
             prefix: '$',
           },
         ]}
       />
+
       {/* 바 차트 */}
       <div className='w-full h-36'>
         <BudgetBarChart
           data={MOCK_BAR_DATA}
           selectedMonth='Mar'
-          barColor='#FF6240'
+          barColor='var(--color-error)' // 테마 기반 색상
         />
       </div>
 

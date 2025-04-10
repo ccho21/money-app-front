@@ -1,16 +1,14 @@
-// 📄 경로: src/app/budget/settings/edit/page.tsx
-
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { fromUTCToLocal, getDateRangeKey } from '@/lib/date.util';
+import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { useParams, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { useBudgetStore } from '../../../../../stores/useBudgetStore';
+import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
-import { fetchBudgetCategoriesByCategoryId } from '../../../../../services/budgetService';
+import { fetchBudgetCategoriesByCategoryId } from '@/services/budgetService';
 import DateNavigator from '@/components/ui/DateNavigator';
 
 export default function ListBudgetCategoryPage() {
@@ -35,6 +33,7 @@ export default function ListBudgetCategoryPage() {
   useEffect(() => {
     if (range !== 'yearly')
       useDateFilterStore.getState().actions.setRange('yearly');
+
     const run = async () => {
       if (!categoryId) return;
       const [startDate, endDate] = dateRangeKey.split('_');
@@ -55,53 +54,55 @@ export default function ListBudgetCategoryPage() {
   const budgets = budgetCategoryGroupResponse?.budgets ?? [];
 
   const handleSelect = (item: (typeof budgets)[0]) => {
-    console.log('### date', date);
-    console.log('### startDate', fromUTCToLocal(item.startDate));
-    console.log('### endDate', fromUTCToLocal(item.endDate));
-
     if (item.categoryId) {
-      router.push(`/budget/settings/${categoryId}/new`);
-    } else {
       router.push(`/budget/settings/${categoryId}/edit`);
+    } else {
+      router.push(`/budget/settings/${categoryId}/new`);
     }
   };
 
-  if (!categoryId) return <div className='p-4'>잘못된 접근입니다</div>;
+  if (!categoryId) {
+    return (
+      <div className='p-4 text-sm text-error bg-surface text-center'>
+        잘못된 접근입니다
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className='min-h-screen bg-background text-foreground'>
       <DateNavigator withTransactionType={true} />
-      <div className='min-h-screen bg-white dark:bg-black text-black dark:text-white'>
-        <main className='p-4 space-y-4'>
-          {/* 안내 메시지 */}
-          <div className='rounded-md bg-gray-100 dark:bg-gray-800 p-4 text-sm text-gray-600 dark:text-gray-300'>
-            You can set the budget settings for each month. If you change the
-            default budget, it will be applied starting next month.
-          </div>
+      <main className='p-4 space-y-4'>
+        {/* 안내 메시지 */}
+        <div className='rounded-md bg-muted/10 dark:bg-muted/20 p-4 text-sm text-muted'>
+          You can set the budget settings for each month. If you change the
+          default budget, it will be applied starting next month.
+        </div>
 
-          {/* 예산 리스트 */}
-          <div className='space-y-2'>
-            {budgets.map((b) => {
-              const key = `${b.startDate}_${b.endDate}`;
-              return (
-                <button
-                  key={key}
-                  onClick={() => handleSelect(b)}
-                  className={cn(
-                    'w-full flex justify-between items-center rounded-lg border px-4 py-3',
-                    selectedKey === key
-                      ? 'border-red-500 text-red-500'
-                      : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                  )}
-                >
-                  <span>{b.label}</span>
-                  <span>${b.budgetAmount.toFixed(2)}</span>
-                </button>
-              );
-            })}
-          </div>
-        </main>
-      </div>
+        {/* 예산 리스트 */}
+        <div className='space-y-2'>
+          {budgets.map((b) => {
+            const key = `${b.startDate}_${b.endDate}`;
+            const isSelected = selectedKey === key;
+
+            return (
+              <button
+                key={key}
+                onClick={() => handleSelect(b)}
+                className={cn(
+                  'w-full flex justify-between items-center rounded-md border px-4 py-3 transition-all',
+                  isSelected
+                    ? 'border-error text-error'
+                    : 'bg-surface hover:bg-muted/10 border-border text-foreground'
+                )}
+              >
+                <span>{b.label}</span>
+                <span>${b.budgetAmount.toFixed(2)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }

@@ -57,19 +57,19 @@ export default function AccountDailyPage() {
       label: 'Income',
       value: totalIncome,
       prefix: '$',
-      color: 'text-blue-600'
+      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
       prefix: '$',
-       color: 'text-red-400'
+      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
       prefix: '$',
-      color: 'text-gray-900'
+      color: 'text-success',
     },
   ];
 

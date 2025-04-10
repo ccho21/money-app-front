@@ -25,7 +25,7 @@ export default function EditBudgetCategoryPage() {
   if (!categoryId) return <div className='p-4'>카테고리 ID가 없습니다</div>;
 
   return (
-    <div className='min-h-screen bg-white dark:bg-black text-black dark:text-white'>
+    <div className='min-h-screen  dark:bg-black text-black dark:text-white'>
       <main className='p-4'>
         <BudgetCategoryForm />
       </main>

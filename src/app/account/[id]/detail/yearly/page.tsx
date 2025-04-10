@@ -51,12 +51,26 @@ export default function YearlyPage() {
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
-  const summaryItems = [
-    { label: 'Income', value: totalIncome, prefix: '$' },
-    { label: 'Exp.', value: totalExpense, prefix: '$' },
-    { label: 'Total', value: totalIncome - totalExpense, prefix: '$' },
+  const items = [
+    {
+      label: 'Income',
+      value: totalIncome,
+      prefix: '$',
+      color: 'text-info',
+    },
+    {
+      label: 'Exp.',
+      value: totalExpense,
+      prefix: '$',
+      color: 'text-error',
+    },
+    {
+      label: 'Total',
+      value: totalIncome - totalExpense,
+      prefix: '$',
+      color: 'text-success',
+    },
   ];
-
   // ✅ 연도 클릭 핸들러
   const handleClick = useCallback(
     (dateStr: string) => {
@@ -71,7 +85,7 @@ export default function YearlyPage() {
     <YearlyView
       isLoading={isLoading}
       data={transactionSummaryResponse}
-      summaryItems={summaryItems}
+      summaryItems={items}
       onItemClick={handleClick}
     />
   );

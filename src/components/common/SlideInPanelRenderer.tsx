@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 import clsx from 'clsx';
 import { usePanelStore } from '@/stores/usePanelStore';
 
-// 패널 컴포넌트들 import
+// 패널 컴포넌트 import
 import ThemeSettingPanel from './panels/ThemeSettingPanel';
 import MonthlyStartDatePanel from './panels/MonthlyStartDatePanel';
 import MainCurrencyPanel from './panels/MainCurrencyPanel';
@@ -47,7 +47,7 @@ export default function SlideInPanelRenderer() {
         return <AccountGroupPanel />;
       default:
         return (
-          <div className='p-4 text-sm text-gray-400 dark:text-gray-500 text-center'>
+          <div className='p-4 text-sm text-muted-foreground text-center'>
             준비 중인 패널입니다.
           </div>
         );
@@ -61,17 +61,14 @@ export default function SlideInPanelRenderer() {
     >
       <div
         className={clsx(
-          'w-full max-w-md bg-white dark:bg-zinc-900 rounded-t-2xl',
-          'transition-all duration-300 p-4'
+          'w-full max-w-md rounded-t-2xl bg-surface text-foreground transition-all duration-300 p-4 shadow-xl'
         )}
         onClick={(e) => e.stopPropagation()}
       >
         <div className='flex justify-between items-center mb-4'>
-          <h2 className='text-md font-semibold text-gray-900 dark:text-white'>
-            설정
-          </h2>
+          <h2 className='text-md font-semibold'>설정</h2>
           <button onClick={closePanel} aria-label='Close Panel'>
-            <X className='w-5 h-5 text-gray-500 dark:text-gray-300' />
+            <X className='w-5 h-5 text-muted-foreground' />
           </button>
         </div>
         <SlideInPanel isOpen={true} onClose={closePanel} title='설정'>

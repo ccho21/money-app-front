@@ -12,12 +12,12 @@ export const Progress: React.FC<ProgressProps> = ({ value, className }) => {
   return (
     <div
       className={clsx(
-        'w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden',
+        'w-full h-2 rounded-full overflow-hidden bg-border',
         className
       )}
     >
       <div
-        className='h-full bg-blue-500 transition-all duration-300'
+        className='h-full bg-primary transition-all duration-300'
         style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
       />
     </div>

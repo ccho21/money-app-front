@@ -1,3 +1,4 @@
+// 📄 src/components/common/TransactionGroup.tsx
 'use client';
 
 import { cn, formatCurrency } from '@/lib/utils';
@@ -36,7 +37,7 @@ export default function TransactionGroup({
   const { day, weekday } = getDayAndWeekdayFromUTC(label);
 
   return (
-    <div className={cn('', className)}>
+    <div className={cn('bg-surface', className)}>
       {showDateHeader && (
         <div
           role='button'
@@ -47,34 +48,34 @@ export default function TransactionGroup({
           }}
           className={cn(
             'w-full px-3 py-3 border-t border-b transition-colors duration-200',
-            'border-gray-200 dark:border-zinc-700',
+            'border-border dark:border-zinc-700',
             onHeaderClick &&
-              'hover:bg-zinc-50 dark:hover:bg-zinc-900 cursor-pointer'
+              'hover:bg-muted/10 dark:hover:bg-zinc-800 cursor-pointer'
           )}
         >
           <div className='grid grid-cols-12 items-center'>
             {/* 날짜 + 요일 (좌측 8칸) */}
             <div className='col-span-8 flex items-center gap-2'>
-              <span className='text-md font-bold text-gray-900 dark:text-white'>
+              <span className='text-md font-bold text-foreground'>
                 {day}
               </span>
-              <span className='px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 dark:bg-zinc-700 dark:text-gray-300'>
+              <span className='px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground dark:bg-zinc-70'>
                 {weekday}
               </span>
               {showRange && rangeStart && rangeEnd && (
-                <span className='ml-2 text-xs text-gray-500 dark:text-gray-400'>
+                <span className='ml-2 text-xs text-muted dark:text-muted-foreground'>
                   {rangeStart} ~ {rangeEnd}
                 </span>
               )}
             </div>
 
             {/* 수입/지출 (우측 4칸, 2:2 분할) */}
-            <div className='col-span-4 grid grid-cols-2 gap-1 justify-end text-sm font-medium text-right text-gray-800 dark:text-gray-200'>
-              <span className='inline-flex items-center text-blue-600'>
+            <div className='col-span-4 grid grid-cols-2 gap-1 justify-end text-sm font-medium text-right'>
+              <span className='inline-flex items-center text-primary'>
                 <PlusIcon size={13} />
                 <span>{formatCurrency(incomeTotal)}</span>
               </span>
-              <span className='inline-flex items-center text-red-400 text-right justify-end'>
+              <span className='inline-flex items-center text-error text-right justify-end'>
                 <MinusIcon size={13} />
                 <span>{formatCurrency(expenseTotal)}</span>
               </span>

@@ -8,7 +8,6 @@ import Panel from '@/components/ui/Panel';
 import TransactionGroup from './TransactionGroup';
 import { SummaryItem } from '@/lib/types';
 
-
 interface DailyViewProps {
   isLoading: boolean;
   data?: TransactionSummaryResponse | null;
@@ -25,7 +24,7 @@ export default function DailyView({
   onHeaderClick,
 }: DailyViewProps) {
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-mute'>불러오는 중...</p>;
   }
 
   if (!data) {

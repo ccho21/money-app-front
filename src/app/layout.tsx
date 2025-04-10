@@ -1,9 +1,10 @@
-// 📄 경로: src/app/layout.tsx
+// 📄 src/app/layout.tsx
 'use client';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { Toaster } from 'react-hot-toast';
-import './globals.css';
+import '@/app/globals.css';
+import '@/styles/theme.css';
 import useAuthRedirectSync from '@features/auth/hooks/useAuthRedirectSync';
 import AuthGuard from '@features/auth/components/AuthGuard';
 import { StrictMode } from 'react';
@@ -29,11 +30,11 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-black dark:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-surface text-foreground dark:bg-surface dark:text-foreground`}
       >
         {loading ? (
           <div className='flex justify-center items-center min-h-screen'>
-            <span className='text-sm text-gray-500 dark:text-gray-300'>
+            <span className='text-sm text-muted dark:text-muted-foreground'>
               로딩 중...
             </span>
           </div>

@@ -40,10 +40,10 @@ export function CategoryListItem({
       onClick={onClick}
       className={cn(
         'px-3 py-3 border-b space-y-1',
-        'bg-white dark:bg-zinc-900',
+        'bg-surface',
         isMatched
-          ? 'border-gray-200 dark:border-zinc-700'
-          : 'border-red-400 dark:border-red-600 bg-red-50 dark:bg-red-950',
+          ? 'border-border'
+          : 'border-error bg-red-50 dark:bg-red-950',
         className
       )}
     >
@@ -62,9 +62,7 @@ export function CategoryListItem({
             <span
               className={cn(
                 'text-sm font-medium',
-                isMatched
-                  ? 'text-gray-800 dark:text-white'
-                  : 'text-red-600 dark:text-red-400'
+                isMatched ? 'text-foreground' : 'text-error'
               )}
             >
               {name}
@@ -75,9 +73,7 @@ export function CategoryListItem({
           <div
             className={cn(
               'text-sm font-semibold',
-              isMatched
-                ? 'text-gray-700 dark:text-gray-100'
-                : 'text-red-600 dark:text-red-400'
+              isMatched ? 'text-muted-foreground' : 'text-error'
             )}
           >
             {formatCurrency(amount)}
@@ -94,15 +90,15 @@ export function CategoryListItem({
                 style={{ backgroundColor: color }}
               />
               <div className='flex flex-col'>
-                <span className='text-sm font-medium text-gray-800 dark:text-white'>
+                <span className='text-sm font-medium text-foreground'>
                   {name}
                 </span>
-                <span className='text-xs text-gray-500 dark:text-gray-400'>
+                <span className='text-xs text-muted'>
                   {formatCurrency(percentage as number)}% used
                 </span>
               </div>
             </div>
-            <div className='text-sm font-semibold text-gray-700 dark:text-gray-100'>
+            <div className='text-sm font-semibold text-muted-foreground'>
               {formatCurrency(amount)}
             </div>
           </div>
@@ -118,11 +114,11 @@ export function CategoryListItem({
                 className='w-4 h-4 rounded-full'
                 style={{ backgroundColor: color }}
               />
-              <span className='text-base font-semibold text-gray-900 dark:text-white'>
+              <span className='text-base font-semibold text-foreground'>
                 {name}
               </span>
             </div>
-            <span className='text-sm text-gray-500 dark:text-gray-400 font-medium'>
+            <span className='text-sm text-muted font-medium'>
               {percentage}% • {formatCurrency(amount)}
             </span>
           </div>
@@ -132,7 +128,7 @@ export function CategoryListItem({
 
       {/* ✅ 카드 정보 (outstandingBalance / balancePayable) 표시 */}
       {hasCardInfo && (
-        <div className='mt-2 space-y-1 text-xs text-gray-600 dark:text-gray-400'>
+        <div className='mt-2 space-y-1 text-xs text-muted'>
           {balancePayable !== undefined && (
             <div className='flex justify-between'>
               <span>Balance Payable</span>

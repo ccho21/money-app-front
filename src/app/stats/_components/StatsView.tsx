@@ -1,3 +1,5 @@
+// 📄 경로: src/app/stats/_components/StatsView.tsx
+
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -52,8 +54,7 @@ export default function StatsView() {
     outerRadius,
     percent,
     index,
-  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any) => {
+  }: any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -64,22 +65,20 @@ export default function StatsView() {
         <text
           x={x}
           y={y - 10}
-          fill='white'
+          className='text-[10px] font-semibold fill-foreground'
           textAnchor='middle'
           dominantBaseline='central'
-          className='text-sm font-semibold'
         >
           {name}
         </text>
         <text
           x={x}
-          y={y + 10}
-          fill='white'
+          y={y + 6}
+          className='text-[10px] fill-muted'
           textAnchor='middle'
           dominantBaseline='central'
-          className='text-xs'
         >
-          {`${percent.toFixed(2)}%`}
+          {`${(percent * 100).toFixed(0)}%`}
         </text>
       </g>
     );
@@ -106,7 +105,7 @@ export default function StatsView() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-400'>Loading...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   if (!categoryResponse || !categoryResponse.data.length) {
@@ -114,17 +113,16 @@ export default function StatsView() {
   }
 
   return (
-    <div>
-      {/* ✅ 파이 차트 영역만 개선 */}
-      <Panel className='mb-2 relative'>
-        <div className='w-full h-72'>
+    <div className='bg-background min-h-screen pb-[10vh]'>
+      <Panel className='mb-2 px-2 py-4'>
+        <div className='w-full h-72 relative'>
           <ResponsiveContainer>
             <PieChart>
               <Pie
                 data={categoryChart}
                 cx='50%'
                 cy='50%'
-                outerRadius={100} // ✅ 더 크게
+                outerRadius={100}
                 labelLine={false}
                 label={renderCustomLabel}
                 dataKey='value'
@@ -135,12 +133,9 @@ export default function StatsView() {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-
-          {/* 중앙 텍스트 (추후 Total 표시할 수도 있음) */}
         </div>
       </Panel>
 
-      {/* ✅ 하단 리스트는 원래 코드 그대로 유지 */}
       <Panel>
         {categoryResponse.data.map((item) => (
           <CategoryListItem

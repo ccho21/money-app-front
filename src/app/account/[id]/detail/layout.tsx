@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     if (!dateParam) return;
 
     try {
-      const parsed = parseLocalDate(dateParam); // YYYY / YYYY-MM / YYYY-MM-DD
+      const parsed = parseLocalDate(dateParam);
       if (format(parsed, 'yyyy-MM-dd') !== format(date, 'yyyy-MM-dd')) {
         setDate(parsed);
       }
@@ -69,13 +69,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     });
 
     return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+      useUIStore.getState().resetTopNav();
     };
   }, [router, reset, accountId]);
+
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-white'>
+    <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-surface text-foreground'>
       {/* 상단: 네비게이션 */}
-      <div className=''>
+      <div>
         <DateNavigator />
         <TabMenu
           tabs={tabs}
@@ -83,21 +84,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           variant='underline'
           onChange={(key) => {
             router.replace(`/account/${accountId}/detail/${key}`);
-
-            // const currentDate = format(date, 'yyyy-MM-dd');
-            // router.push(`/dashboard/${key}?date=${currentDate}`);
           }}
         />
       </div>
 
       {/* 본문 */}
-      <div className='flex-1 overflow-y-auto bg-gray-100'>{children}</div>
+      <div className='flex-1 overflow-y-auto'>{children}</div>
 
       {/* 하단: 탭 + 추가 버튼 */}
       <BottomTabBar />
       <Button
         variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-red-500 text-white rounded-full shadow-md z-50 text-center flex justify-center'
+        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-primary text-onPrimary rounded-full shadow-md z-50 flex justify-center items-center'
         onClick={() => router.push('/transaction/new')}
       >
         <Plus className='w-4 h-4' />

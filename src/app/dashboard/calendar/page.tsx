@@ -1,10 +1,8 @@
+// 📄 src/app/pages/calendar.tsx
 'use client';
 
 import { JSX, useEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
-
-import 'react-calendar/dist/Calendar.css';
-import '@/styles/custom-calendar.css';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useDateFilterStore } from '@/stores/useDateFilterStore';
@@ -22,6 +20,7 @@ import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from './_components/CalendarWithTransactions';
 import TransactionDetailView from './_components/TransactionDetailView';
 import Panel from '@/components/ui/Panel';
+import { formatCurrency } from '@/lib/utils';
 
 export default function CalendarPage() {
   const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
@@ -58,14 +57,10 @@ export default function CalendarPage() {
         item.date,
         <div className='text-[10px]'>
           {hasIncome && (
-            <div className='text-blue-500'>
-              +${item.income.toLocaleString()}
-            </div>
+            <div className='text-primary'>+{formatCurrency(item.income)}</div>
           )}
           {hasExpense && (
-            <div className='text-red-500'>
-              -${item.expense.toLocaleString()}
-            </div>
+            <div className='text-error'>-{formatCurrency(item.expense)}</div>
           )}
         </div>
       );
@@ -141,7 +136,7 @@ export default function CalendarPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
   return (

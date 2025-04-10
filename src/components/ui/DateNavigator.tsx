@@ -1,3 +1,4 @@
+// 📄 src/components/common/DateNavigator.tsx
 'use client';
 
 import { memo, useCallback, useMemo } from 'react';
@@ -14,7 +15,6 @@ interface DateNavigatorProps {
 function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   const router = useRouter();
 
-  // ✅ 상태 shallow 최적화
   const { date, range, setDate, getSyncedURLFromState } = useDateFilterStore(
     useShallow((s) => ({
       date: s.state.date,
@@ -24,9 +24,6 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
     }))
   );
 
-  console.log('### DATEA NAVIGATOM', range);
-
-  // ✅ 다음/이전 날짜 계산 후 상태 변경 + URL replace
   const handleChange = useCallback(
     (diff: number) => {
       const newDate = getNextDateByRange(date, diff, range);
@@ -37,33 +34,39 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
     [date, range, setDate, getSyncedURLFromState, router, withTransactionType]
   );
 
-  // ✅ 날짜 라벨 캐싱
   const label = useMemo(() => getDateLabelByRange(date, range), [date, range]);
 
   return (
-    <div className='flex justify-between items-center px-5 py-3 text-base font-normal'>
+    <div className="flex items-center justify-between bg-surface border border-border px-5 py-3 text-md font-normal shadow-sm">
       {/* 왼쪽 이동 */}
-      <div className='flex gap-3 text-gray-500'>
-        <button onClick={() => handleChange(-1)}>
-          <ChevronLeft size={20} />
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => handleChange(-1)}
+          className="p-2 rounded-md text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Previous"
+        >
+          <ChevronLeft className="w-5 h-5" />
         </button>
       </div>
 
-      {/* 라벨 */}
-      <span className='text-base font-medium text-gray-900 dark:text-white'>
+      {/* 중앙 라벨 */}
+      <span className="text-sm font-semibold text-foreground select-none">
         {label}
       </span>
 
       {/* 오른쪽 이동 */}
-      <div className='flex gap-3 text-gray-500'>
-        <button onClick={() => handleChange(1)}>
-          <ChevronRight size={20} />
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => handleChange(1)}
+          className="p-2 rounded-md text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Next"
+        >
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
     </div>
   );
 }
 
-// ✅ memo 최종 적용
 const DateNavigator = memo(DateNavigatorBase);
 export default DateNavigator;

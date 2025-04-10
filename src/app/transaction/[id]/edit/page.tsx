@@ -17,6 +17,7 @@ import { fetchTransactionById } from '@/services/transactionService';
 export default function TransactionEditPage() {
   const { id } = useParams();
   const router = useRouter();
+
   const {
     state: { type },
     actions: { setAllFields },
@@ -28,9 +29,12 @@ export default function TransactionEditPage() {
 
       await fetchAccounts();
       await fetchCategories();
-      const t = useTransactionStore.getState().selectedTransaction;
+
+      const cachedTx = useTransactionStore.getState().selectedTransaction;
       const tx =
-        t && t.id === id ? t : await fetchTransactionById(id.toString());
+        cachedTx && cachedTx.id === id
+          ? cachedTx
+          : await fetchTransactionById(id.toString());
 
       if (tx) {
         const preset = {
@@ -39,13 +43,13 @@ export default function TransactionEditPage() {
           date: tx.date,
           note: tx.note ?? '',
           description: tx.description ?? '',
-          accountId: tx.account.id || '',
+          accountId: tx.account?.id || '',
           categoryId: tx.category?.id || '',
           from: tx.accountId || '',
           to: tx.toAccountId ?? '',
         };
 
-        // ✅ 폼 필드 초기화
+        // ✅ 상태 초기화 및 동기화
         setAllFields(preset);
         useTransactionFormStore.getState().actions.init(preset);
       } else {
@@ -57,13 +61,14 @@ export default function TransactionEditPage() {
     run();
   }, [id, setAllFields, router]);
 
-  if (!type)
+  // ✅ 로딩 상태
+  if (!type) {
     return (
-      <div className='text-center text-gray-400 p-10'>
-        Loading transaction...
-      </div>
+      <div className='text-center text-muted py-10'>Loading transaction...</div>
     );
+  }
 
+  // ✅ 트랜잭션 타입별 렌더링
   if (type === 'income') return <IncomeForm mode='edit' id={id as string} />;
   if (type === 'transfer')
     return <TransferForm mode='edit' id={id as string} />;

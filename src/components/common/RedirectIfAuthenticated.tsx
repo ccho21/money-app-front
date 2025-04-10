@@ -1,25 +1,26 @@
-// 📄 src/components/common/RedirectIfAuthenticated.tsx
-
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
 
-export default function RedirectIfAuthenticated({
-  children,
-}: {
+interface Props {
   children: React.ReactNode;
-}) {
+}
+
+export default function RedirectIfAuthenticated({ children }: Props) {
   const router = useRouter();
-  const { state } = useUserStore(); // ✅ 구조 분리로 접근
+  const {
+    state: { user },
+  } = useUserStore();
 
   useEffect(() => {
-    if (state.user) {
+    if (user) {
       router.replace('/dashboard/daily');
     }
-  }, [router, state.user]);
+  }, [user, router]);
 
-  if (state.user) return null;
+  if (user) return null;
+
   return <>{children}</>;
 }

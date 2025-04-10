@@ -23,7 +23,11 @@ export default function SummaryPage() {
   } = useDateFilterStore();
 
   const {
-    state: { summaries, isLoading: isAccountLoading, error: accountError },
+    state: {
+      summaryResponse,
+      isLoading: isAccountLoading,
+      error: accountError,
+    },
   } = useAccountStore();
 
   const {
@@ -41,7 +45,6 @@ export default function SummaryPage() {
 
   const fetchedKeyRef = useRef<string | null>(null);
 
-  // ✅ 중복 호출 방지
   useEffect(() => {
     if (fetchedKeyRef.current === dateRangeKey) return;
 
@@ -57,26 +60,15 @@ export default function SummaryPage() {
     run();
   }, [dateRangeKey]);
 
-  // ✅ 총합 계산
-  const incomeTotal = useMemo(
-    () => summaries.reduce((acc, s) => acc + s.incomeTotal, 0),
-    [summaries]
-  );
-
-  const expenseTotal = useMemo(
-    () => summaries.reduce((acc, s) => acc + s.expenseTotal, 0),
-    [summaries]
-  );
-
-  // ✅ 로딩 중
+  // ✅ 로딩
   if (isAccountLoading || isBudgetLoading) {
-    return <p className='text-center mt-10 text-gray-500'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
   // ✅ 에러
   if (accountError || budgetError) {
     return (
-      <p className='text-center mt-10 text-red-500'>
+      <p className='text-center mt-10 text-error'>
         {accountError ?? budgetError}
       </p>
     );
@@ -87,36 +79,42 @@ export default function SummaryPage() {
     return <EmptyMessage />;
   }
 
+  if (!summaryResponse || !summaryResponse.data.length) {
+    return <EmptyMessage />;
+  }
+
   return (
-    <div className=''>
+    <div className='space-y-4'>
       <Panel>
         <SummaryBox
           items={[
             {
               label: 'Income',
-              value: incomeTotal,
-              color: incomeTotal > 0 ? 'text-[#3C50E0]' : 'text-gray-400',
+              value: summaryResponse.incomeTotal,
+              color:
+                summaryResponse.incomeTotal > 0 ? 'text-info' : 'text-muted',
               prefix: '$',
             },
             {
               label: 'Exp.',
-              value: expenseTotal,
-              color: expenseTotal > 0 ? 'text-[#fb5c4c]' : 'text-gray-400',
+              value: summaryResponse.expenseTotal,
+              color:
+                summaryResponse.expenseTotal > 0 ? 'text-error' : 'text-muted',
               prefix: '$',
             },
             {
               label: 'Total',
-              value: incomeTotal - expenseTotal,
-              color: 'text-gray-900 dark:text-white',
+              value: summaryResponse.incomeTotal - summaryResponse.expenseTotal,
+              color: 'text-foreground',
               prefix: '$',
             },
           ]}
         />
       </Panel>
 
-      <Panel>
-        <AccountsBox accounts={summaries} />
-      </Panel>
+      {/* <Panel>
+        <AccountsBox accounts={summaryResponse.data} />
+      </Panel> */}
 
       <Panel>
         {budgetSummaryResponse.data.map((summary: BudgetSummary) => (

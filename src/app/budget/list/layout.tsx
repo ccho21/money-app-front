@@ -5,9 +5,9 @@ import { ReactNode } from 'react';
 
 export default function BudgetLayout({ children }: { children: ReactNode }) {
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
+    <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-surface'>
       <DateNavigator withTransactionType={true} />
-      <main className='flex-1 overflow-y-auto bg-gray-100'>{children}</main>
+      <main className='flex-1 overflow-y-auto'>{children}</main>
     </div>
   );
 }
