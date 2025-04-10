@@ -15,8 +15,8 @@ import { Button } from '@/components/ui/Button';
 
 import { Plus } from 'lucide-react';
 import { format } from 'date-fns';
-import { parseLocalDate } from '@/lib/date.util';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { parseLocalDate, formatDate } from '@/lib/date.util';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 
@@ -29,14 +29,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const current = pathname.split('/')[4] || 'daily';
   const dateParam = searchParams.get('date');
 
+  const { query, setDateFromString } = useFilterStore();
+  const { date } = query;
+
   const {
     actions: { reset },
   } = useAccountFormStore();
-
-  const {
-    state: { date },
-    actions: { setDate },
-  } = useDateFilterStore();
 
   useEffect(() => {
     if (!dateParam) return;
@@ -44,12 +42,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     try {
       const parsed = parseLocalDate(dateParam);
       if (format(parsed, 'yyyy-MM-dd') !== format(date, 'yyyy-MM-dd')) {
-        setDate(parsed);
+        setDateFromString(dateParam);
       }
     } catch (err) {
       console.log('### ERR', err);
     }
-  }, [dateParam, setDate, router, current, date]);
+  }, [dateParam, setDateFromString, router, current, date]);
 
   const tabs = [
     { key: 'daily', label: 'Daily' },
@@ -75,7 +73,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-surface text-foreground'>
-      {/* 상단: 네비게이션 */}
       <div>
         <DateNavigator />
         <TabMenu
@@ -83,15 +80,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           active={current}
           variant='underline'
           onChange={(key) => {
-            router.replace(`/account/${accountId}/detail/${key}`);
+            const currentDate = formatDate(date);
+            router.replace(
+              `/account/${accountId}/detail/${key}?date=${currentDate}`
+            );
           }}
         />
       </div>
 
-      {/* 본문 */}
       <div className='flex-1 overflow-y-auto'>{children}</div>
 
-      {/* 하단: 탭 + 추가 버튼 */}
       <BottomTabBar />
       <Button
         variant='solid'

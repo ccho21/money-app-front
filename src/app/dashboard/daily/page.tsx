@@ -2,9 +2,8 @@
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { fetchTransactionSummary } from '@/services/transactionService';
-import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { Transaction } from '@/features/transaction/types';
 import DailyView from '@/components/common/DailyView';
@@ -15,8 +14,8 @@ export default function DailyPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { query, setQuery } = useFilterStore();
-  const { date, range } = query;
+  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { range, date } = query;
 
   const { isLoading, transactionSummaryResponse, actions } =
     useTransactionStore(
@@ -27,11 +26,6 @@ export default function DailyPage() {
       }))
     );
 
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    [date]
-  );
-
   useEffect(() => {
     if (range !== 'monthly') {
       setQuery({ range: 'monthly' });
@@ -39,17 +33,16 @@ export default function DailyPage() {
   }, [range, setQuery]);
 
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
+    const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       groupBy: 'daily',
       startDate,
       endDate,
     };
-    const run = async () => {
+    (async () => {
       await fetchTransactionSummary(params);
-    };
-    run();
-  }, [dateRangeKey, pathname]);
+    })();
+  }, [getDateRangeKey, pathname, date]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;

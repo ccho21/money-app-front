@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
@@ -14,7 +14,6 @@ import {
 
 import { TransactionSummary } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
-import { getDateRangeKey } from '@/lib/date.util';
 import MonthlyView from '@/components/common/MonthlyView';
 
 export default function MonthlyPage() {
@@ -30,33 +29,30 @@ export default function MonthlyPage() {
     }))
   );
 
-  const { query, setQuery } = useFilterStore(
+  const { query, setQuery, getDateRangeKey } = useFilterStore(
     useShallow((s) => ({
       query: s.query,
       setQuery: s.setQuery,
+      getDateRangeKey: s.getDateRangeKey,
     }))
   );
-  const { date, range } = query;
-
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'yearly', amount: 0 }),
-    [date]
-  );
+  const { range, date } = query;
 
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
+    if (range !== 'yearly') setQuery({ range: 'yearly' });
+  }, [range, setQuery]);
+
+  useEffect(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       groupBy: 'monthly',
       startDate,
       endDate,
     };
-
-    if (range !== 'yearly') {
-      setQuery({ range: 'yearly' });
-    } else {
+    (async () => {
       fetchTransactionSummary(params);
-    }
-  }, [dateRangeKey, range, setQuery]);
+    })();
+  }, [getDateRangeKey, date]);
 
   const handleToggle = useCallback(
     async (index: number, summary: TransactionSummary) => {

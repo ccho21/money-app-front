@@ -1,26 +1,22 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useBudgetStore } from '@/stores/useBudgetStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 
 import SummaryBox from '@/components/ui/SummaryBox';
-import AccountsBox from './_components/AccountsBox';
 import BudgetBox from './_components/BudgetBox';
 
 import { fetchAccountTransactionSummary } from '@/services/accountService';
 import { fetchBudgetSummary } from '@/services/budgetService';
-import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { BudgetSummary } from '@/features/budget/types';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
 
 export default function SummaryPage() {
-  const {
-    state: { date },
-  } = useDateFilterStore();
+  const { getDateRangeKey } = useFilterStore();
 
   const {
     state: {
@@ -38,10 +34,7 @@ export default function SummaryPage() {
     },
   } = useBudgetStore();
 
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    [date]
-  );
+  const dateRangeKey = getDateRangeKey(); // ✅ store 내부 함수 사용
 
   const fetchedKeyRef = useRef<string | null>(null);
 
@@ -60,12 +53,10 @@ export default function SummaryPage() {
     run();
   }, [dateRangeKey]);
 
-  // ✅ 로딩
   if (isAccountLoading || isBudgetLoading) {
     return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
-  // ✅ 에러
   if (accountError || budgetError) {
     return (
       <p className='text-center mt-10 text-error'>
@@ -74,7 +65,6 @@ export default function SummaryPage() {
     );
   }
 
-  // ✅ 데이터 없음
   if (!budgetSummaryResponse || !budgetSummaryResponse.data.length) {
     return <EmptyMessage />;
   }
@@ -111,10 +101,6 @@ export default function SummaryPage() {
           ]}
         />
       </Panel>
-
-      {/* <Panel>
-        <AccountsBox accounts={summaryResponse.data} />
-      </Panel> */}
 
       <Panel>
         {budgetSummaryResponse.data.map((summary: BudgetSummary) => (

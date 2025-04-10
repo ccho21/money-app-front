@@ -1,7 +1,6 @@
-// 📄 src/app/layout.tsx
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import TopNav from '@/components/common/TopNav';
@@ -11,11 +10,12 @@ import DateNavigator from '@/components/ui/DateNavigator';
 import { Button } from '@/components/ui/Button';
 
 import { Plus } from 'lucide-react';
-import { format } from 'date-fns';
-import { parseLocalDate } from '@/lib/date.util';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { formatDate } from '@/lib/date.util';
+import { parseLocalDate, formatDate } from '@/lib/date.util';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
+import type { RangeOption } from '@/features/shared/types';
+
+const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -24,36 +24,65 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const current = pathname.split('/')[2] || 'daily';
   const dateParam = searchParams.get('date');
+  const rangeParam = searchParams.get('range');
 
-  const {
-    state: { date },
-    actions: { setDate },
-  } = useDateFilterStore();
+  const { query, setQuery } = useFilterStore();
+  const { date, range } = query;
 
-  useEffect(() => {
-    useUIStore.getState().setTopNav({
-      title: 'Trans.',
-    });
-
-    return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
-    };
-  }, [router]);
+  const hasInitialized = useRef(false); // ✅ 최초 1회만 실행 제어
 
   useEffect(() => {
-    if (!dateParam) return;
+    const partialQuery: Partial<typeof query> = {};
+    let parsedDate: Date | null = null;
 
-    try {
-      const parsed = parseLocalDate(dateParam); // YYYY / YYYY-MM / YYYY-MM-DD
-      if (format(parsed, 'yyyy-MM-dd') !== format(date, 'yyyy-MM-dd')) {
-        setDate(parsed);
+    // ✅ 최초 1회만 실행
+    if (!hasInitialized.current) {
+      if (dateParam) {
+        try {
+          parsedDate = parseLocalDate(dateParam);
+          if (formatDate(parsedDate) !== formatDate(date)) {
+            partialQuery.date = parsedDate;
+          }
+        } catch (err) {
+          console.log('❌ Invalid dateParam', err);
+        }
       }
-    } catch (err) {
-      console.log('### ERR', err);
-      const todayStr = formatDate(new Date());
-      router.replace(`/dashboard/${current}?date=${todayStr}`);
+
+      if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
+        if (range !== rangeParam) {
+          partialQuery.range = rangeParam as RangeOption;
+        }
+      }
+
+      if (Object.keys(partialQuery).length > 0) {
+        setQuery(partialQuery);
+      }
+
+      hasInitialized.current = true;
     }
-  }, [dateParam, setDate, router, current, date]);
+
+    // ✅ 매번 실행되어야 하는 부분
+    // const needsFallback =
+    //   !dateParam || !validRanges.includes(rangeParam as RangeOption);
+
+    //   if (needsFallback) {
+    //     const fallbackDate = new Date();
+
+    //     setQuery({
+    //       date: fallbackDate,
+    //       range: 'monthly',
+    //     });
+
+    //     // 선택: URL도 맞춰주고 싶다면 ↓
+    //     const fallbackURL = `/dashboard/${current}?date=${formatDate(fallbackDate)}&range=monthly`;
+    //     router.replace(fallbackURL);
+    //   }
+  }, [dateParam, rangeParam, date, range, current, setQuery, router]);
+
+  useEffect(() => {
+    useUIStore.getState().setTopNav({ title: 'Trans.' });
+    return () => useUIStore.getState().resetTopNav();
+  }, [router]);
 
   const tabs = [
     { key: 'daily', label: 'Daily' },
@@ -64,8 +93,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
-      {/* 상단: 네비게이션 */}
-      <div className=''>
+      <div>
         <TopNav />
         <DateNavigator />
         <TabMenu
@@ -73,20 +101,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           active={current}
           variant='underline'
           onChange={(key) => {
-            const currentDate = format(date, 'yyyy-MM-dd');
-            router.push(`/dashboard/${key}?date=${currentDate}`);
+            const currentDate = formatDate(date);
+            router.push(`/dashboard/${key}?date=${currentDate}&range=${range}`);
           }}
         />
       </div>
 
-      {/* 본문 */}
       <div className='flex-1 overflow-y-auto bg-surface'>{children}</div>
 
-      {/* 하단: 탭 + 추가 버튼 */}
       <BottomTabBar />
       <Button
         variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 text-center flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80'
+        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80'
         onClick={() => router.push('/transaction/new')}
       >
         <Plus className='w-4 h-4' />

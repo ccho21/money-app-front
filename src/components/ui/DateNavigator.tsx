@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useRouter } from 'next/navigation';
 import { getDateLabelByRange, getNextDateByRange } from '@/lib/date.util';
-import { useShallow } from 'zustand/react/shallow';
+import { useShallow } from 'zustand/shallow';
 
 interface DateNavigatorProps {
   withTransactionType?: boolean;
@@ -14,15 +14,15 @@ interface DateNavigatorProps {
 function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   const router = useRouter();
 
-  const { query, setQuery, getQueryString } = useFilterStore(
+  const { date, range } = useFilterStore(
     useShallow((s) => ({
-      query: s.query,
-      setQuery: s.setQuery,
-      getQueryString: s.getQueryString,
+      date: s.query.date,
+      range: s.query.range,
     }))
   );
 
-  const { date, range } = query;
+  const setQuery = useFilterStore((s) => s.setQuery);
+  const getQueryString = useFilterStore((s) => s.getQueryString);
 
   const handleChange = useCallback(
     (diff: number) => {
@@ -30,7 +30,7 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
       setQuery({ date: newDate });
 
       const syncedURL = getQueryString(withTransactionType);
-      router.replace(`${syncedURL}`);
+      router.replace(syncedURL);
     },
     [date, range, setQuery, getQueryString, router, withTransactionType]
   );

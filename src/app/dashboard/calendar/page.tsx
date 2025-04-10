@@ -13,7 +13,7 @@ import {
   TransactionSummary,
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
-import { getDateRangeKey, formatDate } from '@/lib/date.util';
+import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from './_components/CalendarWithTransactions';
 import TransactionDetailView from './_components/TransactionDetailView';
 import Panel from '@/components/ui/Panel';
@@ -31,7 +31,7 @@ export default function CalendarPage() {
     );
   const { setTransactionSummaryResponse } = useTransactionStore().actions;
 
-  const { query, setQuery } = useFilterStore();
+  const { query, setQuery, getDateRangeKey } = useFilterStore();
   const { date, range } = query;
 
   const [selectedDetail, setSelectedDetail] = useState<{
@@ -73,16 +73,10 @@ export default function CalendarPage() {
   }, [range, setQuery]);
 
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       await fetchTransactionCalendar(formatDate(date));
-    };
-    run();
+    })();
   }, [date]);
-
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    [date]
-  );
 
   const handleDateClick = async (clickedDate: Date) => {
     const dateStr = formatDate(clickedDate);
@@ -96,7 +90,7 @@ export default function CalendarPage() {
     }
 
     try {
-      const [startDate, endDate] = dateRangeKey.split('_');
+      const [startDate, endDate] = getDateRangeKey().split('_');
       const params = new URLSearchParams({
         groupBy: 'daily',
         startDate,

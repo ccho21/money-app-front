@@ -1,5 +1,3 @@
-// 📄 경로: src/app/stats/_components/StatsView.tsx
-
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -7,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 import { useStatsStore } from '@/stores/useStatsStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByCatgory } from '@/services/statsService';
-import { getDateRangeKey } from '@/lib/date.util';
-import { CategoryType } from '@/features/category/types';
+
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
 import { CategoryListItem } from './CategoryListItem';
+import type { CategoryType } from '@/features/category/types';
 
 const RADIAN = Math.PI / 180;
 
@@ -31,9 +29,8 @@ export default function StatsView() {
     state: { isLoading, categoryResponse },
   } = useStatsStore();
 
-  const {
-    state: { date, range, transactionType },
-  } = useDateFilterStore();
+  const { query, getDateRangeKey } = useFilterStore();
+  const { date, range, transactionType } = query;
 
   const categoryChart: CategoryChartData[] = useMemo(() => {
     return (
@@ -54,7 +51,8 @@ export default function StatsView() {
     outerRadius,
     percent,
     index,
-  }: any) => {
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -86,10 +84,8 @@ export default function StatsView() {
 
   useEffect(() => {
     const run = async () => {
-      const [startDate, endDate] = getDateRangeKey(date, {
-        unit: range,
-        amount: 0,
-      }).split('_');
+      const [startDate, endDate] = getDateRangeKey().split('_');
+
       await fetchStatsByCatgory({
         startDate,
         endDate,
@@ -98,7 +94,7 @@ export default function StatsView() {
     };
 
     run();
-  }, [date, transactionType, range]);
+  }, [getDateRangeKey, transactionType, date, range]);
 
   const handleClick = (id: string) => {
     router.push(`/stats/category/${id}`);

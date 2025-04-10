@@ -40,28 +40,32 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface dark:bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
       {baseTabs.map((tab) => {
         const isTodayTab = tab.key === 'daily';
         const tabPath = isTodayTab
           ? `${tab.basePath}?date=${todayDateParam}`
           : tab.basePath;
+
         const isActive = pathname.startsWith(tab.basePath);
+
+        const handleClick = () => {
+          if (pathname.startsWith(tab.basePath)) {
+            const refreshedURL = `${tabPath}&refresh=${Date.now()}`;
+            router.replace(refreshedURL);
+          } else {
+            router.push(tabPath);
+          }
+        };
 
         return (
           <button
             key={tab.key}
-            onClick={() => router.push(tabPath)}
-            className='flex flex-col items-center text-xs'
+            onClick={handleClick}
+            className='flex flex-col items-center text-xs text-muted hover:text-muted/80'
           >
-            <div className={isActive ? 'text-primary' : 'text-muted'}>
-              {tab.icon}
-            </div>
-            <span
-              className={`mt-1 ${
-                isActive ? 'text-primary font-semibold' : 'text-muted'
-              }`}
-            >
+            <div className={isActive ? 'text-primary' : ''}>{tab.icon}</div>
+            <span className={isActive ? 'text-primary font-semibold' : ''}>
               {isTodayTab ? todayLabel : tab.label}
             </span>
           </button>

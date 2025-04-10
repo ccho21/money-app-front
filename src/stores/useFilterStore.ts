@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { parseISO } from 'date-fns';
 
 import { TransactionType } from '@/features/transaction/types';
 import { RangeOption } from '@/features/shared/types';
-import { formatDate } from '@/lib/date.util';
+import { formatDate, getDateRangeKey } from '@/lib/date.util';
 
 interface FilterQuery {
   date: Date;
@@ -16,8 +15,8 @@ interface FilterStore {
   query: FilterQuery;
   setQuery: (partial: Partial<FilterQuery>) => void;
   resetQuery: () => void;
-  setDateFromString: (dateStr: string) => void;
   getQueryString: (withTransactionType?: boolean) => string;
+  getDateRangeKey: (amount?: number) => string;
 }
 
 const defaultQuery: FilterQuery = {
@@ -43,18 +42,6 @@ export const useFilterStore = create<FilterStore>()(
       resetQuery: () =>
         set({ query: defaultQuery }, false, 'filter/resetQuery'),
 
-      setDateFromString: (dateStr) =>
-        set(
-          (state) => ({
-            query: {
-              ...state.query,
-              date: parseISO(dateStr),
-            },
-          }),
-          false,
-          'filter/setDateFromString'
-        ),
-
       getQueryString: (withTransactionType = false) => {
         const { date, range, transactionType } = get().query;
         const params = new URLSearchParams();
@@ -64,6 +51,11 @@ export const useFilterStore = create<FilterStore>()(
           params.set('type', transactionType);
         }
         return `?${params.toString()}`;
+      },
+
+      getDateRangeKey: (amount = 0) => {
+        const { date, range } = get().query;
+        return getDateRangeKey(date, { unit: range, amount });
       },
     }),
     { name: 'useFilterStore' }

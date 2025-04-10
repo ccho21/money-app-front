@@ -1,36 +1,33 @@
-// 📄 경로: src/app/budget/page.tsx
+// 파일 경로: src/app/budget/page.tsx
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { DateFilterParams } from '@/features/shared/types';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/date.util';
-import { BudgetCategory } from '../../../features/budget/types';
-import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
-import { fetchBudgetsByCategory } from '../../../services/budgetService';
-import { useBudgetStore } from '../../../stores/useBudgetStore';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
 import DateNavigator from '@/components/ui/DateNavigator';
 import Panel from '@/components/ui/Panel';
+import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
+
+import { useBudgetStore } from '@/stores/useBudgetStore';
+import { useFilterStore } from '@/stores/useFilterStore';
+import { fetchBudgetsByCategory } from '@/services/budgetService';
+
+import type { BudgetCategory } from '@/features/budget/types';
+import type { DateFilterParams } from '@/features/shared/types';
 
 export default function BudgetPage() {
   const router = useRouter();
+
+  const { query, getDateRangeKey: getRangeKey } = useFilterStore();
+  const { range } = query;
+
   const {
     state: { budgetCategoryResponse, isLoading },
   } = useBudgetStore();
-  const {
-    state: { date, range },
-    actions: { setRange },
-  } = useDateFilterStore();
-
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: range, amount: 0 }),
-    [date, range]
-  );
 
   useEffect(() => {
     const run = async () => {
-      const [startDate, endDate] = dateRangeKey.split('_');
+      const [startDate, endDate] = getRangeKey().split('_');
       const params: DateFilterParams = {
         groupBy: range,
         startDate,
@@ -39,7 +36,7 @@ export default function BudgetPage() {
       await fetchBudgetsByCategory(params);
     };
     run();
-  }, [dateRangeKey, setRange, range]);
+  }, [getRangeKey, range]);
 
   const handleClick = (categoryId: string, isNew: boolean) => {
     if (isNew) {

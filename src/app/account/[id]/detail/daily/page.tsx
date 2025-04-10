@@ -2,10 +2,9 @@
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { fetchTransactionSummary } from '@/services/transactionService';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/date.util';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { DateFilterParams } from '@/features/shared/types';
 import { Transaction } from '@/features/transaction/types';
 import DailyView from '@/components/common/DailyView';
@@ -15,9 +14,8 @@ export default function AccountDailyPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const {
-    state: { date, range },
-  } = useDateFilterStore();
+  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { date, range } = query;
 
   const { isLoading, transactionSummaryResponse, actions } =
     useTransactionStore(
@@ -28,26 +26,21 @@ export default function AccountDailyPage() {
       }))
     );
 
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'monthly', amount: 0 }),
-    [date]
-  );
-
   useEffect(() => {
     if (range !== 'monthly') {
-      useDateFilterStore.getState().actions.setRange('monthly');
+      setQuery({ range: 'monthly' });
     }
-  }, [range]);
+  }, [range, setQuery]);
 
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
+    const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       groupBy: 'daily',
       startDate,
       endDate,
     };
     fetchTransactionSummary(params);
-  }, [dateRangeKey, pathname]);
+  }, [getDateRangeKey, pathname, date]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
