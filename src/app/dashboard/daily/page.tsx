@@ -4,20 +4,19 @@ import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { fetchTransactionSummary } from '@/services/transactionService';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { getDateRangeKey } from '@/lib/date.util';
 import { DateFilterParams } from '@/features/shared/types';
 import { Transaction } from '@/features/transaction/types';
 import DailyView from '@/components/common/DailyView';
 import { useShallow } from 'zustand/shallow';
+import { useFilterStore } from '@/stores/useFilterStore';
 
 export default function DailyPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const {
-    state: { date, range },
-  } = useDateFilterStore();
+  const { query, setQuery } = useFilterStore();
+  const { date, range } = query;
 
   const { isLoading, transactionSummaryResponse, actions } =
     useTransactionStore(
@@ -35,9 +34,9 @@ export default function DailyPage() {
 
   useEffect(() => {
     if (range !== 'monthly') {
-      useDateFilterStore.getState().actions.setRange('monthly');
+      setQuery({ range: 'monthly' });
     }
-  }, [range]);
+  }, [range, setQuery]);
 
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
@@ -46,7 +45,10 @@ export default function DailyPage() {
       startDate,
       endDate,
     };
-    fetchTransactionSummary(params);
+    const run = async () => {
+      await fetchTransactionSummary(params);
+    };
+    run();
   }, [dateRangeKey, pathname]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
@@ -74,19 +76,17 @@ export default function DailyPage() {
   ];
 
   return (
-    <>
-      <DailyView
-        isLoading={isLoading}
-        data={transactionSummaryResponse}
-        summaryItems={items}
-        onTransactionClick={(tx: Transaction) => {
-          actions.setSelectedTransaction(tx);
-          router.push(`/transaction/${tx.id}/edit`);
-        }}
-        onHeaderClick={(date: string) => {
-          router.push(`/transaction/new?date=${date}`);
-        }}
-      />
-    </>
+    <DailyView
+      isLoading={isLoading}
+      data={transactionSummaryResponse}
+      summaryItems={items}
+      onTransactionClick={(tx: Transaction) => {
+        actions.setSelectedTransaction(tx);
+        router.push(`/transaction/${tx.id}/edit`);
+      }}
+      onHeaderClick={(date: string) => {
+        router.push(`/transaction/new?date=${date}`);
+      }}
+    />
   );
 }

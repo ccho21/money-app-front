@@ -1,11 +1,9 @@
-// 📄 src/app/pages/calendar.tsx
 'use client';
 
 import { JSX, useEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import { get } from '@/features/shared/api';
@@ -15,12 +13,12 @@ import {
   TransactionSummary,
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
-import { getDateRangeKey } from '@/lib/date.util';
-import { formatDate } from '@/lib/date.util';
+import { getDateRangeKey, formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from './_components/CalendarWithTransactions';
 import TransactionDetailView from './_components/TransactionDetailView';
 import Panel from '@/components/ui/Panel';
 import { formatCurrency } from '@/lib/utils';
+import { useFilterStore } from '@/stores/useFilterStore';
 
 export default function CalendarPage() {
   const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
@@ -33,10 +31,8 @@ export default function CalendarPage() {
     );
   const { setTransactionSummaryResponse } = useTransactionStore().actions;
 
-  const {
-    state: { date, range },
-    actions: { setRange },
-  } = useDateFilterStore();
+  const { query, setQuery } = useFilterStore();
+  const { date, range } = query;
 
   const [selectedDetail, setSelectedDetail] = useState<{
     date: Date;
@@ -69,18 +65,16 @@ export default function CalendarPage() {
     return map;
   }, [transactionCalendarItems]);
 
-  // ✅ range 변경 최적화 (이미 monthly이면 호출 안함)
+  // ✅ range를 강제로 'monthly'로 고정
   useEffect(() => {
     if (range !== 'monthly') {
-      setRange('monthly');
+      setQuery({ range: 'monthly' });
     }
-  }, [range, setRange]);
+  }, [range, setQuery]);
 
-  // ✅ 이미 호출한 월이면 다시 요청하지 않음
   useEffect(() => {
     const run = async () => {
-      console.log('### CALENDAR fetchTransactionSummary');
-      await fetchTransactionCalendar(date.toISOString());
+      await fetchTransactionCalendar(formatDate(date));
     };
     run();
   }, [date]);
@@ -140,33 +134,31 @@ export default function CalendarPage() {
   }
 
   return (
-    <>
-      <Panel>
-        <CalendarWithTransactions
-          date={date}
-          tileContentMap={calendarTileMap}
-          onSelectDate={handleDateClick}
-        />
+    <Panel>
+      <CalendarWithTransactions
+        date={date}
+        tileContentMap={calendarTileMap}
+        onSelectDate={handleDateClick}
+      />
 
-        {selectedDetail && (
-          <TransactionDetailView
-            open={selectedDetail.open}
-            date={selectedDetail.date}
-            transactionSummary={selectedDetail.summary}
-            onClose={() => setSelectedDetail(null)}
-            onPrev={() =>
-              setSelectedDetail((prev) =>
-                prev ? { ...prev, date: addDays(prev.date, -1) } : null
-              )
-            }
-            onNext={() =>
-              setSelectedDetail((prev) =>
-                prev ? { ...prev, date: addDays(prev.date, 1) } : null
-              )
-            }
-          />
-        )}
-      </Panel>
-    </>
+      {selectedDetail && (
+        <TransactionDetailView
+          open={selectedDetail.open}
+          date={selectedDetail.date}
+          transactionSummary={selectedDetail.summary}
+          onClose={() => setSelectedDetail(null)}
+          onPrev={() =>
+            setSelectedDetail((prev) =>
+              prev ? { ...prev, date: addDays(prev.date, -1) } : null
+            )
+          }
+          onNext={() =>
+            setSelectedDetail((prev) =>
+              prev ? { ...prev, date: addDays(prev.date, 1) } : null
+            )
+          }
+        />
+      )}
+    </Panel>
   );
 }

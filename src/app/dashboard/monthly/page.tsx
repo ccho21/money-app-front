@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import {
@@ -30,13 +30,13 @@ export default function MonthlyPage() {
     }))
   );
 
-  const { date, range, setRange } = useDateFilterStore(
+  const { query, setQuery } = useFilterStore(
     useShallow((s) => ({
-      date: s.state.date,
-      range: s.state.range,
-      setRange: s.actions.setRange,
+      query: s.query,
+      setQuery: s.setQuery,
     }))
   );
+  const { date, range } = query;
 
   const dateRangeKey = useMemo(
     () => getDateRangeKey(date, { unit: 'yearly', amount: 0 }),
@@ -52,11 +52,11 @@ export default function MonthlyPage() {
     };
 
     if (range !== 'yearly') {
-      setRange('yearly');
+      setQuery({ range: 'yearly' });
     } else {
       fetchTransactionSummary(params);
     }
-  }, [dateRangeKey, range, setRange]);
+  }, [dateRangeKey, range, setQuery]);
 
   const handleToggle = useCallback(
     async (index: number, summary: TransactionSummary) => {
