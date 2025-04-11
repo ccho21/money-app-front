@@ -11,7 +11,7 @@ export const fetchStatsByCategoryAPI = (
   params: DateFilterParams
 ): Promise<StatsByCategoryResponse> => {
   const query = new URLSearchParams();
-  query.append('type', params.type);
+  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   return get(`/stats/by-category?${query.toString()}`);
@@ -21,7 +21,7 @@ export const fetchStatsByBudgetAPI = (
   params: DateFilterParams
 ): Promise<StatsByBudgetResponse> => {
   const query = new URLSearchParams();
-  query.append('type', params.type);
+  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   return get(`/stats/by-budget?${query.toString()}`);
@@ -31,7 +31,7 @@ export const fetchStatsByNoteAPI = (
   params: DateFilterParams
 ): Promise<StatsByNoteResponse> => {
   const query = new URLSearchParams();
-  query.append('type', params.type);
+  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   return get(`/stats/by-note?${query.toString()}`);
@@ -42,7 +42,7 @@ export async function fetchStatCategoryByCategoryIdAPI(
   params: DateFilterParams
 ) {
   const query = new URLSearchParams();
-  query.append('type', params.type);
+  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
@@ -55,7 +55,7 @@ export async function fetchStatBudgetByCategoryIdAPI(
   params: DateFilterParams
 ) {
   const query = new URLSearchParams();
-  query.append('type', params.type);
+  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);

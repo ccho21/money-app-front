@@ -8,6 +8,7 @@ export interface StatsByCategory {
   expense: number;
   rate: number; // 퍼센트 단위, 소수점 포함
   color: string;
+  budget?: string;
 }
 
 export interface StatsByCategoryResponse {
@@ -23,6 +24,8 @@ export interface StatsByBudget {
   icon: string;
   color?: string;
   budget: number;
+  budgetRate: number;
+  budgetId: string;
   spent: number;
   remaining: number;
   rate: number; // 사용률: 0~100+ (최대 999)
