@@ -57,7 +57,7 @@ export default function TransactionGroup({
             {/* 날짜 + 요일 (좌측 8칸) */}
             <div className='col-span-8 flex items-center gap-2'>
               <span className='text-md font-bold text-foreground'>{day}</span>
-              <span className='px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground dark:bg-zinc-70'>
+              <span className='px-2 py-0.5 text-xs rounded-full bg-border text-muted-foreground dark:bg-zinc-70'>
                 {weekday}
               </span>
               {showRange && rangeStart && rangeEnd && (

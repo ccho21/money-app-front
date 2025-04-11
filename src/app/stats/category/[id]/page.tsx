@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
@@ -9,10 +9,10 @@ import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
 
 import { CategoryType } from '@/features/category/types';
 import SummaryBox from '@/components/ui/SummaryBox';
-import BudgetBarChart from '../../budget/_components/BudgetBarChart';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import { TransactionSummary } from '@/features/transaction/types';
 import TransactionGroup from '@/components/common/TransactionGroup';
+import BudgetLineChart from '../../../../components/ui/ComposedChart';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -38,6 +38,7 @@ export default function StatsCategoryDetailPage() {
 
   const { query, getDateRangeKey } = useFilterStore();
   const { date, range, transactionType } = query;
+  const barData = useMemo(() => MOCK_BAR_DATA, []);
 
   useEffect(() => {
     const run = async () => {
@@ -53,7 +54,7 @@ export default function StatsCategoryDetailPage() {
     };
 
     run();
-  }, [categoryId, getDateRangeKey, range, transactionType]);
+  }, [categoryId, getDateRangeKey, range, transactionType, date]);
 
   if (isLoading)
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
@@ -104,11 +105,7 @@ export default function StatsCategoryDetailPage() {
 
       {/* 바 차트 */}
       <div className='w-full h-36'>
-        <BudgetBarChart
-          data={MOCK_BAR_DATA}
-          selectedMonth='Mar'
-          barColor='var(--color-error)' // 테마 기반 색상
-        />
+        <BudgetLineChart data={barData} selectedMonth='Mar' />
       </div>
 
       {/* 일별 거래 리스트 */}

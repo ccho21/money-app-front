@@ -1,6 +1,5 @@
 'use client';
 
-import { Card } from '@/components/ui/Card';
 import { AccountSummaryDTO } from '@/features/account/types';
 import { formatCurrency } from '@/lib/utils';
 import { Wallet } from 'lucide-react';
@@ -16,7 +15,7 @@ export default function AccountBox({ accounts }: AccountBoxProps) {
       <h2 className='text-sm mb-2 flex items-center gap-1'>
         <Wallet className='w-4 h-4' /> Accounts
       </h2>
-      <div className='bg-gray-800 rounded p-3 text-sm'>
+      <div className='bg-white dark:bg-gray-800 rounded p-3 text-sm'>
         {accounts.map((acc) => (
           <div key={acc.accountId} className='flex justify-between mb-1'>
             <span>Exp. ({acc.accountName})</span>

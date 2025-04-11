@@ -1,0 +1,114 @@
+'use client';
+
+import React from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+
+const RADIAN = Math.PI / 180;
+
+export interface CategoryChartData {
+  name: string;
+  value: number;
+  percent: number;
+  color: string;
+}
+
+interface Props {
+  data: CategoryChartData[];
+  height?: number;
+}
+
+export default function CategoryPieChart({ data, height = 320 }: Props) {
+  const renderCustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    outerRadius,
+    percent,
+    index,
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
+    const lineRadius = outerRadius + 15; // 라인 끝 지점
+    const labelRadius = outerRadius + 35; // 텍스트 위치
+
+    const lineX = cx + lineRadius * Math.cos(-midAngle * RADIAN);
+    const lineY = cy + lineRadius * Math.sin(-midAngle * RADIAN);
+    const textX = cx + labelRadius * Math.cos(-midAngle * RADIAN);
+    const textY = cy + labelRadius * Math.sin(-midAngle * RADIAN);
+
+    const item = data[index];
+    const percentage = percent.toFixed(1);
+
+    return (
+      <g>
+        <polyline
+          stroke={item.color}
+          strokeWidth={1}
+          fill='none'
+          points={`${cx + outerRadius * Math.cos(-midAngle * RADIAN)},${
+            cy + outerRadius * Math.sin(-midAngle * RADIAN)
+          } ${lineX},${lineY}`}
+        />
+        <circle cx={lineX} cy={lineY} r={2} fill={item.color} />
+        <text
+          x={textX}
+          y={textY - 6}
+          fill='#111827'
+          textAnchor={textX > cx ? 'start' : 'end'}
+          dominantBaseline='central'
+          className='text-[11px] font-semibold'
+        >
+          {item.name}
+        </text>
+        <text
+          x={textX}
+          y={textY + 6}
+          fill='#6b7280'
+          textAnchor={textX > cx ? 'start' : 'end'}
+          dominantBaseline='central'
+          className='text-[10px]'
+        >
+          {`${percentage}% `}
+        </text>
+      </g>
+    );
+  };
+
+  return (
+    <div className='w-full'>
+      <ResponsiveContainer width='100%' height={height}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx='50%'
+            cy='50%'
+            innerRadius={50}
+            outerRadius={90}
+            labelLine={false}
+            label={renderCustomLabel}
+            dataKey='value'
+            isAnimationActive
+            animationBegin={100}
+            animationDuration={1000}
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+
+      {/* 아래 범례 */}
+      <div className='flex justify-center flex-wrap gap-4 mt-4'>
+        {data.map((item) => (
+          <div key={item.name} className='flex items-center gap-2 text-sm'>
+            <span
+              className='inline-block w-3 h-3 rounded-full'
+              style={{ backgroundColor: item.color }}
+            />
+            <span className='text-muted'>{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

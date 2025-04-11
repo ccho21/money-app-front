@@ -10,11 +10,11 @@ import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
 import { CategoryType } from '@/features/category/types';
 
 import SummaryBox from '@/components/ui/SummaryBox';
-import BudgetBarChart from '../_components/BudgetBarChart';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import TransactionGroup from '@/components/common/TransactionGroup';
 import Panel from '@/components/ui/Panel';
 import { TransactionSummary } from '@/features/transaction/types';
+import ComposedChart from '@/components/ui/ComposedChart';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -42,8 +42,8 @@ export default function StatsBudgetDetailPage() {
   const { date, range, transactionType } = query;
 
   useEffect(() => {
-    const run = async () => {
-      if (!categoryId) return;
+    if (!categoryId) return;
+    (async () => {
       const [startDate, endDate] = getDateRangeKey().split('_');
 
       await fetchStatsBudgetByCategoryId(String(categoryId), {
@@ -52,10 +52,8 @@ export default function StatsBudgetDetailPage() {
         type: transactionType as CategoryType,
         groupBy: range,
       });
-    };
-
-    run();
-  }, [categoryId, getDateRangeKey, range, transactionType]);
+    })();
+  }, [categoryId, getDateRangeKey, range, date, transactionType]);
 
   if (isLoading)
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
@@ -109,11 +107,7 @@ export default function StatsBudgetDetailPage() {
       <Panel>
         {/* 바 차트 */}
         <div className='w-full h-36'>
-          <BudgetBarChart
-            data={MOCK_BAR_DATA}
-            selectedMonth='Mar'
-            barColor='var(--color-error)' // ✅ Tailwind에서 --color-error 활용
-          />
+          <ComposedChart data={MOCK_BAR_DATA} selectedMonth='Mar' />
         </div>
       </Panel>
 

@@ -20,15 +20,14 @@ export default function StatsPage() {
   const { transactionType, range, date } = query;
 
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       const [startDate, endDate] = getDateRangeKey().split('_');
       await fetchStatsByCatgory({
         startDate,
         endDate,
         type: transactionType as CategoryType,
       });
-    };
-    run();
+    })();
   }, [getDateRangeKey, transactionType, range, date]);
 
   return (
