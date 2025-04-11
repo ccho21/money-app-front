@@ -1,43 +1,32 @@
+// 📄 경로: src/app/stats/_components/StatsHeader.tsx
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
 
 const tabs = [
   { name: 'Stats', href: '/stats/category' },
   { name: 'Budget', href: '/stats/budget' },
-  // { name: "Note", href: "/stats/note" },
+  // { name: 'Note', href: '/stats/note' },
 ];
 
 export default function StatsHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [showModal, setShowModal] = useState(false);
 
-  const {
-    state: { range },
-    actions: { setRange, getSyncedURLFromState },
-  } = useDateFilterStore();
+  const { query, setQuery, getQueryString } = useFilterStore();
+  const { range } = query;
 
-  // ✅ URL의 range 쿼리 → store 동기화
-  useEffect(() => {
-    const urlRange = searchParams.get('range') as RangeOption | null;
-    if (urlRange && urlRange !== range) {
-      setRange(urlRange);
-    }
-  }, [searchParams, range, setRange]);
-
-  // ✅ URLSearchParams 변경 핸들러
-  const updateRange = (newRange: RangeOption) => {
-    setRange(newRange);
-    const syncedURL = getSyncedURLFromState();
-    router.replace(`?${syncedURL}`);
+  const handleRangeSelect = (newRange: RangeOption) => {
+    setQuery({ range: newRange });
+    const syncedURL = getQueryString(true); // ✅ type 포함
+    router.replace(syncedURL);
     setShowModal(false);
   };
 
@@ -86,7 +75,7 @@ export default function StatsHeader() {
                   ? 'bg-surface font-semibold text-foreground'
                   : 'text-muted hover:text-foreground'
               )}
-              onClick={() => updateRange(option)}
+              onClick={() => handleRangeSelect(option)}
             >
               {option}
             </button>

@@ -1,19 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-import { useStatsStore } from '@/stores/useStatsStore';
-import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByCatgory } from '@/services/statsService';
-
-import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 import { CategoryListItem } from './CategoryListItem';
-import type { CategoryType } from '@/features/category/types';
-
-const RADIAN = Math.PI / 180;
 
 interface CategoryChartData {
   name: string;
@@ -22,26 +14,31 @@ interface CategoryChartData {
   color: string;
 }
 
-export default function StatsView() {
-  const router = useRouter();
+interface Props {
+  isLoading: boolean;
+  data: {
+    categoryId: string;
+    categoryName: string;
+    expense: number;
+    rate: number;
+    color: string;
+  }[];
+  onItemClick: (categoryId: string) => void;
+}
 
-  const {
-    state: { isLoading, categoryResponse },
-  } = useStatsStore();
+const RADIAN = Math.PI / 180;
 
-  const { query, getDateRangeKey } = useFilterStore();
-  const { date, range, transactionType } = query;
-
+export default function StatsView({ isLoading, data, onItemClick }: Props) {
   const categoryChart: CategoryChartData[] = useMemo(() => {
     return (
-      categoryResponse?.data.map((category) => ({
+      data.map((category) => ({
         name: category.categoryName,
         value: category.expense,
         percent: category.rate,
         color: category.color,
       })) || []
     );
-  }, [categoryResponse]);
+  }, [data]);
 
   const renderCustomLabel = ({
     cx,
@@ -51,8 +48,7 @@ export default function StatsView() {
     outerRadius,
     percent,
     index,
-  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any) => {
+  }: any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -82,29 +78,11 @@ export default function StatsView() {
     );
   };
 
-  useEffect(() => {
-    const run = async () => {
-      const [startDate, endDate] = getDateRangeKey().split('_');
-
-      await fetchStatsByCatgory({
-        startDate,
-        endDate,
-        type: transactionType as CategoryType,
-      });
-    };
-
-    run();
-  }, [getDateRangeKey, transactionType, date, range]);
-
-  const handleClick = (id: string) => {
-    router.push(`/stats/category/${id}`);
-  };
-
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
-  if (!categoryResponse || !categoryResponse.data.length) {
+  if (!data || data.length === 0) {
     return <EmptyMessage />;
   }
 
@@ -133,13 +111,13 @@ export default function StatsView() {
       </Panel>
 
       <Panel>
-        {categoryResponse.data.map((item) => (
+        {data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
             percentage={item.rate}
             amount={item.expense}
-            onClick={() => handleClick(item.categoryId)}
+            onClick={() => onItemClick(item.categoryId)}
             color={item.color}
           />
         ))}

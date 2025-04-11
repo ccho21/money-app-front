@@ -1,18 +1,18 @@
-// 📄 경로: src/app/stats/category/[id]/page.tsx
-
 'use client';
 
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { useStatsStore } from '@/stores/useStatsStore';
-import { useParams } from 'next/navigation';
-import { getDateRangeKey } from '@/lib/date.util';
 import { useEffect } from 'react';
+import { useParams } from 'next/navigation';
+
+import { useStatsStore } from '@/stores/useStatsStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
+
 import { CategoryType } from '@/features/category/types';
-import DailyTransactionGroup from '@/components/common/TransactionGroup';
 import SummaryBox from '@/components/ui/SummaryBox';
 import BudgetBarChart from '../../budget/_components/BudgetBarChart';
 import EmptyMessage from '@/components/ui/EmptyMessage';
+import { TransactionSummary } from '@/features/transaction/types';
+import TransactionGroup from '@/components/common/TransactionGroup';
 
 const MOCK_BAR_DATA = [
   { month: 'Nov', value: 0 },
@@ -36,17 +36,13 @@ export default function StatsCategoryDetailPage() {
     state: { categoryDetailResponse, isLoading },
   } = useStatsStore();
 
-  const {
-    state: { range, date, transactionType },
-  } = useDateFilterStore();
+  const { query, getDateRangeKey } = useFilterStore();
+  const { date, range, transactionType } = query;
 
   useEffect(() => {
     const run = async () => {
       if (!categoryId) return;
-      const [startDate, endDate] = getDateRangeKey(date, {
-        unit: range,
-        amount: 0,
-      }).split('_');
+      const [startDate, endDate] = getDateRangeKey().split('_');
 
       await fetchStatsCategoryByCategoryId(String(categoryId), {
         startDate,
@@ -57,7 +53,7 @@ export default function StatsCategoryDetailPage() {
     };
 
     run();
-  }, [date, transactionType, range, categoryId]);
+  }, [categoryId, getDateRangeKey, range, transactionType]);
 
   if (isLoading)
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
@@ -117,8 +113,16 @@ export default function StatsCategoryDetailPage() {
 
       {/* 일별 거래 리스트 */}
       <div className='space-y-4'>
-        {categoryDetailResponse.data.map((group) => (
-          <DailyTransactionGroup key={group.label} group={group} />
+        {categoryDetailResponse.data.map((group: TransactionSummary) => (
+          <TransactionGroup
+            key={group.label}
+            label={group.label}
+            rangeStart={group.rangeStart}
+            rangeEnd={group.rangeEnd}
+            incomeTotal={group.incomeTotal}
+            expenseTotal={group.expenseTotal}
+            group={group}
+          />
         ))}
       </div>
     </div>

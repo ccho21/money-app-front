@@ -77,11 +77,11 @@ export const fetchAccountById = async (id: string) => {
   }
 };
 
-export const fetchAccountTransactionSummary = async (
+export const fetchAccountSummary = async (
   params: DateFilterParams
 ) => {
   const {
-    actions: { setSummaries, setLoading, setError },
+    actions: { setSummaryResponse, setLoading, setError },
   } = useAccountStore.getState();
 
   setLoading(true);
@@ -89,7 +89,7 @@ export const fetchAccountTransactionSummary = async (
 
   try {
     const data = await fetchAccountSummaryAPI(params);
-    setSummaries(data);
+    setSummaryResponse(data);
   } catch (err) {
     const message =
       err instanceof Error ? err.message : '계좌 요약 데이터 오류';

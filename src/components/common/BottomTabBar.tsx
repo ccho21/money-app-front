@@ -1,7 +1,12 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { BookText, BarChart2, Coins, MoreHorizontal } from 'lucide-react';
+import {
+  BookText,
+  MoreHorizontal,
+  ChartColumnBigIcon,
+  Wallet,
+} from 'lucide-react';
 import { format } from 'date-fns';
 
 const baseTabs = [
@@ -14,13 +19,13 @@ const baseTabs = [
   {
     key: 'stats',
     label: 'Stats',
-    icon: <BarChart2 className='w-5 h-5' />,
+    icon: <ChartColumnBigIcon className='w-5 h-5' />,
     basePath: '/stats/category',
   },
   {
     key: 'accounts',
     label: 'Accounts',
-    icon: <Coins className='w-5 h-5' />,
+    icon: <Wallet className='w-5 h-5' />,
     basePath: '/account/dashboard',
   },
   {

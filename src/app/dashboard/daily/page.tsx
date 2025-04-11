@@ -51,20 +51,20 @@ export default function DailyPage() {
     {
       label: 'Income',
       value: totalIncome,
+      color: totalIncome > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
-      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
+      color: totalExpense > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
-      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
+      color: 'text-foreground',
       prefix: '$',
-      color: 'text-success',
     },
   ];
 

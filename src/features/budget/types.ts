@@ -1,5 +1,5 @@
-import { CategoryType } from "@/features/category/types";
-import { RangeOption } from "@/features/shared/types";
+import { CategoryType } from '@/features/category/types';
+import { RangeOption } from '@/features/shared/types';
 
 export interface BudgetAlert {
   category: string;
@@ -38,7 +38,8 @@ export interface BudgetSummaryResponse {
   totalBudget: number;
   totalExpense: number;
   rate: number;
-  data: BudgetSummary[];
+  rangeStart: string; // 2025-03-01
+  rangeEnd: string; // 2025-03-31
 }
 
 // src/features/budget/types.ts

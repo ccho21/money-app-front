@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+
 import { useStatsStore } from '@/stores/useStatsStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { getDateRangeKey } from '@/lib/date.util';
+import { useFilterStore } from '@/stores/useFilterStore';
+import { fetchStatsByNote } from '@/services/statsService';
+
 import { TransactionType } from '@/features/transaction/types';
 import { formatCurrency } from '@/lib/utils';
-import { fetchStatsByNote } from '@/services/statsService';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
 type SortKey = 'note' | 'count' | 'amount';
@@ -17,9 +18,8 @@ export default function NoteView() {
   const searchParams = useSearchParams();
   const tab = (searchParams.get('tab') || 'expense') as TransactionType;
 
-  const {
-    state: { date, range },
-  } = useDateFilterStore();
+  const { query, getDateRangeKey } = useFilterStore();
+  const { date, range } = query;
 
   const {
     state: { noteResponse, isLoading },
@@ -30,10 +30,7 @@ export default function NoteView() {
 
   useEffect(() => {
     const run = async () => {
-      const [startDate, endDate] = getDateRangeKey(date, {
-        unit: range,
-        amount: 0,
-      }).split('_');
+      const [startDate, endDate] = getDateRangeKey().split('_');
 
       await fetchStatsByNote({
         startDate,
@@ -43,7 +40,7 @@ export default function NoteView() {
     };
 
     run();
-  }, [date, range, tab]);
+  }, [getDateRangeKey, tab]);
 
   const rawList = useMemo(() => noteResponse?.data || [], [noteResponse]);
 

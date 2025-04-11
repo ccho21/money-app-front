@@ -61,6 +61,8 @@ export default function MonthlyPage() {
 
       const label = summary.label;
 
+      console.log('### isOpening', isOpening, !weeklySummaryByMonth[label]);
+
       if (isOpening && !weeklySummaryByMonth[label]) {
         const monthDate = parse(label, 'yyyy-MM', new Date());
         const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
@@ -90,20 +92,20 @@ export default function MonthlyPage() {
     {
       label: 'Income',
       value: totalIncome,
+      color: totalIncome > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
-      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
+      color: totalExpense > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
-      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
+      color: 'text-foreground',
       prefix: '$',
-      color: 'text-success',
     },
   ];
 

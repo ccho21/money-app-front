@@ -5,7 +5,7 @@ import {
   BudgetCategoryResponse,
   BudgetSummaryResponse,
   BudgetCategoryGroupResponse,
-} from '../features/budget/types';
+} from '@/features/budget/types';
 
 interface BudgetStoreState {
   budgetCategoryResponse?: BudgetCategoryResponse;
@@ -23,7 +23,7 @@ interface BudgetStoreActions {
   setBudgetSummaryResponse: (data: BudgetSummaryResponse) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  clear: () => void;
+  clearStore: () => void;
 }
 
 interface BudgetStore {
@@ -31,107 +31,54 @@ interface BudgetStore {
   actions: BudgetStoreActions;
 }
 
+const initialState: BudgetStoreState = {
+  budgetCategoryResponse: undefined,
+  budgetCategoryGroupResponse: undefined,
+  budgetCategory: undefined,
+  budgetSummaryResponse: undefined,
+  isLoading: false,
+  error: null,
+};
+
 export const useBudgetStore = create<BudgetStore>()(
   devtools(
     (set) => ({
-      state: {
-        budgetCategoryResponse: undefined,
-        budgetCategoryGroupResponse: undefined,
-        budgetCategory: undefined,
-        budgetSummaryResponse: undefined,
-        isLoading: false,
-        error: null,
-      },
+      state: { ...initialState },
       actions: {
         setBudgetCategoryResponse: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                budgetCategoryResponse: data,
-              },
-            }),
-            false,
-            'budget/setBudgetCategoryResponse'
-          ),
+          set((s) => ({
+            state: { ...s.state, budgetCategoryResponse: data },
+          }), false, 'budget/setBudgetCategoryResponse'),
 
         setBudgetCategoryGroupResponse: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                budgetCategoryGroupResponse: data,
-              },
-            }),
-            false,
-            'budget/setBudgetCategoryGroupResponse'
-          ),
+          set((s) => ({
+            state: { ...s.state, budgetCategoryGroupResponse: data },
+          }), false, 'budget/setBudgetCategoryGroupResponse'),
 
         setBudgetCategory: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                budgetCategory: data,
-              },
-            }),
-            false,
-            'budget/setBudgetCategory'
-          ),
+          set((s) => ({
+            state: { ...s.state, budgetCategory: data },
+          }), false, 'budget/setBudgetCategory'),
 
         setBudgetSummaryResponse: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                budgetSummaryResponse: data,
-              },
-            }),
-            false,
-            'budget/setBudgetSummaryResponse'
-          ),
+          set((s) => ({
+            state: { ...s.state, budgetSummaryResponse: data },
+          }), false, 'budget/setBudgetSummaryResponse'),
 
         setLoading: (loading) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                isLoading: loading,
-              },
-            }),
-            false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
-          ),
+          set((s) => ({
+            state: { ...s.state, isLoading: loading },
+          }), false, loading ? 'ui/loading:start' : 'ui/loading:done'),
 
         setError: (error) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                error,
-              },
-            }),
-            false,
-            'ui/setError'
-          ),
+          set((s) => ({
+            state: { ...s.state, error },
+          }), false, 'ui/setError'),
 
-        clear: () =>
-          set(
-            () => ({
-              state: {
-                budgetCategoryResponse: undefined,
-                budgetCategoryGroupResponse: undefined,
-                budgetCategory: undefined,
-                budgetSummaryResponse: undefined,
-                isLoading: false,
-                error: null,
-              },
-            }),
-            false,
-            'budget/clearAll'
-          ),
+        clearStore: () =>
+          set(() => ({ state: { ...initialState } }), false, 'budget/clearStore'),
       },
     }),
-    { name: 'useBudgetStore' }
+    { name: 'BudgetStore' }
   )
 );

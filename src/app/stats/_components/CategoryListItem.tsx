@@ -1,7 +1,7 @@
 'use client';
 
+import Progress from '@/components/ui/Progress';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Progress } from '@/components/ui/Progress';
 
 interface CategoryListItemProps {
   name: string;
@@ -41,9 +41,7 @@ export function CategoryListItem({
       className={cn(
         'px-3 py-3 border-b space-y-1',
         'bg-surface',
-        isMatched
-          ? 'border-border'
-          : 'border-error bg-red-50 dark:bg-red-950',
+        isMatched ? 'border-border' : 'border-error bg-red-50 dark:bg-red-950',
         className
       )}
     >
@@ -102,7 +100,7 @@ export function CategoryListItem({
               {formatCurrency(amount)}
             </div>
           </div>
-          <Progress value={percentage as number} className='mt-2' />
+          <Progress value={percentage as number} />
         </>
       )}
 
@@ -122,7 +120,7 @@ export function CategoryListItem({
               {percentage}% • {formatCurrency(amount)}
             </span>
           </div>
-          <Progress value={percentage as number} className='h-2 rounded-full' />
+          <Progress value={percentage as number} />
         </>
       )}
 

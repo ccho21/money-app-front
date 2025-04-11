@@ -1,20 +1,27 @@
 'use client';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { fetchTransactionSummary } from '@/services/transactionService';
+import { useRouter } from 'next/navigation';
+
+import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { fetchTransactionSummary } from '@/services/transactionService';
+
+import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/features/shared/types';
 import { Transaction } from '@/features/transaction/types';
 import DailyView from '@/components/common/DailyView';
-import { useShallow } from 'zustand/shallow';
 
 export default function AccountDailyPage() {
   const router = useRouter();
-  const pathname = usePathname();
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { query, setQuery, getDateRangeKey } = useFilterStore(
+    useShallow((s) => ({
+      query: s.query,
+      setQuery: s.setQuery,
+      getDateRangeKey: s.getDateRangeKey,
+    }))
+  );
   const { date, range } = query;
 
   const { isLoading, transactionSummaryResponse, actions } =
@@ -27,20 +34,23 @@ export default function AccountDailyPage() {
     );
 
   useEffect(() => {
-    if (range !== 'monthly') {
-      setQuery({ range: 'monthly' });
-    }
-  }, [range, setQuery]);
+    const updateAndFetch = async () => {
+      if (range !== 'monthly') {
+        setQuery({ range: 'monthly' });
+        return; // range가 업데이트되면 이후 useEffect에서 다시 fetch
+      }
 
-  useEffect(() => {
-    const [startDate, endDate] = getDateRangeKey().split('_');
-    const params: DateFilterParams = {
-      groupBy: 'daily',
-      startDate,
-      endDate,
+      const [startDate, endDate] = getDateRangeKey().split('_');
+      const params: DateFilterParams = {
+        groupBy: 'daily',
+        startDate,
+        endDate,
+      };
+      await fetchTransactionSummary(params);
     };
-    fetchTransactionSummary(params);
-  }, [getDateRangeKey, pathname, date]);
+
+    updateAndFetch();
+  }, [date, range, setQuery, getDateRangeKey]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
@@ -49,22 +59,22 @@ export default function AccountDailyPage() {
     {
       label: 'Income',
       value: totalIncome,
+      color: totalIncome > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
-      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
+      color: totalExpense > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
-      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
+      color: 'text-foreground',
       prefix: '$',
-      color: 'text-success',
     },
-  ];
+  ]
 
   return (
     <DailyView

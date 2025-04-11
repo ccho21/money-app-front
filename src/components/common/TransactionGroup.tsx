@@ -2,7 +2,7 @@
 'use client';
 
 import { cn, formatCurrency } from '@/lib/utils';
-import { Transaction } from '@/features/transaction/types';
+import { Transaction, TransactionSummary } from '@/features/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import TransactionItem from './TransactionItem';
@@ -13,7 +13,7 @@ interface TransactionGroupProps {
   rangeEnd?: string;
   incomeTotal: number;
   expenseTotal: number;
-  transactions: Transaction[];
+  group: TransactionSummary;
   onTransactionClick?: (tx: Transaction) => void;
   onHeaderClick?: () => void;
   showDateHeader?: boolean;
@@ -27,7 +27,7 @@ export default function TransactionGroup({
   rangeEnd,
   incomeTotal,
   expenseTotal,
-  transactions,
+  group,
   onTransactionClick,
   onHeaderClick,
   showDateHeader = true,
@@ -56,9 +56,7 @@ export default function TransactionGroup({
           <div className='grid grid-cols-12 items-center'>
             {/* 날짜 + 요일 (좌측 8칸) */}
             <div className='col-span-8 flex items-center gap-2'>
-              <span className='text-md font-bold text-foreground'>
-                {day}
-              </span>
+              <span className='text-md font-bold text-foreground'>{day}</span>
               <span className='px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground dark:bg-zinc-70'>
                 {weekday}
               </span>
@@ -86,7 +84,7 @@ export default function TransactionGroup({
 
       {/* 거래 리스트 */}
       <ul className='mt-3 space-y-2'>
-        {transactions.map((tx) => (
+        {group.transactions.map((tx: Transaction) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}
       </ul>

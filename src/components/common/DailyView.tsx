@@ -46,7 +46,7 @@ export default function DailyView({
             rangeEnd={group.rangeEnd}
             incomeTotal={group.incomeTotal}
             expenseTotal={group.expenseTotal}
-            transactions={group.transactions}
+            group={group}
             onTransactionClick={(tx: Transaction) => {
               onTransactionClick?.(tx);
             }}

@@ -1,20 +1,16 @@
-// ✅ useAccountStore.ts (기존 구조에 따라 fetchSummary 기능 확장)
-
 import {
   Account,
   AccountDashboardResponse,
-  AccountTransactionSummaryDto,
+  AccountSummaryDTO,
 } from '@/features/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { TransactionSummaryResponse } from '@/features/transaction/types';
-import { DateFilterParams } from '@/features/shared/types';
 
 interface AccountStoreState {
   state: {
     accounts: Account[];
     selectedAccount?: Account;
-    summaryResponse: TransactionSummaryResponse;
+    summaryResponse: AccountSummaryDTO[]; // ✅ 타입 수정: 단일 객체 ❌ → 배열 ✅
     accountDashboard: AccountDashboardResponse | null;
     isLoading: boolean;
     error: string | null;
@@ -22,12 +18,11 @@ interface AccountStoreState {
   actions: {
     setAccounts: (data: Account[]) => void;
     setSelectedAccount: (acc: Account) => void;
-    setSummaries: (data: AccountTransactionSummaryDto[]) => void;
+    setSummaryResponse: (data: AccountSummaryDTO[]) => void;
     setAccountDashboard: (data: AccountDashboardResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;
-    fetchSummary: (params: DateFilterParams) => Promise<void>;
   };
 }
 
@@ -37,7 +32,7 @@ export const useAccountStore = create<AccountStoreState>()(
       state: {
         accounts: [],
         selectedAccount: undefined,
-        summaries: [],
+        summaryResponse: [], // ✅ 초기값도 배열로 통일
         accountDashboard: null,
         isLoading: false,
         error: null,
@@ -57,11 +52,11 @@ export const useAccountStore = create<AccountStoreState>()(
             'accounts/setSelected'
           ),
 
-        setSummaries: (data) =>
+        setSummaryResponse: (data) =>
           set(
-            (s) => ({ state: { ...s.state, summaries: data } }),
+            (s) => ({ state: { ...s.state, summaryResponse: data } }),
             false,
-            'accounts/setSummaries'
+            'accounts/setSummaryResponse'
           ),
 
         setAccountDashboard: (data) =>
@@ -91,7 +86,7 @@ export const useAccountStore = create<AccountStoreState>()(
               state: {
                 accounts: [],
                 selectedAccount: undefined,
-                summaryResponse: undefined,
+                summaryResponse: [], // ✅ clear할 때도 배열로 초기화
                 accountDashboard: null,
                 isLoading: false,
                 error: null,
@@ -100,38 +95,6 @@ export const useAccountStore = create<AccountStoreState>()(
             false,
             'accounts/clear'
           ),
-
-        // ✅ 신규 추가: fetchSummary
-        fetchSummary: async (params) => {
-          set(
-            (s) => ({ state: { ...s.state, isLoading: true, error: null } }),
-            false,
-            'accounts/fetchSummary'
-          );
-          try {
-            const result = await fetch(params);
-            set(
-              (s) => ({ state: { ...s.state, summaries: result } }),
-              false,
-              'accounts/setSummaryResult'
-            );
-          } catch (err) {
-            console.error('[AccountStore] fetchSummary error:', err);
-            set(
-              (s) => ({
-                state: { ...s.state, error: 'Failed to load summary' },
-              }),
-              false,
-              'accounts/setSummaryError'
-            );
-          } finally {
-            set(
-              (s) => ({ state: { ...s.state, isLoading: false } }),
-              false,
-              'accounts/setLoadingFalse'
-            );
-          }
-        },
       },
     }),
     { name: 'AccountStore' }

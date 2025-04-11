@@ -1,11 +1,12 @@
 'use client';
 
-import { TransactionSummary } from '@/features/transaction/types';
-import { formatCurrency } from '@/lib/utils';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
-import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
+
+import { TransactionSummary } from '@/features/transaction/types';
+import { formatCurrency } from '@/lib/utils';
+import { useFilterStore } from '@/stores/useFilterStore';
 
 interface MonthlyItemProps {
   date: string;
@@ -25,9 +26,6 @@ export default function MonthlyItem({
   onToggle,
 }: MonthlyItemProps) {
   const router = useRouter();
-  const {
-    actions: { setDate },
-  } = useDateFilterStore.getState();
 
   const parsedDate = useMemo(() => {
     try {
@@ -57,7 +55,7 @@ export default function MonthlyItem({
 
   const handleClick = (e: React.MouseEvent, week: TransactionSummary) => {
     e.stopPropagation();
-    setDate(new Date(week.label));
+    useFilterStore.getState().setQuery({ date: new Date(week.label) });
     router.push('/dashboard/daily');
   };
 

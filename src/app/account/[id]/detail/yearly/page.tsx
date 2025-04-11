@@ -4,7 +4,7 @@ import { useEffect, useMemo, useCallback } from 'react';
 import { format, startOfYear, endOfYear, addYears, parse } from 'date-fns';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import { fetchTransactionSummary } from '@/services/transactionService';
@@ -19,14 +19,14 @@ export default function YearlyPage() {
     }))
   );
 
-  const { date, range, setRange, setDate } = useDateFilterStore(
+  const { query, setQuery } = useFilterStore(
     useShallow((s) => ({
-      date: s.state.date,
-      range: s.state.range,
-      setRange: s.actions.setRange,
-      setDate: s.actions.setDate,
+      query: s.query,
+      setQuery: s.setQuery,
     }))
   );
+
+  const { date, range } = query;
 
   const dateRangeKey = useMemo(() => {
     const start = startOfYear(addYears(date, -5));
@@ -43,42 +43,43 @@ export default function YearlyPage() {
     };
 
     if (range !== 'yearly') {
-      setRange('yearly');
+      setQuery({ range: 'yearly' });
     } else {
       fetchTransactionSummary(params);
     }
-  }, [dateRangeKey, range, setRange]);
+  }, [dateRangeKey, range, setQuery]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
+
   const items = [
     {
       label: 'Income',
       value: totalIncome,
+      color: totalIncome > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
-      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
+      color: totalExpense > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
-      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
+      color: 'text-foreground',
       prefix: '$',
-      color: 'text-success',
     },
   ];
-  // ✅ 연도 클릭 핸들러
+
   const handleClick = useCallback(
     (dateStr: string) => {
       const parsed = parse(dateStr, 'yyyy', new Date());
-      setDate(parsed);
-      // 예: route 이동 추가하고 싶다면 여기에 router.push() 등
+      setQuery({ date: parsed });
+      // 필요시 여기서 router.push(...) 로 이동 가능
     },
-    [setDate]
+    [setQuery]
   );
 
   return (

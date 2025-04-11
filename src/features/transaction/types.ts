@@ -26,15 +26,6 @@ export interface Transaction {
   createdAt?: string;
 }
 
-export interface TransactionSummary {
-  label: string; // 예: '2025-03-20', '2025-03'
-  rangeStart: string;
-  rangeEnd: string;
-  incomeTotal: number;
-  expenseTotal: number;
-  transactions: Transaction[];
-}
-
 // 날짜별 / 월별 그룹 데이터
 export interface TransactionSummary {
   label: string; // 예: '2025-03-25', '2025-03'

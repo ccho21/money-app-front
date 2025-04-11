@@ -35,10 +35,12 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
     [date, range, setQuery, getQueryString, router, withTransactionType]
   );
 
-  const label = useMemo(() => getDateLabelByRange(date, range), [date, range]);
+  const label = useFilterStore((s) =>
+    getDateLabelByRange(s.query.date, s.query.range)
+  );
 
   return (
-    <div className='flex items-center justify-between bg-surface border border-border px-5 py-3 text-md font-normal shadow-sm'>
+    <div className='flex items-center justify-between bg-surface border border-border px-5 py-1 text-md font-normal shadow-sm'>
       {/* 왼쪽 이동 */}
       <div className='flex items-center gap-3'>
         <button
@@ -69,5 +71,5 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   );
 }
 
-const DateNavigator = memo(DateNavigatorBase);
-export default DateNavigator;
+// const DateNavigator = memo(DateNavigatorBase);
+export default DateNavigatorBase;

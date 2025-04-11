@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import {
@@ -14,7 +14,6 @@ import {
 
 import { TransactionSummary } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
-import { getDateRangeKey } from '@/lib/date.util';
 import MonthlyView from '@/components/common/MonthlyView';
 
 export default function AccountMonthlyPage() {
@@ -30,18 +29,23 @@ export default function AccountMonthlyPage() {
     }))
   );
 
-  const { date, range, setRange } = useDateFilterStore(
+  const { query, setQuery, getDateRangeKey } = useFilterStore(
     useShallow((s) => ({
-      date: s.state.date,
-      range: s.state.range,
-      setRange: s.actions.setRange,
+      query: s.query,
+      setQuery: s.setQuery,
+      getDateRangeKey: s.getDateRangeKey,
     }))
   );
 
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: 'yearly', amount: 0 }),
-    [date]
-  );
+  const { date, range } = query;
+
+  const dateRangeKey = useMemo(() => getDateRangeKey(0), [getDateRangeKey]);
+
+  useEffect(() => {
+    if (range !== 'yearly') {
+      setQuery({ range: 'yearly' });
+    }
+  }, []);
 
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
@@ -51,12 +55,10 @@ export default function AccountMonthlyPage() {
       endDate,
     };
 
-    if (range !== 'yearly') {
-      setRange('yearly');
-    } else {
+    (async () => {
       fetchTransactionSummary(params);
-    }
-  }, [dateRangeKey, range, setRange]);
+    })();
+  }, [dateRangeKey, date, setQuery]);
 
   const handleToggle = useCallback(
     async (index: number, summary: TransactionSummary) => {
@@ -94,20 +96,20 @@ export default function AccountMonthlyPage() {
     {
       label: 'Income',
       value: totalIncome,
+      color: totalIncome > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
-      color: 'text-info',
     },
     {
       label: 'Exp.',
       value: totalExpense,
+      color: totalExpense > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
-      color: 'text-error',
     },
     {
       label: 'Total',
       value: totalIncome - totalExpense,
+      color: 'text-foreground',
       prefix: '$',
-      color: 'text-success',
     },
   ];
 

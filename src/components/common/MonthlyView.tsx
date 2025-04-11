@@ -36,6 +36,8 @@ export default function MonthlyView({
     return <EmptyMessage />;
   }
 
+  console.log('### weeklySummaryByMonth', weeklySummaryByMonth);
+
   return (
     <>
       {/* 요약 박스 */}

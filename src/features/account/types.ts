@@ -1,4 +1,4 @@
-import { Transaction } from "../transaction/types";
+import { Transaction } from '../transaction/types';
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';
 export type FinancialType = 'ASSET' | 'LIABILITY';
@@ -21,23 +21,15 @@ export interface SubmitAccountPayload {
   paymentDate?: number;
   description?: string;
 }
-export interface AccountSummary {
-  accountId: string;
-  name: string;
-  type: 'CASH' | 'CARD' | 'BANK'; // AccountType enum 기준
-  color: string;
-  totalIncome: number;
-  totalExpense: number;
-  balance: number;
-}
 
-export interface AccountTransactionSummaryDto {
+export interface AccountSummaryDTO {
   accountId: string;
   accountName: string;
   balance: number;
   incomeTotal: number;
   expenseTotal: number;
-  transactions: Transaction[];
+  rangeStart: string; // 2025-03-01
+  rangeEnd: string; // 2025-03-31
 }
 
 export type AccountDashboardItem = {

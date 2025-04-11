@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import {
   useParams,
   usePathname,
@@ -11,49 +11,68 @@ import {
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
 import DateNavigator from '@/components/ui/DateNavigator';
+import TopNav from '@/components/common/TopNav';
 import { Button } from '@/components/ui/Button';
 
 import { Plus } from 'lucide-react';
-import { format } from 'date-fns';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
+
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAccountFormStore } from '@/stores/useAccountFormStore';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+import type { RangeOption } from '@/features/shared/types';
+
+const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
+
+export default function AccountDetailDashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const accountId = useParams().id;
   const router = useRouter();
+  const accountId = useParams().id;
 
   const current = pathname.split('/')[4] || 'daily';
   const dateParam = searchParams.get('date');
+  const rangeParam = searchParams.get('range');
 
-  const { query, setDateFromString } = useFilterStore();
-  const { date } = query;
+  const { query, setQuery } = useFilterStore();
+  const { date, range } = query;
 
   const {
     actions: { reset },
   } = useAccountFormStore();
 
+  const hasInitialized = useRef(false);
+
   useEffect(() => {
-    if (!dateParam) return;
+    const partialQuery: Partial<typeof query> = {};
+    let parsedDate: Date | null = null;
 
-    try {
-      const parsed = parseLocalDate(dateParam);
-      if (format(parsed, 'yyyy-MM-dd') !== format(date, 'yyyy-MM-dd')) {
-        setDateFromString(dateParam);
+    if (!hasInitialized.current) {
+      if (dateParam) {
+        try {
+          parsedDate = parseLocalDate(dateParam);
+          if (formatDate(parsedDate) !== formatDate(date)) {
+            partialQuery.date = parsedDate;
+          }
+        } catch (err) {
+          console.log('❌ Invalid dateParam', err);
+        }
       }
-    } catch (err) {
-      console.log('### ERR', err);
-    }
-  }, [dateParam, setDateFromString, router, current, date]);
 
-  const tabs = [
-    { key: 'daily', label: 'Daily' },
-    { key: 'monthly', label: 'Monthly' },
-    { key: 'yearly', label: 'Yearly' },
-  ];
+      if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
+        if (range !== rangeParam) {
+          partialQuery.range = rangeParam as RangeOption;
+        }
+      }
+
+      if (Object.keys(partialQuery).length > 0) {
+        setQuery(partialQuery);
+      }
+
+      hasInitialized.current = true;
+    }
+  }, [dateParam, rangeParam, date, range, current, setQuery]);
 
   useEffect(() => {
     useUIStore.getState().setTopNav({
@@ -71,6 +90,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     };
   }, [router, reset, accountId]);
 
+  const tabs = [
+    { key: 'daily', label: 'Daily' },
+    { key: 'monthly', label: 'Monthly' },
+    { key: 'yearly', label: 'Yearly' },
+  ];
+
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-surface text-foreground'>
       <div>
@@ -81,8 +106,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           variant='underline'
           onChange={(key) => {
             const currentDate = formatDate(date);
+            const rangeParam = `range=${range}`;
             router.replace(
-              `/account/${accountId}/detail/${key}?date=${currentDate}`
+              `/account/${accountId}/detail/${key}?date=${currentDate}&${rangeParam}`
             );
           }}
         />

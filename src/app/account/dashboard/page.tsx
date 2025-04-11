@@ -20,15 +20,17 @@ export default function AccountsPage() {
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Accounts.',
+      onBack: undefined,
     });
-
     return () => {
       useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
   useEffect(() => {
-    fetchAccountDashboard(); // ✅ 새 API 연동
+    (async () => {
+      await fetchAccountDashboard(); // ✅ 새 API 연동
+    })();
   }, []);
 
   if (isLoading || !accountDashboard) {

@@ -1,8 +1,7 @@
 import { get, patch, post } from '@/features/shared/api';
 import {
   Account,
-  // AccountDashboardResponse,
-  AccountTransactionSummaryDto,
+  AccountSummaryDTO,
   SubmitAccountPayload,
 } from './types';
 import { DateFilterParams } from '../shared/types';
@@ -28,9 +27,10 @@ export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
 
   if (params.startDate) query.append('startDate', params.startDate);
   if (params.endDate) query.append('endDate', params.endDate);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
 
-  return get<AccountTransactionSummaryDto[]>(
-    `/accounts/grouped-transactions?${query.toString()}`
+  return get<AccountSummaryDTO[]>(
+    `/accounts/summary?${query.toString()}`
   );
 };
 
