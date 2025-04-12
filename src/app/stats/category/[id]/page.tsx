@@ -1,21 +1,25 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { parseISO, startOfDay } from 'date-fns';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { useUIStore } from '@/stores/useUIStore';
+
+import { CategoryType } from '@/features/category/types';
+import { TransactionSummary } from '@/features/transaction/types';
 import {
   fetchStatsCategoryByCategoryId,
   fetchStatsSummaryByCategoryId,
 } from '@/services/statsService';
 
-import { CategoryType } from '@/features/category/types';
+import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/ui/SummaryBox';
-import { TransactionSummary } from '@/features/transaction/types';
-import TransactionGroup from '@/components/common/TransactionGroup';
 import StatComposedChart from '@/components/ui/ComposedChart';
-import { useUIStore } from '@/stores/useUIStore';
+import TransactionGroup from '@/components/common/TransactionGroup';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 export default function StatsCategoryDetailPage() {
   const categoryId = useParams().id;
@@ -28,15 +32,13 @@ export default function StatsCategoryDetailPage() {
   const resetTopNav = useUIStore((s) => s.resetTopNav);
   const setTopNav = useUIStore((s) => s.setTopNav);
 
-  const { query, getDateRangeKey } = useFilterStore();
-  const { date, range, transactionType } = query;
+  const { query, getDateRangeKey, setQuery } = useFilterStore();
+  const { range, transactionType, date } = query;
 
-  const [selectedMonth, setSelectedMonth] = useState<string | undefined>();
+  // const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
+  // const [startDate, endDate] = useMemo(() => rangeKey.split('_'), [rangeKey]);
 
-  const rangeKey = useMemo(() => getDateRangeKey(), [date, range]);
-
-  const [startDate, endDate] = useMemo(() => rangeKey.split('_'), [rangeKey]);
-
+  // ✅ 바 차트 데이터 가공
   const barData = useMemo(() => {
     if (!statsSummaryCategoryResposne) return [];
     return statsSummaryCategoryResposne.data.map((summary) => ({
@@ -48,94 +50,98 @@ export default function StatsCategoryDetailPage() {
     }));
   }, [statsSummaryCategoryResposne, transactionType]);
 
+  // ✅ 상단 네비 설정
   useEffect(() => {
     setTopNav({
-      title: 'Category.',
-      onBack: () => {
-        router.back();
-      },
+      title: statsSummaryCategoryResposne?.categoryName ?? 'Category',
+      onBack: () => router.back(),
     });
+    return () => resetTopNav();
+  }, [setTopNav, resetTopNav, statsSummaryCategoryResposne, router]);
 
-    return () => {
-      resetTopNav();
-    };
-  }, [setTopNav]);
-
+  // ✅ 최초 데이터 fetch
   useEffect(() => {
     if (!categoryId) return;
-
-    (async () => {
+    const run = async () => {
+      const [startDate, endDate] = getDateRangeKey().split('_');
       const params = {
         startDate,
         endDate,
         type: transactionType as CategoryType,
         groupBy: range,
       };
-      Promise.all([
+      await Promise.all([
         fetchStatsSummaryByCategoryId(String(categoryId), params),
-        fetchStatsCategoryByCategoryId(String(categoryId), params),
+        fetchStatsCategoryByCategoryId(String(categoryId), {
+          ...params,
+          groupBy: 'daily',
+        }),
       ]);
-    })();
-  }, [categoryId, startDate, endDate, transactionType, range]);
+    };
+    run();
+  }, [categoryId, transactionType, range, date, getDateRangeKey]);
 
-  if (isLoading)
+  // ✅ 바 차트 클릭 → 쿼리 날짜 이동
+  const handleDateClick = (startDate: string) => {
+    setQuery({ date: startOfDay(parseISO(startDate)) });
+  };
+
+  if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
-
-  const selectedName = statsSummaryCategoryResposne?.categoryName ?? 'Category';
+  }
 
   return (
     <div>
-      {/* 헤더 */}
-      <div className='text-center space-y-1'>
-        <h1 className='text-lg font-bold text-foreground'>{selectedName}</h1>
-        <p className='text-sm text-muted'>{rangeKey}</p>
-      </div>
-
-      {/* 요약 */}
+      {/* 📊 요약 카드 */}
       {categoryDetailResponse && (
-        <SummaryBox
-          items={[
-            {
-              label: 'Income',
-              value: categoryDetailResponse.incomeTotal,
-              color:
-                categoryDetailResponse.incomeTotal > 0
-                  ? 'text-primary'
-                  : 'text-muted',
-              prefix: '$',
-            },
-            {
-              label: 'Exp.',
-              value: categoryDetailResponse.expenseTotal,
-              color:
-                categoryDetailResponse.expenseTotal > 0
-                  ? 'text-error'
-                  : 'text-muted',
-              prefix: '$',
-            },
-            {
-              label: 'Total',
-              value:
-                categoryDetailResponse.incomeTotal -
-                categoryDetailResponse.expenseTotal,
-              color: 'text-foreground',
-              prefix: '$',
-            },
-          ]}
-        />
+        <Panel>
+          <SummaryBox
+            items={[
+              {
+                label: 'Income',
+                value: categoryDetailResponse.incomeTotal,
+                color:
+                  categoryDetailResponse.incomeTotal > 0
+                    ? 'text-primary'
+                    : 'text-muted',
+                prefix: '$',
+              },
+              {
+                label: 'Exp.',
+                value: categoryDetailResponse.expenseTotal,
+                color:
+                  categoryDetailResponse.expenseTotal > 0
+                    ? 'text-error'
+                    : 'text-muted',
+                prefix: '$',
+              },
+              {
+                label: 'Total',
+                value:
+                  categoryDetailResponse.incomeTotal -
+                  categoryDetailResponse.expenseTotal,
+                color: 'text-foreground',
+                prefix: '$',
+              },
+            ]}
+          />
+        </Panel>
       )}
 
-      {/* 바 차트 */}
+      {/* 📈 바 + 라인 차트 */}
       {barData.length > 0 && (
-        <div className='w-full h-36'>
-          <StatComposedChart data={barData} onSelect={setSelectedMonth} />
+        <div className='w-full h-40'>
+          <StatComposedChart
+            data={barData}
+            onSelect={(startDate) => handleDateClick(startDate)}
+          />
         </div>
       )}
 
-      {/* 거래 리스트 */}
-      {categoryDetailResponse && (
+      {/* 🧾 일별 거래 리스트 */}
+      {categoryDetailResponse && categoryDetailResponse.data.length ? (
         <div className='space-y-4'>
-          {categoryDetailResponse?.data.map(
+          {categoryDetailResponse.data.map(
             (group: TransactionSummary, i: number) => (
               <TransactionGroup
                 key={group.label + i}
@@ -149,6 +155,8 @@ export default function StatsCategoryDetailPage() {
             )
           )}
         </div>
+      ) : (
+        <EmptyMessage />
       )}
     </div>
   );

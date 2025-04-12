@@ -31,7 +31,7 @@ interface StatsStore {
     setCategoryResponse: (data: StatsByCategoryResponse) => void;
     setBudgetResponse: (data: StatsByBudgetResponse) => void;
     setNoteResponse: (data: StatsByNoteResponse) => void;
-    setCategoryDetailResponse: (data: TransactionSummaryResponse) => void;
+    setCategoryDetailResponse: (data?: TransactionSummaryResponse) => void;
     setBudgetDetailResponse: (data: TransactionSummaryResponse) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;

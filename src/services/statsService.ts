@@ -70,6 +70,7 @@ export const fetchStatsCategoryByCategoryId = async (
   setLoading(true);
   try {
     const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
+
     setCategoryDetailResponse(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);

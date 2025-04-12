@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Bar,
   Cell,
+  DotProps,
 } from 'recharts';
 import { formatCurrency } from '@/lib/utils';
 
@@ -21,7 +22,7 @@ interface Props {
     endDate: string;
     isCurrent: boolean;
   }[];
-  onSelect?: (month: string) => void;
+  onSelect?: (startDate: string) => void;
   lineColor?: string;
   bgColor?: string;
 }
@@ -78,6 +79,7 @@ export default function StatComposedChart({
                   key={`bar-${index}`}
                   fill={defaultLineColor}
                   fillOpacity={0.3}
+                  onClick={() => onSelect?.(entry.startDate)}
                 />
               ))}
             </Bar>
@@ -99,15 +101,32 @@ export default function StatComposedChart({
                     strokeWidth={2}
                     fill={isSelected ? defaultLineColor : 'var(--color-muted)'}
                     style={{ cursor: 'pointer' }}
-                    onClick={() => onSelect?.(payload.month)}
+                    onClick={() => onSelect?.(payload.startDate)}
                   />
                 );
               }}
-              activeDot={{
-                stroke: defaultLineColor,
-                strokeWidth: 4,
-                r: 6,
-                fill: 'white',
+              activeDot={(props: DotProps) => {
+                const { cx, cy, payload } = props as {
+                  cx: number;
+                  cy: number;
+                  payload: {
+                    month: string;
+                    startDate: string;
+                  };
+                };
+
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={6}
+                    stroke={defaultLineColor}
+                    strokeWidth={4}
+                    fill='white'
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSelect?.(payload.startDate)}
+                  />
+                );
               }}
               isAnimationActive
               animationBegin={100}

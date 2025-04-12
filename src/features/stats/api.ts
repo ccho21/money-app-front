@@ -41,18 +41,18 @@ export const fetchStatsByNoteAPI = (
   return get(`/stats/by-note?${query.toString()}`);
 };
 
-export async function fetchStatsCategoryByCategoryIdAPI(
+export const fetchStatsCategoryByCategoryIdAPI = async (
   categoryId: string,
   params: DateFilterParams
-) {
+) => {
   const query = new URLSearchParams();
-  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
   if (params.groupBy) query.append('groupBy', params.groupBy);
   const res = await get(`/stats/category/${categoryId}?${query.toString()}`);
   return res as Promise<TransactionSummaryResponse>;
-}
+};
 
 export const fetchStatBudgetByCategoryIdAPI = async (
   categoryId: string,
@@ -92,7 +92,7 @@ export const fetchStatsSummaryByBudgetAPI = async (
   if (params.type) query.append('type', params.type);
   if (params.groupBy) query.append('groupBy', params.groupBy);
   const res = await get(
-    `/stats/category/${categoryId}/summary?${query.toString()}`
+    `/stats/budget/${categoryId}/summary?${query.toString()}`
   );
   return res as Promise<StatsSummaryByBudgetResponse>;
 };
