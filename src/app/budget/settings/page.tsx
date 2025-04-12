@@ -57,7 +57,7 @@ export default function BudgetPage() {
   }
 
   return (
-    <div className='bg-background min-h-screen pb-[10vh]'>
+    <div>
       <DateNavigator withTransactionType={true} />
 
       <Panel>

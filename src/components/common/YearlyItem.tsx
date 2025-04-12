@@ -40,7 +40,7 @@ export default function YearlyItem({
       >
         {/* 좌측: 연도 + 범위 */}
         <div className='text-left'>
-          <div className='text-base font-semibold text-foreground'>{label}</div>
+          <div className='text-md font-semibold text-foreground'>{label}</div>
           <div className='text-xs text-muted-foreground'>
             {start} ~ {end}
           </div>

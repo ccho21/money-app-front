@@ -14,8 +14,13 @@ import {
 import { formatCurrency } from '@/lib/utils';
 
 interface Props {
-  data: { month: string; value: number }[];
-  selectedMonth?: string;
+  data: {
+    month: string;
+    value: number;
+    startDate: string;
+    endDate: string;
+    isCurrent: boolean;
+  }[];
   onSelect?: (month: string) => void;
   lineColor?: string;
   bgColor?: string;
@@ -36,16 +41,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
-export default function BudgetComposedChart({
+export default function StatComposedChart({
   data,
-  selectedMonth,
   onSelect,
   lineColor,
   bgColor,
 }: Props) {
   const defaultLineColor = lineColor ?? 'var(--color-primary)';
   const backgroundColor = bgColor ?? 'var(--color-surface)';
-
+  const selectedMonth = data.find((s) => s.isCurrent)?.month;
   return (
     <div className='w-full overflow-x-auto scrollbar-hide bg-surface'>
       <div
@@ -83,10 +87,11 @@ export default function BudgetComposedChart({
               dataKey='value'
               stroke={defaultLineColor}
               strokeWidth={2}
-              dot={({ cx, cy, payload }) => {
+              dot={({ cx, cy, payload, index }) => {
                 const isSelected = payload.month === selectedMonth;
                 return (
                   <circle
+                    key={`dot-${payload.month}-${index}`} // ✅ 고유한 key 추가
                     cx={cx}
                     cy={cy}
                     r={4}

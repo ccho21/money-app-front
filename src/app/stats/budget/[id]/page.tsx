@@ -1,132 +1,145 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsBudgetByCategoryId } from '@/services/statsService';
+import {
+  fetchStatsBudgetByCategoryId,
+  fetchStatsSummaryByBudget,
+} from '@/services/statsService';
 
 import { CategoryType } from '@/features/category/types';
-
 import SummaryBox from '@/components/ui/SummaryBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import TransactionGroup from '@/components/common/TransactionGroup';
 import Panel from '@/components/ui/Panel';
-import { TransactionSummary } from '@/features/transaction/types';
 import ComposedChart from '@/components/ui/ComposedChart';
-
-const MOCK_BAR_DATA = [
-  { month: 'Nov', value: 0 },
-  { month: 'Dec', value: 0 },
-  { month: 'Jan', value: 0 },
-  { month: 'Feb', value: 0 },
-  { month: 'Mar', value: 32.48 },
-  { month: 'Apr', value: 0 },
-  { month: 'May', value: 0 },
-  { month: 'Jun', value: 0 },
-  { month: 'July', value: 0 },
-  { month: 'Aug', value: 0 },
-  { month: 'Oct', value: 0 },
-  { month: 'Sep', value: 0 },
-];
+import { useUIStore } from '@/stores/useUIStore';
+import { TransactionSummary } from '@/features/transaction/types';
 
 export default function StatsBudgetDetailPage() {
   const categoryId = useParams().id;
+  const router = useRouter();
 
   const {
-    state: { budgetDetailResponse, isLoading },
+    state: { statsSummaryBudgetResposne, budgetDetailResponse, isLoading },
   } = useStatsStore();
+
+  const setTopNav = useUIStore((s) => s.setTopNav);
+  const resetTopNav = useUIStore((s) => s.resetTopNav);
 
   const { query, getDateRangeKey } = useFilterStore();
   const { date, range, transactionType } = query;
 
+  const [selectedMonth, setSelectedMonth] = useState<string | undefined>();
+  const rangeKey = useMemo(() => getDateRangeKey(), [date, range]);
+  const [startDate, endDate] = useMemo(() => rangeKey.split('_'), [rangeKey]);
+
+  const chartData = useMemo(() => {
+    if (!statsSummaryBudgetResposne) return [];
+    return statsSummaryBudgetResposne.data.map((summary) => ({
+      month: summary.label,
+      startDate: summary.startDate,
+      endDate: summary.endDate,
+      value: transactionType === 'expense' ? summary.expense : summary.income,
+      isCurrent: summary.isCurrent,
+    }));
+  }, [statsSummaryBudgetResposne]);
+
+  console.log('## BUDGET BAR DATA', chartData);
+
+  useEffect(() => {
+    setTopNav({
+      title: statsSummaryBudgetResposne?.categoryName ?? 'Category',
+      onBack: () => router.back(),
+    });
+    return () => resetTopNav();
+  }, [setTopNav, resetTopNav, statsSummaryBudgetResposne]);
+
   useEffect(() => {
     if (!categoryId) return;
-    (async () => {
-      const [startDate, endDate] = getDateRangeKey().split('_');
-
-      await fetchStatsBudgetByCategoryId(String(categoryId), {
-        startDate,
-        endDate,
-        type: transactionType as CategoryType,
-        groupBy: range,
-      });
-    })();
-  }, [categoryId, getDateRangeKey, range, date, transactionType]);
+    const params = {
+      startDate,
+      endDate,
+      type: transactionType as CategoryType,
+      groupBy: range,
+    };
+    Promise.all([
+      fetchStatsSummaryByBudget(String(categoryId), params),
+      fetchStatsBudgetByCategoryId(String(categoryId), params),
+    ]);
+  }, [categoryId, startDate, endDate, transactionType, range]);
 
   if (isLoading)
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
 
-  if (!budgetDetailResponse || !budgetDetailResponse.data.length) {
-    return <EmptyMessage />;
-  }
-
   return (
-    <div className='space-y-4 bg-background pb-[10vh]'>
-      <Panel>
-        {/* 헤더 */}
-        <div className='text-center space-y-1'>
-          <h1 className='text-md font-bold text-foreground'>Food</h1>
-          <p className='text-sm text-muted'>Mar 2025</p>
-        </div>
+    <div className=''>
+      {/* 헤더 */}
+      <div className='text-center space-y-1 py-4'>
+        <h1 className='text-lg font-bold text-foreground'>
+          {statsSummaryBudgetResposne?.categoryName ?? 'Category'}
+        </h1>
+        <p className='text-sm text-muted'>
+          {startDate} ~ {endDate}
+        </p>
+      </div>
 
-        {/* 요약 */}
+      {/* 요약 */}
+      <Panel>
         <SummaryBox
           items={[
             {
-              label: 'Income',
-              value: budgetDetailResponse.incomeTotal,
-              color:
-                budgetDetailResponse.incomeTotal > 0
-                  ? 'text-primary'
-                  : 'text-muted',
+              label: 'Budget',
+              value: statsSummaryBudgetResposne?.totalBudget ?? 0,
+              color: 'text-primary',
               prefix: '$',
             },
             {
               label: 'Exp.',
-              value: budgetDetailResponse.expenseTotal,
-              color:
-                budgetDetailResponse.expenseTotal > 0
-                  ? 'text-error'
-                  : 'text-muted',
+              value: statsSummaryBudgetResposne?.totalExpense ?? 0,
+              color: 'text-error',
               prefix: '$',
             },
             {
-              label: 'Total',
-              value:
-                budgetDetailResponse.incomeTotal -
-                budgetDetailResponse.expenseTotal,
-              color: 'text-foreground',
+              label: 'Remaining',
+              value: statsSummaryBudgetResposne?.totalRemaining ?? 0,
+              color: statsSummaryBudgetResposne?.isOver
+                ? 'text-error'
+                : 'text-foreground',
               prefix: '$',
             },
           ]}
         />
       </Panel>
 
-      <Panel>
-        {/* 바 차트 */}
-        <div className='w-full h-36'>
-          <ComposedChart data={MOCK_BAR_DATA} selectedMonth='Mar' />
-        </div>
-      </Panel>
+      {/* 차트 */}
+      {chartData.length > 0 && (
+        <Panel>
+          <div className='w-full h-36'>
+            <ComposedChart data={chartData} onSelect={setSelectedMonth} />
+          </div>
+        </Panel>
+      )}
 
-      <Panel>
-        {/* 일별 거래 리스트 */}
-        <div className='space-y-4'>
-          {budgetDetailResponse.data.map((group: TransactionSummary) => (
+      {/* 리스트 */}
+      {/* <Panel>
+        <div className="space-y-4">
+          {budgetDetailResponse.data.map((group: TransactionSummary, i) => (
             <TransactionGroup
-              key={group.label}
+              key={group.label + i}
               label={group.label}
-              rangeStart={group.rangeStart}
-              rangeEnd={group.rangeEnd}
+              rangeStart={group.startDate}
+              rangeEnd={group.endDate}
               incomeTotal={group.incomeTotal}
               expenseTotal={group.expenseTotal}
               group={group}
             />
           ))}
         </div>
-      </Panel>
+      </Panel> */}
     </div>
   );
 }

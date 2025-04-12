@@ -1,127 +1,155 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsCategoryByCategoryId } from '@/services/statsService';
+import {
+  fetchStatsCategoryByCategoryId,
+  fetchStatsSummaryByCategoryId,
+} from '@/services/statsService';
 
 import { CategoryType } from '@/features/category/types';
 import SummaryBox from '@/components/ui/SummaryBox';
-import EmptyMessage from '@/components/ui/EmptyMessage';
 import { TransactionSummary } from '@/features/transaction/types';
 import TransactionGroup from '@/components/common/TransactionGroup';
-import BudgetLineChart from '../../../../components/ui/ComposedChart';
-
-const MOCK_BAR_DATA = [
-  { month: 'Nov', value: 0 },
-  { month: 'Dec', value: 0 },
-  { month: 'Jan', value: 0 },
-  { month: 'Feb', value: 0 },
-  { month: 'Mar', value: 32.48 },
-  { month: 'Apr', value: 0 },
-  { month: 'May', value: 0 },
-  { month: 'Jun', value: 0 },
-  { month: 'July', value: 0 },
-  { month: 'Aug', value: 0 },
-  { month: 'Oct', value: 0 },
-  { month: 'Sep', value: 0 },
-];
+import StatComposedChart from '@/components/ui/ComposedChart';
+import { useUIStore } from '@/stores/useUIStore';
 
 export default function StatsCategoryDetailPage() {
   const categoryId = useParams().id;
+  const router = useRouter();
 
   const {
-    state: { categoryDetailResponse, isLoading },
+    state: { categoryDetailResponse, statsSummaryCategoryResposne, isLoading },
   } = useStatsStore();
+
+  const resetTopNav = useUIStore((s) => s.resetTopNav);
+  const setTopNav = useUIStore((s) => s.setTopNav);
 
   const { query, getDateRangeKey } = useFilterStore();
   const { date, range, transactionType } = query;
-  const barData = useMemo(() => MOCK_BAR_DATA, []);
+
+  const [selectedMonth, setSelectedMonth] = useState<string | undefined>();
+
+  const rangeKey = useMemo(() => getDateRangeKey(), [date, range]);
+
+  const [startDate, endDate] = useMemo(() => rangeKey.split('_'), [rangeKey]);
+
+  const barData = useMemo(() => {
+    if (!statsSummaryCategoryResposne) return [];
+    return statsSummaryCategoryResposne.data.map((summary) => ({
+      month: summary.label,
+      startDate: summary.startDate,
+      endDate: summary.endDate,
+      value: transactionType === 'expense' ? summary.expense : summary.income,
+      isCurrent: summary.isCurrent,
+    }));
+  }, [statsSummaryCategoryResposne, transactionType]);
 
   useEffect(() => {
-    const run = async () => {
-      if (!categoryId) return;
-      const [startDate, endDate] = getDateRangeKey().split('_');
+    setTopNav({
+      title: 'Category.',
+      onBack: () => {
+        router.back();
+      },
+    });
 
-      await fetchStatsCategoryByCategoryId(String(categoryId), {
+    return () => {
+      resetTopNav();
+    };
+  }, [setTopNav]);
+
+  useEffect(() => {
+    if (!categoryId) return;
+
+    (async () => {
+      const params = {
         startDate,
         endDate,
         type: transactionType as CategoryType,
         groupBy: range,
-      });
-    };
-
-    run();
-  }, [categoryId, getDateRangeKey, range, transactionType, date]);
+      };
+      Promise.all([
+        fetchStatsSummaryByCategoryId(String(categoryId), params),
+        fetchStatsCategoryByCategoryId(String(categoryId), params),
+      ]);
+    })();
+  }, [categoryId, startDate, endDate, transactionType, range]);
 
   if (isLoading)
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
 
-  if (!categoryDetailResponse || !categoryDetailResponse.data.length) {
-    return <EmptyMessage />;
-  }
+  const selectedName = statsSummaryCategoryResposne?.categoryName ?? 'Category';
 
   return (
-    <div className='bg-background p-4 pb-[10vh] space-y-4'>
+    <div>
       {/* 헤더 */}
       <div className='text-center space-y-1'>
-        <h1 className='text-lg font-bold text-foreground'>Food</h1>
-        <p className='text-sm text-muted'>Mar 2025</p>
+        <h1 className='text-lg font-bold text-foreground'>{selectedName}</h1>
+        <p className='text-sm text-muted'>{rangeKey}</p>
       </div>
 
       {/* 요약 */}
-      <SummaryBox
-        items={[
-          {
-            label: 'Income',
-            value: categoryDetailResponse.incomeTotal,
-            color:
-              categoryDetailResponse.incomeTotal > 0
-                ? 'text-primary'
-                : 'text-muted',
-            prefix: '$',
-          },
-          {
-            label: 'Exp.',
-            value: categoryDetailResponse.expenseTotal,
-            color:
-              categoryDetailResponse.expenseTotal > 0
-                ? 'text-error'
-                : 'text-muted',
-            prefix: '$',
-          },
-          {
-            label: 'Total',
-            value:
-              categoryDetailResponse.incomeTotal -
-              categoryDetailResponse.expenseTotal,
-            color: 'text-foreground',
-            prefix: '$',
-          },
-        ]}
-      />
+      {categoryDetailResponse && (
+        <SummaryBox
+          items={[
+            {
+              label: 'Income',
+              value: categoryDetailResponse.incomeTotal,
+              color:
+                categoryDetailResponse.incomeTotal > 0
+                  ? 'text-primary'
+                  : 'text-muted',
+              prefix: '$',
+            },
+            {
+              label: 'Exp.',
+              value: categoryDetailResponse.expenseTotal,
+              color:
+                categoryDetailResponse.expenseTotal > 0
+                  ? 'text-error'
+                  : 'text-muted',
+              prefix: '$',
+            },
+            {
+              label: 'Total',
+              value:
+                categoryDetailResponse.incomeTotal -
+                categoryDetailResponse.expenseTotal,
+              color: 'text-foreground',
+              prefix: '$',
+            },
+          ]}
+        />
+      )}
 
       {/* 바 차트 */}
-      <div className='w-full h-36'>
-        <BudgetLineChart data={barData} selectedMonth='Mar' />
-      </div>
+      {barData.length > 0 && (
+        <div className='w-full h-36'>
+          <StatComposedChart data={barData} onSelect={setSelectedMonth} />
+        </div>
+      )}
 
-      {/* 일별 거래 리스트 */}
-      <div className='space-y-4'>
-        {categoryDetailResponse.data.map((group: TransactionSummary) => (
-          <TransactionGroup
-            key={group.label}
-            label={group.label}
-            rangeStart={group.rangeStart}
-            rangeEnd={group.rangeEnd}
-            incomeTotal={group.incomeTotal}
-            expenseTotal={group.expenseTotal}
-            group={group}
-          />
-        ))}
-      </div>
+      {/* 거래 리스트 */}
+      {categoryDetailResponse && (
+        <div className='space-y-4'>
+          {categoryDetailResponse?.data.map(
+            (group: TransactionSummary, i: number) => (
+              <TransactionGroup
+                key={group.label + i}
+                label={group.label}
+                rangeStart={group.rangeStart}
+                rangeEnd={group.rangeEnd}
+                incomeTotal={group.incomeTotal}
+                expenseTotal={group.expenseTotal}
+                group={group}
+              />
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function TransactionGroup({
             if (e.key === 'Enter') onHeaderClick?.();
           }}
           className={cn(
-            'w-full px-3 py-3 border-t border-b transition-colors duration-200',
+            'w-full px-3 py-3 border-b transition-colors duration-200',
             'border-border dark:border-zinc-700',
             onHeaderClick &&
               'hover:bg-muted/10 dark:hover:bg-zinc-800 cursor-pointer'

@@ -4,13 +4,17 @@ import {
   StatsByBudgetResponse,
   StatsByCategoryResponse,
   StatsByNoteResponse,
-} from "@/features/stats/types";
-import { TransactionSummaryResponse } from "@/features/transaction/types";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+  StatsSummaryByBudgetResponse,
+  StatsSummaryByCategoryResponse,
+} from '@/features/stats/types';
+import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface StatsStore {
   state: {
+    statsSummaryCategoryResposne?: StatsSummaryByCategoryResponse;
+    statsSummaryBudgetResposne?: StatsSummaryByBudgetResponse;
     categoryResponse?: StatsByCategoryResponse;
     budgetResponse?: StatsByBudgetResponse;
     noteResponse?: StatsByNoteResponse;
@@ -20,6 +24,10 @@ interface StatsStore {
     error: string | null;
   };
   actions: {
+    setstatsSummaryCategoryResposne: (
+      data: StatsSummaryByCategoryResponse
+    ) => void;
+    setstatsSummaryBudgetResposne: (data: StatsSummaryByBudgetResponse) => void;
     setCategoryResponse: (data: StatsByCategoryResponse) => void;
     setBudgetResponse: (data: StatsByBudgetResponse) => void;
     setNoteResponse: (data: StatsByNoteResponse) => void;
@@ -39,13 +47,29 @@ export const useStatsStore = create<StatsStore>()(
         error: null,
       },
       actions: {
+        setstatsSummaryCategoryResposne: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, statsSummaryCategoryResposne: data },
+            }),
+            false,
+            'stats/setStatsSummaryCategoryResponse'
+          ),
+        setstatsSummaryBudgetResposne: (data) =>
+          set(
+            (s) => ({
+              state: { ...s.state, statsSummaryBudgetResposne: data },
+            }),
+            false,
+            'stats/setstatsSummaryBudgetResposne'
+          ),
         setCategoryResponse: (data) =>
           set(
             (s) => ({
               state: { ...s.state, categoryResponse: data },
             }),
             false,
-            "stats/setCategoryResponse"
+            'stats/setCategoryResponse'
           ),
         setBudgetResponse: (data) =>
           set(
@@ -53,7 +77,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, budgetResponse: data },
             }),
             false,
-            "stats/setBudgetResponse"
+            'stats/setBudgetResponse'
           ),
         setNoteResponse: (data) =>
           set(
@@ -61,7 +85,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, noteResponse: data },
             }),
             false,
-            "stats/setNoteResponse"
+            'stats/setNoteResponse'
           ),
         setCategoryDetailResponse: (data) =>
           set(
@@ -69,7 +93,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, categoryDetailResponse: data },
             }),
             false,
-            "stats/setCategoryDetailResponse"
+            'stats/setCategoryDetailResponse'
           ),
         setBudgetDetailResponse: (data) =>
           set(
@@ -77,7 +101,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, budgetDetailResponse: data },
             }),
             false,
-            "stats/setBudgetDetailResponse"
+            'stats/setBudgetDetailResponse'
           ),
         setLoading: (loading) =>
           set(
@@ -85,7 +109,7 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, isLoading: loading },
             }),
             false,
-            loading ? "ui/loading:start" : "ui/loading:done"
+            loading ? 'ui/loading:start' : 'ui/loading:done'
           ),
         setError: (error) =>
           set(
@@ -93,12 +117,14 @@ export const useStatsStore = create<StatsStore>()(
               state: { ...s.state, error },
             }),
             false,
-            "ui/setError"
+            'ui/setError'
           ),
         clear: () =>
           set(
             () => ({
               state: {
+                statsSummaryCategoryResposne: undefined,
+                statsSummaryBudgetResposne: undefined,
                 categoryResponse: undefined,
                 budgetResponse: undefined,
                 noteResponse: undefined,
@@ -109,10 +135,10 @@ export const useStatsStore = create<StatsStore>()(
               },
             }),
             false,
-            "stats/clearAll"
+            'stats/clearAll'
           ),
       },
     }),
-    { name: "useStatsStore" }
+    { name: 'useStatsStore' }
   )
 );

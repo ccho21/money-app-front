@@ -1,132 +1,80 @@
-'use client';
-
 import Progress from '@/components/ui/Progress';
 import { cn, formatCurrency } from '@/lib/utils';
 
-interface CategoryListItemProps {
+interface CategoryListItemData {
   name: string;
   amount: number;
-  percentage?: number;
+  rate?: number; // % 사용률 (있으면 프로그레스 바 표시)
+  budget?: number; // 예산
+  spent?: number; // 지출 (budget과 함께 쓰이면 예산 대비 지출 표시됨)
+  startDate?: string;
+  endDate?: string;
   color?: string;
-  className?: string;
-  isMatched?: boolean;
-  onClick: () => void;
-  variant?: 'default' | 'with-progress-a' | 'with-progress-b';
-  outstandingBalance?: number;
+  hasBudget?: boolean;
   balancePayable?: number;
+  outstandingBalance?: number;
+  isMatched?: boolean;
 }
 
 export function CategoryListItem({
   name,
   amount,
-  percentage,
+  rate,
+  budget,
+  spent,
+  startDate,
+  endDate,
   color = '#ccc',
-  className,
+  balancePayable,
+  outstandingBalance,
   isMatched = true,
   onClick,
-  variant = 'default',
-  outstandingBalance,
-  balancePayable,
-}: CategoryListItemProps) {
-  const showPercentage = percentage !== undefined;
-  const isProgressA = variant === 'with-progress-a';
-  const isProgressB = variant === 'with-progress-b';
-
-  const hasCardInfo =
-    outstandingBalance !== undefined || balancePayable !== undefined;
+  className,
+}: CategoryListItemData & {
+  onClick: () => void;
+  className?: string;
+}) {
+  const showProgress = rate !== undefined && startDate && endDate;
+  const showCardInfo =
+    balancePayable !== undefined || outstandingBalance !== undefined;
 
   return (
     <div
       onClick={onClick}
       className={cn(
-        'px-3 py-3 border-b space-y-1',
-        'bg-surface',
+        'px-3 py-3 border-b space-y-2 bg-surface',
         isMatched ? 'border-border' : 'border-error bg-red-50 dark:bg-red-950',
         className
       )}
     >
-      {variant === 'default' && (
-        <div className='flex items-center justify-between'>
-          {/* 좌측 색상 + 이름 */}
-          <div className='flex items-center gap-3'>
-            {showPercentage && (
-              <div
-                className='text-xs font-semibold text-white px-2 py-0.5 rounded-full'
-                style={{ backgroundColor: color }}
-              >
-                {formatCurrency(percentage)}%
-              </div>
-            )}
-            <span
-              className={cn(
-                'text-sm font-medium',
-                isMatched ? 'text-foreground' : 'text-error'
-              )}
-            >
-              {name}
-            </span>
-          </div>
-
-          {/* 금액 */}
-          <div
-            className={cn(
-              'text-sm font-semibold',
-              isMatched ? 'text-muted-foreground' : 'text-error'
-            )}
-          >
-            {formatCurrency(amount)}
-          </div>
+      <div className='flex justify-between items-center'>
+        <div className='flex items-center gap-2'>
+          {color && (
+            <div
+              className='w-3 h-3 rounded-full'
+              style={{ backgroundColor: color }}
+            />
+          )}
+          <span className='text-sm font-medium text-foreground'>{name}</span>
         </div>
-      )}
+        <div className='text-sm font-semibold text-muted-foreground'>
+          {formatCurrency(amount)}
+        </div>
+      </div>
 
-      {isProgressA && (
+      {showProgress && (
         <>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <div
-                className='w-2 h-6 rounded-sm'
-                style={{ backgroundColor: color }}
-              />
-              <div className='flex flex-col'>
-                <span className='text-sm font-medium text-foreground'>
-                  {name}
-                </span>
-                <span className='text-xs text-muted'>
-                  {formatCurrency(percentage as number)}% used
-                </span>
-              </div>
-            </div>
-            <div className='text-sm font-semibold text-muted-foreground'>
-              {formatCurrency(amount)}
-            </div>
+          <Progress value={rate} startDate={startDate} endDate={endDate} />
+          <div className='flex justify-between text-xs text-muted mt-1'>
+            <span className='text-primary'>{formatCurrency(spent ?? 0)}</span>
+            <span>{rate?.toFixed(1)}%</span>
+            <span>{formatCurrency((budget ?? 0) - (spent ?? 0))}</span>
           </div>
-          <Progress value={percentage as number} />
         </>
       )}
 
-      {isProgressB && (
-        <>
-          <div className='flex justify-between items-center mb-1'>
-            <div className='flex items-center gap-2'>
-              <div
-                className='w-4 h-4 rounded-full'
-                style={{ backgroundColor: color }}
-              />
-              <span className='text-base font-semibold text-foreground'>
-                {name}
-              </span>
-            </div>
-            <span className='text-sm text-muted font-medium'>
-              {percentage}% • {formatCurrency(amount)}
-            </span>
-          </div>
-          <Progress value={percentage as number} />
-        </>
-      )}
-
-      {/* ✅ 카드 정보 (outstandingBalance / balancePayable) 표시 */}
-      {hasCardInfo && (
-        <div className='mt-2 space-y-1 text-xs text-muted'>
+      {showCardInfo && (
+        <div className='space-y-1 text-xs text-muted mt-2'>
           {balancePayable !== undefined && (
             <div className='flex justify-between'>
               <span>Balance Payable</span>

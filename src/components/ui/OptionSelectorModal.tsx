@@ -79,7 +79,7 @@ export default function OptionSelectorModal<T extends string | number>({
         {/* 취소 버튼 */}
         <div className='mt-3 bg-surface rounded-xl overflow-hidden'>
           <button
-            className='w-full text-center py-4 text-base text-muted font-medium hover:bg-muted/10'
+            className='w-full text-center py-4 text-md text-muted font-medium hover:bg-muted/10'
             onClick={onClose}
           >
             Cancel

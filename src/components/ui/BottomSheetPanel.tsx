@@ -40,7 +40,7 @@ export default function BottomSheetPanel({
           >
             {/* ✅ Header */}
             <div className='flex items-center justify-between px-4 py-3 border-b border-border'>
-              <h2 className='text-base font-semibold text-text'>
+              <h2 className='text-md font-semibold text-text'>
                 {title ?? '설정'}
               </h2>
               <button

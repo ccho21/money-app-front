@@ -4,26 +4,30 @@ import {
   StatsByBudgetResponse,
   StatsByCategoryResponse,
   StatsByNoteResponse,
+  StatsSummaryByBudgetResponse,
+  StatsSummaryByCategoryResponse,
 } from './types';
 import { TransactionSummaryResponse } from '../transaction/types';
 
-export const fetchStatsByCategoryAPI = (
+export const fetchStatByCategoryAPI = (
   params: DateFilterParams
 ): Promise<StatsByCategoryResponse> => {
   const query = new URLSearchParams();
-  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
   return get(`/stats/by-category?${query.toString()}`);
 };
 
-export const fetchStatsByBudgetAPI = (
+export const fetchStatByBudgetAPI = (
   params: DateFilterParams
 ): Promise<StatsByBudgetResponse> => {
   const query = new URLSearchParams();
-  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
   return get(`/stats/by-budget?${query.toString()}`);
 };
 
@@ -37,7 +41,7 @@ export const fetchStatsByNoteAPI = (
   return get(`/stats/by-note?${query.toString()}`);
 };
 
-export async function fetchStatCategoryByCategoryIdAPI(
+export async function fetchStatsCategoryByCategoryIdAPI(
   categoryId: string,
   params: DateFilterParams
 ) {
@@ -50,10 +54,10 @@ export async function fetchStatCategoryByCategoryIdAPI(
   return res as Promise<TransactionSummaryResponse>;
 }
 
-export async function fetchStatBudgetByCategoryIdAPI(
+export const fetchStatBudgetByCategoryIdAPI = async (
   categoryId: string,
   params: DateFilterParams
-) {
+) => {
   const query = new URLSearchParams();
   if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
@@ -61,4 +65,34 @@ export async function fetchStatBudgetByCategoryIdAPI(
   if (params.groupBy) query.append('groupBy', params.groupBy);
   const res = await get(`/stats/budget/${categoryId}?${query.toString()}`);
   return res as Promise<TransactionSummaryResponse>;
-}
+};
+
+export const fetchStatsSummaryByCategoryIdAPI = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+  const res = await get(
+    `/stats/category/${categoryId}/summary?${query.toString()}`
+  );
+  return res as Promise<StatsSummaryByCategoryResponse>;
+};
+
+export const fetchStatsSummaryByBudgetAPI = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+  const res = await get(
+    `/stats/category/${categoryId}/summary?${query.toString()}`
+  );
+  return res as Promise<StatsSummaryByBudgetResponse>;
+};

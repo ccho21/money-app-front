@@ -20,7 +20,7 @@ export default function BudgetBox({ item, handleClick }: Props) {
         {/* 좌측 3/12: Total Budget */}
         <div className='col-span-3'>
           <div className='text-xs text-muted mb-1'>Total Budget</div>
-          <div className='text-base font-semibold'>
+          <div className='text-md font-semibold'>
             {formatCurrency(item.totalBudget)}
           </div>
         </div>

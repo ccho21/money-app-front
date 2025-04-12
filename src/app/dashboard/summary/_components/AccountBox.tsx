@@ -11,14 +11,18 @@ interface AccountBoxProps {
 
 export default function AccountBox({ accounts }: AccountBoxProps) {
   return (
-    <div className='px-4 pt-4'>
-      <h2 className='text-sm mb-2 flex items-center gap-1'>
-        <Wallet className='w-4 h-4' /> Accounts
+    <div className="px-4 pt-4">
+      <h2 className="text-sm mb-2 flex items-center gap-1 text-muted">
+        <Wallet className="w-4 h-4 text-muted" /> Accounts
       </h2>
-      <div className='bg-white dark:bg-gray-800 rounded p-3 text-sm'>
+
+      <div className="bg-surface rounded p-3 text-sm">
         {accounts.map((acc) => (
-          <div key={acc.accountId} className='flex justify-between mb-1'>
-            <span>Exp. ({acc.accountName})</span>
+          <div
+            key={acc.accountId}
+            className="flex justify-between mb-1 text-foreground"
+          >
+            <span className="text-muted">Exp. ({acc.accountName})</span>
             <span>{formatCurrency(acc.expenseTotal)}</span>
           </div>
         ))}

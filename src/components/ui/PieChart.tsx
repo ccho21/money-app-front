@@ -8,7 +8,7 @@ const RADIAN = Math.PI / 180;
 export interface CategoryChartData {
   name: string;
   value: number;
-  percent: number;
+  rate: number;
   color: string;
 }
 
@@ -23,12 +23,11 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
     cy,
     midAngle,
     outerRadius,
-    percent,
+    rate,
     index,
-  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any) => {
-    const lineRadius = outerRadius + 15; // 라인 끝 지점
-    const labelRadius = outerRadius + 35; // 텍스트 위치
+  }: any) => {
+    const lineRadius = outerRadius + 15;
+    const labelRadius = outerRadius + 35;
 
     const lineX = cx + lineRadius * Math.cos(-midAngle * RADIAN);
     const lineY = cy + lineRadius * Math.sin(-midAngle * RADIAN);
@@ -36,7 +35,6 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
     const textY = cy + labelRadius * Math.sin(-midAngle * RADIAN);
 
     const item = data[index];
-    const percentage = percent.toFixed(1);
 
     return (
       <g>
@@ -52,7 +50,7 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
         <text
           x={textX}
           y={textY - 6}
-          fill='#111827'
+          fill='var(--color-text)'
           textAnchor={textX > cx ? 'start' : 'end'}
           dominantBaseline='central'
           className='text-[11px] font-semibold'
@@ -62,19 +60,19 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
         <text
           x={textX}
           y={textY + 6}
-          fill='#6b7280'
+          fill='var(--color-muted)'
           textAnchor={textX > cx ? 'start' : 'end'}
           dominantBaseline='central'
           className='text-[10px]'
         >
-          {`${percentage}% `}
+          {`${rate.toFixed(1)}% `}
         </text>
       </g>
     );
   };
 
   return (
-    <div className='w-full'>
+    <div className='w-full pb-3'>
       <ResponsiveContainer width='100%' height={height}>
         <PieChart>
           <Pie
@@ -89,6 +87,8 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
             isAnimationActive
             animationBegin={100}
             animationDuration={1000}
+            stroke='var(--color-surface)'
+            strokeWidth={2}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
@@ -97,7 +97,6 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
         </PieChart>
       </ResponsiveContainer>
 
-      {/* 아래 범례 */}
       <div className='flex justify-center flex-wrap gap-4 mt-4'>
         {data.map((item) => (
           <div key={item.name} className='flex items-center gap-2 text-sm'>

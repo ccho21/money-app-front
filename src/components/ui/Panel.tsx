@@ -20,7 +20,7 @@ export default function Panel({
   return (
     <div
       className={cn(
-        'bg-surface text-foreground',
+        'bg-surface text-foreground border-b border-border',
         rounded && 'rounded-2xl',
         bordered && 'border border-border',
         shadow && 'shadow-sm',

@@ -6,17 +6,15 @@ import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useSearchParams } from 'next/navigation';
-
 import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
 
 const tabs = [
-  { name: 'Stats', href: '/stats/category' },
-  { name: 'Budget', href: '/stats/budget' },
+  { name: 'Stats', href: 'category' },
+  { name: 'Budget', href: 'budget' },
   // { name: 'Note', href: '/stats/note' },
 ];
 
-export default function StatsHeader() {
+export default function StatsHeaderStore() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,9 +30,9 @@ export default function StatsHeader() {
     setShowModal(false);
   };
 
-  const handleTabChange = (segment: '/stats/category' | '/stats/budget') => {
+  const handleTabChange = (segment: 'category' | 'budget') => {
     const search = window.location.search;
-    const newPath = `${segment}${search}`;
+    const newPath = `/stats/${segment}${search}`;
     router.replace(newPath);
   };
 
@@ -50,9 +48,7 @@ export default function StatsHeader() {
               <button
                 key={tab.name}
                 onClick={() =>
-                  handleTabChange(
-                    tab.href as '/stats/category' | '/stats/budget'
-                  )
+                  handleTabChange(tab.href as 'category' | 'budget')
                 }
                 className={cn(
                   'text-sm font-medium px-4 py-1 rounded-md transition-all',

@@ -68,7 +68,7 @@ export default function MonthlyItem({
       >
         {/* 좌측: 월 정보 */}
         <div className='text-left'>
-          <div className='text-base font-semibold text-foreground'>{label}</div>
+          <div className='text-md font-semibold text-foreground'>{label}</div>
           <div className='text-xs text-muted'>
             {start} ~ {end}
           </div>

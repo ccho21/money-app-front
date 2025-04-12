@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
@@ -8,6 +8,8 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByCatgory } from '@/services/statsService';
 import type { CategoryType } from '@/features/category/types';
 import StatsView from '../_components/StatsView';
+import { DateFilterParams } from '@/features/shared/types';
+import { useUIStore } from '@/stores/useUIStore';
 
 export default function StatsPage() {
   const router = useRouter();
@@ -19,16 +21,23 @@ export default function StatsPage() {
   const { query, getDateRangeKey } = useFilterStore();
   const { transactionType, range, date } = query;
 
+  const dateRangeKey = useMemo(() => getDateRangeKey(), [range, date]);
+  const lastFetchKey = useRef<string | null>(null);
+
   useEffect(() => {
-    (async () => {
-      const [startDate, endDate] = getDateRangeKey().split('_');
-      await fetchStatsByCatgory({
-        startDate,
-        endDate,
-        type: transactionType as CategoryType,
-      });
-    })();
-  }, [getDateRangeKey, transactionType, range, date]);
+    const currentKey = `${transactionType}_${dateRangeKey}`;
+    if (currentKey === lastFetchKey.current) return;
+
+    const [startDate, endDate] = dateRangeKey.split('_');
+    const params: DateFilterParams = {
+      startDate,
+      endDate,
+      type: transactionType as CategoryType,
+    };
+
+    fetchStatsByCatgory(params);
+    lastFetchKey.current = currentKey;
+  }, [transactionType, dateRangeKey]);
 
   return (
     <StatsView

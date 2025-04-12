@@ -6,11 +6,12 @@ import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import { CategoryListItem } from './CategoryListItem';
 import CategoryPieChart from '@/components/ui/PieChart';
+import Divider from '@/components/ui/Divider';
 
 interface CategoryChartData {
   name: string;
   value: number;
-  percent: number;
+  rate: number;
   color: string;
 }
 
@@ -19,7 +20,7 @@ interface Props {
   data: {
     categoryId: string;
     categoryName: string;
-    expense: number;
+    amount: number;
     rate: number;
     color: string;
   }[];
@@ -31,8 +32,8 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
     return (
       data.map((category) => ({
         name: category.categoryName,
-        value: category.expense,
-        percent: category.rate,
+        value: category.amount,
+        rate: category.rate,
         color: category.color,
       })) || []
     );
@@ -47,20 +48,17 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
   }
 
   return (
-    <div className='bg-background min-h-screen pb-[10vh]'>
-      <Panel className='mb-2 px-2 py-4'>
-        <Panel className='mb-2 px-2 py-4'>
-          <CategoryPieChart data={categoryChart} />
-        </Panel>
+    <div className=''>
+      <Panel >
+        <CategoryPieChart data={categoryChart} />
       </Panel>
-
       <Panel>
         {data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
-            percentage={item.rate}
-            amount={item.expense}
+            rate={item.rate}
+            amount={item.amount}
             onClick={() => onItemClick(item.categoryId)}
             color={item.color}
           />

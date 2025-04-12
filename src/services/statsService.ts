@@ -2,10 +2,12 @@
 
 import { DateFilterParams } from '@/features/shared/types';
 import {
-  fetchStatCategoryByCategoryIdAPI,
-  fetchStatsByBudgetAPI,
-  fetchStatsByCategoryAPI,
+  fetchStatsCategoryByCategoryIdAPI,
+  fetchStatByBudgetAPI,
+  fetchStatByCategoryAPI,
   fetchStatsByNoteAPI,
+  fetchStatsSummaryByCategoryIdAPI,
+  fetchStatsSummaryByBudgetAPI,
 } from '@/features/stats/api';
 import { useStatsStore } from '@/stores/useStatsStore';
 
@@ -16,7 +18,7 @@ export const fetchStatsByCatgory = async (params: DateFilterParams) => {
 
   setLoading(true);
   try {
-    const data = await fetchStatsByCategoryAPI(params);
+    const data = await fetchStatByCategoryAPI(params);
     setCategoryResponse(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
@@ -32,7 +34,7 @@ export const fetchStatsByBudget = async (params: DateFilterParams) => {
 
   setLoading(true);
   try {
-    const data = await fetchStatsByBudgetAPI(params);
+    const data = await fetchStatByBudgetAPI(params);
     setBudgetResponse(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
@@ -67,7 +69,7 @@ export const fetchStatsCategoryByCategoryId = async (
 
   setLoading(true);
   try {
-    const data = await fetchStatCategoryByCategoryIdAPI(categoryId, params);
+    const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
     setCategoryDetailResponse(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
@@ -86,8 +88,46 @@ export const fetchStatsBudgetByCategoryId = async (
 
   setLoading(true);
   try {
-    const data = await fetchStatCategoryByCategoryIdAPI(categoryId, params);
+    const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
     setBudgetDetailResponse(data);
+  } catch (e) {
+    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchStatsSummaryByCategoryId = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
+  const {
+    actions: { setstatsSummaryCategoryResposne, setLoading },
+  } = useStatsStore.getState();
+
+  setLoading(true);
+  try {
+    const data = await fetchStatsSummaryByCategoryIdAPI(categoryId, params);
+    setstatsSummaryCategoryResposne(data);
+  } catch (e) {
+    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchStatsSummaryByBudget = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
+  const {
+    actions: { setstatsSummaryBudgetResposne, setLoading },
+  } = useStatsStore.getState();
+
+  setLoading(true);
+  try {
+    const data = await fetchStatsSummaryByBudgetAPI(categoryId, params);
+    setstatsSummaryBudgetResposne(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
   } finally {

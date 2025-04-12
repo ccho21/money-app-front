@@ -9,7 +9,7 @@ interface ProgressProps {
   endDate?: string;
 }
 
-const getTodayProgressPercent = (
+const getTodayProgressRate = (
   startDate?: string,
   endDate?: string
 ): number => {
@@ -33,7 +33,7 @@ export default function Progress({
   startDate,
   endDate,
 }: ProgressProps) {
-  const todayPercent = getTodayProgressPercent(startDate, endDate);
+  const todayRate = getTodayProgressRate(startDate, endDate);
 
   return (
     <div className='relative w-full h-8'>
@@ -41,7 +41,7 @@ export default function Progress({
       <div
         className='absolute flex flex-col items-center text-xs z-10'
         style={{
-          left: `${todayPercent}%`,
+          left: `${todayRate}%`,
           top: '-100%',
           transform: 'translateX(-50%)',
         }}
@@ -64,7 +64,7 @@ export default function Progress({
       <div
         className='absolute top-0 bottom-0 w-[1px] bg-muted z-0'
         style={{
-          left: `${todayPercent}%`,
+          left: `${todayRate}%`,
           transform: 'translateX(-50%)',
         }}
       />

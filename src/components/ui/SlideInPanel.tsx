@@ -40,7 +40,7 @@ export default function SlideInPanel({
           >
             {/* Header */}
             <div className='flex items-center justify-between p-4 border-b border-border'>
-              <h2 className='text-base font-semibold text-foreground'>
+              <h2 className='text-md font-semibold text-foreground'>
                 {title ?? 'Settings'}
               </h2>
               <button

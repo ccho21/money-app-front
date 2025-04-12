@@ -5,18 +5,17 @@ import { CategoryListItem } from './CategoryListItem';
 import Panel from '@/components/ui/Panel';
 import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
-import { StatsByBudget } from '@/features/stats/types';
+import { StatsByBudget, StatsByBudgetResponse } from '@/features/stats/types';
+import { formatCurrency } from '@/lib/utils';
 
 interface BudgetViewProps {
   transactionType: CategoryType;
-  totalRemaining: number;
-  data: StatsByBudget[];
+  budgetResponse: StatsByBudgetResponse;
 }
 
 export default function BudgetView({
   transactionType,
-  totalRemaining,
-  data,
+  budgetResponse,
 }: BudgetViewProps) {
   const router = useRouter();
 
@@ -28,8 +27,8 @@ export default function BudgetView({
             <p className='text-xs text-muted'>
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
-            <p className='text-base font-semibold text-foreground mt-0.5'>
-              {totalRemaining.toLocaleString()}원
+            <p className='text-md font-semibold text-foreground mt-0.5'>
+              {formatCurrency(budgetResponse.totalRemaining)}
             </p>
           </div>
 
@@ -46,15 +45,16 @@ export default function BudgetView({
       </Panel>
 
       <Panel>
-        {data.map((item) => (
+        {budgetResponse.data.map((item) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
-            percentage={item.rate}
+            rate={item.rate}
             amount={item.budget}
             color={item.color}
+            startDate={budgetResponse.startDate}
+            endDate={budgetResponse.endDate}
             onClick={() => router.push(`/stats/budget/${item.categoryId}`)}
-            variant='with-progress-a'
           />
         ))}
       </Panel>
