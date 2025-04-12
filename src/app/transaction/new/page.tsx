@@ -11,26 +11,28 @@ import { useSearchParams } from 'next/navigation';
 import { parse } from 'date-fns';
 
 export default function TransactionNewPage() {
-  const dateParam = useSearchParams().get('date');
+  const searchParams = useSearchParams();
+  const dateParam = searchParams.get('date');
 
   const type = useTransactionFormStore((s) => s.state.type);
-  const reset = useTransactionFormStore((s) => s.actions.reset);
-  const {
-    actions: { setField },
-  } = useTransactionFormStore();
+  const { init, setField } = useTransactionFormStore((s) => s.actions);
 
   useEffect(() => {
-    reset();
+    // ✅ 상태 초기화
+    init();
+
+    // ✅ 날짜 파라미터 적용
     if (dateParam) {
       const parsed = parse(dateParam, 'yyyy-MM-dd', new Date()).toISOString();
       setField('date', parsed);
     }
-    const run = async () => {
-      await fetchAccounts();
-      await fetchCategories();
-    };
-    run();
-  }, [setField, reset, dateParam]);
+
+    // ✅ 병렬 fetch
+    Promise.all([fetchAccounts(), fetchCategories()]);
+  }, [dateParam, init, setField]);
+
+  // ✅ 초기 상태 처리
+  if (!type) return <p className='text-center text-muted py-10'>Loading...</p>;
 
   if (type === 'income') return <IncomeForm mode='new' />;
   if (type === 'transfer') return <TransferForm mode='new' />;

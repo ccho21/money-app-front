@@ -14,6 +14,7 @@ interface CategoryListItemData {
   balancePayable?: number;
   outstandingBalance?: number;
   isMatched?: boolean;
+  showProgress: boolean;
 }
 
 export function CategoryListItem({
@@ -30,11 +31,11 @@ export function CategoryListItem({
   isMatched = true,
   onClick,
   className,
+  showProgress = true,
 }: CategoryListItemData & {
   onClick: () => void;
   className?: string;
 }) {
-  const showProgress = rate !== undefined && startDate && endDate;
   const showCardInfo =
     balancePayable !== undefined || outstandingBalance !== undefined;
 
@@ -64,7 +65,7 @@ export function CategoryListItem({
 
       {showProgress && (
         <>
-          <Progress value={rate} startDate={startDate} endDate={endDate} />
+          <Progress value={rate!} startDate={startDate} endDate={endDate} />
           <div className='flex justify-between text-xs text-muted mt-1'>
             <span className='text-primary'>{formatCurrency(spent ?? 0)}</span>
             <span>{rate?.toFixed(1)}%</span>

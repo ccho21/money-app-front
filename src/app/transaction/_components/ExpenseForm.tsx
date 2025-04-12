@@ -67,8 +67,7 @@ export default function ExpenseForm({ mode, id }: Props) {
       alert(err instanceof Error ? err.message : '삭제 실패');
     }
   };
-  
-  console.log('### dirty', dirty);
+
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
       <Input

@@ -6,7 +6,6 @@ import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import { CategoryListItem } from './CategoryListItem';
 import CategoryPieChart from '@/components/ui/PieChart';
-import Divider from '@/components/ui/Divider';
 
 interface CategoryChartData {
   name: string;
@@ -17,6 +16,8 @@ interface CategoryChartData {
 
 interface Props {
   isLoading: boolean;
+  startDate?: string;
+  endDate?: string;
   data: {
     categoryId: string;
     categoryName: string;
@@ -27,15 +28,23 @@ interface Props {
   onItemClick: (categoryId: string) => void;
 }
 
-export default function StatsView({ isLoading, data, onItemClick }: Props) {
+export default function StatsView({
+  isLoading,
+  data,
+  startDate,
+  endDate,
+  onItemClick,
+}: Props) {
   const categoryChart: CategoryChartData[] = useMemo(() => {
     return (
-      data.map((category) => ({
-        name: category.categoryName,
-        value: category.amount,
-        rate: category.rate,
-        color: category.color,
-      })) || []
+      data
+        .filter((c) => c.amount > 0)
+        .map((category) => ({
+          name: category.categoryName,
+          value: category.amount,
+          rate: category.rate,
+          color: category.color,
+        })) || []
     );
   }, [data]);
 
@@ -49,7 +58,7 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
 
   return (
     <div className=''>
-      <Panel >
+      <Panel>
         <CategoryPieChart data={categoryChart} />
       </Panel>
       <Panel>
@@ -58,9 +67,12 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
             key={item.categoryId}
             name={item.categoryName}
             rate={item.rate}
+            startDate={startDate}
+            endDate={endDate}
             amount={item.amount}
             onClick={() => onItemClick(item.categoryId)}
             color={item.color}
+            showProgress={item.amount > 0}
           />
         ))}
       </Panel>

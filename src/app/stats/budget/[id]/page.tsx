@@ -2,23 +2,25 @@
 
 import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { parseISO, startOfDay } from 'date-fns';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { useUIStore } from '@/stores/useUIStore';
+
 import {
   fetchStatsBudgetByCategoryId,
   fetchStatsSummaryByBudget,
 } from '@/services/statsService';
 
 import { CategoryType } from '@/features/category/types';
-import SummaryBox from '@/components/ui/SummaryBox';
-import EmptyMessage from '@/components/ui/EmptyMessage';
-import TransactionGroup from '@/components/common/TransactionGroup';
-import Panel from '@/components/ui/Panel';
-import ComposedChart from '@/components/ui/ComposedChart';
-import { useUIStore } from '@/stores/useUIStore';
 import { TransactionSummary } from '@/features/transaction/types';
-import { parseISO, startOfDay } from 'date-fns';
+
+import Panel from '@/components/ui/Panel';
+import SummaryBox from '@/components/ui/SummaryBox';
+import ComposedChart from '@/components/ui/ComposedChart';
+import TransactionGroup from '@/components/common/TransactionGroup';
+import EmptyMessage from '@/components/ui/EmptyMessage';
 
 export default function StatsBudgetDetailPage() {
   const categoryId = useParams().id;
@@ -33,6 +35,8 @@ export default function StatsBudgetDetailPage() {
 
   const { query, getDateRangeKey, setQuery } = useFilterStore();
   const { date, range, transactionType } = query;
+
+  const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
 
   const chartData = useMemo(() => {
     if (!statsSummaryBudgetResposne) return [];
@@ -56,13 +60,14 @@ export default function StatsBudgetDetailPage() {
   useEffect(() => {
     if (!categoryId) return;
 
-    const [startDate, endDate] = getDateRangeKey().split('_');
+    const [startDate, endDate] = rangeKey.split('_');
     const params = {
       startDate,
       endDate,
       type: transactionType as CategoryType,
       groupBy: range,
     };
+
     Promise.all([
       fetchStatsSummaryByBudget(String(categoryId), params),
       fetchStatsBudgetByCategoryId(String(categoryId), {
@@ -70,7 +75,7 @@ export default function StatsBudgetDetailPage() {
         groupBy: 'daily',
       }),
     ]);
-  }, [categoryId, transactionType, range, getDateRangeKey, date]);
+  }, [categoryId, rangeKey, transactionType, range, date]);
 
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
@@ -78,7 +83,7 @@ export default function StatsBudgetDetailPage() {
 
   return (
     <div>
-      {/* 요약 패널 */}
+      {/* 요약 정보 */}
       <Panel>
         <SummaryBox
           items={[
@@ -106,23 +111,22 @@ export default function StatsBudgetDetailPage() {
         />
       </Panel>
 
-      {/* 차트 영역 */}
-      <Panel>
-        {chartData.length > 0 && (
+      {/* 바 차트 */}
+      {chartData.length > 0 && (
+        <Panel>
           <div className='w-full h-36'>
             <ComposedChart
               data={chartData}
-              onSelect={(start) => {
-                // ✅ 클릭한 날짜를 기준으로 범위 변경
-                setQuery({ date: startOfDay(parseISO(start)) });
+              onSelect={(startDate) => {
+                setQuery({ date: startOfDay(parseISO(startDate)) });
               }}
             />
           </div>
-        )}
-      </Panel>
+        </Panel>
+      )}
 
-      {/* 거래 그룹 리스트 */}
-      {budgetDetailResponse && budgetDetailResponse.data.length ? (
+      {/* 거래 리스트 */}
+      {budgetDetailResponse?.data.length ? (
         <Panel>
           <div className='space-y-4'>
             {budgetDetailResponse.data.map((group: TransactionSummary, i) => (

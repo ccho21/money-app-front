@@ -20,23 +20,24 @@ export default function TransactionEditPage() {
 
   const {
     state: { type },
-    actions: { setAllFields },
+    actions: { init },
   } = useTransactionFormStore();
 
   useEffect(() => {
     const run = async () => {
       if (!id) return;
 
-      await fetchAccounts();
-      await fetchCategories();
+      try {
+        await Promise.all([fetchAccounts(), fetchCategories()]);
 
-      const cachedTx = useTransactionStore.getState().selectedTransaction;
-      const tx =
-        cachedTx && cachedTx.id === id
-          ? cachedTx
-          : await fetchTransactionById(id.toString());
+        const cachedTx = useTransactionStore.getState().selectedTransaction;
+        const tx =
+          cachedTx && cachedTx.id === id
+            ? cachedTx
+            : await fetchTransactionById(id.toString());
 
-      if (tx) {
+        if (!tx) throw new Error();
+
         const preset = {
           type: tx.type,
           amount: String(tx.amount),
@@ -49,17 +50,16 @@ export default function TransactionEditPage() {
           to: tx.toAccountId ?? '',
         };
 
-        // ✅ 상태 초기화 및 동기화
-        setAllFields(preset);
-        useTransactionFormStore.getState().actions.init(preset);
-      } else {
-        alert('해당 거래를 불러올 수 없습니다.');
+        // ✅ 초기 상태 및 모드 설정
+        init(preset);
+      } catch (err) {
+        alert('해당 거래를 불러올 수 없습니다.' + err);
         router.push('/dashboard/daily');
       }
     };
 
     run();
-  }, [id, setAllFields, router]);
+  }, [id, init, router]);
 
   // ✅ 로딩 상태
   if (!type) {

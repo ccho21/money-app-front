@@ -5,7 +5,7 @@ import { CategoryListItem } from './CategoryListItem';
 import Panel from '@/components/ui/Panel';
 import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
-import { StatsByBudget, StatsByBudgetResponse } from '@/features/stats/types';
+import { StatsByBudgetResponse } from '@/features/stats/types';
 import { formatCurrency } from '@/lib/utils';
 
 interface BudgetViewProps {
@@ -50,10 +50,11 @@ export default function BudgetView({
             key={item.categoryId}
             name={item.categoryName}
             rate={item.rate}
-            amount={item.budget}
+            amount={item.categoryType === 'expense' ? item.spent : item.income}
             color={item.color}
             startDate={budgetResponse.startDate}
             endDate={budgetResponse.endDate}
+            showProgress={item.hasBudget}
             onClick={() => router.push(`/stats/budget/${item.categoryId}`)}
           />
         ))}

@@ -27,6 +27,7 @@ export interface StatsByBudget {
   budgetId?: string; // ✅ budgetCategoryId → budgetId로 이름 변경 (optional)
   budget: number; // ✅ 예산 설정된 금액 (0일 수도 있음)
   spent: number; // ✅ 실제 지출 금액
+  income: number; // ✅ 실제 수입 금액
   remaining: number; // ✅ 예산 - 지출
   rate: number; // ✅ 사용률: (spent / budget) * 100 (예산 없으면 0)
 
@@ -37,6 +38,7 @@ export interface StatsByBudget {
 export interface StatsByBudgetResponse {
   totalBudget: number;
   totalSpent: number;
+  totalIncome: number;
   totalRemaining: number;
   startDate: string;
   endDate: string;

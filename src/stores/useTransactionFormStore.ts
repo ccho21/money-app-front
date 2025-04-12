@@ -5,7 +5,7 @@ import {
   TransactionFormFields,
 } from '@/features/transaction/types';
 
-type TransactionType = 'income' | 'expense' | 'transfer';
+type Mode = 'new' | 'edit';
 
 type State = TransactionFormFields;
 type Actions = {
@@ -20,6 +20,7 @@ type Actions = {
 interface TransactionFormStore {
   state: State;
   initialState: State;
+  mode: Mode;
   actions: Actions;
 }
 
@@ -37,9 +38,9 @@ const defaultState: State = {
   to: '',
 };
 
-function deepEqual(a: Record<string, any>, b: Record<string, any>) {
-  const aKeys = Object.keys(a);
-  const bKeys = Object.keys(b);
+function deepEqual<T extends object>(a: T, b: T): boolean {
+  const aKeys = Object.keys(a) as (keyof T)[];
+  const bKeys = Object.keys(b) as (keyof T)[];
   if (aKeys.length !== bKeys.length) return false;
 
   for (const key of aKeys) {
@@ -50,7 +51,7 @@ function deepEqual(a: Record<string, any>, b: Record<string, any>) {
     const isObjB = valB !== null && typeof valB === 'object';
 
     if (isObjA && isObjB) {
-      if (!deepEqual(valA, valB)) return false;
+      if (!deepEqual(valA as T, valB as T)) return false;
     } else if (valA !== valB) {
       return false;
     }
@@ -63,6 +64,7 @@ export const useTransactionFormStore = create<TransactionFormStore>()(
     (set, get) => ({
       state: { ...defaultState },
       initialState: { ...defaultState },
+      mode: 'new',
 
       actions: {
         setField: (key, value) =>
@@ -94,26 +96,34 @@ export const useTransactionFormStore = create<TransactionFormStore>()(
           const initialized = {
             ...defaultState,
             ...preset,
-            amount: String(preset.amount ?? ''),
+            amount: String(preset.amount ?? '0'),
           };
+
+          const isEdit = Object.keys(preset).length > 0;
+
           set(
             () => ({
               state: initialized,
               initialState: initialized,
+              mode: isEdit ? 'edit' : 'new',
             }),
             false,
             'transactionForm/init'
           );
         },
 
-        reset: () =>
+        reset: () => {
+          const { mode, initialState } = get();
+          const fallback = { ...defaultState };
+
           set(
-            (s) => ({
-              state: { ...s.initialState },
+            () => ({
+              state: mode === 'edit' ? { ...initialState } : fallback,
             }),
             false,
             'transactionForm/reset'
-          ),
+          );
+        },
 
         getFormData: () => {
           const { state } = get();

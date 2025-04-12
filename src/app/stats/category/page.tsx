@@ -9,7 +9,6 @@ import { fetchStatsByCatgory } from '@/services/statsService';
 import type { CategoryType } from '@/features/category/types';
 import StatsView from '../_components/StatsView';
 import { DateFilterParams } from '@/features/shared/types';
-import { useUIStore } from '@/stores/useUIStore';
 
 export default function StatsPage() {
   const router = useRouter();
@@ -19,11 +18,11 @@ export default function StatsPage() {
   } = useStatsStore();
 
   const { query, getDateRangeKey } = useFilterStore();
-  const { transactionType, range, date } = query;
+  const { transactionType } = query;
 
-  const dateRangeKey = useMemo(() => getDateRangeKey(), [range, date]);
+  const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
   const lastFetchKey = useRef<string | null>(null);
-
+  const [start, end] = dateRangeKey.split('_');
   useEffect(() => {
     const currentKey = `${transactionType}_${dateRangeKey}`;
     if (currentKey === lastFetchKey.current) return;
@@ -43,6 +42,8 @@ export default function StatsPage() {
     <StatsView
       isLoading={isLoading}
       data={categoryResponse?.data ?? []}
+      startDate={start}
+      endDate={end}
       onItemClick={(id: string) => router.push(`/stats/category/${id}`)}
     />
   );
