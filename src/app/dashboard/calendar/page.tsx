@@ -14,8 +14,8 @@ import {
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
 import { formatDate } from '@/lib/date.util';
-import CalendarWithTransactions from './_components/CalendarWithTransactions';
-import TransactionDetailView from './_components/TransactionDetailView';
+import CalendarWithTransactions from '../_components/CalendarWithTransactions';
+import TransactionDetailView from '../_components/TransactionDetailView';
 import Panel from '@/components/ui/Panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';

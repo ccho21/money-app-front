@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAccountStore } from '@/stores/useAccountStore';
-import SummaryBox from '@/components/ui/SummaryBox';
+import SummaryBox from '@/components/stats/SummaryBox';
 import { fetchAccountDashboard } from '@/features/account/hooks';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';

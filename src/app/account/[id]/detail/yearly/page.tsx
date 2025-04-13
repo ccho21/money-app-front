@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { fetchTransactionSummary } from '@/features/transaction/hooks';
 import { DateFilterParams } from '@/features/shared/types';
-import YearlyView from '@/components/common/YearlyView';
+import YearlyView from '@/components/dashboard/YearlyView';
 
 export default function YearlyPage() {
   const { transactionSummaryResponse, isLoading } = useTransactionStore(

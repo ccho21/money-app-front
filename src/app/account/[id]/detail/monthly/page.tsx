@@ -14,7 +14,7 @@ import {
 
 import { TransactionSummary } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
-import MonthlyView from '@/components/common/MonthlyView';
+import MonthlyView from '@/components/dashboard/MonthlyView';
 
 export default function AccountMonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);

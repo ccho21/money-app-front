@@ -16,7 +16,7 @@ import {
 } from '@/features/stats/hooks';
 
 import Panel from '@/components/ui/Panel';
-import SummaryBox from '@/components/ui/SummaryBox';
+import SummaryBox from '@/components/stats/SummaryBox';
 import StatComposedChart from '@/components/ui/ComposedChart';
 import TransactionGroup from '@/components/common/TransactionGroup';
 import EmptyMessage from '@/components/ui/EmptyMessage';

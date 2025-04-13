@@ -19,7 +19,7 @@ import { useUserSettingStore } from '@/stores/useUserSettingStore';
 import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
 import { usePanelStore } from '@/stores/usePanelStore';
 import OptionSelectorModal from '@/components/ui/OptionSelectorModal';
-import SlideInPanelRenderer from '@/components/common/SlideInPanelRenderer';
+import SlideInPanelRenderer from '@/app/more/_components/SlideInPanelRenderer';
 
 const Section = ({
   title,

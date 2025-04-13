@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import '@/app/globals.css';
 import '@/styles/theme.css';
 import useAuthRedirectSync from '@/features/auth/useAuthRedirectSync';
-import AuthGuard from '@/components/AuthGuard';
+import AuthGuard from '@/components/auth/AuthGuard';
 import { StrictMode } from 'react';
 import RouteTracker from '@/providers/RouteTracker';
 import { ThemeProvider } from '../providers/ThemeProvider';

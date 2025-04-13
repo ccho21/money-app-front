@@ -1,6 +1,6 @@
 'use client';
 
-import SummaryBox from '@/components/ui/SummaryBox';
+import SummaryBox from '@/components/stats/SummaryBox';
 import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import YearlyItem from './YearlyItem';

@@ -7,15 +7,15 @@ import { useAccountStore } from '@/stores/useAccountStore';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 
-import SummaryBox from '@/components/ui/SummaryBox';
-import BudgetBox from './_components/BudgetBox';
+import SummaryBox from '@/components/stats/SummaryBox';
+import BudgetBox from '../../../components/stats/BudgetBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
 
 import { fetchAccountSummary } from '@/features/account/hooks';
 import { fetchBudgetSummary } from '@/features/budget/hooks';
 import { DateFilterParams } from '@/features/shared/types';
-import AccountBox from './_components/AccountBox';
+import AccountBox from '../../../components/stats/AccountBox';
 import Divider from '@/components/ui/Divider';
 import { useRouter } from 'next/navigation';
 

@@ -11,7 +11,7 @@ import { useUIStore } from '@/stores/useUIStore';
 import { CategoryType } from '@/features/category/types';
 
 import Panel from '@/components/ui/Panel';
-import SummaryBox from '@/components/ui/SummaryBox';
+import SummaryBox from '@/components/stats/SummaryBox';
 import ComposedChart from '@/components/ui/ComposedChart';
 import TransactionGroup from '@/components/common/TransactionGroup';
 import EmptyMessage from '@/components/ui/EmptyMessage';

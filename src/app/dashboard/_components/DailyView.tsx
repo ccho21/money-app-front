@@ -2,10 +2,10 @@ import {
   Transaction,
   TransactionSummaryResponse,
 } from '@/features/transaction/types';
-import SummaryBox from '@/components/ui/SummaryBox';
+import SummaryBox from '@/components/stats/SummaryBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
-import TransactionGroup from './TransactionGroup';
+import TransactionGroup from '../../../components/common/TransactionGroup';
 import { SummaryItem } from '@/features/shared/types';
 
 interface DailyViewProps {
