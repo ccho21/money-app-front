@@ -18,7 +18,7 @@ import {
 import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
 import StatComposedChart from '@/components/ui/ComposedChart';
-import TransactionGroup from '@/components/common/TransactionGroup';
+import TransactionGroup from '@/components/transaction/TransactionGroup';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
 export default function StatsCategoryDetailPage() {

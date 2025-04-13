@@ -13,7 +13,7 @@ import { CategoryType } from '@/features/category/types';
 import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
 import ComposedChart from '@/components/ui/ComposedChart';
-import TransactionGroup from '@/components/common/TransactionGroup';
+import TransactionGroup from '@/components/transaction/TransactionGroup';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import {
   fetchStatsNoteDetail,

@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { BudgetCategoryForm } from '../../_components/BudgetCategoryForm';
-import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
+import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
+import { useBudgetCategoryFormStore } from '@/app/budget/_components/useBudgetCategoryFormStore';
 
 export default function NewBudgetCategoryPage() {
   const { categoryId } = useParams();

@@ -6,11 +6,11 @@ import { useParams, useRouter } from 'next/navigation';
 import DateNavigator from '@/components/ui/DateNavigator';
 import { fetchBudgetCategoriesByCategoryId } from '@/features/budget/hooks';
 import { useBudgetStore } from '@/stores/useBudgetStore';
-import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 
 import { cn } from '@/lib/utils';
 import type { DateFilterParams } from '@/features/shared/types';
+import { useBudgetCategoryFormStore } from '@/app/budget/_components/useBudgetCategoryFormStore';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();

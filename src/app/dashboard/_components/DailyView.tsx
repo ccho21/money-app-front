@@ -5,7 +5,7 @@ import {
 import SummaryBox from '@/components/stats/SummaryBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
-import TransactionGroup from '../../../components/common/TransactionGroup';
+import TransactionGroup from '../../../components/transaction/TransactionGroup';
 import { SummaryItem } from '@/features/shared/types';
 
 interface DailyViewProps {

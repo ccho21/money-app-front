@@ -1,9 +1,9 @@
+import { BudgetCategory } from '@/features/budget/types';
 import { RangeOption } from '@/features/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore'; // ✅ 바뀐 부분
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { BudgetCategory } from '../../../../features/budget/types';
 
 interface BudgetCategoryFormState {
   categoryId: string;
