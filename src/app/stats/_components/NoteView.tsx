@@ -5,13 +5,13 @@ import { useEffect, useState, useMemo } from 'react';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 
-import { formatCurrency } from '@/lib/utils';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
 import { CategoryType } from '@/features/category/types';
 import { SortDirection, SortKey } from '@/features/stats/types';
 import { fetchStatsByNote } from '@/services/statsService';
 import { useRouter } from 'next/navigation';
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
 export default function NoteView() {
   const router = useRouter();
@@ -101,7 +101,7 @@ export default function NoteView() {
           }`}
         >
           {transactionType === 'expense' ? 'Exp.' : 'Inc.'}{' '}
-          {formatCurrency(totalAmount)}
+          <CurrencyDisplay amount={totalAmount} />
         </span>
       </div>
 
@@ -139,11 +139,13 @@ export default function NoteView() {
               <td className='py-2'>{item.note || '-'}</td>
               <td className='py-2 text-center'>{item.count}</td>
               <td className='py-2 text-right'>
-                {formatCurrency(
-                  transactionType === 'income'
-                    ? item.totalIncome
-                    : item.totalExpense
-                )}
+                <CurrencyDisplay
+                  amount={
+                    transactionType === 'income'
+                      ? item.totalIncome
+                      : item.totalExpense
+                  }
+                />
               </td>
             </tr>
           ))}

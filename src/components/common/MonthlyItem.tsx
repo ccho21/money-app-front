@@ -5,8 +5,9 @@ import { useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 
 import { TransactionSummary } from '@/features/transaction/types';
-import { formatCurrency } from '@/lib/utils';
+
 import { useFilterStore } from '@/stores/useFilterStore';
+import CurrencyDisplay from '../ui/CurrencyDisplay';
 
 interface MonthlyItemProps {
   date: string;
@@ -77,11 +78,15 @@ export default function MonthlyItem({
         {/* 우측: 수입 / 지출 / 합계 */}
         <div className='text-right space-y-1'>
           <div className='flex justify-end gap-2 text-sm font-medium'>
-            <span className='text-info'>{formatCurrency(income ?? 0)}</span>
-            <span className='text-error'>{formatCurrency(expense ?? 0)}</span>
+            <span className='text-info'>
+              <CurrencyDisplay amount={income ?? 0} />
+            </span>
+            <span className='text-error'>
+              <CurrencyDisplay amount={expense ?? 0} />
+            </span>
           </div>
           <div className='text-xs text-muted'>
-            Total {formatCurrency(total ?? 0)}
+            Total <CurrencyDisplay amount={total ?? 0} />
           </div>
         </div>
       </button>
@@ -108,12 +113,13 @@ export default function MonthlyItem({
                 <div className='flex gap-2 text-sm text-right font-medium'>
                   {week.incomeTotal > 0 && (
                     <span className='text-info'>
-                      {formatCurrency(week.incomeTotal ?? 0)}
+                      <CurrencyDisplay amount={week.incomeTotal ?? 0} />
                     </span>
                   )}
                   {week.expenseTotal > 0 && (
                     <span className='text-error'>
-                      {formatCurrency(week.expenseTotal ?? 0)}
+                      {' '}
+                      <CurrencyDisplay amount={week.expenseTotal ?? 0} />
                     </span>
                   )}
                 </div>

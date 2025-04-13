@@ -44,7 +44,7 @@ export default function Selector<T>({
         {label}
       </label>
 
-      {/* Display Input */}
+      {/* Input */}
       <div className='col-span-10'>
         <input
           readOnly
@@ -57,18 +57,19 @@ export default function Selector<T>({
       {/* Bottom Sheet */}
       {open && (
         <div
-          className='fixed left-0 right-0 bottom-0 z-40 rounded-t-md border-t shadow-md min-h-[40vh]'
+          className='fixed left-0 right-0 bottom-0 z-40 min-h-[40vh] border-t shadow-md'
           style={{
             backgroundColor: 'var(--color-surface)',
             borderColor: 'var(--color-border)',
+            paddingBottom: '10vh', // safe area
           }}
         >
           {/* Header */}
           <div
-            className='flex justify-between items-center px-4 py-3 text-sm font-medium'
+            className='flex justify-between items-center px-4 py-3 text-sm font-medium border-b'
             style={{
-              backgroundColor: 'var(--color-surface)',
-              borderBottom: '1px solid var(--color-border)',
+              backgroundColor: 'var(--color-border)', // ✅ 더 뚜렷한 헤더 구분
+              borderColor: 'var(--color-border)',
               color: 'var(--color-text)',
             }}
           >
@@ -85,13 +86,11 @@ export default function Selector<T>({
             </div>
           </div>
 
-          {/* Options Grid */}
-          <div
-            className='grid grid-cols-2 sm:grid-cols-3 gap-2 px-4 py-4'
-            style={{ backgroundColor: 'var(--color-background)' }}
-          >
+          {/* Options */}
+          <div className='flex flex-col gap-1 px-4 py-4'>
             {options.map((item, idx) => {
               const isSelected = getOptionValue(item) === value;
+
               return (
                 <button
                   key={idx}
@@ -99,20 +98,19 @@ export default function Selector<T>({
                     onChange(getOptionValue(item));
                     setOpen(false);
                   }}
-                  className='flex items-center justify-center gap-2 rounded-xl p-3 text-sm border transition'
+                  className='flex items-center justify-start gap-2 px-4 py-2 text-sm border transition-colors'
                   style={{
-                    backgroundColor: isSelected
-                      ? 'var(--color-primary)'
-                      : 'var(--color-surface)',
-                    color: isSelected
-                      ? 'var(--color-on-primary)'
-                      : 'var(--color-text)',
                     borderColor: isSelected
                       ? 'var(--color-primary)'
                       : 'var(--color-border)',
-                    boxShadow: isSelected
-                      ? '0 2px 6px rgba(0,0,0,0.1)'
-                      : undefined,
+                    backgroundColor: isSelected
+                      ? 'var(--color-surface)'
+                      : 'transparent',
+                    fontWeight: isSelected ? 600 : 400,
+                    borderRadius: '2px', // ✅ 거의 직각
+                    color: isSelected
+                      ? 'var(--color-text)'
+                      : 'var(--color-muted)',
                   }}
                 >
                   {getOptionIcon?.(item)}

@@ -1,5 +1,6 @@
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 import Progress from '@/components/ui/Progress';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface CategoryListItemData {
   name: string;
@@ -59,7 +60,7 @@ export function CategoryListItem({
           <span className='text-sm font-medium text-foreground'>{name}</span>
         </div>
         <div className='text-sm font-semibold text-muted-foreground'>
-          {formatCurrency(amount)}
+          <CurrencyDisplay amount={amount} />
         </div>
       </div>
 
@@ -67,9 +68,14 @@ export function CategoryListItem({
         <>
           <Progress value={rate!} startDate={startDate} endDate={endDate} />
           <div className='flex justify-between text-xs text-muted mt-1'>
-            <span className='text-primary'>{formatCurrency(spent ?? 0)}</span>
+            <span className='text-primary'>
+              <CurrencyDisplay amount={spent ?? 0} />
+            </span>
+
             <span>{rate?.toFixed(1)}%</span>
-            <span>{formatCurrency((budget ?? 0) - (spent ?? 0))}</span>
+            <span>
+              <CurrencyDisplay amount={(budget ?? 0) - (spent ?? 0)} />
+            </span>
           </div>
         </>
       )}
@@ -79,13 +85,17 @@ export function CategoryListItem({
           {balancePayable !== undefined && (
             <div className='flex justify-between'>
               <span>Balance Payable</span>
-              <span>{formatCurrency(balancePayable)}</span>
+              <span>
+                <CurrencyDisplay amount={balancePayable} />
+              </span>
             </div>
           )}
           {outstandingBalance !== undefined && (
             <div className='flex justify-between'>
               <span>Outstanding Balance</span>
-              <span>{formatCurrency(outstandingBalance)}</span>
+              <span>
+                <CurrencyDisplay amount={outstandingBalance} />
+              </span>
             </div>
           )}
         </div>

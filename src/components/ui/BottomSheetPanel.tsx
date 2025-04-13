@@ -31,7 +31,7 @@ export default function BottomSheetPanel({
 
           {/* ✅ Slide-Up Panel */}
           <motion.div
-            className='fixed bottom-0 left-0 right-0 z-50 bg-surface dark:bg-surface rounded-t-xl shadow-xl'
+            className='fixed bottom-0 left-0 right-0 z-50 bg-surface dark:bg-surface rounded-t-md shadow-md'
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -52,9 +52,7 @@ export default function BottomSheetPanel({
             </div>
 
             {/* ✅ Content */}
-            <div className='max-h-[70vh] overflow-y-auto py-3'>
-              {children}
-            </div>
+            <div className='max-h-[70vh] overflow-y-auto py-3'>{children}</div>
           </motion.div>
         </>
       )}

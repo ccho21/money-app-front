@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
 import { startOfDay } from 'date-fns';
 import { useEffect, useState } from 'react';
+import Divider from '@/components/ui/Divider';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -118,16 +119,19 @@ export default function ExpenseForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button
-        onClick={handleSubmit}
-        className='w-full mt-6'
-        disabled={!dirty} // 폼 변경이 없으면 버튼 비활성화
-      >
+      <Button onClick={handleSubmit} className='w-full' disabled={!dirty}>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
 
+      <Divider></Divider>
+
       {mode === 'edit' && !dirty && id && (
-        <Button onClick={() => handleDelete(id)} className='w-full mt-4'>
+        <Button
+          color='danger'
+          variant='outline'
+          onClick={() => handleDelete(id)}
+          className='w-full mt-4'
+        >
           Delete
         </Button>
       )}

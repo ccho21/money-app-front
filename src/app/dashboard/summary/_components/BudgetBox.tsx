@@ -1,8 +1,9 @@
 'use client';
 
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 import Progress from '@/components/ui/Progress';
 import { BudgetSummaryResponse } from '@/features/budget/types';
-import { formatCurrency } from '@/lib/utils';
+
 import { ChartBar } from 'lucide-react';
 
 interface Props {
@@ -21,7 +22,7 @@ export default function BudgetBox({ item, handleClick }: Props) {
         <div className='col-span-3'>
           <div className='text-xs text-muted mb-1'>Total Budget</div>
           <div className='text-md font-semibold'>
-            {formatCurrency(item.totalBudget)}
+            <CurrencyDisplay amount={item.totalBudget} />
           </div>
         </div>
 
@@ -34,11 +35,11 @@ export default function BudgetBox({ item, handleClick }: Props) {
           />
           <div className='flex justify-between text-xs text-muted mb-1'>
             <span className='text-primary'>
-              {formatCurrency(item.totalExpense)}
+              <CurrencyDisplay amount={item.totalExpense} />
             </span>
             <span>{item.rate}%</span>
             <span className='text-muted'>
-              {formatCurrency(item.totalBudget - item.totalExpense)}
+              <CurrencyDisplay amount={item.totalBudget - item.totalExpense} />
             </span>
           </div>
         </div>

@@ -6,7 +6,8 @@ import Panel from '@/components/ui/Panel';
 import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
 import { StatsByBudgetResponse } from '@/features/stats/types';
-import { formatCurrency } from '@/lib/utils';
+
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
 interface BudgetViewProps {
   transactionType: CategoryType;
@@ -30,7 +31,7 @@ export default function BudgetView({
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
             <p className='text-md font-semibold text-foreground mt-0.5'>
-              {formatCurrency(budgetResponse.totalRemaining)}
+              <CurrencyDisplay amount={budgetResponse.totalRemaining} />
             </p>
           </div>
 

@@ -1,6 +1,6 @@
 import { RangeOption } from '@/features/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
-import { useDateFilterStore } from '@/stores/useDateFilterStore';
+import { useFilterStore } from '@/stores/useFilterStore'; // ✅ 바뀐 부분
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { BudgetCategory } from '../../../../features/budget/types';
@@ -84,9 +84,7 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
         },
 
         syncWithDateFilter: () => {
-          const {
-            state: { date, range },
-          } = useDateFilterStore.getState();
+          const { date, range } = useFilterStore.getState().query;
           const dateRangeKey = getDateRangeKey(date, {
             unit: range,
             amount: 0,

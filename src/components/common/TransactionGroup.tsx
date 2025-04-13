@@ -1,11 +1,12 @@
 // 📄 src/components/common/TransactionGroup.tsx
 'use client';
 
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Transaction, TransactionSummary } from '@/features/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import TransactionItem from './TransactionItem';
+import CurrencyDisplay from '../ui/CurrencyDisplay';
 
 interface TransactionGroupProps {
   label: string;
@@ -71,11 +72,15 @@ export default function TransactionGroup({
             <div className='col-span-4 grid grid-cols-2 gap-1 justify-end text-sm font-medium text-right'>
               <span className='inline-flex items-center text-primary'>
                 <PlusIcon size={13} />
-                <span>{formatCurrency(incomeTotal)}</span>
+                <span>
+                  <CurrencyDisplay amount={incomeTotal} />
+                </span>
               </span>
               <span className='inline-flex items-center text-error text-right justify-end'>
                 <MinusIcon size={13} />
-                <span>{formatCurrency(expenseTotal)}</span>
+                <span>
+                  <CurrencyDisplay amount={expenseTotal} />
+                </span>
               </span>
             </div>
           </div>

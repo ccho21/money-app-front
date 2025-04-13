@@ -43,7 +43,7 @@ function TabMenuBase({
         const pillStyle = cn(
           'px-4 py-1 rounded-full border',
           isActive
-            ? 'text-foreground border-foreground font-semibold bg-muted/10'
+            ? 'text-foreground border-border font-semibold bg-muted/10'
             : 'text-muted border-transparent hover:bg-muted/5'
         );
         const underlineStyle = cn(

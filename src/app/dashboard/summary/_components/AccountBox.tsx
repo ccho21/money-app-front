@@ -1,7 +1,8 @@
 'use client';
 
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 import { AccountSummaryDTO } from '@/features/account/types';
-import { formatCurrency } from '@/lib/utils';
+
 import { Wallet } from 'lucide-react';
 import React from 'react';
 
@@ -11,19 +12,19 @@ interface AccountBoxProps {
 
 export default function AccountBox({ accounts }: AccountBoxProps) {
   return (
-    <div className="px-4 pt-4">
-      <h2 className="text-sm mb-2 flex items-center gap-1 text-muted">
-        <Wallet className="w-4 h-4 text-muted" /> Accounts
+    <div className='px-4 pt-4'>
+      <h2 className='text-sm mb-2 flex items-center gap-1 text-muted'>
+        <Wallet className='w-4 h-4 text-muted' /> Accounts
       </h2>
 
-      <div className="bg-surface rounded p-3 text-sm">
+      <div className='bg-surface rounded p-3 text-sm'>
         {accounts.map((acc) => (
           <div
             key={acc.accountId}
-            className="flex justify-between mb-1 text-foreground"
+            className='flex justify-between mb-1 text-foreground'
           >
-            <span className="text-muted">Exp. ({acc.accountName})</span>
-            <span>{formatCurrency(acc.expenseTotal)}</span>
+            <span className='text-muted'>Exp. ({acc.accountName})</span>
+            <CurrencyDisplay amount={acc.expenseTotal} />
           </div>
         ))}
       </div>

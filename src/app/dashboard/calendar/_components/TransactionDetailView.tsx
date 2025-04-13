@@ -9,7 +9,8 @@ import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter } from 'next/navigation';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import TransactionItem from '@/components/common/TransactionItem';
-import { formatCurrency } from '@/lib/utils';
+
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
 interface Props {
   open: boolean;
@@ -62,15 +63,18 @@ export default function TransactionDetailView({
             <span className='inline-flex items-center justify-end text-primary'>
               <PlusIcon size={13} />
               <span>
-                {formatCurrency(transactionSummary?.incomeTotal ?? 0)}
+                <CurrencyDisplay
+                  amount={transactionSummary?.incomeTotal ?? 0}
+                />
               </span>
             </span>
             <span className='inline-flex items-center justify-end text-error'>
               <MinusIcon size={13} />
               <span>
-                {formatCurrency(
-                  Math.abs(transactionSummary?.expenseTotal ?? 0)
-                )}
+                <CurrencyDisplay
+                  amount={Math.abs(transactionSummary?.expenseTotal ?? 0)}
+                />
+                {}
               </span>
             </span>
           </div>

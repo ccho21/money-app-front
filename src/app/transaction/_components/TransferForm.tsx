@@ -12,6 +12,7 @@ import { submitTransferTransaction } from '@/services/transactionService';
 import { startOfDay } from 'date-fns';
 import { deleteTransaction } from '@/services/transactionService';
 import { useEffect, useState } from 'react';
+import Divider from '@/components/ui/Divider';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -106,12 +107,19 @@ export default function TransferForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button onClick={handleSubmit} className='w-full mt-6'>
+      <Button onClick={handleSubmit} className='w-full'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
 
+      <Divider></Divider>
+
       {mode === 'edit' && !dirty && id && (
-        <Button onClick={() => handleDelete(id)} className='w-full mt-4'>
+        <Button
+          color='danger'
+          variant='outline'
+          onClick={() => handleDelete(id)}
+          className='w-full mt-4'
+        >
           Delete
         </Button>
       )}

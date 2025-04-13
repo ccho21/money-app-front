@@ -75,21 +75,38 @@ export default function StatsHeader() {
 
       {/* 하단 모달: 기간 옵션 선택 */}
       <BottomSheetPanel isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className='text-sm divide-y border-b border-border'>
-          {RANGE_OPTIONS.map((option) => (
-            <button
-              key={option}
-              className={cn(
-                'p-3 w-full text-left transition-all',
-                option === range
-                  ? 'bg-surface font-semibold text-foreground'
-                  : 'text-muted hover:text-foreground'
-              )}
-              onClick={() => handleRangeSelect(option)}
-            >
-              {option}
-            </button>
-          ))}
+        <div className='text-sm p-2 space-y-1 pb-[10vh]'>
+          {RANGE_OPTIONS.map((option) => {
+            const isSelected = option === range;
+
+            return (
+              <button
+                key={option}
+                onClick={() => handleRangeSelect(option)}
+                className={cn(
+                  'w-full flex items-center justify-between px-4 py-3 transition-colors text-left',
+                  'border border-border',
+                  isSelected
+                    ? 'bg-[color:var(--color-surface)] font-semibold text-foreground'
+                    : 'hover:bg-[color:var(--color-border)] text-muted hover:text-foreground',
+                  'rounded-[2px]' // ✅ 아주 최소한의 라운드
+                )}
+              >
+                <span>{option}</span>
+                {isSelected && (
+                  <svg
+                    className='w-4 h-4 text-primary'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    viewBox='0 0 24 24'
+                  >
+                    <path d='M5 13l4 4L19 7' />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
         </div>
       </BottomSheetPanel>
     </div>

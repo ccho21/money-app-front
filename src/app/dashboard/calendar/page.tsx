@@ -17,8 +17,9 @@ import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from './_components/CalendarWithTransactions';
 import TransactionDetailView from './_components/TransactionDetailView';
 import Panel from '@/components/ui/Panel';
-import { formatCurrency } from '@/lib/utils';
+
 import { useFilterStore } from '@/stores/useFilterStore';
+import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
 export default function CalendarPage() {
   const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
@@ -53,10 +54,14 @@ export default function CalendarPage() {
         item.date,
         <div className='text-[10px]'>
           {hasIncome && (
-            <div className='text-primary'>+{formatCurrency(item.income)}</div>
+            <div className='text-primary'>
+              +<CurrencyDisplay amount={item.income} />
+            </div>
           )}
           {hasExpense && (
-            <div className='text-error'>-{formatCurrency(item.expense)}</div>
+            <div className='text-error'>
+              -<CurrencyDisplay amount={item.expense} />
+            </div>
           )}
         </div>
       );

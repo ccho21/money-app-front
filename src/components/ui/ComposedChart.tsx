@@ -12,7 +12,8 @@ import {
   Cell,
   DotProps,
 } from 'recharts';
-import { formatCurrency } from '@/lib/utils';
+
+import CurrencyDisplay from './CurrencyDisplay';
 
 interface Props {
   data: {
@@ -36,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     <div className='rounded-md border border-border bg-surface px-3 py-2 shadow-sm text-sm'>
       <div className='text-muted mb-1'>{label}</div>
       <div className='text-foreground font-semibold'>
-        {formatCurrency(data.value)}
+        <CurrencyDisplay amount={data.value} />
       </div>
     </div>
   );

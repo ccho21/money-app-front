@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { getDateRangeKey } from '@/lib/date.util';
 import { fetchStatsByBudget } from '@/services/statsService';
 import type { CategoryType } from '@/features/category/types';
 
@@ -13,17 +12,14 @@ import { useRouter } from 'next/navigation';
 
 export default function BudgetPage() {
   const router = useRouter();
-  const { query } = useFilterStore();
+  const { query, getDateRangeKey } = useFilterStore();
   const { date, range, transactionType } = query;
 
   const {
     state: { budgetResponse, isLoading },
   } = useStatsStore();
 
-  const dateRangeKey = useMemo(
-    () => getDateRangeKey(date, { unit: range, amount: 0 }),
-    [date, range]
-  );
+  const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
   const handleClick = (categoryId: string, hasBudget: boolean) => {
     if (hasBudget) {
       router.push(`/stats/budget/${categoryId}`);
@@ -32,12 +28,7 @@ export default function BudgetPage() {
     }
   };
 
-  const lastFetchKey = useRef<string | null>(null);
-
   useEffect(() => {
-    const currentKey = `${transactionType}_${dateRangeKey}`;
-    if (currentKey === lastFetchKey.current) return;
-
     const [startDate, endDate] = dateRangeKey.split('_');
 
     fetchStatsByBudget({
@@ -45,9 +36,7 @@ export default function BudgetPage() {
       endDate,
       type: transactionType as CategoryType,
     });
-
-    lastFetchKey.current = currentKey;
-  }, [transactionType, dateRangeKey]);
+  }, [transactionType, dateRangeKey, date, range]);
 
   if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
   if (!budgetResponse) return <EmptyMessage />;
