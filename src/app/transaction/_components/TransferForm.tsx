@@ -1,18 +1,26 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+import { useAccountStore } from '@/stores/useAccountStore';
+import { useCategoryStore } from '@/stores/useCategoryStore';
+import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useUserSettingStore } from '@/stores/useUserSettingStore';
+
+import {
+  submitTransaction,
+  deleteTransaction,
+} from '@/services/transactionService';
+
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import Selector from '@/components/ui/Selector';
-import DatePicker from '@/components/ui/DatePicker';
 import { Textarea } from '@/components/ui/Textarea';
-import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
-import { useAccountStore } from '@/stores/useAccountStore';
-import { submitTransferTransaction } from '@/services/transactionService';
-import { startOfDay } from 'date-fns';
-import { deleteTransaction } from '@/services/transactionService';
-import { useEffect, useState } from 'react';
+import DatePicker from '@/components/ui/DatePicker';
 import Divider from '@/components/ui/Divider';
+
+import { startOfDay } from 'date-fns';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -21,8 +29,10 @@ type Props = {
 
 export default function TransferForm({ mode, id }: Props) {
   const router = useRouter();
+  const inputOrder = useUserSettingStore((s) => s.inputOrder);
+
   const {
-    state: { amount, from, to, note, description, date },
+    state: { amount, accountId, categoryId, note, description, date },
     actions: { setField, isDirty },
   } = useTransactionFormStore();
 
@@ -30,21 +40,25 @@ export default function TransferForm({ mode, id }: Props) {
     state: { accounts = [] },
   } = useAccountStore();
 
+  const {
+    state: { categories = [] },
+  } = useCategoryStore();
+
+  const selectedAccount = accounts.find((a) => a.id === accountId);
+  const selectedCategory = categories.find((c) => c.id === categoryId);
+
   const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     setDirty(isDirty());
-  }, [amount, from, to, note, description, date, isDirty]);
-
-  const fromAccount = accounts.find((a) => a.id === from);
-  const toAccount = accounts.find((a) => a.id === to);
+  }, [amount, accountId, categoryId, note, description, date, isDirty]);
 
   const handleSubmit = async () => {
     try {
-      await submitTransferTransaction(mode, id);
+      await submitTransaction(mode, id);
       router.push('/dashboard/daily');
     } catch (err) {
-      alert(err instanceof Error ? err.message : '이체 저장 실패');
+      alert(err instanceof Error ? err.message : '저장 실패');
     }
   };
 
@@ -58,42 +72,58 @@ export default function TransferForm({ mode, id }: Props) {
     }
   };
 
-  return (
-    <div className='space-y-5 px-4 pt-5 pb-10'>
+  // ✅ Amount ↔ Account 순서 리팩토링
+  const orderedInputs = useMemo(() => {
+    const amountInput = (
       <Input
+        key='amount'
         label='Amount'
-        placeholder='$ 0'
         value={amount}
         onChange={(e) => setField('amount', e.target.value)}
         type='number'
       />
+    );
 
+    const accountSelector = (
       <Selector
-        label='From Account'
-        value={fromAccount?.name ?? ''}
-        onChange={(val) => setField('from', val)}
+        key='account'
+        label='Account'
+        value={selectedAccount?.name ?? ''}
+        onChange={(val) => setField('accountId', val)}
         options={accounts}
         getOptionLabel={(a) => a.name}
         getOptionValue={(a) => a.id}
         onEdit={() => router.push('/account')}
       />
+    );
+
+    return inputOrder === 'amount-first'
+      ? [amountInput, accountSelector]
+      : [accountSelector, amountInput];
+  }, [inputOrder, amount, selectedAccount, accounts, setField, router]);
+
+  return (
+    <div className='space-y-5 px-4 pt-5 pb-10'>
+      {orderedInputs}
 
       <Selector
-        label='To Account'
-        value={toAccount?.name ?? ''}
-        onChange={(val) => setField('to', val)}
-        options={accounts}
-        getOptionLabel={(a) => a.name}
-        getOptionValue={(a) => a.id}
-        onEdit={() => router.push('/account')}
+        label='Category'
+        value={selectedCategory?.name ?? ''}
+        onChange={(val) => setField('categoryId', val)}
+        options={categories.filter((c) => c.type === 'income')}
+        getOptionLabel={(c) => c.name}
+        getOptionValue={(c) => c.id}
+        onEdit={() => router.push('/category')}
       />
+
       <DatePicker
         label='Date'
-        value={startOfDay(date)}
+        value={startOfDay(new Date(date))}
         onChange={(val: Date) => {
           setField('date', val.toISOString());
         }}
       />
+
       <Input
         label='Note'
         value={note}
@@ -107,11 +137,11 @@ export default function TransferForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button onClick={handleSubmit} className='w-full'>
+      <Button onClick={handleSubmit} disabled={!dirty} className='w-full'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
 
-      <Divider></Divider>
+      <Divider />
 
       {mode === 'edit' && !dirty && id && (
         <Button

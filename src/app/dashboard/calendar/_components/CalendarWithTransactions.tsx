@@ -6,7 +6,9 @@ import 'react-calendar/dist/Calendar.css';
 import '@/styles/custom-calendar.css';
 
 import { formatDate } from '@/lib/date.util';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
+import { useUserSettingStore } from '@/stores/useUserSettingStore';
+import { useShallow } from 'zustand/shallow';
 
 interface CalendarWithTransactionsProps {
   date: Date;
@@ -19,9 +21,22 @@ export default function CalendarWithTransactions({
   tileContentMap,
   onSelectDate,
 }: CalendarWithTransactionsProps) {
+  const { weeklyStartDay } = useUserSettingStore(
+    useShallow((s) => ({
+      weeklyStartDay: s.weeklyStartDay,
+    }))
+  );
+
+  const getTileContent = useMemo(() => {
+    return ({ date }: { date: Date }) =>
+      tileContentMap.get(formatDate(date)) ?? null;
+  }, [tileContentMap]);
+
+  const calendarType = weeklyStartDay === 'monday' ? 'iso8601' : 'gregory';
+
   return (
     <Calendar
-      calendarType='gregory'
+      calendarType={calendarType}
       value={date}
       onClickDay={onSelectDate}
       showNavigation={false}
@@ -32,9 +47,7 @@ export default function CalendarWithTransactions({
       tileDisabled={({ date: tileDate }) =>
         tileDate.getMonth() !== date.getMonth()
       }
-      tileContent={({ date }) => {
-        return tileContentMap.get(formatDate(date)) ?? null;
-      }}
+      tileContent={getTileContent}
     />
   );
 }

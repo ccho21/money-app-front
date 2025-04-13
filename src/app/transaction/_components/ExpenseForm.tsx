@@ -1,12 +1,16 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useUserSettingStore } from '@/stores/useUserSettingStore';
+
 import {
-  deleteTransaction,
   submitTransaction,
+  deleteTransaction,
 } from '@/services/transactionService';
 
 import { Input } from '@/components/ui/Input';
@@ -14,27 +18,28 @@ import { Button } from '@/components/ui/Button';
 import Selector from '@/components/ui/Selector';
 import { Textarea } from '@/components/ui/Textarea';
 import DatePicker from '@/components/ui/DatePicker';
-import { startOfDay } from 'date-fns';
-import { useEffect, useState } from 'react';
 import Divider from '@/components/ui/Divider';
+
+import { startOfDay } from 'date-fns';
 
 type Props = {
   mode: 'new' | 'edit';
   id?: string;
 };
 
-export default function ExpenseForm({ mode, id }: Props) {
+export default function IncomeForm({ mode, id }: Props) {
   const router = useRouter();
+  const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
   const {
     state: { amount, accountId, categoryId, note, description, date },
     actions: { setField, isDirty },
   } = useTransactionFormStore();
 
-  // 계좌 및 카테고리 정보 가져오기
   const {
     state: { accounts = [] },
   } = useAccountStore();
+
   const {
     state: { categories = [] },
   } = useCategoryStore();
@@ -45,20 +50,18 @@ export default function ExpenseForm({ mode, id }: Props) {
   const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
-    setDirty(isDirty()); // 폼이 변경되었는지 여부를 실시간으로 감지
+    setDirty(isDirty());
   }, [amount, accountId, categoryId, note, description, date, isDirty]);
 
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, id);
       router.push('/dashboard/daily');
-      router.refresh(); // 페이지 새로고침
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }
   };
 
-  // 폼을 리셋할 때, 변경된 내용이 있을 경우 확인 경고 추가
   const handleDelete = async (id: string) => {
     try {
       await deleteTransaction(id);
@@ -71,28 +74,50 @@ export default function ExpenseForm({ mode, id }: Props) {
 
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
-      <Input
-        label='Amount'
-        value={amount}
-        onChange={(e) => setField('amount', e.target.value)}
-        type='number'
-      />
-
-      <Selector
-        label='Account'
-        value={selectedAccount?.name ?? ''}
-        onChange={(val) => setField('accountId', val)}
-        options={accounts}
-        getOptionLabel={(a) => a.name}
-        getOptionValue={(a) => a.id}
-        onEdit={() => router.push('/account')}
-      />
+      {/* 🔁 inputOrder 적용 */}
+      {inputOrder === 'amount-first' ? (
+        <>
+          <Input
+            label='Amount'
+            value={amount}
+            onChange={(e) => setField('amount', e.target.value)}
+            type='number'
+          />
+          <Selector
+            label='Account'
+            value={selectedAccount?.name ?? ''}
+            onChange={(val) => setField('accountId', val)}
+            options={accounts}
+            getOptionLabel={(a) => a.name}
+            getOptionValue={(a) => a.id}
+            onEdit={() => router.push('/account')}
+          />
+        </>
+      ) : (
+        <>
+          <Selector
+            label='Account'
+            value={selectedAccount?.name ?? ''}
+            onChange={(val) => setField('accountId', val)}
+            options={accounts}
+            getOptionLabel={(a) => a.name}
+            getOptionValue={(a) => a.id}
+            onEdit={() => router.push('/account')}
+          />
+          <Input
+            label='Amount'
+            value={amount}
+            onChange={(e) => setField('amount', e.target.value)}
+            type='number'
+          />
+        </>
+      )}
 
       <Selector
         label='Category'
         value={selectedCategory?.name ?? ''}
         onChange={(val) => setField('categoryId', val)}
-        options={categories.filter((c) => c.type === 'expense')}
+        options={categories.filter((c) => c.type === 'income')}
         getOptionLabel={(c) => c.name}
         getOptionValue={(c) => c.id}
         onEdit={() => router.push('/category')}
@@ -119,11 +144,11 @@ export default function ExpenseForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button onClick={handleSubmit} className='w-full' disabled={!dirty}>
+      <Button onClick={handleSubmit} disabled={!dirty} className='w-full'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
 
-      <Divider></Divider>
+      <Divider />
 
       {mode === 'edit' && !dirty && id && (
         <Button
