@@ -80,7 +80,6 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
       }
     }
 
-    console.log('### partial query', partialQuery);
     if (Object.keys(partialQuery).length > 0) {
       setQuery(partialQuery);
     }

@@ -9,8 +9,10 @@ import type { CategoryType } from '@/features/category/types';
 
 import BudgetView from '../_components/BudgetView';
 import EmptyMessage from '@/components/ui/EmptyMessage';
+import { useRouter } from 'next/navigation';
 
 export default function BudgetPage() {
+  const router = useRouter();
   const { query } = useFilterStore();
   const { date, range, transactionType } = query;
 
@@ -20,8 +22,15 @@ export default function BudgetPage() {
 
   const dateRangeKey = useMemo(
     () => getDateRangeKey(date, { unit: range, amount: 0 }),
-    [date, range],
+    [date, range]
   );
+  const handleClick = (categoryId: string, hasBudget: boolean) => {
+    if (hasBudget) {
+      router.push(`/stats/budget/${categoryId}`);
+    } else {
+      router.push(`/budget/settings/${categoryId}/new`);
+    }
+  };
 
   const lastFetchKey = useRef<string | null>(null);
 
@@ -47,6 +56,9 @@ export default function BudgetPage() {
     <BudgetView
       transactionType={transactionType as CategoryType}
       budgetResponse={budgetResponse}
+      handleClick={(categoryId: string, hasBudget: boolean) =>
+        handleClick(categoryId, hasBudget)
+      }
     />
   );
 }

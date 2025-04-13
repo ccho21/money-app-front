@@ -1,5 +1,8 @@
 import { CategoryType } from '../category/types';
 
+export type SortKey = 'note' | 'count' | 'amount';
+export type SortDirection = 'asc' | 'desc';
+
 export interface StatsByCategory {
   categoryId: string;
   categoryName: string;
@@ -100,4 +103,55 @@ export interface StatsSummaryByBudgetResponse {
   totalRemaining?: number;
   isOver?: boolean;
   data: StatsSummaryByBudget[]; // 💡 unified monthly+daily
+}
+
+export interface NoteGroupSummary {
+  label: string;
+  startDate: string;
+  endDate: string;
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+}
+
+export interface StatsByNote {
+  note: string;
+  totalIncome: number;
+  totalExpense: number;
+  data: NoteGroupSummary[];
+}
+
+export interface StatsByNoteResponse {
+  data: StatsByNote[];
+  totalIncome: number;
+  totalExpense: number;
+}
+
+export interface StatsSummaryByNote {
+  label: string;
+  startDate: string;
+  endDate: string;
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+}
+
+export interface StatsSummaryByNoteTransaction {
+  id: string;
+  date: string;
+  amount: number;
+  type: 'income' | 'expense';
+  accountId: string;
+  accountName: string;
+  note?: string;
+  categoryId?: string;
+  categoryName?: string;
+}
+
+export interface StatsSummaryByNoteResponse {
+  note: string;
+  totalIncome: number;
+  totalExpense: number;
+  data: StatsSummaryByNote[];
+  transactions: StatsSummaryByNoteTransaction[];
 }

@@ -1,25 +1,23 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByNote } from '@/services/statsService';
 
-import { TransactionType } from '@/features/transaction/types';
 import { formatCurrency } from '@/lib/utils';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
-type SortKey = 'note' | 'count' | 'amount';
-type SortDirection = 'asc' | 'desc';
+import { CategoryType } from '@/features/category/types';
+import { SortDirection, SortKey } from '@/features/stats/types';
+import { fetchStatsByNote } from '@/services/statsService';
+import { useRouter } from 'next/navigation';
 
 export default function NoteView() {
-  const searchParams = useSearchParams();
-  const tab = (searchParams.get('tab') || 'expense') as TransactionType;
+  const router = useRouter();
 
   const { query, getDateRangeKey } = useFilterStore();
-  const { date, range } = query;
+  const { date, range, transactionType } = query;
 
   const {
     state: { noteResponse, isLoading },
@@ -29,18 +27,17 @@ export default function NoteView() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       const [startDate, endDate] = getDateRangeKey().split('_');
 
       await fetchStatsByNote({
         startDate,
         endDate,
-        type: tab,
+        type: transactionType as CategoryType,
+        groupBy: range,
       });
-    };
-
-    run();
-  }, [getDateRangeKey, tab]);
+    })();
+  }, [getDateRangeKey, range, transactionType, date]);
 
   const rawList = useMemo(() => noteResponse?.data || [], [noteResponse]);
 
@@ -62,7 +59,7 @@ export default function NoteView() {
   }, [rawList, sortKey, sortDirection]);
 
   const totalAmount =
-    tab === 'income'
+    transactionType === 'income'
       ? noteResponse?.totalIncome ?? 0
       : noteResponse?.totalExpense ?? 0;
 
@@ -80,6 +77,11 @@ export default function NoteView() {
     return sortDirection === 'asc' ? '↑' : '↓';
   };
 
+  const handleRowClick = (note: string) => {
+    console.log('### note', note, note || '_');
+    router.push(`/stats/note/${encodeURIComponent(note || '_')}`);
+  };
+
   if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
 
   if (!noteResponse || rawList.length === 0) {
@@ -91,14 +93,15 @@ export default function NoteView() {
       {/* 상단 요약 */}
       <div className='flex justify-between items-center'>
         <span className='text-sm text-muted'>
-          {tab === 'expense' ? 'Expense Notes' : 'Income Notes'}
+          {transactionType === 'expense' ? 'Expense Notes' : 'Income Notes'}
         </span>
         <span
           className={`text-sm font-semibold ${
-            tab === 'expense' ? 'text-error' : 'text-success'
+            transactionType === 'expense' ? 'text-error' : 'text-success'
           }`}
         >
-          {tab === 'expense' ? 'Exp.' : 'Inc.'} {formatCurrency(totalAmount)}
+          {transactionType === 'expense' ? 'Exp.' : 'Inc.'}{' '}
+          {formatCurrency(totalAmount)}
         </span>
       </div>
 
@@ -130,11 +133,18 @@ export default function NoteView() {
           {sortedList.map((item, index) => (
             <tr
               key={index}
+              onClick={() => handleRowClick(item.note || '')}
               className='border-b border-border hover:bg-muted/5 transition'
             >
               <td className='py-2'>{item.note || '-'}</td>
               <td className='py-2 text-center'>{item.count}</td>
-              <td className='py-2 text-right'>{formatCurrency(item.amount)}</td>
+              <td className='py-2 text-right'>
+                {formatCurrency(
+                  transactionType === 'income'
+                    ? item.totalIncome
+                    : item.totalExpense
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

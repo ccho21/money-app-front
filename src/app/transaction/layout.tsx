@@ -52,10 +52,7 @@ export default function TransactionLayout({
 
   return (
     <div className='min-h-screen flex flex-col h-full'>
-      {/* ✅ 공통 TopNav 사용 */}
       <TopNav />
-
-      {/* ✅ 공통 TabMenu 사용 */}
       <TabMenu
         tabs={TABS}
         active={activeTab}

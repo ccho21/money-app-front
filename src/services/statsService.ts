@@ -8,6 +8,8 @@ import {
   fetchStatsByNoteAPI,
   fetchStatsSummaryByCategoryIdAPI,
   fetchStatsSummaryByBudgetAPI,
+  fetchStatsSummaryByNoteAPI,
+  fetchStatsNoteDetailAPI,
 } from '@/features/stats/api';
 import { useStatsStore } from '@/stores/useStatsStore';
 
@@ -53,7 +55,7 @@ export const fetchStatsByNote = async (params: DateFilterParams) => {
     const data = await fetchStatsByNoteAPI(params);
     setNoteResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('❌ 노트 통계 데이터 불러오기 실패:', e); // ✅ 수정된 로그
   } finally {
     setLoading(false);
   }
@@ -131,6 +133,44 @@ export const fetchStatsSummaryByBudget = async (
     setstatsSummaryBudgetResposne(data);
   } catch (e) {
     console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchStatsNoteDetail = async (
+  note: string,
+  params: DateFilterParams
+) => {
+  const {
+    actions: { setNoteDetailResponse, setLoading },
+  } = useStatsStore.getState();
+
+  setLoading(true);
+  try {
+    const data = await fetchStatsNoteDetailAPI(note, params);
+    setNoteDetailResponse(data);
+  } catch (e) {
+    console.error('❌ 노트 상세 통계 불러오기 실패:', e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchStatsSummaryByNote = async (
+  note: string,
+  params: DateFilterParams
+) => {
+  const {
+    actions: { setNoteSummaryResponse, setLoading },
+  } = useStatsStore.getState();
+
+  setLoading(true);
+  try {
+    const data = await fetchStatsSummaryByNoteAPI(note, params);
+    setNoteSummaryResponse(data);
+  } catch (e) {
+    console.error('❌ 노트 통계 상세 데이터 불러오기 실패:', e);
   } finally {
     setLoading(false);
   }

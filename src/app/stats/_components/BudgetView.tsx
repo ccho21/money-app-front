@@ -11,11 +11,13 @@ import { formatCurrency } from '@/lib/utils';
 interface BudgetViewProps {
   transactionType: CategoryType;
   budgetResponse: StatsByBudgetResponse;
+  handleClick?: (handleClick: string, hasBudget: boolean) => void;
 }
 
 export default function BudgetView({
   transactionType,
   budgetResponse,
+  handleClick,
 }: BudgetViewProps) {
   const router = useRouter();
 
@@ -55,7 +57,7 @@ export default function BudgetView({
             startDate={budgetResponse.startDate}
             endDate={budgetResponse.endDate}
             showProgress={item.hasBudget}
-            onClick={() => router.push(`/stats/budget/${item.categoryId}`)}
+            onClick={() => handleClick?.(item.categoryId, item.hasBudget)}
           />
         ))}
       </Panel>

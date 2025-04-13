@@ -6,6 +6,7 @@ import {
   StatsByNoteResponse,
   StatsSummaryByBudgetResponse,
   StatsSummaryByCategoryResponse,
+  StatsSummaryByNoteResponse,
 } from './types';
 import { TransactionSummaryResponse } from '../transaction/types';
 
@@ -35,9 +36,10 @@ export const fetchStatsByNoteAPI = (
   params: DateFilterParams
 ): Promise<StatsByNoteResponse> => {
   const query = new URLSearchParams();
-  if (params.type) query.append('type', params.type);
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
   return get(`/stats/by-note?${query.toString()}`);
 };
 
@@ -95,4 +97,36 @@ export const fetchStatsSummaryByBudgetAPI = async (
     `/stats/budget/${categoryId}/summary?${query.toString()}`
   );
   return res as Promise<StatsSummaryByBudgetResponse>;
+};
+
+export const fetchStatsNoteDetailAPI = async (
+  note: string,
+  params: DateFilterParams
+): Promise<TransactionSummaryResponse> => {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+
+  const res = await get(
+    `/stats/note/${encodeURIComponent(note)}?${query.toString()}`
+  );
+  return res as TransactionSummaryResponse;
+};
+
+export const fetchStatsSummaryByNoteAPI = async (
+  note: string,
+  params: DateFilterParams
+): Promise<StatsSummaryByNoteResponse> => {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+
+  const res = await get(
+    `/stats/note/${encodeURIComponent(note)}/summary?${query.toString()}`
+  );
+  return res as Promise<StatsSummaryByNoteResponse>;
 };

@@ -105,6 +105,7 @@ export default function AccountsPage() {
                       outstandingBalance={acc.outstandingBalance}
                       balancePayable={acc.balancePayable}
                       onClick={() => handleClick(acc)}
+                      showProgress={false}
                     />
                   ))}
                 </div>

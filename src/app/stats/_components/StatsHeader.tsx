@@ -6,14 +6,13 @@ import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useSearchParams } from 'next/navigation';
 
 import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
 
 const tabs = [
   { name: 'Stats', href: '/stats/category' },
   { name: 'Budget', href: '/stats/budget' },
-  // { name: 'Note', href: '/stats/note' },
+  { name: 'Note', href: '/stats/note' },
 ];
 
 export default function StatsHeader() {
@@ -40,7 +39,6 @@ export default function StatsHeader() {
 
   return (
     <div className='p-2'>
-      {/* 탭 버튼 + 드롭다운 */}
       <div className='flex justify-between items-center rounded-md bg-surface py-1 px-2'>
         <div className='flex gap-2'>
           {tabs.map((tab) => {
