@@ -11,7 +11,7 @@ import { useUIStore } from '@/stores/useUIStore';
 import {
   fetchStatsBudgetByCategoryId,
   fetchStatsSummaryByBudget,
-} from '@/services/statsService';
+} from '@/features/stats/hooks';
 
 import { CategoryType } from '@/features/category/types';
 import { TransactionSummary } from '@/features/transaction/types';

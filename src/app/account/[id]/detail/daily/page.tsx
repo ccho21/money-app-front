@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchTransactionSummary } from '@/services/transactionService';
+import { fetchTransactionSummary } from '@/features/transaction/hooks';
 
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/features/shared/types';
@@ -74,7 +74,7 @@ export default function AccountDailyPage() {
       color: 'text-foreground',
       prefix: '$',
     },
-  ]
+  ];
 
   return (
     <DailyView

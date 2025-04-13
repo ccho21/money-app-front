@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { fetchAccounts } from '@/services/accountService';
+import { fetchAccounts } from '@/features/account/hooks';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useRouter } from 'next/navigation';
 import { Account } from '@/features/account/types';

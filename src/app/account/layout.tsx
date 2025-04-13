@@ -3,7 +3,7 @@
 import { ReactNode, useEffect } from 'react';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TopNav from '@/components/common/TopNav';
-import { useAccountFormStore } from '@/stores/useAccountFormStore';
+import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 import { useRouter } from 'next/navigation';
 import { useUIStore } from '@/stores/useUIStore';
 

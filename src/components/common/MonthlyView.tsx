@@ -9,7 +9,7 @@ import {
   TransactionSummary,
 } from '@/features/transaction/types';
 import MonthlyItem from './MonthlyItem';
-import { SummaryItem } from '@/lib/types';
+import { SummaryItem } from '@/features/shared/types';
 
 interface MonthlyViewProps {
   isLoading: boolean;
@@ -29,7 +29,9 @@ export default function MonthlyView({
   onToggle,
 }: MonthlyViewProps) {
   if (isLoading) {
-    return <p className="text-center mt-10 text-muted text-sm">불러오는 중...</p>;
+    return (
+      <p className='text-center mt-10 text-muted text-sm'>불러오는 중...</p>
+    );
   }
 
   if (!data || !data.data.length) {
@@ -41,12 +43,12 @@ export default function MonthlyView({
   return (
     <>
       {/* 요약 박스 */}
-      <Panel className="p-3 border border-border bg-surface rounded mb-2">
+      <Panel className='p-3 border border-border bg-surface rounded mb-2'>
         <SummaryBox items={summaryItems} />
       </Panel>
 
       {/* 월별 아코디언 리스트 */}
-      <Panel className="divide-y divide-border bg-surface rounded shadow-sm">
+      <Panel className='divide-y divide-border bg-surface rounded shadow-sm'>
         {data.data.map((summary, index) => (
           <MonthlyItem
             key={summary.label}

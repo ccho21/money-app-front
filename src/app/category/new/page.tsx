@@ -2,8 +2,8 @@
 
 'use client';
 
-import { createCategory } from '@/services/categoryService';
-import { useCategoryFormStore } from '@/stores/useCategoryFormStore';
+import { createCategory } from '@/features/category/hooks';
+import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
 import { useRouter } from 'next/navigation';
 import { CategoryForm } from '../_components/CategoryForm';
 

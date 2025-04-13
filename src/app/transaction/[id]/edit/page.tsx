@@ -3,16 +3,16 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 
 import IncomeForm from '../../_components/IncomeForm';
 import TransferForm from '../../_components/TransferForm';
 import ExpenseForm from '../../_components/ExpenseForm';
 
-import { fetchAccounts } from '@/services/accountService';
-import { fetchCategories } from '@/services/categoryService';
-import { fetchTransactionById } from '@/services/transactionService';
+import { fetchAccounts } from '@/features/account/hooks';
+import { fetchCategories } from '@/features/category/hooks';
+import { fetchTransactionById } from '@/features/transaction/hooks';
 
 export default function TransactionEditPage() {
   const { id } = useParams();

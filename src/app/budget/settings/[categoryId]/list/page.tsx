@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import DateNavigator from '@/components/ui/DateNavigator';
-import { fetchBudgetCategoriesByCategoryId } from '@/services/budgetService';
+import { fetchBudgetCategoriesByCategoryId } from '@/features/budget/hooks';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useBudgetCategoryFormStore } from '../../_components/useBudgetCategoryFormStore';
 import { useFilterStore } from '@/stores/useFilterStore';

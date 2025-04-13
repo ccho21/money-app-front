@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'react-hot-toast';
 import { useBudgetCategoryFormStore } from './useBudgetCategoryFormStore';
-import { createBudgetCategory } from '@/services/budgetService';
+import { createBudgetCategory } from '@/features/budget/hooks';
 import { useRouter } from 'next/navigation';
 
 export const BudgetCategoryForm = () => {

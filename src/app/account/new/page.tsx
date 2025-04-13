@@ -1,9 +1,9 @@
 'use client';
 
-import { createAccount } from '@/services/accountService';
+import { createAccount } from '@/features/account/hooks';
 import { useRouter } from 'next/navigation';
 import AccountForm from '../_components/AccountForm';
-import { useAccountFormStore } from '@/stores/useAccountFormStore';
+import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
 

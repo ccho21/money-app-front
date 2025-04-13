@@ -11,7 +11,6 @@ import {
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
 import DateNavigator from '@/components/ui/DateNavigator';
-import TopNav from '@/components/common/TopNav';
 import { Button } from '@/components/ui/Button';
 
 import { Plus } from 'lucide-react';
@@ -19,13 +18,17 @@ import { parseLocalDate, formatDate } from '@/lib/date.util';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
-import { useAccountFormStore } from '@/stores/useAccountFormStore';
+import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 
 import type { RangeOption } from '@/features/shared/types';
 
 const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
-export default function AccountDetailDashboardLayout({ children }: { children: ReactNode }) {
+export default function AccountDetailDashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();

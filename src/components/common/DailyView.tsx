@@ -6,7 +6,7 @@ import SummaryBox from '@/components/ui/SummaryBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
 import TransactionGroup from './TransactionGroup';
-import { SummaryItem } from '@/lib/types';
+import { SummaryItem } from '@/features/shared/types';
 
 interface DailyViewProps {
   isLoading: boolean;

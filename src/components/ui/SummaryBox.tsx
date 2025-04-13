@@ -1,15 +1,8 @@
 // 📄 src/components/common/SummaryBox.tsx
 'use client';
 
+import { SummaryItem } from '@/features/shared/types';
 import { cn } from '@/lib/utils';
-
-type SummaryItem = {
-  label: string;
-  value: number;
-  color?: string; // 커스텀 텍스트 색상
-  prefix?: string;
-  suffix?: string;
-};
 
 interface SummaryBoxProps {
   items: SummaryItem[];

@@ -18,7 +18,7 @@ import EmptyMessage from '@/components/ui/EmptyMessage';
 import {
   fetchStatsNoteDetail,
   fetchStatsSummaryByNote,
-} from '@/services/statsService';
+} from '@/features/stats/hooks';
 
 export default function StatsNoteDetailPage() {
   const { note } = useParams();

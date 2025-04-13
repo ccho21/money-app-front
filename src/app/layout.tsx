@@ -5,11 +5,11 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import '@/app/globals.css';
 import '@/styles/theme.css';
-import useAuthRedirectSync from '@features/auth/hooks/useAuthRedirectSync';
-import AuthGuard from '@features/auth/components/AuthGuard';
+import useAuthRedirectSync from '@/features/auth/useAuthRedirectSync';
+import AuthGuard from '@/components/AuthGuard';
 import { StrictMode } from 'react';
-import RouteTracker from '@/app/provider/RouteTracker';
-import { ThemeProvider } from './provider/ThemeProvider';
+import RouteTracker from '@/providers/RouteTracker';
+import { ThemeProvider } from '../providers/ThemeProvider';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],

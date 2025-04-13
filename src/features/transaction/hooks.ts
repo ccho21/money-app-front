@@ -1,6 +1,6 @@
 // 📄 src/services/transaction.service.ts
 
-import { handleAsync } from '@/features/shared/api';
+import { handleAsync } from '@/lib/api';
 import { DateFilterParams } from '@/features/shared/types';
 import {
   createTransactionAPI,
@@ -16,7 +16,7 @@ import {
 
 import { TransactionSummaryResponse } from '@/features/transaction/types';
 
-import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 
 export const fetchTransactionById = async (id: string) => {

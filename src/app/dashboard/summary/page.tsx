@@ -12,8 +12,8 @@ import BudgetBox from './_components/BudgetBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import Panel from '@/components/ui/Panel';
 
-import { fetchAccountSummary } from '@/services/accountService';
-import { fetchBudgetSummary } from '@/services/budgetService';
+import { fetchAccountSummary } from '@/features/account/hooks';
+import { fetchBudgetSummary } from '@/features/budget/hooks';
 import { DateFilterParams } from '@/features/shared/types';
 import AccountBox from './_components/AccountBox';
 import Divider from '@/components/ui/Divider';

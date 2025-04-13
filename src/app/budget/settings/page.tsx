@@ -10,7 +10,7 @@ import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchBudgetsByCategory } from '@/services/budgetService';
+import { fetchBudgetsByCategory } from '@/features/budget/hooks';
 
 import type { BudgetCategory } from '@/features/budget/types';
 import type { DateFilterParams } from '@/features/shared/types';

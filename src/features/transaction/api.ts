@@ -1,4 +1,4 @@
-import { post, get, put, del } from '@/features/shared/api';
+import { post, get, put, del } from '@/lib/api';
 import {
   SubmitTransactionPayload,
   Transaction,

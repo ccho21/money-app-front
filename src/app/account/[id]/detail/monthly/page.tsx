@@ -10,7 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
-} from '@/services/transactionService';
+} from '@/features/transaction/hooks';
 
 import { TransactionSummary } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';

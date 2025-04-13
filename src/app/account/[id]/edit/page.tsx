@@ -2,9 +2,9 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchAccountById } from '@/services/accountService';
-import { updateAccount } from '@/services/accountService';
-import { useAccountFormStore } from '@/stores/useAccountFormStore';
+import { fetchAccountById } from '@/features/account/hooks';
+import { updateAccount } from '@/features/account/hooks';
+import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 import AccountForm from '../../_components/AccountForm';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useUIStore } from '@/stores/useUIStore';

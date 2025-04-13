@@ -3,7 +3,7 @@
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { fetchTransactionSummary } from '@/services/transactionService';
+import { fetchTransactionSummary } from '@/features/transaction/hooks';
 import { DateFilterParams } from '@/features/shared/types';
 import { Transaction } from '@/features/transaction/types';
 import DailyView from '@/components/common/DailyView';

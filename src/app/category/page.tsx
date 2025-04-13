@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Pencil, MinusCircle } from 'lucide-react';
 import { useCategoryStore } from '@/stores/useCategoryStore';
-import { deleteCategory, fetchCategories } from '@/services/categoryService';
+import { deleteCategory, fetchCategories } from '@/features/category/hooks';
 import { Button } from '@/components/ui/Button';
 
 export default function CategoryPage() {

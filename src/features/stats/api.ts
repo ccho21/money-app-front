@@ -1,4 +1,4 @@
-import { get } from '@/features/shared/api';
+import { get } from '@/lib/api';
 import { DateFilterParams } from '../shared/types';
 import {
   StatsByBudgetResponse,

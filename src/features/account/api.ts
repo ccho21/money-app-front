@@ -1,9 +1,5 @@
-import { get, patch, post } from '@/features/shared/api';
-import {
-  Account,
-  AccountSummaryDTO,
-  SubmitAccountPayload,
-} from './types';
+import { get, patch, post } from '@/lib/api';
+import { Account, AccountSummaryDTO, SubmitAccountPayload } from './types';
 import { DateFilterParams } from '../shared/types';
 
 export const createAccountAPI = (payload: SubmitAccountPayload) => {
@@ -29,9 +25,7 @@ export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   if (params.endDate) query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
 
-  return get<AccountSummaryDTO[]>(
-    `/accounts/summary?${query.toString()}`
-  );
+  return get<AccountSummaryDTO[]>(`/accounts/summary?${query.toString()}`);
 };
 
 // export function fetchAccountSummaryByAccountIdAPI(paramsdc: DateFilterParams) {

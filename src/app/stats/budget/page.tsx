@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByBudget } from '@/services/statsService';
+import { fetchStatsByBudget } from '@/features/stats/hooks';
 import type { CategoryType } from '@/features/category/types';
 
 import BudgetView from '../_components/BudgetView';

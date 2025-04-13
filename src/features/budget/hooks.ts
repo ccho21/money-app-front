@@ -6,8 +6,8 @@ import {
   fetchBudgetSummaryAPI,
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
-} from '../features/budget/api';
-import { CreateBudgetCategory, UpdateBudgetCategory } from '../features/budget/types';
+} from './api';
+import { CreateBudgetCategory, UpdateBudgetCategory } from './types';
 
 export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {

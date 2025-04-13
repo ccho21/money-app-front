@@ -1,13 +1,16 @@
 // 📄 src/features/auth/services/authService.ts
 
 import { User } from '@/features/auth/types';
-import { get } from '@/features/shared/api';
+import { get } from '@/lib/api';
 import { useUserStore } from '@/stores/useUserStore';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
 
-export const signin = async (email: string, password: string): Promise<boolean> => {
+export const signin = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
   const {
     actions: { setUser, setLoading, setError },
   } = useUserStore.getState();
@@ -38,7 +41,10 @@ export const signin = async (email: string, password: string): Promise<boolean> 
   }
 };
 
-export const signup = async (email: string, password: string): Promise<boolean> => {
+export const signup = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
   const {
     actions: { setUser, setLoading, setError },
   } = useUserStore.getState();

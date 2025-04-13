@@ -9,7 +9,7 @@ import EmptyMessage from '@/components/ui/EmptyMessage';
 
 import { CategoryType } from '@/features/category/types';
 import { SortDirection, SortKey } from '@/features/stats/types';
-import { fetchStatsByNote } from '@/services/statsService';
+import { fetchStatsByNote } from '@/features/stats/hooks';
 import { useRouter } from 'next/navigation';
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 

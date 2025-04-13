@@ -6,7 +6,7 @@ import EmptyMessage from '@/components/ui/EmptyMessage';
 import YearlyItem from './YearlyItem';
 
 import { TransactionSummaryResponse } from '@/features/transaction/types';
-import { SummaryItem } from '@/lib/types';
+import { SummaryItem } from '@/features/shared/types';
 
 interface YearlyViewProps {
   isLoading: boolean;

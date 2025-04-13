@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByCatgory } from '@/services/statsService';
+import { fetchStatsByCatgory } from '@/features/stats/hooks';
 import type { CategoryType } from '@/features/category/types';
 import StatsView from '../_components/StatsView';
 import { DateFilterParams } from '@/features/shared/types';

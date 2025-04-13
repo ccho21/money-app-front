@@ -2,7 +2,13 @@ import { useAccountStore } from '@/stores/useAccountStore';
 import { DateFilterParams } from '@/features/shared/types';
 import { fetchAccountsDashboardAPI } from '@/features/budget/api';
 import { SubmitAccountPayload } from '@/features/account/types';
-import { createAccountAPI, fetchAccountsAPI, fetchAccountsByIdAPI, fetchAccountSummaryAPI, updateAccountAPI } from '@/features/account/api';
+import {
+  createAccountAPI,
+  fetchAccountsAPI,
+  fetchAccountsByIdAPI,
+  fetchAccountSummaryAPI,
+  updateAccountAPI,
+} from '@/features/account/api';
 
 export const createAccount = async (payload: SubmitAccountPayload) => {
   const {
@@ -77,9 +83,7 @@ export const fetchAccountById = async (id: string) => {
   }
 };
 
-export const fetchAccountSummary = async (
-  params: DateFilterParams
-) => {
+export const fetchAccountSummary = async (params: DateFilterParams) => {
   const {
     actions: { setSummaryResponse, setLoading, setError },
   } = useAccountStore.getState();

@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { fillCategoryForm, updateCategory } from '@/services/categoryService';
-import { useCategoryFormStore } from '@/stores/useCategoryFormStore';
+import { fillCategoryForm, updateCategory } from '@/features/category/hooks';
+import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
 import { CategoryForm } from '../../_components/CategoryForm';
 
 // ✅ Next가 자동으로 주입하는 구조: props는 항상 async function처럼 다뤄야 함

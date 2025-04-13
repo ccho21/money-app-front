@@ -1,7 +1,7 @@
 'use client';
 
 import { TransactionType } from '@/features/transaction/types';
-import { useTransactionFormStore } from '@/stores/useTransactionFormStore';
+import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import TopNav from '@/components/common/TopNav';

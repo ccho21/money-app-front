@@ -1,6 +1,6 @@
 // 📄 src/api/category.api.ts
 
-import { del, get, patch, post } from '../shared/api';
+import { del, get, patch, post } from '../../lib/api';
 import { Category, CreateCategoryInput, UpdateCategoryInput } from './types';
 
 export const getCategoriesAPI = (): Promise<Category[]> => {

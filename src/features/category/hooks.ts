@@ -9,7 +9,7 @@ import {
   CreateCategoryInput,
   UpdateCategoryInput,
 } from '@/features/category/types';
-import { useCategoryFormStore } from '@/stores/useCategoryFormStore';
+import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
 
 // ✅ 전체 카테고리 리스트 가져오기

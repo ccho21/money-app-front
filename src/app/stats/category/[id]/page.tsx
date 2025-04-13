@@ -13,7 +13,7 @@ import { TransactionSummary } from '@/features/transaction/types';
 import {
   fetchStatsCategoryByCategoryId,
   fetchStatsSummaryByCategoryId,
-} from '@/services/statsService';
+} from '@/features/stats/hooks';
 
 import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/ui/SummaryBox';

@@ -1,4 +1,4 @@
-import { get, post, put } from '@/features/shared/api';
+import { get, post, put } from '@/lib/api';
 import {
   BudgetCategoryGroupResponse,
   BudgetCategoryResponse,
