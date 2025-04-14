@@ -1,9 +1,8 @@
-// 📄 src/components/common/TransactionItem.tsx
 'use client';
 
 import { Transaction } from '@/features/transaction/types';
 import { cn } from '@/lib/utils';
-import { PlusIcon, MinusIcon, ArrowRightLeftIcon } from 'lucide-react';
+import { PlusIcon, MinusIcon } from 'lucide-react';
 import CurrencyDisplay from '../ui/CurrencyDisplay';
 
 interface Props {
@@ -29,29 +28,31 @@ export default function TransactionItem({
   };
 
   const renderAmount = () => {
-    if (isIncome)
+    if (isIncome) {
       return (
         <span className='inline-flex items-center text-primary'>
           <PlusIcon size={13} />
           <CurrencyDisplay amount={tx.amount} />
         </span>
       );
+    }
 
-    if (isExpense)
+    if (isExpense || isTransfer) {
       return (
         <span className='inline-flex items-center text-error'>
           <MinusIcon size={13} />
           <CurrencyDisplay amount={tx.amount} />
         </span>
       );
+    }
 
-    return (
-      <span className='inline-flex items-center text-muted'>
-        <ArrowRightLeftIcon size={13} />
-        <CurrencyDisplay amount={tx.amount} />
-      </span>
-    );
+    return null;
   };
+
+  const categoryLabel =
+    isTransfer && showTransferLabel
+      ? 'Transfer'
+      : tx.category?.name ?? 'No category';
 
   return (
     <li
@@ -62,26 +63,29 @@ export default function TransactionItem({
       )}
     >
       <div className='grid grid-cols-12 gap-1 items-start'>
-        {/* 좌측 10칸: 어카운트 + 노트 + 카테고리 */}
-        <div className='col-span-10 overflow-hidden'>
-          {/* 어카운트 + 노트 (1줄) */}
-          <div className='flex items-center gap-1 text-sm text-foreground truncate leading-tight'>
-            <span className='font-medium truncate text-muted-foreground'>
-              {tx.account?.name}
-            </span>
-            {tx.note && (
-              <span className='text-muted truncate'>· {tx.note}</span>
-            )}
-          </div>
-
-          {/* 카테고리 (2줄) */}
-          <div className='text-xs text-muted dark:text-muted-foreground truncate'>
-            {isTransfer && showTransferLabel ? 'Transfer' : tx.category?.name}
-          </div>
+        {/* 1. Account (col-span-2) */}
+        <div className='col-span-2 text-xs text-muted font-medium truncate pt-[2px]'>
+          {tx.account?.name}
         </div>
 
-        {/* 우측 2칸: 금액 */}
-        <div className='col-span-2 flex justify-end items-center text-sm font-medium text-right'>
+        {/* 2. Note (bold) or Category (bold/secondary) */}
+        <div className='col-span-7 overflow-hidden'>
+          {tx.note ? (
+            <>
+              <div className='text-sm font-medium text-foreground truncate'>
+                {tx.note}
+              </div>
+              <div className='text-xs text-muted truncate'>{categoryLabel}</div>
+            </>
+          ) : (
+            <div className='text-sm font-medium text-foreground truncate'>
+              {categoryLabel}
+            </div>
+          )}
+        </div>
+
+        {/* 3. Amount */}
+        <div className='col-span-3 flex justify-end items-center text-sm font-medium text-right'>
           {renderAmount()}
         </div>
       </div>

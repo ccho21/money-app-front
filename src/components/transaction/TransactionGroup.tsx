@@ -4,7 +4,11 @@
 import { cn } from '@/lib/utils';
 import { Transaction, TransactionSummary } from '@/features/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
-import { PlusIcon, MinusIcon } from 'lucide-react';
+import {
+  CalendarDaysIcon,
+  ArrowDownToLine,
+  ArrowUpFromLine,
+} from 'lucide-react';
 import TransactionItem from './TransactionItem';
 import CurrencyDisplay from '../ui/CurrencyDisplay';
 
@@ -48,39 +52,47 @@ export default function TransactionGroup({
             if (e.key === 'Enter') onHeaderClick?.();
           }}
           className={cn(
-            'w-full px-3 py-3 border-b transition-colors duration-200',
+            'w-full px-3 py-3 border-b transition-colors duration-150',
             'border-border dark:border-zinc-700',
-            onHeaderClick &&
-              'hover:bg-muted/10 dark:hover:bg-zinc-800 cursor-pointer'
+            onHeaderClick && 'hover:bg-muted/5 cursor-pointer'
           )}
         >
           <div className='grid grid-cols-12 items-center'>
-            {/* 날짜 + 요일 (좌측 8칸) */}
+            {/* 좌측 날짜 */}
             <div className='col-span-8 flex items-center gap-2'>
-              <span className='text-md font-bold text-foreground'>{day}</span>
-              <span className='px-2 py-0.5 text-xs rounded-full bg-border text-muted-foreground dark:bg-zinc-70'>
+              <span className='text-sm font-semibold text-foreground flex items-center gap-1'>
+                {/* 더 작고 플랫한 아이콘 */}
+                <span className='text-sm font-semibold text-foreground flex items-center gap-1'>
+                  {/* ✅ Lucide calendar icon 사용 */}
+                  <CalendarDaysIcon
+                    size={16}
+                    className='text-muted-foreground'
+                  />
+                  <span>{day}</span>
+                </span>
+              </span>
+
+              {/* 요일: 라운드 제거, 강조 제거 */}
+              <span className='px-2 py-0.5 text-xs font-medium bg-border text-muted-foreground rounded-md'>
                 {weekday}
               </span>
+
               {showRange && rangeStart && rangeEnd && (
-                <span className='ml-2 text-xs text-muted dark:text-muted-foreground'>
+                <span className='px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground rounded-full'>
                   {rangeStart} ~ {rangeEnd}
                 </span>
               )}
             </div>
 
-            {/* 수입/지출 (우측 4칸, 2:2 분할) */}
-            <div className='col-span-4 grid grid-cols-2 gap-1 justify-end text-sm font-medium text-right'>
-              <span className='inline-flex items-center text-primary'>
-                <PlusIcon size={13} />
-                <span>
-                  <CurrencyDisplay amount={incomeTotal} />
-                </span>
+            {/* 우측: 수입/지출 요약 */}
+            <div className='col-span-4 flex justify-end items-center gap-2 text-sm font-medium text-right'>
+              <span className='inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-sm'>
+                <ArrowUpFromLine size={14} className='mr-1' />
+                <CurrencyDisplay amount={incomeTotal} />
               </span>
-              <span className='inline-flex items-center text-error text-right justify-end'>
-                <MinusIcon size={13} />
-                <span>
-                  <CurrencyDisplay amount={expenseTotal} />
-                </span>
+              <span className='inline-flex items-center px-2 py-0.5 bg-error/10 text-error rounded-sm'>
+                <ArrowDownToLine size={14} className='mr-1' />
+                <CurrencyDisplay amount={expenseTotal} />
               </span>
             </div>
           </div>

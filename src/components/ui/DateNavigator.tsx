@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useRouter } from 'next/navigation';
@@ -40,7 +40,7 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   );
 
   return (
-    <div className='flex items-center justify-between bg-surface border border-border px-5 py-1 text-md font-normal shadow-sm'>
+    <div className='flex items-center justify-between bg-surface px-5 py-1 text-md font-normal shadow-sm'>
       {/* 왼쪽 이동 */}
       <div className='flex items-center gap-3'>
         <button

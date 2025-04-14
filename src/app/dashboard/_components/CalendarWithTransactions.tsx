@@ -1,4 +1,3 @@
-// 📄 src/components/ui/CalendarWithTransactions.tsx
 'use client';
 
 import Calendar from 'react-calendar';
