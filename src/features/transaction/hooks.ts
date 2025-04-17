@@ -14,7 +14,7 @@ import {
   deleteTransactionAPI,
 } from '@/features/transaction/api';
 
-import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
 
 import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
@@ -158,7 +158,7 @@ export const fetchTransactionCalendar = async (date: string) => {
 // ✅ 상태 저장 없이 단독 사용
 export const fetchTransactionSummaryWeekly = async (
   params: DateFilterParams
-): Promise<TransactionSummaryResponse> => {
+): Promise<TransactionGroupSummaryDTO> => {
   try {
     return await fetchTransactionSummaryAPI(params);
   } catch (err) {

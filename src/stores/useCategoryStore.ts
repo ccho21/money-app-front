@@ -1,15 +1,15 @@
 // 📄 src/stores/category/category.store.ts
 
-import { Category } from '@/features/category/types';
+import { CategoryDTO } from '@/features/category/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 interface CategoryStore {
   state: {
-    categories: Category[];
+    categories: CategoryDTO[];
   };
   actions: {
-    setCategories: (categories: Category[]) => void;
+    setCategories: (categories: CategoryDTO[]) => void;
   };
 }
 

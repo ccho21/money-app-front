@@ -8,7 +8,7 @@ import {
   StatsSummaryByCategoryResponse,
   StatsSummaryByNoteResponse,
 } from './types';
-import { TransactionSummaryResponse } from '../transaction/types';
+import { TransactionGroupSummaryDTO } from '../transaction/types';
 
 export const fetchStatByCategoryAPI = (
   params: DateFilterParams
@@ -53,7 +53,7 @@ export const fetchStatsCategoryByCategoryIdAPI = async (
   if (params.type) query.append('type', params.type);
   if (params.groupBy) query.append('groupBy', params.groupBy);
   const res = await get(`/stats/category/${categoryId}?${query.toString()}`);
-  return res as Promise<TransactionSummaryResponse>;
+  return res as Promise<TransactionGroupSummaryDTO>;
 };
 
 export const fetchStatBudgetByCategoryIdAPI = async (
@@ -66,7 +66,7 @@ export const fetchStatBudgetByCategoryIdAPI = async (
   query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
   const res = await get(`/stats/budget/${categoryId}?${query.toString()}`);
-  return res as Promise<TransactionSummaryResponse>;
+  return res as Promise<TransactionGroupSummaryDTO>;
 };
 
 export const fetchStatsSummaryByCategoryIdAPI = async (
@@ -102,7 +102,7 @@ export const fetchStatsSummaryByBudgetAPI = async (
 export const fetchStatsNoteDetailAPI = async (
   note: string,
   params: DateFilterParams
-): Promise<TransactionSummaryResponse> => {
+): Promise<TransactionGroupSummaryDTO> => {
   const query = new URLSearchParams();
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
@@ -112,7 +112,7 @@ export const fetchStatsNoteDetailAPI = async (
   const res = await get(
     `/stats/note/${encodeURIComponent(note)}?${query.toString()}`
   );
-  return res as TransactionSummaryResponse;
+  return res as TransactionGroupSummaryDTO;
 };
 
 export const fetchStatsSummaryByNoteAPI = async (

@@ -1,4 +1,8 @@
-import { AccountType, SubmitAccountPayload } from '@/features/account/types';
+import {
+  AccountType,
+  AccountCreateRequestDTO,
+  AccountUpdateRequestDTO,
+} from '@/features/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -24,7 +28,7 @@ interface AccountFormStore {
     setEditMode: (val: boolean) => void;
     toggleEditMode: () => void;
     reset: () => void;
-    getFormData: () => SubmitAccountPayload;
+    getFormData: () => AccountCreateRequestDTO | AccountUpdateRequestDTO;
   };
 }
 
@@ -96,7 +100,7 @@ export const useAccountFormStore = create<AccountFormStore>()(
             'accountForm/reset'
           ),
 
-        getFormData: (): SubmitAccountPayload => {
+        getFormData: (): AccountCreateRequestDTO | AccountUpdateRequestDTO => {
           const {
             name,
             amount,

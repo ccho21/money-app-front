@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { fetchAccounts } from '@/features/account/hooks';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useRouter } from 'next/navigation';
-import { Account } from '@/features/account/types';
+import { AccountDTO } from '@/features/account/types';
 
 export default function AccountEditPage() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function AccountEditPage() {
     fetchAccounts();
   }, []);
 
-  const handleClick = (acc: Account) => {
+  const handleClick = (acc: AccountDTO) => {
     setSelectedAccount(acc);
     router.push(`account/${acc.id}/edit`);
   };

@@ -14,7 +14,7 @@ import {
 } from '@/features/stats/hooks';
 
 import { CategoryType } from '@/features/category/types';
-import { TransactionSummary } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/features/transaction/types';
 
 import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
@@ -129,17 +129,19 @@ export default function StatsBudgetDetailPage() {
       {budgetDetailResponse?.data.length ? (
         <Panel>
           <div className='space-y-4'>
-            {budgetDetailResponse.data.map((group: TransactionSummary, i) => (
-              <TransactionGroup
-                key={group.label + i}
-                label={group.label}
-                rangeStart={group.rangeStart}
-                rangeEnd={group.rangeEnd}
-                incomeTotal={group.incomeTotal}
-                expenseTotal={group.expenseTotal}
-                group={group}
-              />
-            ))}
+            {budgetDetailResponse.data.map(
+              (group: TransactionGroupItemDTO, i) => (
+                <TransactionGroup
+                  key={group.label + i}
+                  label={group.label}
+                  rangeStart={group.rangeStart}
+                  rangeEnd={group.rangeEnd}
+                  incomeTotal={group.incomeTotal}
+                  expenseTotal={group.expenseTotal}
+                  group={group}
+                />
+              )
+            )}
           </div>
         </Panel>
       ) : (

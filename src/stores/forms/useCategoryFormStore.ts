@@ -1,6 +1,9 @@
 // 📄 src/stores/category/categoryForm.store.ts
 
-import { CategoryType, CreateCategoryInput } from '@/features/category/types';
+import {
+  CategoryType,
+  CategoryCreateRequestDTO,
+} from '@/features/category/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -17,7 +20,7 @@ interface CategoryFormStore {
     ) => void;
     reset: () => void;
     fillForm: (data: Partial<CategoryFormStore['state']>) => void;
-    getFormData: () => CreateCategoryInput;
+    getFormData: () => CategoryCreateRequestDTO;
   };
 }
 

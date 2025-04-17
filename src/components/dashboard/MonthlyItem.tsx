@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 
-import { TransactionSummary } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/features/transaction/types';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import CurrencyDisplay from '../ui/CurrencyDisplay';
@@ -14,7 +14,7 @@ interface MonthlyItemProps {
   income: number;
   expense: number;
   open: boolean;
-  weeklyData: TransactionSummary[];
+  weeklyData: TransactionGroupItemDTO[];
   onToggle: () => void;
 }
 
@@ -54,7 +54,7 @@ export default function MonthlyItem({
 
   if (!parsedDate) return null;
 
-  const handleClick = (e: React.MouseEvent, week: TransactionSummary) => {
+  const handleClick = (e: React.MouseEvent, week: TransactionGroupItemDTO) => {
     e.stopPropagation();
     useFilterStore.getState().setQuery({ date: new Date(week.label) });
     router.push('/dashboard/daily');

@@ -1,19 +1,23 @@
 // 📄 src/api/category.api.ts
 
 import { del, get, patch, post } from '../../lib/api';
-import { Category, CreateCategoryInput, UpdateCategoryInput } from './types';
+import {
+  CategoryDTO,
+  CategoryCreateRequestDTO,
+  CategoryUpdateRequestDTO,
+} from './types';
 
-export const getCategoriesAPI = (): Promise<Category[]> => {
+export const getCategoriesAPI = (): Promise<CategoryDTO[]> => {
   return get('/categories');
 };
 
-export const createCategoryAPI = async (data: CreateCategoryInput) => {
+export const createCategoryAPI = async (data: CategoryCreateRequestDTO) => {
   return post('/categories', data);
 };
 
 export const updateCategoryAPI = async (
   id: string,
-  data: UpdateCategoryInput
+  data: CategoryUpdateRequestDTO
 ) => {
   return patch(`/categories/${id}`, data);
 };
@@ -22,6 +26,6 @@ export const deleteCategoryAPI = async (id: string) => {
   return del(`/categories/${id}`);
 };
 
-export const getCategoryByIdAPI = async (id: string): Promise<Category> => {
+export const getCategoryByIdAPI = async (id: string): Promise<CategoryDTO> => {
   return get(`/categories/${id}`);
 };

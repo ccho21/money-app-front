@@ -1,20 +1,20 @@
 import { get, post, put } from '@/lib/api';
 import {
-  BudgetCategoryGroupResponse,
-  BudgetCategoryResponse,
-  BudgetSummaryResponse,
-  CreateBudgetCategory,
-  UpdateBudgetCategory,
+  BudgetCategoryGroupResponseDTO,
+  BudgetCategoryGroupResponseDTO,
+  BudgetSummaryResponseDTO,
+  CreateBudgetCategoryDTO,
+  UpdateBudgetCategoryDTO,
 } from './types';
 import { DateFilterParams } from '@/features/shared/types';
-import { AccountDashboardResponse } from '../account/types';
+import { AccountDashboardResponseDTO } from '../account/types';
 
 export const fetchBudgetsByCategoryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
-  return get<BudgetCategoryResponse>(
+  return get<BudgetCategoryGroupResponseDTO>(
     `/budgets/by-category?${query.toString()}`
   );
 };
@@ -25,28 +25,30 @@ export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
   if (params.endDate) query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
 
-  return get<BudgetSummaryResponse>(`/budgets/summary?${query.toString()}`);
+  return get<BudgetSummaryResponseDTO>(`/budgets/summary?${query.toString()}`);
 };
 
-export const createBudgetCategoryAPI = async (data: CreateBudgetCategory) => {
+export const createBudgetCategoryAPI = async (
+  data: CreateBudgetCategoryDTO
+) => {
   return await post('/budgets/by-category', data);
 };
 
 export const updateBudgetCategoryAPI = async (
   id: string,
-  data: UpdateBudgetCategory
+  data: UpdateBudgetCategoryDTO
 ) => {
   return await put(`/budgets/by-category/${id}`, data);
 };
 
 export const fetchAccountsDashboardAPI =
-  async (): Promise<AccountDashboardResponse> => {
+  async (): Promise<AccountDashboardResponseDTO> => {
     return await get('/accounts/dashboard');
   };
 
 export const getBudgetCategoriesByCategoryIdAPI = async (
   categoryId: string,
   data: DateFilterParams
-): Promise<BudgetCategoryGroupResponse> => {
+): Promise<BudgetCategoryGroupResponseDTO> => {
   return await post(`/budgets/by-category/${categoryId}`, data);
 };

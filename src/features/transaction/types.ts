@@ -1,59 +1,79 @@
-import { Account } from "../account/types";
+export type TransactionType = 'income' | 'expense' | 'transfer';
 
-export type TransactionType = "income" | "expense" | "transfer";
-
-export interface Category {
+//
+// ✅ 트랜잭션 기본 DTO (조회용)
+export interface TransactionDTO {
   id: string;
-  name: string;
-  icon: string;
-  type: "income" | "expense";
-  color?: string | null;
-}
-
-export interface Transaction {
-  id: string;
-  type: TransactionType;
   amount: number;
+  date: string; // ISO format
+  type: TransactionType;
+  note?: string;
+  description?: string;
   accountId: string;
   toAccountId?: string;
   linkedTransferId?: string;
-  note?: string | null;
-  description?: string | null;
-  date: string; // ISO 형식 문자열
-  category?: Category;
-  account: Account; // 출금 계좌
-  toAccount?: Account; // 입금 계좌 (transfer만)
-  createdAt?: string;
+  categoryId?: string;
+  isOpening?: boolean;
+  dueDate?: string;
+  paidAt?: string;
 }
 
-// 날짜별 / 월별 그룹 데이터
-export interface TransactionSummary {
-  label: string; // 예: '2025-03-25', '2025-03'
-  rangeStart: string; // yyyy-MM-dd
-  rangeEnd: string; // yyyy-MM-dd
-  incomeTotal: number;
-  expenseTotal: number;
-  transactions: Transaction[];
+//
+// ✅ 트랜잭션 생성 요청 DTO
+export interface TransactionIncomeOrExpenseRequestDTO {
+  type: TransactionType;
+  amount: number;
+  date: string;
+  accountId: string;
+  categoryId?: string;
+  note?: string;
+  description?: string;
 }
 
-// 전체 응답 DTO (백엔드 TransactionSummaryDTO)
-export interface TransactionSummaryResponse {
-  type: "daily" | "weekly" | "monthly" | "yearly";
+export type TransactionTransferRequestDTO = {
+  type: 'transfer';
+  amount: number;
+  fromAccountId: string;
+  toAccountId: string;
+  date: string;
+  note?: string;
+  description?: string;
+};
+
+//
+// ✅ 트랜잭션 그룹화 항목 (기간별 리스트)
+export interface TransactionGroupItemDTO {
+  label: string;
+  rangeStart: string;
+  rangeEnd: string;
+  transactions: TransactionDTO[];
+  groupIncome: number;
+  groupExpense: number;
+  isCurrent?: boolean;
+}
+
+//
+// ✅ 트랜잭션 그룹화 응답 DTO
+export interface TransactionGroupSummaryDTO {
   startDate: string;
   endDate: string;
-  incomeTotal: number;
-  expenseTotal: number;
-  data: TransactionSummary[];
+  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  type?: TransactionType;
+  items: TransactionGroupItemDTO[];
+  summary?: TransactionGroupItemDTO;
+  totalIncome: number;
+  totalExpense: number;
 }
 
-export interface TransactionCalendarItem {
+//
+// ✅ 캘린더 뷰용 트랜잭션 DTO
+export interface TransactionCalendarDTO {
   date: string;
-  income: number;
-  expense: number;
+  transactions: TransactionDTO[];
 }
 
 export type TransactionFormFields = {
-  type: "income" | "expense" | "transfer";
+  type: 'income' | 'expense' | 'transfer';
   amount: string;
   accountId: string;
   categoryId: string;
@@ -64,24 +84,6 @@ export type TransactionFormFields = {
   to: string;
 };
 
-export type IncomeOrExpensePayload = {
-  type: "income" | "expense";
-  amount: number;
-  accountId: string;
-  categoryId: string;
-  date: string;
-  note?: string;
-  description?: string;
-};
-
-export type TransferPayload = {
-  type: "transfer";
-  amount: number;
-  fromAccountId: string;
-  toAccountId: string;
-  date: string;
-  note?: string;
-  description?: string;
-};
-
-export type SubmitTransactionPayload = IncomeOrExpensePayload | TransferPayload;
+export type TransactionRequestDTO =
+  | TransactionIncomeOrExpenseRequestDTO
+  | TransactionTransferRequestDTO;

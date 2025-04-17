@@ -1,9 +1,9 @@
 import { post, get, put, del } from '@/lib/api';
 import {
   SubmitTransactionPayload,
-  Transaction,
-  TransactionCalendarItem,
-  TransactionSummaryResponse,
+  TransactionDTO,
+  TransactionCalendarDTO,
+  TransactionGroupSummaryDTO,
 } from './types';
 import { DateFilterParams } from '../shared/types';
 
@@ -30,12 +30,12 @@ export const updateTransferTransactionAPI = (
   return put(`/transactions/transfer/${id}`, data);
 };
 
-export const getTransactionByIdAPI = (id: string): Promise<Transaction> => {
-  return get<Transaction>(`/transactions/${id}`);
+export const getTransactionByIdAPI = (id: string): Promise<TransactionDTO> => {
+  return get<TransactionDTO>(`/transactions/${id}`);
 };
 
 export const fetchTransactionsAPI = async (query: URLSearchParams) => {
-  return get<Transaction[]>(`/transactions?${query.toString()}`);
+  return get<TransactionDTO[]>(`/transactions?${query.toString()}`);
 };
 
 export const fetchTransactionSummaryAPI = async (params: DateFilterParams) => {
@@ -43,13 +43,13 @@ export const fetchTransactionSummaryAPI = async (params: DateFilterParams) => {
   query.append('startDate', params.startDate);
   if (params.endDate) query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
-  return get<TransactionSummaryResponse>(
+  return get<TransactionGroupSummaryDTO>(
     `/transactions/summary?${query.toString()}`
   );
 };
 
 export const fetchTransactionCalendarAPI = async (date: string) => {
-  return get<TransactionCalendarItem[]>(`/transactions/calendar?date=${date}`);
+  return get<TransactionCalendarDTO[]>(`/transactions/calendar?date=${date}`);
 };
 
 export const deleteTransactionAPI = async (id: string) => {

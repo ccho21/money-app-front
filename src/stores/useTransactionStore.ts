@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
-  Transaction,
-  TransactionSummary,
-  TransactionSummaryResponse,
-  TransactionCalendarItem,
+  TransactionDTO,
+  TransactionGroupItemDTO,
+  TransactionGroupSummaryDTO,
+  TransactionCalendarDTO,
 } from '@/features/transaction/types';
 
 interface TransactionFilters {
@@ -27,11 +27,11 @@ const defaultFilters: TransactionFilters = {
 };
 
 interface TransactionStoreState {
-  transactions: Transaction[];
-  selectedTransaction?: Transaction;
-  transactionSummary: TransactionSummary | null;
-  transactionSummaryResponse: TransactionSummaryResponse | null;
-  transactionCalendarItems: TransactionCalendarItem[];
+  transactions: TransactionDTO[];
+  selectedTransaction?: TransactionDTO;
+  transactionSummary: TransactionGroupItemDTO | null;
+  transactionSummaryResponse: TransactionGroupSummaryDTO | null;
+  transactionCalendarItems: TransactionCalendarDTO[];
   filters: TransactionFilters;
   isLoading: boolean;
   lastUpdatedAt: number;
@@ -39,11 +39,11 @@ interface TransactionStoreState {
 }
 
 interface TransactionStoreActions {
-  setTransactions: (txs: Transaction[]) => void;
-  setSelectedTransaction: (tx: Transaction) => void;
-  setTransactionSummary: (data: TransactionSummary) => void;
-  setTransactionSummaryResponse: (data: TransactionSummaryResponse) => void;
-  setCalendarItems: (items: TransactionCalendarItem[]) => void;
+  setTransactions: (txs: TransactionDTO[]) => void;
+  setSelectedTransaction: (tx: TransactionDTO) => void;
+  setTransactionSummary: (data: TransactionGroupItemDTO) => void;
+  setTransactionSummaryResponse: (data: TransactionGroupSummaryDTO) => void;
+  setCalendarItems: (items: TransactionCalendarDTO[]) => void;
   setFilters: (filters: Partial<TransactionFilters>) => void;
   resetFilters: () => void;
   setDateRange: (start: string, end: string) => void;

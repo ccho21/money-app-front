@@ -12,7 +12,7 @@ import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchBudgetsByCategory } from '@/features/budget/hooks';
 
-import type { BudgetCategory } from '@/features/budget/types';
+import type { BudgetCategoryGroupItem } from '@/features/budget/types';
 import type { DateFilterParams } from '@/features/shared/types';
 
 export default function BudgetPage() {
@@ -61,7 +61,7 @@ export default function BudgetPage() {
       <DateNavigator withTransactionType={true} />
 
       <Panel>
-        {budgetCategoryResponse?.data.map((item: BudgetCategory) => (
+        {budgetCategoryResponse?.data.map((item: BudgetCategoryGroupItem) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}

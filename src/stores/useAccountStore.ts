@@ -1,25 +1,25 @@
 import {
-  Account,
-  AccountDashboardResponse,
-  AccountSummaryDTO,
+  AccountDashboardResponseDTO,
+  AccountDTO,
+  AccountTransactionSummaryDTO,
 } from '@/features/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 interface AccountStoreState {
   state: {
-    accounts: Account[];
-    selectedAccount?: Account;
-    summaryResponse: AccountSummaryDTO[]; // ✅ 타입 수정: 단일 객체 ❌ → 배열 ✅
-    accountDashboard: AccountDashboardResponse | null;
+    accounts: AccountDTO[];
+    selectedAccount?: AccountDTO;
+    summaryResponse: AccountTransactionSummaryDTO[]; // ✅ 타입 수정: 단일 객체 ❌ → 배열 ✅
+    accountDashboard: AccountDashboardResponseDTO | null;
     isLoading: boolean;
     error: string | null;
   };
   actions: {
-    setAccounts: (data: Account[]) => void;
-    setSelectedAccount: (acc: Account) => void;
-    setSummaryResponse: (data: AccountSummaryDTO[]) => void;
-    setAccountDashboard: (data: AccountDashboardResponse) => void;
+    setAccounts: (data: AccountDTO[]) => void;
+    setSelectedAccount: (acc: AccountDTO) => void;
+    setSummaryResponse: (data: AccountTransactionSummaryDTO[]) => void;
+    setAccountDashboard: (data: AccountDashboardResponseDTO) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     clear: () => void;

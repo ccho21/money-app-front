@@ -7,7 +7,7 @@ import {
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
 } from './api';
-import { CreateBudgetCategory, UpdateBudgetCategory } from './types';
+import { CreateBudgetCategoryDTO, UpdateBudgetCategoryDTO } from './types';
 
 export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {
@@ -48,7 +48,7 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
   }
 };
 
-export const createBudgetCategory = async (data: CreateBudgetCategory) => {
+export const createBudgetCategory = async (data: CreateBudgetCategoryDTO) => {
   try {
     if (typeof data.amount === 'string') data.amount = Number(data.amount);
     const response = await createBudgetCategoryAPI(data);
@@ -60,7 +60,7 @@ export const createBudgetCategory = async (data: CreateBudgetCategory) => {
 
 export const updateBudgetCategory = async (
   id: string,
-  data: UpdateBudgetCategory
+  data: UpdateBudgetCategoryDTO
 ) => {
   try {
     const response = await updateBudgetCategoryAPI(id, data);

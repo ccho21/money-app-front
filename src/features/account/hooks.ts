@@ -1,7 +1,10 @@
 import { useAccountStore } from '@/stores/useAccountStore';
 import { DateFilterParams } from '@/features/shared/types';
 import { fetchAccountsDashboardAPI } from '@/features/budget/api';
-import { SubmitAccountPayload } from '@/features/account/types';
+import {
+  AccountCreateRequestDTO,
+  AccountUpdateRequestDTO,
+} from '@/features/account/types';
 import {
   createAccountAPI,
   fetchAccountsAPI,
@@ -10,7 +13,7 @@ import {
   updateAccountAPI,
 } from '@/features/account/api';
 
-export const createAccount = async (payload: SubmitAccountPayload) => {
+export const createAccount = async (payload: AccountCreateRequestDTO) => {
   const {
     actions: { setLoading, setError },
   } = useAccountStore.getState();
@@ -27,7 +30,7 @@ export const createAccount = async (payload: SubmitAccountPayload) => {
 
 export const updateAccount = async (
   id: string,
-  payload: SubmitAccountPayload
+  payload: AccountUpdateRequestDTO
 ) => {
   const {
     actions: { setLoading, setError },

@@ -3,6 +3,8 @@ import { CategoryType } from '../category/types';
 export type SortKey = 'note' | 'count' | 'amount';
 export type SortDirection = 'asc' | 'desc';
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export interface StatsByCategory {
   categoryId: string;
   categoryName: string;

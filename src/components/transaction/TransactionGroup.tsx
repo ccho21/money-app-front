@@ -2,7 +2,10 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Transaction, TransactionSummary } from '@/features/transaction/types';
+import {
+  TransactionDTO,
+  TransactionGroupItemDTO,
+} from '@/features/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
 import {
   CalendarDaysIcon,
@@ -18,8 +21,8 @@ interface TransactionGroupProps {
   rangeEnd?: string;
   incomeTotal: number;
   expenseTotal: number;
-  group: TransactionSummary;
-  onTransactionClick?: (tx: Transaction) => void;
+  group: TransactionGroupItemDTO;
+  onTransactionClick?: (tx: TransactionDTO) => void;
   onHeaderClick?: () => void;
   showDateHeader?: boolean;
   showRange?: boolean;
@@ -101,7 +104,7 @@ export default function TransactionGroup({
 
       {/* 거래 리스트 */}
       <ul className='mt-3 space-y-2'>
-        {group.transactions.map((tx: Transaction) => (
+        {group.transactions.map((tx: TransactionDTO) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}
       </ul>

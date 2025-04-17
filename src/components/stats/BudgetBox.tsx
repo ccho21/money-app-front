@@ -2,12 +2,12 @@
 
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 import Progress from '@/components/ui/Progress';
-import { BudgetSummaryResponse } from '@/features/budget/types';
+import { BudgetSummaryResponseDTO } from '@/features/budget/types';
 
 import { ChartBar } from 'lucide-react';
 
 interface Props {
-  item: BudgetSummaryResponse;
+  item: BudgetSummaryResponseDTO;
   handleClick?: () => void;
 }
 

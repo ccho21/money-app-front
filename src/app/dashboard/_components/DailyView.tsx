@@ -1,6 +1,6 @@
 import {
-  Transaction,
-  TransactionSummaryResponse,
+  TransactionDTO,
+  TransactionGroupSummaryDTO,
 } from '@/features/transaction/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import EmptyMessage from '@/components/ui/EmptyMessage';
@@ -10,9 +10,9 @@ import { SummaryItem } from '@/features/shared/types';
 
 interface DailyViewProps {
   isLoading: boolean;
-  data?: TransactionSummaryResponse | null;
+  data?: TransactionGroupSummaryDTO | null;
   summaryItems: SummaryItem[];
-  onTransactionClick?: (tx: Transaction) => void;
+  onTransactionClick?: (tx: TransactionDTO) => void;
   onHeaderClick?: (date: string) => void;
 }
 
@@ -47,7 +47,7 @@ export default function DailyView({
             incomeTotal={group.incomeTotal}
             expenseTotal={group.expenseTotal}
             group={group}
-            onTransactionClick={(tx: Transaction) => {
+            onTransactionClick={(tx: TransactionDTO) => {
               onTransactionClick?.(tx);
             }}
             onHeaderClick={() => {

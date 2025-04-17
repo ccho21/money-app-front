@@ -5,12 +5,12 @@ import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import YearlyItem from './YearlyItem';
 
-import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
 import { SummaryItem } from '@/features/shared/types';
 
 interface YearlyViewProps {
   isLoading: boolean;
-  data?: TransactionSummaryResponse | null;
+  data?: TransactionGroupSummaryDTO | null;
   summaryItems: SummaryItem[];
   onItemClick: (dateStr: string) => void;
 }

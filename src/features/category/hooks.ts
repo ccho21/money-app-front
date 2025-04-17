@@ -6,8 +6,8 @@ import {
   updateCategoryAPI,
 } from '@/features/category/api';
 import {
-  CreateCategoryInput,
-  UpdateCategoryInput,
+  CategoryCreateRequestDTO,
+  CategoryUpdateRequestDTO,
 } from '@/features/category/types';
 import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
 import { useCategoryStore } from '@/stores/useCategoryStore';
@@ -25,7 +25,7 @@ export const fetchCategories = async () => {
 };
 
 // ✅ 카테고리 생성
-export const createCategory = async (input: CreateCategoryInput) => {
+export const createCategory = async (input: CategoryCreateRequestDTO) => {
   try {
     await createCategoryAPI(input);
     await fetchCategories();
@@ -39,7 +39,7 @@ export const createCategory = async (input: CreateCategoryInput) => {
 // ✅ 카테고리 수정
 export const updateCategory = async (
   id: string,
-  input: UpdateCategoryInput
+  input: CategoryUpdateRequestDTO
 ) => {
   try {
     await updateCategoryAPI(id, input);

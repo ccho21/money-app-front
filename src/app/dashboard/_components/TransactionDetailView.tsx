@@ -4,7 +4,10 @@ import EmptyMessage from '@/components/ui/EmptyMessage';
 import PanelContent from '@/components/ui/PanelContent';
 import PanelHeader from '@/components/ui/PanelHeader';
 import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
-import { Transaction, TransactionSummary } from '@/features/transaction/types';
+import {
+  TransactionDTO,
+  TransactionGroupItemDTO,
+} from '@/features/transaction/types';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { useRouter } from 'next/navigation';
 import { PlusIcon, MinusIcon } from 'lucide-react';
@@ -15,7 +18,7 @@ import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 interface Props {
   open: boolean;
   date: Date;
-  transactionSummary?: TransactionSummary;
+  transactionSummary?: TransactionGroupItemDTO;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -35,7 +38,7 @@ export default function TransactionDetailView({
     actions: { setSelectedTransaction },
   } = useTransactionStore();
 
-  const onTransactionClick = (tx: Transaction) => {
+  const onTransactionClick = (tx: TransactionDTO) => {
     setSelectedTransaction(tx);
     router.push(`/transaction/${tx.id}/edit`);
   };

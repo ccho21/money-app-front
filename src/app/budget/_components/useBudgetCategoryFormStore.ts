@@ -1,4 +1,4 @@
-import { BudgetCategory } from '@/features/budget/types';
+import { BudgetCategoryGroupItem } from '@/features/budget/types';
 import { RangeOption } from '@/features/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore'; // ✅ 바뀐 부분
@@ -18,7 +18,7 @@ interface BudgetCategoryFormActions {
     field: K,
     value: BudgetCategoryFormState[K]
   ) => void;
-  setAllFields: (data: Partial<BudgetCategory>) => void;
+  setAllFields: (data: Partial<BudgetCategoryGroupItem>) => void;
   reset: () => void;
   getFormData: () => BudgetCategoryFormState;
   syncWithDateFilter: () => void;

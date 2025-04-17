@@ -1,13 +1,13 @@
 'use client';
 
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
-import { AccountSummaryDTO } from '@/features/account/types';
+import { AccountTransactionSummaryDTO } from '@/features/account/types';
 
 import { Wallet } from 'lucide-react';
 import React from 'react';
 
 interface AccountBoxProps {
-  accounts: AccountSummaryDTO[];
+  accounts: AccountTransactionSummaryDTO[];
 }
 
 export default function AccountBox({ accounts }: AccountBoxProps) {

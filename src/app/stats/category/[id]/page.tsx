@@ -9,7 +9,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
 import { CategoryType } from '@/features/category/types';
-import { TransactionSummary } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/features/transaction/types';
 import {
   fetchStatsCategoryByCategoryId,
   fetchStatsSummaryByCategoryId,
@@ -142,7 +142,7 @@ export default function StatsCategoryDetailPage() {
       {categoryDetailResponse && categoryDetailResponse.data.length ? (
         <div className='space-y-4'>
           {categoryDetailResponse.data.map(
-            (group: TransactionSummary, i: number) => (
+            (group: TransactionGroupItemDTO, i: number) => (
               <TransactionGroup
                 key={group.label + i}
                 label={group.label}

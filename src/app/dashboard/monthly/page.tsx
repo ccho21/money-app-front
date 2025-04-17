@@ -12,14 +12,14 @@ import {
   fetchTransactionSummaryWeekly,
 } from '@/features/transaction/hooks';
 
-import { TransactionSummary } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
 import MonthlyView from '@/components/dashboard/MonthlyView';
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [weeklySummaryByMonth, setWeeklySummaryByMonth] = useState<{
-    [key: string]: TransactionSummary[];
+    [key: string]: TransactionGroupItemDTO[];
   }>({});
 
   const { transactionSummaryResponse, isLoading } = useTransactionStore(
@@ -55,7 +55,7 @@ export default function MonthlyPage() {
   }, [getDateRangeKey, date]);
 
   const handleToggle = useCallback(
-    async (index: number, summary: TransactionSummary) => {
+    async (index: number, summary: TransactionGroupItemDTO) => {
       const isOpening = openIndex !== index;
       setOpenIndex(isOpening ? index : null);
 
@@ -75,7 +75,7 @@ export default function MonthlyPage() {
         };
 
         const weeklyRes = await fetchTransactionSummaryWeekly(params);
-        const weeklyData: TransactionSummary[] = weeklyRes?.data ?? [];
+        const weeklyData: TransactionGroupItemDTO[] = weeklyRes?.data ?? [];
 
         setWeeklySummaryByMonth((prev) => ({
           ...prev,

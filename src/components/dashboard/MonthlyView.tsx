@@ -5,19 +5,19 @@ import Panel from '@/components/ui/Panel';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
 import {
-  TransactionSummaryResponse,
-  TransactionSummary,
+  TransactionGroupSummaryDTO,
+  TransactionGroupItemDTO,
 } from '@/features/transaction/types';
 import MonthlyItem from './MonthlyItem';
 import { SummaryItem } from '@/features/shared/types';
 
 interface MonthlyViewProps {
   isLoading: boolean;
-  data?: TransactionSummaryResponse | null;
+  data?: TransactionGroupSummaryDTO | null;
   openIndex: number | null;
   summaryItems: SummaryItem[];
-  weeklySummaryByMonth: { [key: string]: TransactionSummary[] };
-  onToggle: (index: number, summary: TransactionSummary) => void;
+  weeklySummaryByMonth: { [key: string]: TransactionGroupItemDTO[] };
+  onToggle: (index: number, summary: TransactionGroupItemDTO) => void;
 }
 
 export default function MonthlyView({

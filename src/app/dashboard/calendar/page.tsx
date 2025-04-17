@@ -10,8 +10,8 @@ import { get } from '@/lib/api';
 import { fetchTransactionCalendar } from '@/features/transaction/hooks';
 
 import {
-  TransactionSummary,
-  TransactionSummaryResponse,
+  TransactionGroupItemDTO,
+  TransactionGroupSummaryDTO,
 } from '@/features/transaction/types';
 import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from '../_components/CalendarWithTransactions';
@@ -37,7 +37,7 @@ export default function CalendarPage() {
 
   const [selectedDetail, setSelectedDetail] = useState<{
     date: Date;
-    summary?: TransactionSummary;
+    summary?: TransactionGroupItemDTO;
     open: boolean;
   } | null>(null);
 
@@ -102,7 +102,7 @@ export default function CalendarPage() {
         endDate,
       });
 
-      const res = await get<TransactionSummaryResponse>(
+      const res = await get<TransactionGroupSummaryDTO>(
         `/transactions/summary?${params.toString()}`
       );
 

@@ -6,7 +6,7 @@ import SummaryBox from '@/components/stats/SummaryBox';
 import { fetchAccountDashboard } from '@/features/account/hooks';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';
-import { AccountDashboardItem } from '@/features/account/types';
+import { AccountDashboardItemDTO } from '@/features/account/types';
 import Panel from '@/components/ui/Panel';
 import { useUIStore } from '@/stores/useUIStore';
 
@@ -40,7 +40,7 @@ export default function AccountsPage() {
   const { asset, liability, total, data } = accountDashboard;
   const { CASH, BANK, CARD } = data;
 
-  const handleClick = (acc: AccountDashboardItem) => {
+  const handleClick = (acc: AccountDashboardItemDTO) => {
     setSelectedAccount({
       id: acc.id,
       type: acc.type,

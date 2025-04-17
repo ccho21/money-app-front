@@ -9,7 +9,7 @@ import { fetchTransactionSummary } from '@/features/transaction/hooks';
 
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/features/shared/types';
-import { Transaction } from '@/features/transaction/types';
+import { TransactionDTO } from '@/features/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 
 export default function AccountDailyPage() {
@@ -81,7 +81,7 @@ export default function AccountDailyPage() {
       isLoading={isLoading}
       data={transactionSummaryResponse}
       summaryItems={items}
-      onTransactionClick={(tx: Transaction) => {
+      onTransactionClick={(tx: TransactionDTO) => {
         actions.setSelectedTransaction(tx);
         router.push(`/transaction/${tx.id}/edit`);
       }}

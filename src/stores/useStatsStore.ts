@@ -8,7 +8,7 @@ import {
   StatsSummaryByCategoryResponse,
   StatsSummaryByNoteResponse,
 } from '@/features/stats/types';
-import { TransactionSummaryResponse } from '@/features/transaction/types';
+import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -22,9 +22,9 @@ interface StatsStore {
     budgetResponse?: StatsByBudgetResponse;
     noteResponse?: StatsByNoteResponse;
 
-    categoryDetailResponse?: TransactionSummaryResponse;
-    budgetDetailResponse?: TransactionSummaryResponse;
-    noteDetailResponse?: TransactionSummaryResponse;
+    categoryDetailResponse?: TransactionGroupSummaryDTO;
+    budgetDetailResponse?: TransactionGroupSummaryDTO;
+    noteDetailResponse?: TransactionGroupSummaryDTO;
 
     isLoading: boolean;
     error: string | null;
@@ -40,9 +40,9 @@ interface StatsStore {
     setBudgetResponse: (data: StatsByBudgetResponse) => void;
     setNoteResponse: (data: StatsByNoteResponse) => void;
 
-    setCategoryDetailResponse: (data?: TransactionSummaryResponse) => void;
-    setBudgetDetailResponse: (data: TransactionSummaryResponse) => void;
-    setNoteDetailResponse: (data: TransactionSummaryResponse) => void;
+    setCategoryDetailResponse: (data?: TransactionGroupSummaryDTO) => void;
+    setBudgetDetailResponse: (data: TransactionGroupSummaryDTO) => void;
+    setNoteDetailResponse: (data: TransactionGroupSummaryDTO) => void;
 
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;

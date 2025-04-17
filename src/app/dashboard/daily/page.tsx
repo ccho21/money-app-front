@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { fetchTransactionSummary } from '@/features/transaction/hooks';
 import { DateFilterParams } from '@/features/shared/types';
-import { Transaction } from '@/features/transaction/types';
+import { TransactionDTO } from '@/features/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 import { useShallow } from 'zustand/shallow';
 import { useFilterStore } from '@/stores/useFilterStore';
@@ -73,7 +73,7 @@ export default function DailyPage() {
       isLoading={isLoading}
       data={transactionSummaryResponse}
       summaryItems={items}
-      onTransactionClick={(tx: Transaction) => {
+      onTransactionClick={(tx: TransactionDTO) => {
         actions.setSelectedTransaction(tx);
         router.push(`/transaction/${tx.id}/edit`);
       }}
