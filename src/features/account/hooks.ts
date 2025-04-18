@@ -13,115 +13,109 @@ import {
   updateAccountAPI,
 } from '@/features/account/api';
 
+//
+// Create a new account
+//
 export const createAccount = async (payload: AccountCreateRequestDTO) => {
-  const {
-    actions: { setLoading, setError },
-  } = useAccountStore.getState();
-  try {
-    const data = await createAccountAPI(payload);
-    return data;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
-    setError(message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-export const updateAccount = async (
-  id: string,
-  payload: AccountUpdateRequestDTO
-) => {
-  const {
-    actions: { setLoading, setError },
-  } = useAccountStore.getState();
-  try {
-    const data = await updateAccountAPI(id, payload);
-    return data;
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
-    setError(message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-export const fetchAccounts = async () => {
-  const {
-    actions: { setAccounts, setLoading, setError },
-  } = useAccountStore.getState();
-
+  const { actions: { setLoading, setError } } = useAccountStore.getState();
   setLoading(true);
   setError(null);
+  try {
+    return await createAccountAPI(payload);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to create account';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
+//
+// Update an existing account
+//
+export const updateAccount = async (id: string, payload: AccountUpdateRequestDTO) => {
+  const { actions: { setLoading, setError } } = useAccountStore.getState();
+  setLoading(true);
+  setError(null);
+  try {
+    return await updateAccountAPI(id, payload);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to update account';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+//
+// Fetch all accounts
+//
+export const fetchAccounts = async () => {
+  const { actions: { setAccounts, setLoading, setError } } = useAccountStore.getState();
+  setLoading(true);
+  setError(null);
   try {
     const data = await fetchAccountsAPI();
     setAccounts(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
+    const message = err instanceof Error ? err.message : 'Failed to fetch accounts';
     setError(message);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch a specific account by ID
+//
 export const fetchAccountById = async (id: string) => {
-  const {
-    actions: { setSelectedAccount, setLoading, setError },
-  } = useAccountStore.getState();
-
+  const { actions: { setSelectedAccount, setLoading, setError } } = useAccountStore.getState();
   setLoading(true);
   setError(null);
-
   try {
     const data = await fetchAccountsByIdAPI(id);
     setSelectedAccount(data);
     return data;
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '트랜즈액션 불러오기 실패';
+    const message = err instanceof Error ? err.message : 'Failed to fetch account';
     setError(message);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch summary data for accounts by date range
+//
 export const fetchAccountSummary = async (params: DateFilterParams) => {
-  const {
-    actions: { setSummaryResponse, setLoading, setError },
-  } = useAccountStore.getState();
-
+  const { actions: { setSummaryResponse, setLoading, setError } } = useAccountStore.getState();
   setLoading(true);
   setError(null);
-
   try {
     const data = await fetchAccountSummaryAPI(params);
     setSummaryResponse(data);
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '계좌 요약 데이터 오류';
+    const message = err instanceof Error ? err.message : 'Failed to fetch summary';
     setError(message);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch dashboard data (temporary budget module dependency)
+//
 export const fetchAccountDashboard = async () => {
-  const {
-    actions: { setAccountDashboard, setLoading, setError },
-  } = useAccountStore.getState();
-
+  const { actions: { setAccountDashboard, setLoading, setError } } = useAccountStore.getState();
   setLoading(true);
   setError(null);
-
   try {
     const data = await fetchAccountsDashboardAPI();
     setAccountDashboard(data);
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '계좌 정보를 불러오지 못했습니다.';
-    setError(message); // ✅ 누락된 에러 설정
+    const message = err instanceof Error ? err.message : 'Failed to fetch dashboard data';
+    setError(message);
   } finally {
-    setLoading(false); // ✅ 항상 로딩 해제
+    setLoading(false);
   }
 };

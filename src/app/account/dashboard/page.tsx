@@ -10,6 +10,9 @@ import { AccountDashboardItemDTO } from '@/features/account/types';
 import Panel from '@/components/ui/Panel';
 import { useUIStore } from '@/stores/useUIStore';
 
+//
+// Account dashboard summary page
+//
 export default function AccountsPage() {
   const router = useRouter();
   const {
@@ -17,29 +20,42 @@ export default function AccountsPage() {
     state: { accountDashboard, isLoading },
   } = useAccountStore();
 
+  //
+  // Set top navigation when mounted
+  //
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Accounts.',
       onBack: undefined,
     });
+
     return () => {
+      //
+      // Reset top navigation when unmounted
+      //
       useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
+  //
+  // Fetch account dashboard data on mount
+  //
   useEffect(() => {
     (async () => {
-      await fetchAccountDashboard(); // ✅ 새 API 연동
+      await fetchAccountDashboard();
     })();
   }, []);
 
   if (isLoading || !accountDashboard) {
-    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   const { asset, liability, total, data } = accountDashboard;
   const { CASH, BANK, CARD } = data;
 
+  //
+  // Navigate to detail page with selected account
+  //
   const handleClick = (acc: AccountDashboardItemDTO) => {
     setSelectedAccount({
       id: acc.id,
@@ -86,7 +102,7 @@ export default function AccountsPage() {
             ['BANK', BANK],
             ['CARD', CARD],
           ].map(([label, items]) => {
-            const typedItems = items as typeof CASH;
+            const typedItems = items as AccountDashboardItemDTO[];
             if (typedItems.length === 0) return null;
 
             return (

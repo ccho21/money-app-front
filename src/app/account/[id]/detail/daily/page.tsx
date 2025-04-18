@@ -12,6 +12,9 @@ import { DateFilterParams } from '@/features/shared/types';
 import { TransactionDTO } from '@/features/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 
+//
+// Daily account transaction detail page
+//
 export default function AccountDailyPage() {
   const router = useRouter();
 
@@ -22,22 +25,25 @@ export default function AccountDailyPage() {
       getDateRangeKey: s.getDateRangeKey,
     }))
   );
+
   const { date, range } = query;
 
-  const { isLoading, transactionSummaryResponse, actions } =
-    useTransactionStore(
-      useShallow((state) => ({
-        isLoading: state.isLoading,
-        transactionSummaryResponse: state.transactionSummaryResponse,
-        actions: state.actions,
-      }))
-    );
+  const { isLoading, transactionSummaryResponse, actions } = useTransactionStore(
+    useShallow((state) => ({
+      isLoading: state.isLoading,
+      transactionSummaryResponse: state.transactionSummaryResponse,
+      actions: state.actions,
+    }))
+  );
 
+  //
+  // Fetch daily grouped transaction summary
+  //
   useEffect(() => {
     const updateAndFetch = async () => {
       if (range !== 'monthly') {
         setQuery({ range: 'monthly' });
-        return; // range가 업데이트되면 이후 useEffect에서 다시 fetch
+        return;
       }
 
       const [startDate, endDate] = getDateRangeKey().split('_');
@@ -76,18 +82,28 @@ export default function AccountDailyPage() {
     },
   ];
 
+  //
+  // Handle transaction item click
+  //
+  const handleTransactionClick = (tx: TransactionDTO) => {
+    actions.setSelectedTransaction(tx);
+    router.push(`/transaction/${tx.id}/edit`);
+  };
+
+  //
+  // Handle header (date) click
+  //
+  const handleHeaderClick = (date: string) => {
+    router.push(`/transaction/new?date=${date}`);
+  };
+
   return (
     <DailyView
       isLoading={isLoading}
       data={transactionSummaryResponse}
       summaryItems={items}
-      onTransactionClick={(tx: TransactionDTO) => {
-        actions.setSelectedTransaction(tx);
-        router.push(`/transaction/${tx.id}/edit`);
-      }}
-      onHeaderClick={(date: string) => {
-        router.push(`/transaction/new?date=${date}`);
-      }}
+      onTransactionClick={handleTransactionClick}
+      onHeaderClick={handleHeaderClick}
     />
   );
 }

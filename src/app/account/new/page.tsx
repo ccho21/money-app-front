@@ -6,13 +6,18 @@ import AccountForm from '../_components/AccountForm';
 import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
+import { AccountCreateRequestDTO } from '@/features/account/types';
 
-export default function AddAccountPage() {
+export default function NewAccountPage() {
   const {
-    actions: { getFormData, reset },
+    actions: { getCreateFormData, reset },
   } = useAccountFormStore();
+
   const router = useRouter();
 
+  //
+  // Configure top navigation on mount
+  //
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Account New.',
@@ -22,19 +27,25 @@ export default function AddAccountPage() {
     });
 
     return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+      //
+      // Reset top navigation on unmount
+      //
+      useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
+  //
+  // Handle form submission
+  //
   const handleSave = async () => {
-    const payload = getFormData();
+    const payload: AccountCreateRequestDTO = getCreateFormData();
 
     try {
       await createAccount(payload);
       reset();
       router.back();
     } catch (err) {
-      alert(err instanceof Error ? err.message : '계좌 생성 실패');
+      alert(err instanceof Error ? err.message : 'Failed to create account');
     }
   };
 

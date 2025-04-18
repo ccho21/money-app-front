@@ -2,9 +2,13 @@
 
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
-import { useBudgetCategoryFormStore } from '@/app/budget/_components/useBudgetCategoryFormStore';
 
+import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
+import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
+
+//
+// Page for creating a new budget category
+//
 export default function NewBudgetCategoryPage() {
   const { categoryId } = useParams();
 
@@ -12,6 +16,9 @@ export default function NewBudgetCategoryPage() {
     (s) => s.actions
   );
 
+  //
+  // Initialize form state on mount
+  //
   useEffect(() => {
     if (!categoryId) return;
     reset();
@@ -19,17 +26,20 @@ export default function NewBudgetCategoryPage() {
     setField('categoryId', String(categoryId));
   }, [categoryId, reset, syncWithDateFilter, setField]);
 
+  //
+  // Handle missing category ID
+  //
   if (!categoryId) {
     return (
-      <div className='p-4 text-sm text-error bg-surface text-center'>
-        카테고리 ID가 없습니다
+      <div className="p-4 text-sm text-error bg-surface text-center">
+        Category ID is missing.
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-background text-foreground'>
-      <main className='p-4'>
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="p-4">
         <BudgetCategoryForm />
       </main>
     </div>

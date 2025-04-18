@@ -7,36 +7,47 @@ import { fillCategoryForm, updateCategory } from '@/features/category/hooks';
 import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
 import { CategoryForm } from '../../_components/CategoryForm';
 
-// ✅ Next가 자동으로 주입하는 구조: props는 항상 async function처럼 다뤄야 함
+//
+// Edit category page
+//
 export default function EditCategoryPage() {
   const router = useRouter();
   const pathname = usePathname();
+
   const {
-    actions: { getFormData, reset },
+    actions: { getUpdateFormData, reset },
   } = useCategoryFormStore();
 
-  // 경로에서 id 추출 (e.g. /category/abc123/edit → abc123)
+  //
+  // Extract ID from pathname (/category/:id/edit)
+  //
   const id = pathname.split('/')[2];
 
+  //
+  // Load category data into form on mount
+  //
   useEffect(() => {
     fillCategoryForm(id);
   }, [id]);
 
+  //
+  // Submit category update
+  //
   const handleSubmit = async () => {
     try {
-      const data = getFormData();
+      const data = getUpdateFormData();
       await updateCategory(id, data);
+      reset();
       router.push('/category');
     } catch (err) {
-      alert(err instanceof Error ? err.message : '카테고리 수정 중 오류 발생');
-    } finally {
-      reset();
+      const message = err instanceof Error ? err.message : 'Failed to update category';
+      alert(message);
     }
   };
 
   return (
-    <div className='pt-4'>
-      <h2 className='text-md font-semibold px-4 pb-2'>카테고리 수정</h2>
+    <div className="pt-4">
+      <h2 className="text-md font-semibold px-4 pb-2">Edit Category</h2>
       <CategoryForm onSubmit={handleSubmit} isEdit />
     </div>
   );

@@ -16,6 +16,9 @@ import { TransactionGroupItemDTO } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
 import MonthlyView from '@/components/dashboard/MonthlyView';
 
+//
+// Monthly transaction view with optional weekly breakdown
+//
 export default function AccountMonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [weeklySummaryByMonth, setWeeklySummaryByMonth] = useState<{
@@ -41,12 +44,18 @@ export default function AccountMonthlyPage() {
 
   const dateRangeKey = useMemo(() => getDateRangeKey(0), [getDateRangeKey]);
 
+  //
+  // Ensure range is set to 'yearly' for monthly breakdown
+  //
   useEffect(() => {
     if (range !== 'yearly') {
       setQuery({ range: 'yearly' });
     }
   }, []);
 
+  //
+  // Fetch transaction summary grouped by 'monthly'
+  //
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
     const params: DateFilterParams = {
@@ -55,11 +64,12 @@ export default function AccountMonthlyPage() {
       endDate,
     };
 
-    (async () => {
-      fetchTransactionSummary(params);
-    })();
+    fetchTransactionSummary(params);
   }, [dateRangeKey, date, setQuery]);
 
+  //
+  // Toggle open/close for a given month and fetch weekly data if needed
+  //
   const handleToggle = useCallback(
     async (index: number, summary: TransactionGroupItemDTO) => {
       const isOpening = openIndex !== index;
@@ -92,6 +102,7 @@ export default function AccountMonthlyPage() {
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
+
   const items = [
     {
       label: 'Income',

@@ -1,20 +1,24 @@
-// 📄 경로: src/app/budget/settings/new/page.tsx
-
 'use client';
 
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useBudgetCategoryFormStore } from '@/app/budget/_components/useBudgetCategoryFormStore';
+import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
 import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
 
+
+//
+// Page for editing an existing budget category
+//
 export default function EditBudgetCategoryPage() {
   const { categoryId } = useParams();
 
-  console.log('### categoryId', categoryId);
   const { reset, syncWithDateFilter, setField } = useBudgetCategoryFormStore(
     (s) => s.actions
   );
 
+  //
+  // Initialize form for editing
+  //
   useEffect(() => {
     if (!categoryId) return;
     reset();
@@ -22,11 +26,20 @@ export default function EditBudgetCategoryPage() {
     setField('categoryId', String(categoryId));
   }, [categoryId, reset, syncWithDateFilter, setField]);
 
-  if (!categoryId) return <div className='p-4'>카테고리 ID가 없습니다</div>;
+  //
+  // Handle missing category ID
+  //
+  if (!categoryId) {
+    return (
+      <div className="p-4 text-sm text-error bg-surface text-center">
+        Category ID is missing.
+      </div>
+    );
+  }
 
   return (
-    <div className='min-h-screen  dark:bg-black text-black dark:text-white'>
-      <main className='p-4'>
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="p-4">
         <BudgetCategoryForm />
       </main>
     </div>

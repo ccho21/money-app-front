@@ -1,49 +1,78 @@
-// 📄 src/stores/category/categoryForm.store.ts
-
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 import {
   CategoryType,
   CategoryCreateRequestDTO,
+  CategoryUpdateRequestDTO,
 } from '@/features/category/types';
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+
+interface CategoryFormState {
+  name: string;
+  type: CategoryType;
+  icon: string;
+  color?: string;
+}
 
 interface CategoryFormStore {
-  state: {
-    name: string;
-    type: CategoryType;
-    icon: string;
-  };
+  state: CategoryFormState;
   actions: {
-    setField: <K extends keyof CategoryFormStore['state']>(
+    setField: <K extends keyof CategoryFormState>(
       key: K,
-      value: CategoryFormStore['state'][K]
+      value: CategoryFormState[K]
     ) => void;
+    setAllFields: (data: Partial<CategoryFormState>) => void;
     reset: () => void;
-    fillForm: (data: Partial<CategoryFormStore['state']>) => void;
-    getFormData: () => CategoryCreateRequestDTO;
+    getCreateFormData: () => CategoryCreateRequestDTO;
+    getUpdateFormData: () => CategoryUpdateRequestDTO;
   };
 }
 
-const initialFormState: CategoryFormStore['state'] = {
+const initialFormState: CategoryFormState = {
   name: '',
   type: 'expense',
   icon: '',
+  color: undefined,
 };
 
 export const useCategoryFormStore = create<CategoryFormStore>()(
   devtools(
     (set, get) => ({
       state: { ...initialFormState },
+
       actions: {
+        //
+        // Set a single field
+        //
         setField: (key, value) =>
           set(
             (s) => ({
-              state: { ...s.state, [key]: value },
+              state: {
+                ...s.state,
+                [key]: value,
+              },
             }),
             false,
             `categoryForm/setField:${key}`
           ),
 
+        //
+        // Set multiple fields at once
+        //
+        setAllFields: (data) =>
+          set(
+            (s) => ({
+              state: {
+                ...s.state,
+                ...data,
+              },
+            }),
+            false,
+            'categoryForm/setAllFields'
+          ),
+
+        //
+        // Reset form to initial state
+        //
         reset: () =>
           set(
             () => ({
@@ -53,22 +82,25 @@ export const useCategoryFormStore = create<CategoryFormStore>()(
             'categoryForm/reset'
           ),
 
-        fillForm: (data) =>
-          set(
-            () => ({
-              state: {
-                name: data.name ?? '',
-                type: data.type ?? 'expense',
-                icon: data.icon ?? '',
-              },
-            }),
-            false,
-            'categoryForm/fillForm'
-          ),
+        //
+        // Return form data for category creation
+        //
+        getCreateFormData: (): CategoryCreateRequestDTO => {
+          const { name, type, icon, color } = get().state;
+          return { name, type, icon, color };
+        },
 
-        getFormData: () => {
-          const { name, type, icon } = get().state;
-          return { name, type, icon };
+        //
+        // Return partial form data for category update
+        //
+        getUpdateFormData: (): CategoryUpdateRequestDTO => {
+          const { name, type, icon, color } = get().state;
+          return {
+            ...(name && { name }),
+            ...(type && { type }),
+            ...(icon && { icon }),
+            ...(color && { color }),
+          };
         },
       },
     }),

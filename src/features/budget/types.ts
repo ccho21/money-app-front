@@ -1,7 +1,9 @@
 import { CategoryType } from '@/features/category/types';
 import { RangeOption } from '@/features/shared/types';
 
-// ✅ 예산 전체 정보 (DB 기준)
+//
+// Budget entity (from DB)
+//
 export interface BudgetDTO {
   id: string;
   userId: string;
@@ -11,7 +13,8 @@ export interface BudgetDTO {
 }
 
 //
-// ✅ 예산 생성/수정 요청 DTO
+// Request DTOs for budget
+//
 export interface BudgetCreateRequestDTO {
   total: number;
 }
@@ -21,7 +24,8 @@ export interface BudgetUpdateRequestDTO {
 }
 
 //
-// ✅ 예산 카테고리 항목 DTO (카테고리별)
+// Budget per category - combined with category info
+//
 export interface BudgetCategoryItemDTO {
   categoryId: string;
   name: string;
@@ -38,14 +42,16 @@ export interface BudgetCategoryItemDTO {
 }
 
 //
-// ✅ 카테고리 목록 응답 DTO
+// API response for list of budgeted categories
+//
 export interface BudgetCategoryListResponseDTO {
   total: number;
   data: BudgetCategoryItemDTO[];
 }
 
 //
-// ✅ 카테고리 단건 수정 요청 DTO
+// Update individual budget category inline
+//
 export interface UpdateBudgetCategoryDTO {
   amount?: number;
   startDate?: string;
@@ -53,17 +59,19 @@ export interface UpdateBudgetCategoryDTO {
 }
 
 //
-// ✅ 카테고리 생성 DTO
+// Create a new budget category with group info
+//
 export interface CreateBudgetCategoryDTO {
   categoryId: string;
   amount: string | number;
-  startDate: string; // yyyy-MM-dd
+  startDate: string;
   endDate: string;
   groupBy: RangeOption;
 }
 
 //
-// ✅ 카테고리 수정 DTO
+// Update an existing grouped budget category
+//
 export interface UpdateBudgetCategoryGroupDTO {
   amount: string;
   startDate: string;
@@ -72,7 +80,8 @@ export interface UpdateBudgetCategoryGroupDTO {
 }
 
 //
-// ✅ 예산 경고 (초과 감지)
+// Budget warning item (exceeded categories)
+//
 export interface BudgetAlertDTO {
   category: string;
   budget: number;
@@ -81,7 +90,8 @@ export interface BudgetAlertDTO {
 }
 
 //
-// ✅ 카테고리 그룹 요약 DTO
+// Grouped summary item by category
+//
 export interface BudgetCategoryGroupItem {
   label: string;
   startDate: string;
@@ -101,7 +111,8 @@ export interface BudgetCategoryGroupResponseDTO {
 }
 
 //
-// ✅ 요약 DTO (서버 응답 DTO와 구조 동일)
+// Summary response DTO for budget statistics
+//
 export interface BudgetSummaryItemDTO {
   categoryId: string;
   categoryName: string;

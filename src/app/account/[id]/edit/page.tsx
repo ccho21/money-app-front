@@ -2,20 +2,27 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchAccountById } from '@/features/account/hooks';
-import { updateAccount } from '@/features/account/hooks';
+import { fetchAccountById, updateAccount } from '@/features/account/hooks';
 import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 import AccountForm from '../../_components/AccountForm';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useUIStore } from '@/stores/useUIStore';
+import { AccountUpdateRequestDTO } from '@/features/account/types';
 
+//
+// Edit account page
+//
 export default function AccountEditPage() {
   const { id } = useParams();
   const router = useRouter();
+
   const {
-    actions: { setAllFields, getFormData, reset },
+    actions: { setAllFields, getupdateFormData, reset },
   } = useAccountFormStore();
 
+  //
+  // Set up top navigation when component mounts
+  //
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Account Edit.',
@@ -25,10 +32,16 @@ export default function AccountEditPage() {
     });
 
     return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+      //
+      // Reset top navigation on unmount
+      //
+      useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
+  //
+  // Load account details if not cached
+  //
   useEffect(() => {
     const run = async () => {
       if (!id) return;
@@ -43,25 +56,31 @@ export default function AccountEditPage() {
           amount: String(acc.balance),
           description: acc.description ?? '',
           group: acc.type,
+          settlementDate: acc.settlementDate ?? null,
+          paymentDate: acc.paymentDate ?? null,
         });
       } else {
-        alert('해당 계좌를 불러올 수 없습니다.');
+        alert('Unable to load the account.');
         router.push('/account');
       }
     };
+
     run();
   }, [id, setAllFields, router]);
 
+  //
+  // Submit updated form data
+  //
   const handleUpdate = async () => {
     try {
-      const payload = getFormData();
+      const payload: AccountUpdateRequestDTO = getupdateFormData();
       await updateAccount(id as string, payload);
       reset();
       router.back();
     } catch (err) {
-      alert(err instanceof Error ? err.message : '계좌 수정 실패');
+      alert(err instanceof Error ? err.message : 'Failed to update account');
     }
   };
 
-  return <AccountForm onSubmit={handleUpdate} submitText='Update' />;
+  return <AccountForm onSubmit={handleUpdate} submitText="Update" />;
 }

@@ -14,7 +14,6 @@ interface AccountFormStore {
     description: string;
     isEditMode: boolean;
 
-    // ✅ 카드 계좌용 필드 추가
     settlementDate: number | null;
     paymentDate: number | null;
     autoPayment: boolean;
@@ -28,7 +27,8 @@ interface AccountFormStore {
     setEditMode: (val: boolean) => void;
     toggleEditMode: () => void;
     reset: () => void;
-    getFormData: () => AccountCreateRequestDTO | AccountUpdateRequestDTO;
+    getCreateFormData: () => AccountCreateRequestDTO;
+    getupdateFormData: () => AccountUpdateRequestDTO;
   };
 }
 
@@ -38,8 +38,6 @@ const initialFormState: AccountFormStore['state'] = {
   group: 'CASH',
   description: '',
   isEditMode: false,
-
-  // ✅ 초기화 값 추가
   settlementDate: null,
   paymentDate: null,
   autoPayment: false,
@@ -50,15 +48,23 @@ export const useAccountFormStore = create<AccountFormStore>()(
     (set, get) => ({
       state: { ...initialFormState },
       actions: {
+        //
+        // Set a single form field by key
+        //
         setField: (key, value) =>
           set(
             (s) => ({
-              state: { ...s.state, [key]: value },
+              state: {
+                ...s.state,
+                [key]: value,
+              },
             }),
             false,
             `accountForm/setField:${key}`
           ),
-
+        //
+        // Set multiple fields at once
+        //
         setAllFields: (data) =>
           set(
             (s) => ({
@@ -71,16 +77,23 @@ export const useAccountFormStore = create<AccountFormStore>()(
             false,
             'accountForm/setAllFields'
           ),
-
+        //
+        // Set edit mode flag
+        //
         setEditMode: (val) =>
           set(
             (s) => ({
-              state: { ...s.state, isEditMode: val },
+              state: {
+                ...s.state,
+                isEditMode: val,
+              },
             }),
             false,
             'accountForm/setEditMode'
           ),
-
+        //
+        // Toggle edit mode flag
+        //
         toggleEditMode: () =>
           set(
             (s) => ({
@@ -92,15 +105,23 @@ export const useAccountFormStore = create<AccountFormStore>()(
             false,
             'accountForm/toggleEditMode'
           ),
-
+        //
+        // Reset form to initial state
+        //
         reset: () =>
           set(
-            () => ({ state: { ...initialFormState } }),
+            () => ({
+              state: {
+                ...initialFormState,
+              },
+            }),
             false,
             'accountForm/reset'
           ),
-
-        getFormData: (): AccountCreateRequestDTO | AccountUpdateRequestDTO => {
+        //
+        // Get form data for account creation
+        //
+        getCreateFormData: (): AccountCreateRequestDTO => {
           const {
             name,
             amount,
@@ -113,7 +134,32 @@ export const useAccountFormStore = create<AccountFormStore>()(
           return {
             name,
             type: group,
-            balance: Number(amount),
+            initialBalance: parseFloat(amount),
+            description: description || undefined,
+            settlementDate:
+              group === 'CARD' ? settlementDate ?? undefined : undefined,
+            paymentDate:
+              group === 'CARD' ? paymentDate ?? undefined : undefined,
+          };
+        },
+
+        //
+        // Get form data for account update
+        //
+        getUpdateFormData: (): AccountUpdateRequestDTO => {
+          const {
+            name,
+            amount,
+            group,
+            description,
+            settlementDate,
+            paymentDate,
+          } = get().state;
+
+          return {
+            name,
+            type: group,
+            initialBalance: amount ? parseFloat(amount) : undefined,
             description: description || undefined,
             settlementDate:
               group === 'CARD' ? settlementDate ?? undefined : undefined,
@@ -123,6 +169,6 @@ export const useAccountFormStore = create<AccountFormStore>()(
         },
       },
     }),
-    { name: '📦 useAccountFormStore' }
+    { name: 'useAccountFormStore' }
   )
 );

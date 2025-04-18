@@ -14,6 +14,9 @@ import { fetchAccounts } from '@/features/account/hooks';
 import { fetchCategories } from '@/features/category/hooks';
 import { fetchTransactionById } from '@/features/transaction/hooks';
 
+//
+// Edit transaction page
+//
 export default function TransactionEditPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -23,37 +26,45 @@ export default function TransactionEditPage() {
     actions: { init },
   } = useTransactionFormStore();
 
+  //
+  // Fetch and initialize transaction data for editing
+  //
   useEffect(() => {
     const run = async () => {
       if (!id) return;
 
       try {
+        //
+        // Fetch required related data (accounts, categories)
+        //
         await Promise.all([fetchAccounts(), fetchCategories()]);
 
-        const cachedTx = useTransactionStore.getState().selectedTransaction;
+        const cached = useTransactionStore.getState().selectedTransaction;
         const tx =
-          cachedTx && cachedTx.id === id
-            ? cachedTx
+          cached && cached.id === id
+            ? cached
             : await fetchTransactionById(id.toString());
 
         if (!tx) throw new Error();
 
+        //
+        // Prepare preset fields to populate form
+        //
         const preset = {
           type: tx.type,
           amount: String(tx.amount),
           date: tx.date,
           note: tx.note ?? '',
           description: tx.description ?? '',
-          accountId: tx.account?.id || '',
-          categoryId: tx.category?.id || '',
+          accountId: tx.accountId || '',
+          categoryId: tx.categoryId || '',
           from: tx.accountId || '',
           to: tx.toAccountId ?? '',
         };
 
-        // ✅ 초기 상태 및 모드 설정
         init(preset);
       } catch (err) {
-        alert('해당 거래를 불러올 수 없습니다.' + err);
+        alert('Failed to load transaction. ' + err);
         router.push('/dashboard/daily');
       }
     };
@@ -61,14 +72,18 @@ export default function TransactionEditPage() {
     run();
   }, [id, init, router]);
 
-  // ✅ 로딩 상태
+  //
+  // Show loading until type is set
+  //
   if (!type) {
     return (
       <div className='text-center text-muted py-10'>Loading transaction...</div>
     );
   }
 
-  // ✅ 트랜잭션 타입별 렌더링
+  //
+  // Render form based on transaction type
+  //
   if (type === 'income') return <IncomeForm mode='edit' id={id as string} />;
   if (type === 'transfer')
     return <TransferForm mode='edit' id={id as string} />;

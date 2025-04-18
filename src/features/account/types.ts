@@ -4,7 +4,7 @@ export type AccountType = 'CASH' | 'BANK' | 'CARD';
 export type FinancialType = 'ASSET' | 'LIABILITY';
 
 //
-// ✅ 기본 Account 정보 (DB 기준 + 공통 사용)
+// ✅ Core account object - aligned with backend AccountDetailDTO
 //
 export interface AccountDTO {
   id: string;
@@ -15,16 +15,17 @@ export interface AccountDTO {
   description?: string;
   settlementDate?: number;
   paymentDate?: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+  financialType?: FinancialType; // optional: backend includes this
 }
 
 //
-// ✅ 계좌 생성/수정 요청 DTO
+// ✅ Account creation request DTO - matches AccountCreateRequestDTO from backend
 //
 export interface AccountCreateRequestDTO {
   name: string;
-  balance: number;
+  initialBalance: number; // renamed to match backend field
   type: AccountType;
   color?: string;
   settlementDate?: number;
@@ -32,10 +33,13 @@ export interface AccountCreateRequestDTO {
   description?: string;
 }
 
+//
+// ✅ Account update request DTO - partial of create
+//
 export type AccountUpdateRequestDTO = Partial<AccountCreateRequestDTO>;
 
 //
-// ✅ 대시보드 개별 항목 DTO (categoryType은 프론트 계산용)
+// ✅ Individual account item for dashboard grouping
 //
 export interface AccountDashboardItemDTO {
   id: string;
@@ -50,7 +54,8 @@ export interface AccountDashboardItemDTO {
 }
 
 //
-// ✅ 대시보드 요약 응답 DTO (프론트 로직 전용)
+// ✅ Full dashboard response - grouped by account type
+//
 export interface AccountDashboardResponseDTO {
   asset: number;
   liability: number;
@@ -63,7 +68,8 @@ export interface AccountDashboardResponseDTO {
 }
 
 //
-// ✅ 기간별 계좌 요약 DTO (백엔드 정식 DTO와 일치)
+// ✅ Time-range summary response per account - matches AccountGroupSummaryDTO
+//
 export interface AccountTransactionSummaryDTO {
   accountId: string;
   accountName: string;

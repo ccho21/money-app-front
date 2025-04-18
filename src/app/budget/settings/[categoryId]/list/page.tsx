@@ -10,7 +10,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 
 import { cn } from '@/lib/utils';
 import type { DateFilterParams } from '@/features/shared/types';
-import { useBudgetCategoryFormStore } from '@/app/budget/_components/useBudgetCategoryFormStore';
+import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();

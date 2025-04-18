@@ -10,7 +10,7 @@ interface AccountStoreState {
   state: {
     accounts: AccountDTO[];
     selectedAccount?: AccountDTO;
-    summaryResponse: AccountTransactionSummaryDTO[]; // ✅ 타입 수정: 단일 객체 ❌ → 배열 ✅
+    summaryResponse: AccountTransactionSummaryDTO[];
     accountDashboard: AccountDashboardResponseDTO | null;
     isLoading: boolean;
     error: string | null;
@@ -32,70 +32,83 @@ export const useAccountStore = create<AccountStoreState>()(
       state: {
         accounts: [],
         selectedAccount: undefined,
-        summaryResponse: [], // ✅ 초기값도 배열로 통일
+        summaryResponse: [],
         accountDashboard: null,
         isLoading: false,
         error: null,
       },
-      actions: {
-        setAccounts: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, accounts: data } }),
-            false,
-            'accounts/setAll'
-          ),
-
-        setSelectedAccount: (acc) =>
-          set(
-            (s) => ({ state: { ...s.state, selectedAccount: acc } }),
-            false,
-            'accounts/setSelected'
-          ),
-
-        setSummaryResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, summaryResponse: data } }),
-            false,
-            'accounts/setSummaryResponse'
-          ),
-
-        setAccountDashboard: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, accountDashboard: data } }),
-            false,
-            'accounts/setDashboard'
-          ),
-
-        setLoading: (loading) =>
-          set(
-            (s) => ({ state: { ...s.state, isLoading: loading } }),
-            false,
-            'accounts/setLoading'
-          ),
-
-        setError: (error) =>
-          set(
-            (s) => ({ state: { ...s.state, error } }),
-            false,
-            'accounts/setError'
-          ),
-
-        clear: () =>
-          set(
-            () => ({
-              state: {
-                accounts: [],
-                selectedAccount: undefined,
-                summaryResponse: [], // ✅ clear할 때도 배열로 초기화
-                accountDashboard: null,
-                isLoading: false,
-                error: null,
-              },
-            }),
-            false,
-            'accounts/clear'
-          ),
-      },
+      //
+      // Set the entire accounts list
+      //
+      setAccounts: (data: AccountDTO[]) =>
+        set(
+          (s) => ({ state: { ...s.state, accounts: data } }),
+          false,
+          'accounts/setAll'
+        ),
+      //
+      // Set the selected account
+      //
+      setSelectedAccount: (acc: AccountDTO) =>
+        set(
+          (s) => ({ state: { ...s.state, selectedAccount: acc } }),
+          false,
+          'accounts/setSelected'
+        ),
+      //
+      // Set the transaction summary per account
+      //
+      setSummaryResponse: (data: AccountTransactionSummaryDTO[]) =>
+        set(
+          (s) => ({ state: { ...s.state, summaryResponse: data } }),
+          false,
+          'accounts/setSummaryResponse'
+        ),
+      //
+      // Set dashboard view data
+      //
+      setAccountDashboard: (data: AccountDashboardResponseDTO) =>
+        set(
+          (s) => ({ state: { ...s.state, accountDashboard: data } }),
+          false,
+          'accounts/setDashboard'
+        ),
+      //
+      // Set loading status
+      //
+      setLoading: (loading: boolean) =>
+        set(
+          (s) => ({ state: { ...s.state, isLoading: loading } }),
+          false,
+          'accounts/setLoading'
+        ),
+      //
+      // Set error message
+      //
+      setError: (error: string | null) =>
+        set(
+          (s) => ({ state: { ...s.state, error } }),
+          false,
+          'accounts/setError'
+        ),
+      //
+      // Reset the entire store to initial state
+      //
+      clear: () =>
+        set(
+          () => ({
+            state: {
+              accounts: [],
+              selectedAccount: undefined,
+              summaryResponse: [],
+              accountDashboard: null,
+              isLoading: false,
+              error: null,
+            },
+          }),
+          false,
+          'accounts/clear'
+        ),
     }),
     { name: 'AccountStore' }
   )

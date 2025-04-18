@@ -1,7 +1,6 @@
 import { get, post, put } from '@/lib/api';
 import {
   BudgetCategoryGroupResponseDTO,
-  BudgetCategoryGroupResponseDTO,
   BudgetSummaryResponseDTO,
   CreateBudgetCategoryDTO,
   UpdateBudgetCategoryDTO,
@@ -9,16 +8,23 @@ import {
 import { DateFilterParams } from '@/features/shared/types';
 import { AccountDashboardResponseDTO } from '../account/types';
 
+//
+// Fetch budgets grouped by category
+//
 export const fetchBudgetsByCategoryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
   query.append('startDate', params.startDate);
   query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
+
   return get<BudgetCategoryGroupResponseDTO>(
     `/budgets/by-category?${query.toString()}`
   );
 };
 
+//
+// Fetch summary of budgets for a period
+//
 export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
   if (params.startDate) query.append('startDate', params.startDate);
@@ -28,27 +34,36 @@ export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
   return get<BudgetSummaryResponseDTO>(`/budgets/summary?${query.toString()}`);
 };
 
-export const createBudgetCategoryAPI = async (
-  data: CreateBudgetCategoryDTO
-) => {
-  return await post('/budgets/by-category', data);
+//
+// Create a new budget category
+//
+export const createBudgetCategoryAPI = (data: CreateBudgetCategoryDTO) => {
+  return post('/budgets/by-category', data);
 };
 
-export const updateBudgetCategoryAPI = async (
+//
+// Update an existing budget category by ID
+//
+export const updateBudgetCategoryAPI = (
   id: string,
   data: UpdateBudgetCategoryDTO
 ) => {
-  return await put(`/budgets/by-category/${id}`, data);
+  return put(`/budgets/by-category/${id}`, data);
 };
 
-export const fetchAccountsDashboardAPI =
-  async (): Promise<AccountDashboardResponseDTO> => {
-    return await get('/accounts/dashboard');
-  };
-
-export const getBudgetCategoriesByCategoryIdAPI = async (
+//
+// Fetch budget group data by category ID
+//
+export const getBudgetCategoriesByCategoryIdAPI = (
   categoryId: string,
   data: DateFilterParams
 ): Promise<BudgetCategoryGroupResponseDTO> => {
-  return await post(`/budgets/by-category/${categoryId}`, data);
+  return post(`/budgets/by-category/${categoryId}`, data);
+};
+
+//
+// Fetch account dashboard for budget sidebar
+//
+export const fetchAccountsDashboardAPI = (): Promise<AccountDashboardResponseDTO> => {
+  return get('/accounts/dashboard');
 };

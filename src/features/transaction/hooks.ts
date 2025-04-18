@@ -35,15 +35,16 @@ export const fetchTransactionById = async (id: string) => {
 
 export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
   const {
-    actions: { getFormData, reset },
+    actions: { getCreateFormData, getUpdateFormData, reset },
   } = useTransactionFormStore.getState();
-  const data = getFormData();
 
   try {
     if (mode === 'new') {
+      const data = getCreateFormData();
       await createTransactionAPI(data);
     } else if (mode === 'edit') {
       if (!id) throw new Error('수정할 거래 ID가 없습니다.');
+      const data = getUpdateFormData();
       await updateTransactionAPI(id, data);
     } else {
       throw new Error(`지원하지 않는 모드: ${mode}`);
@@ -62,15 +63,16 @@ export const submitTransferTransaction = async (
   id?: string
 ) => {
   const {
-    actions: { getFormData, reset },
+    actions: { getCreateFormData, getUpdateFormData, reset },
   } = useTransactionFormStore.getState();
-  const data = getFormData();
 
   try {
     if (mode === 'new') {
+      const data = getCreateFormData();
       await createTransferTransactionAPI(data);
     } else if (mode === 'edit') {
       if (!id) throw new Error('수정할 거래 ID가 없습니다.');
+      const data = getUpdateFormData();
       await updateTransferTransactionAPI(id, data);
     } else {
       throw new Error(`지원하지 않는 모드: ${mode}`);

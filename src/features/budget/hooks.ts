@@ -7,8 +7,14 @@ import {
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
 } from './api';
-import { CreateBudgetCategoryDTO, UpdateBudgetCategoryDTO } from './types';
+import {
+  CreateBudgetCategoryDTO,
+  UpdateBudgetCategoryDTO,
+} from './types';
 
+//
+// Fetch budget categories by filter range
+//
 export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {
     actions: { setBudgetCategoryResponse, setLoading, setError },
@@ -21,13 +27,16 @@ export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
     const data = await fetchBudgetsByCategoryAPI(params);
     setBudgetCategoryResponse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : '계좌 불러오기 실패';
+    const message = err instanceof Error ? err.message : 'Failed to fetch budget categories';
     setError(message);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch budget summary for current period
+//
 export const fetchBudgetSummary = async (params: DateFilterParams) => {
   const {
     actions: { setBudgetSummaryResponse, setLoading, setError },
@@ -40,24 +49,32 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
     const data = await fetchBudgetSummaryAPI(params);
     setBudgetSummaryResponse(data);
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '예산 데이터 불러오기 실패';
+    const message = err instanceof Error ? err.message : 'Failed to fetch budget summary';
     setError(message);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Create a new budget category
+//
 export const createBudgetCategory = async (data: CreateBudgetCategoryDTO) => {
   try {
-    if (typeof data.amount === 'string') data.amount = Number(data.amount);
-    const response = await createBudgetCategoryAPI(data);
+    const prepared = {
+      ...data,
+      amount: typeof data.amount === 'string' ? Number(data.amount) : data.amount,
+    };
+    const response = await createBudgetCategoryAPI(prepared);
     return response;
   } catch (err) {
-    throw new Error(err instanceof Error ? err.message : '예산 생성 실패');
+    throw new Error(err instanceof Error ? err.message : 'Failed to create budget');
   }
 };
 
+//
+// Update an existing budget category
+//
 export const updateBudgetCategory = async (
   id: string,
   data: UpdateBudgetCategoryDTO
@@ -66,16 +83,22 @@ export const updateBudgetCategory = async (
     const response = await updateBudgetCategoryAPI(id, data);
     return response;
   } catch (err) {
-    throw new Error(err instanceof Error ? err.message : '예산 수정 실패');
+    throw new Error(err instanceof Error ? err.message : 'Failed to update budget');
   }
 };
 
+//
+// Fetch all budget groups by category ID
+//
 export const fetchBudgetCategoriesByCategoryId = async (
   categoryId: string,
   filter: DateFilterParams
 ) => {
-  const { setLoading, setError, setBudgetCategoryGroupResponse } =
-    useBudgetStore.getState().actions;
+  const {
+    setLoading,
+    setError,
+    setBudgetCategoryGroupResponse,
+  } = useBudgetStore.getState().actions;
 
   try {
     setLoading(true);
@@ -83,8 +106,7 @@ export const fetchBudgetCategoriesByCategoryId = async (
     const data = await getBudgetCategoriesByCategoryIdAPI(categoryId, filter);
     setBudgetCategoryGroupResponse(data);
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : '예산 데이터를 불러오지 못했습니다.';
+    const message = err instanceof Error ? err.message : 'Failed to fetch budget group data';
     setError(message);
   } finally {
     setLoading(false);

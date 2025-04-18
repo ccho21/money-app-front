@@ -7,25 +7,37 @@ import {
 } from './types';
 import { DateFilterParams } from '../shared/types';
 
+//
+// Create a new account
+//
 export const createAccountAPI = (payload: AccountCreateRequestDTO) => {
   return post('/accounts', payload);
 };
 
-export const updateAccountAPI = (
-  id: string,
-  payload: AccountUpdateRequestDTO
-) => {
+//
+// Update an existing account
+//
+export const updateAccountAPI = (id: string, payload: AccountUpdateRequestDTO) => {
   return patch(`/accounts/${id}`, payload);
 };
 
+//
+// Fetch all accounts
+//
 export const fetchAccountsAPI = () => {
   return get<AccountDTO[]>('/accounts');
 };
 
+//
+// Fetch a single account by ID
+//
 export const fetchAccountsByIdAPI = (id: string) => {
   return get<AccountDTO>(`/accounts/${id}`);
 };
 
+//
+// Fetch summarized transaction data per account over a date range
+//
 export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
 
@@ -38,11 +50,10 @@ export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   );
 };
 
-// export function fetchAccountSummaryByAccountIdAPI(paramsdc: DateFilterParams) {
-//   const { accountId, ...params } = params;
+// TODO: Implement this if backend supports summary per account ID
+// export function fetchAccountSummaryByAccountIdAPI(accountId: string, params: DateFilterParams) {
 //   const query = new URLSearchParams();
-
 //   if (params.startDate) query.append('startDate', params.startDate);
 //   if (params.endDate) query.append('endDate', params.endDate);
-//   return post(`/account/${accountId}/summary`, dateFilter);
+//   return get<AccountTransactionSummaryDTO[]>(`/accounts/${accountId}/summary?${query.toString()}`);
 // }

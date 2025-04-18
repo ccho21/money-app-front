@@ -11,6 +11,9 @@ import { fetchTransactionSummary } from '@/features/transaction/hooks';
 import { DateFilterParams } from '@/features/shared/types';
 import YearlyView from '@/components/dashboard/YearlyView';
 
+//
+// Yearly transaction summary page
+//
 export default function YearlyPage() {
   const { transactionSummaryResponse, isLoading } = useTransactionStore(
     useShallow((s) => ({
@@ -28,12 +31,18 @@ export default function YearlyPage() {
 
   const { date, range } = query;
 
+  //
+  // Calculate 5-year date range from current date
+  //
   const dateRangeKey = useMemo(() => {
     const start = startOfYear(addYears(date, -5));
     const end = endOfYear(date);
     return `${format(start, 'yyyy-MM-dd')}_${format(end, 'yyyy-MM-dd')}`;
   }, [date]);
 
+  //
+  // Fetch yearly transaction summary if range is correct
+  //
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
     const params: DateFilterParams = {
@@ -73,11 +82,13 @@ export default function YearlyPage() {
     },
   ];
 
+  //
+  // Handle year item click by updating the query date
+  //
   const handleClick = useCallback(
     (dateStr: string) => {
       const parsed = parse(dateStr, 'yyyy', new Date());
       setQuery({ date: parsed });
-      // 필요시 여기서 router.push(...) 로 이동 가능
     },
     [setQuery]
   );
