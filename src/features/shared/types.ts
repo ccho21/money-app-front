@@ -8,6 +8,23 @@ export const RANGE_OPTIONS: RangeOption[] = [
   'yearly',
 ];
 
+export interface BaseGroupItemDTO {
+  label: string;
+  rangeStart: string;
+  rangeEnd: string;
+}
+
+export interface BaseListSummaryResponseDTO<T> {
+  startDate: string;
+  endDate: string;
+  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  type?: 'income' | 'expense';
+  summary?: T;
+  items: T[];
+  totalIncome?: number;
+  totalExpense?: number;
+}
+
 export interface DateFilterParams {
   startDate: string;
   endDate: string;

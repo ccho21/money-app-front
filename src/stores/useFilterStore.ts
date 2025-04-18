@@ -7,7 +7,7 @@ import { formatDate, getDateRangeKey } from '@/lib/date.util';
 
 interface FilterQuery {
   date: Date;
-  range: RangeOption;
+  groupBy: RangeOption;
   transactionType: TransactionType;
 }
 
@@ -21,7 +21,7 @@ interface FilterStore {
 
 const defaultQuery: FilterQuery = {
   date: new Date(),
-  range: 'monthly',
+  groupBy: 'monthly',
   transactionType: 'expense',
 };
 
@@ -43,10 +43,10 @@ export const useFilterStore = create<FilterStore>()(
         set({ query: defaultQuery }, false, 'filter/resetQuery'),
 
       getQueryString: (withTransactionType = false) => {
-        const { date, range, transactionType } = get().query;
+        const { date, groupBy, transactionType } = get().query;
         const params = new URLSearchParams();
         params.set('date', formatDate(date));
-        params.set('range', range);
+        params.set('groupBy', groupBy);
         if (withTransactionType) {
           params.set('type', transactionType);
         }
@@ -54,8 +54,8 @@ export const useFilterStore = create<FilterStore>()(
       },
 
       getDateRangeKey: (amount = 0) => {
-        const { date, range } = get().query;
-        return getDateRangeKey(date, { unit: range, amount });
+        const { date, groupBy } = get().query;
+        return getDateRangeKey(date, { unit: groupBy, amount });
       },
     }),
     { name: 'useFilterStore' }

@@ -3,7 +3,7 @@
 
 import { cn } from '@/lib/utils';
 import {
-  TransactionDTO,
+  TransactionDetailDTO,
   TransactionGroupItemDTO,
 } from '@/features/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
@@ -19,10 +19,10 @@ interface TransactionGroupProps {
   label: string;
   rangeStart?: string;
   rangeEnd?: string;
-  incomeTotal: number;
-  expenseTotal: number;
+  groupIncome: number;
+  groupExpense: number;
   group: TransactionGroupItemDTO;
-  onTransactionClick?: (tx: TransactionDTO) => void;
+  onTransactionClick?: (tx: TransactionDetailDTO) => void;
   onHeaderClick?: () => void;
   showDateHeader?: boolean;
   showRange?: boolean;
@@ -33,8 +33,8 @@ export default function TransactionGroup({
   label,
   rangeStart,
   rangeEnd,
-  incomeTotal,
-  expenseTotal,
+  groupIncome,
+  groupExpense,
   group,
   onTransactionClick,
   onHeaderClick,
@@ -91,11 +91,11 @@ export default function TransactionGroup({
             <div className='col-span-4 flex justify-end items-center gap-2 text-sm font-medium text-right'>
               <span className='inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-sm'>
                 <ArrowUpFromLine size={14} className='mr-1' />
-                <CurrencyDisplay amount={incomeTotal} />
+                <CurrencyDisplay amount={groupIncome} />
               </span>
               <span className='inline-flex items-center px-2 py-0.5 bg-error/10 text-error rounded-sm'>
                 <ArrowDownToLine size={14} className='mr-1' />
-                <CurrencyDisplay amount={expenseTotal} />
+                <CurrencyDisplay amount={groupExpense} />
               </span>
             </div>
           </div>
@@ -104,9 +104,9 @@ export default function TransactionGroup({
 
       {/* 거래 리스트 */}
       <ul className='mt-3 space-y-2'>
-        {group.transactions.map((tx: TransactionDTO) => (
+        {/* {group.transactions.map((tx: TransactionDetailDTO) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
-        ))}
+        ))} */}
       </ul>
     </div>
   );

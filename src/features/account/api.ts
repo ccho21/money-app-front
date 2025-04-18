@@ -1,7 +1,7 @@
 import { get, patch, post } from '@/lib/api';
 import {
   AccountCreateRequestDTO,
-  AccountDTO,
+  AccountDetailDTO,
   AccountTransactionSummaryDTO,
   AccountUpdateRequestDTO,
 } from './types';
@@ -17,7 +17,10 @@ export const createAccountAPI = (payload: AccountCreateRequestDTO) => {
 //
 // Update an existing account
 //
-export const updateAccountAPI = (id: string, payload: AccountUpdateRequestDTO) => {
+export const updateAccountAPI = (
+  id: string,
+  payload: AccountUpdateRequestDTO
+) => {
   return patch(`/accounts/${id}`, payload);
 };
 
@@ -25,18 +28,18 @@ export const updateAccountAPI = (id: string, payload: AccountUpdateRequestDTO) =
 // Fetch all accounts
 //
 export const fetchAccountsAPI = () => {
-  return get<AccountDTO[]>('/accounts');
+  return get<AccountDetailDTO[]>('/accounts');
 };
 
 //
 // Fetch a single account by ID
 //
 export const fetchAccountsByIdAPI = (id: string) => {
-  return get<AccountDTO>(`/accounts/${id}`);
+  return get<AccountDetailDTO>(`/accounts/${id}`);
 };
 
 //
-// Fetch summarized transaction data per account over a date range
+// Fetch summarized transaction data per account over a date groupBy
 //
 export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   const query = new URLSearchParams();
@@ -45,7 +48,7 @@ export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   if (params.endDate) query.append('endDate', params.endDate);
   if (params.groupBy) query.append('groupBy', params.groupBy);
 
-  return get<AccountTransactionSummaryDTO[]>(
+  return get<AccountTransactionSummaryDTO>(
     `/accounts/summary?${query.toString()}`
   );
 };

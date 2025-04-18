@@ -21,6 +21,9 @@ import Panel from '@/components/ui/Panel';
 import { useFilterStore } from '@/stores/useFilterStore';
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
+//
+// Calendar page: month view with per-day transaction summary
+//
 export default function CalendarPage() {
   const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
     useTransactionStore(
@@ -33,7 +36,7 @@ export default function CalendarPage() {
   const { setTransactionSummaryResponse } = useTransactionStore().actions;
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
   const [selectedDetail, setSelectedDetail] = useState<{
     date: Date;
@@ -41,13 +44,15 @@ export default function CalendarPage() {
     open: boolean;
   } | null>(null);
 
+  //
+  // Prepare map of income/expense for calendar tile display
+  //
   const calendarTileMap = useMemo(() => {
     const map = new Map<string, JSX.Element>();
 
     transactionCalendarItems.forEach((item) => {
       const hasIncome = item.income > 0;
       const hasExpense = item.expense > 0;
-
       if (!hasIncome && !hasExpense) return;
 
       map.set(
@@ -70,23 +75,29 @@ export default function CalendarPage() {
     return map;
   }, [transactionCalendarItems]);
 
-  // ✅ range를 강제로 'monthly'로 고정
+  //
+  // Force groupBy to 'monthly' for calendar view
+  //
   useEffect(() => {
-    if (range !== 'monthly') {
-      setQuery({ range: 'monthly' });
+    if (groupBy !== 'monthly') {
+      setQuery({ groupBy: 'monthly' });
     }
-  }, [range, setQuery]);
+  }, [groupBy, setQuery]);
 
+  //
+  // Fetch calendar data on month change
+  //
   useEffect(() => {
-    (async () => {
-      await fetchTransactionCalendar(formatDate(date));
-    })();
+    fetchTransactionCalendar(formatDate(date));
   }, [date]);
 
+  //
+  // Handle date click → fetch summary if not already cached
+  //
   const handleDateClick = async (clickedDate: Date) => {
     const dateStr = formatDate(clickedDate);
 
-    const fromStore = transactionSummaryResponse?.data.find(
+    const fromStore = transactionSummaryResponse?.items.find(
       (g) => g.label === dateStr
     );
     if (fromStore) {
@@ -106,12 +117,12 @@ export default function CalendarPage() {
         `/transactions/summary?${params.toString()}`
       );
 
-      const summary = res.data?.find((s) => s.label === dateStr);
+      const summary = res.items?.find((s) => s.label === dateStr);
       if (summary) {
         if (transactionSummaryResponse) {
           setTransactionSummaryResponse({
             ...transactionSummaryResponse,
-            data: [...transactionSummaryResponse.data, summary],
+            items: [...transactionSummaryResponse.items, summary],
           });
         }
         setSelectedDetail({ date: clickedDate, summary, open: true });
@@ -123,13 +134,17 @@ export default function CalendarPage() {
         });
       }
     } catch (err) {
-      console.error('❌ 일간 거래 요약 가져오기 실패:', err);
-      setSelectedDetail({ date: clickedDate, summary: undefined, open: true });
+      console.error('Failed to fetch daily summary:', err);
+      setSelectedDetail({
+        date: clickedDate,
+        summary: undefined,
+        open: true,
+      });
     }
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   return (

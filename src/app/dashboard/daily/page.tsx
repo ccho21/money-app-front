@@ -1,21 +1,26 @@
 'use client';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
-import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useShallow } from 'zustand/shallow';
+
+import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchTransactionSummary } from '@/features/transaction/hooks';
 import { DateFilterParams } from '@/features/shared/types';
-import { TransactionDTO } from '@/features/transaction/types';
-import DailyView from '@/app/dashboard/_components/DailyView';
-import { useShallow } from 'zustand/shallow';
-import { useFilterStore } from '@/stores/useFilterStore';
+import { TransactionDetailDTO } from '@/features/transaction/types';
 
+import DailyView from '@/app/dashboard/_components/DailyView';
+
+//
+// Daily dashboard page: shows income/expense by day
+//
 export default function DailyPage() {
   const router = useRouter();
   const pathname = usePathname();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { range, date } = query;
+  const { groupBy, date } = query;
 
   const { isLoading, transactionSummaryResponse, actions } =
     useTransactionStore(
@@ -26,12 +31,18 @@ export default function DailyPage() {
       }))
     );
 
+  //
+  // Ensure groupBy is set to 'monthly' for daily view
+  //
   useEffect(() => {
-    if (range !== 'monthly') {
-      setQuery({ range: 'monthly' });
+    if (groupBy !== 'monthly') {
+      setQuery({ groupBy: 'monthly' });
     }
-  }, [range, setQuery]);
+  }, [groupBy, setQuery]);
 
+  //
+  // Fetch daily transaction summary for the current month groupBy
+  //
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
@@ -39,15 +50,14 @@ export default function DailyPage() {
       startDate,
       endDate,
     };
-    (async () => {
-      await fetchTransactionSummary(params);
-    })();
+
+    fetchTransactionSummary(params);
   }, [getDateRangeKey, pathname, date]);
 
-  const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
-  const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
+  const totalIncome = transactionSummaryResponse?.totalIncome ?? 0;
+  const totalExpense = transactionSummaryResponse?.totalExpense ?? 0;
 
-  const items = [
+  const summaryItems = [
     {
       label: 'Income',
       value: totalIncome,
@@ -68,18 +78,28 @@ export default function DailyPage() {
     },
   ];
 
+  //
+  // Handle transaction click
+  //
+  const handleTransactionClick = (tx: TransactionDetailDTO) => {
+    actions.setSelectedTransaction(tx);
+    router.push(`/transaction/${tx.id}/edit`);
+  };
+
+  //
+  // Handle day header click to create new transaction
+  //
+  const handleHeaderClick = (date: string) => {
+    router.push(`/transaction/new?date=${date}`);
+  };
+
   return (
     <DailyView
       isLoading={isLoading}
       data={transactionSummaryResponse}
-      summaryItems={items}
-      onTransactionClick={(tx: TransactionDTO) => {
-        actions.setSelectedTransaction(tx);
-        router.push(`/transaction/${tx.id}/edit`);
-      }}
-      onHeaderClick={(date: string) => {
-        router.push(`/transaction/new?date=${date}`);
-      }}
+      summaryItems={summaryItems}
+      onTransactionClick={handleTransactionClick}
+      onHeaderClick={handleHeaderClick}
     />
   );
 }

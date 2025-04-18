@@ -25,14 +25,14 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
 
   const dateParam = searchParams.get('date');
-  const rangeParam = searchParams.get('range');
+  const rangeParam = searchParams.get('groupBy');
   const typeParam = searchParams.get('type');
 
   const setLayoutOptions = useUIStore((s) => s.setLayoutOptions);
   const resetLayoutOptions = useUIStore((s) => s.resetLayoutOptions);
 
   const { query, setQuery, getQueryString } = useFilterStore();
-  const { date, range, transactionType } = query;
+  const { date, groupBy, transactionType } = query;
 
   const { hideTopNav, hideDateNav, hideStatsHeader, hideTabMenu } = useUIStore(
     (s) => s.layoutOptions
@@ -66,10 +66,10 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
       }
     }
 
-    // ✅ range 파싱
+    // ✅ groupBy 파싱
     if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
-      if (range !== rangeParam) {
-        partialQuery.range = rangeParam as RangeOption;
+      if (groupBy !== rangeParam) {
+        partialQuery.groupBy = rangeParam as RangeOption;
       }
     }
 
@@ -90,7 +90,7 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     rangeParam,
     typeParam,
     date,
-    range,
+    groupBy,
     transactionType,
     setQuery,
     router,

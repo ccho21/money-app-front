@@ -24,10 +24,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const current = pathname.split('/')[2] || 'daily';
   const dateParam = searchParams.get('date');
-  const rangeParam = searchParams.get('range');
+  const rangeParam = searchParams.get('groupBy');
 
   const { query, setQuery } = useFilterStore();
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
   const hasInitialized = useRef(false); // ✅ 최초 1회만 실행 제어
 
@@ -49,8 +49,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       }
 
       if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
-        if (range !== rangeParam) {
-          partialQuery.range = rangeParam as RangeOption;
+        if (groupBy !== rangeParam) {
+          partialQuery.groupBy = rangeParam as RangeOption;
         }
       }
 
@@ -70,14 +70,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
     //     setQuery({
     //       date: fallbackDate,
-    //       range: 'monthly',
+    //       groupBy: 'monthly',
     //     });
 
     //     // 선택: URL도 맞춰주고 싶다면 ↓
-    //     const fallbackURL = `/dashboard/${current}?date=${formatDate(fallbackDate)}&range=monthly`;
+    //     const fallbackURL = `/dashboard/${current}?date=${formatDate(fallbackDate)}&groupBy=monthly`;
     //     router.replace(fallbackURL);
     //   }
-  }, [dateParam, rangeParam, date, range, current, setQuery, router]);
+  }, [dateParam, rangeParam, date, groupBy, current, setQuery, router]);
 
   useEffect(() => {
     useUIStore.getState().setTopNav({ title: 'Trans.' });
@@ -102,7 +102,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           variant='underline'
           onChange={(key) => {
             const currentDate = formatDate(date);
-            router.push(`/dashboard/${key}?date=${currentDate}&range=${range}`);
+            router.push(
+              `/dashboard/${key}?date=${currentDate}&groupBy=${groupBy}`
+            );
           }}
         />
       </div>

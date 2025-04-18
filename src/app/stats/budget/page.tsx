@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByBudget } from '@/features/stats/hooks';
@@ -10,44 +10,66 @@ import BudgetView from '../_components/BudgetView';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 import { useRouter } from 'next/navigation';
 
+//
+// Budget stats overview page
+//
 export default function BudgetPage() {
   const router = useRouter();
+
   const { query, getDateRangeKey } = useFilterStore();
-  const { date, range, transactionType } = query;
+  const { date, groupBy, transactionType } = query;
 
-  const {
-    state: { budgetResponse, isLoading },
-  } = useStatsStore();
+  const budgetResponse = useStatsStore((s) => s.state.budgetResponse);
+  const isLoading = useStatsStore((s) => s.state.isLoading);
 
-  const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
-  const handleClick = (categoryId: string, hasBudget: boolean) => {
-    if (hasBudget) {
-      router.push(`/stats/budget/${categoryId}`);
-    } else {
-      router.push(`/budget/settings/${categoryId}/new`);
-    }
-  };
-
-  useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
-
-    fetchStatsByBudget({
+  //
+  // Build API params
+  //
+  const params = useMemo(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    return {
       startDate,
       endDate,
       type: transactionType as CategoryType,
-    });
-  }, [transactionType, dateRangeKey, date, range]);
+      groupBy,
+    };
+  }, [getDateRangeKey, transactionType, groupBy]);
 
+  //
+  // Fetch budget stats on param change
+  //
+  useEffect(() => {
+    fetchStatsByBudget(params);
+  }, [params]);
+
+  //
+  // Handle click from chart/list
+  //
+  const handleClick = useCallback(
+    (categoryId: string, hasBudget: boolean) => {
+      if (hasBudget) {
+        router.push(`/stats/budget/${categoryId}`);
+      } else {
+        router.push(`/budget/settings/${categoryId}/new`);
+      }
+    },
+    [router]
+  );
+
+  //
+  // Render loading or empty state
+  //
   if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
   if (!budgetResponse) return <EmptyMessage />;
 
+  //
+  // Render view
+  //
   return (
     <BudgetView
       transactionType={transactionType as CategoryType}
       budgetResponse={budgetResponse}
-      handleClick={(categoryId: string, hasBudget: boolean) =>
-        handleClick(categoryId, hasBudget)
-      }
+      handleClick={handleClick}
     />
   );
 }

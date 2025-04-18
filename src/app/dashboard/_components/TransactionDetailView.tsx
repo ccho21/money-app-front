@@ -5,7 +5,7 @@ import PanelContent from '@/components/ui/PanelContent';
 import PanelHeader from '@/components/ui/PanelHeader';
 import BottomSheetPanel from '@/components/ui/BottomSheetPanel';
 import {
-  TransactionDTO,
+  TransactionDetailDTO,
   TransactionGroupItemDTO,
 } from '@/features/transaction/types';
 import { useTransactionStore } from '@/stores/useTransactionStore';
@@ -38,7 +38,7 @@ export default function TransactionDetailView({
     actions: { setSelectedTransaction },
   } = useTransactionStore();
 
-  const onTransactionClick = (tx: TransactionDTO) => {
+  const onTransactionClick = (tx: TransactionDetailDTO) => {
     setSelectedTransaction(tx);
     router.push(`/transaction/${tx.id}/edit`);
   };

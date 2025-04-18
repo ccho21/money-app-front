@@ -9,7 +9,7 @@ import { fetchTransactionSummary } from '@/features/transaction/hooks';
 
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/features/shared/types';
-import { TransactionDTO } from '@/features/transaction/types';
+import { TransactionDetailDTO } from '@/features/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 
 //
@@ -26,23 +26,24 @@ export default function AccountDailyPage() {
     }))
   );
 
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
-  const { isLoading, transactionSummaryResponse, actions } = useTransactionStore(
-    useShallow((state) => ({
-      isLoading: state.isLoading,
-      transactionSummaryResponse: state.transactionSummaryResponse,
-      actions: state.actions,
-    }))
-  );
+  const { isLoading, transactionSummaryResponse, actions } =
+    useTransactionStore(
+      useShallow((state) => ({
+        isLoading: state.isLoading,
+        transactionSummaryResponse: state.transactionSummaryResponse,
+        actions: state.actions,
+      }))
+    );
 
   //
   // Fetch daily grouped transaction summary
   //
   useEffect(() => {
     const updateAndFetch = async () => {
-      if (range !== 'monthly') {
-        setQuery({ range: 'monthly' });
+      if (groupBy !== 'monthly') {
+        setQuery({ groupBy: 'monthly' });
         return;
       }
 
@@ -56,7 +57,7 @@ export default function AccountDailyPage() {
     };
 
     updateAndFetch();
-  }, [date, range, setQuery, getDateRangeKey]);
+  }, [date, groupBy, setQuery, getDateRangeKey]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
@@ -85,7 +86,7 @@ export default function AccountDailyPage() {
   //
   // Handle transaction item click
   //
-  const handleTransactionClick = (tx: TransactionDTO) => {
+  const handleTransactionClick = (tx: TransactionDetailDTO) => {
     actions.setSelectedTransaction(tx);
     router.push(`/transaction/${tx.id}/edit`);
   };

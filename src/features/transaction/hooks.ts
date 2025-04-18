@@ -1,24 +1,25 @@
-// 📄 src/services/transaction.service.ts
-
 import { handleAsync } from '@/lib/api';
 import { DateFilterParams } from '@/features/shared/types';
 import {
   createTransactionAPI,
+  createTransferTransactionAPI,
+  deleteTransactionAPI,
   fetchTransactionCalendarAPI,
   fetchTransactionsAPI,
   fetchTransactionSummaryAPI,
-  updateTransactionAPI,
   getTransactionByIdAPI,
-  createTransferTransactionAPI,
+  updateTransactionAPI,
   updateTransferTransactionAPI,
-  deleteTransactionAPI,
-} from '@/features/transaction/api';
+} from './api';
 
-import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
+import { TransactionGroupSummaryDTO, TransactionRequestDTO } from './types';
 
 import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 
+//
+// Fetch transaction by ID and store in selectedTransaction
+//
 export const fetchTransactionById = async (id: string) => {
   const {
     actions: { setSelectedTransaction, setLoading, setError },
@@ -33,6 +34,9 @@ export const fetchTransactionById = async (id: string) => {
   return data;
 };
 
+//
+// Submit income/expense transaction (create or update)
+//
 export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
   const {
     actions: { getCreateFormData, getUpdateFormData, reset },
@@ -40,24 +44,27 @@ export const submitTransaction = async (mode: 'new' | 'edit', id?: string) => {
 
   try {
     if (mode === 'new') {
-      const data = getCreateFormData();
+      const data: TransactionRequestDTO = getCreateFormData();
       await createTransactionAPI(data);
     } else if (mode === 'edit') {
-      if (!id) throw new Error('수정할 거래 ID가 없습니다.');
-      const data = getUpdateFormData();
+      if (!id) throw new Error('Missing transaction ID for update');
+      const data: TransactionRequestDTO = getUpdateFormData();
       await updateTransactionAPI(id, data);
     } else {
-      throw new Error(`지원하지 않는 모드: ${mode}`);
+      throw new Error(`Unsupported transaction mode: ${mode}`);
     }
     reset();
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : '거래 저장 중 오류 발생';
-    console.error('❌ submitTransaction error:', message);
+      err instanceof Error ? err.message : 'Failed to save transaction';
+    console.error('submitTransaction error:', message);
     throw new Error(message);
   }
 };
 
+//
+// Submit transfer transaction (create or update)
+//
 export const submitTransferTransaction = async (
   mode: 'new' | 'edit',
   id?: string
@@ -68,31 +75,35 @@ export const submitTransferTransaction = async (
 
   try {
     if (mode === 'new') {
-      const data = getCreateFormData();
+      const data: TransactionRequestDTO = getCreateFormData();
       await createTransferTransactionAPI(data);
     } else if (mode === 'edit') {
-      if (!id) throw new Error('수정할 거래 ID가 없습니다.');
-      const data = getUpdateFormData();
+      if (!id) throw new Error('Missing transfer ID for update');
+      const data: TransactionRequestDTO = getUpdateFormData();
       await updateTransferTransactionAPI(id, data);
     } else {
-      throw new Error(`지원하지 않는 모드: ${mode}`);
+      throw new Error(`Unsupported transfer mode: ${mode}`);
     }
     reset();
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : '거래 저장 중 오류 발생';
-    console.error('❌ submitTransaction error:', message);
+      err instanceof Error
+        ? err.message
+        : 'Failed to save transfer transaction';
+    console.error('submitTransferTransaction error:', message);
     throw new Error(message);
   }
 };
 
+//
+// Fetch filtered transaction list
+//
 export const fetchTransactions = async () => {
   const {
     filters,
     actions: { setFilters, setTransactions, setLoading, setError },
   } = useTransactionStore.getState();
 
-  // ✅ 초기화 시점은 필요할 때만 고려
   setFilters({
     type: undefined,
     categoryId: undefined,
@@ -104,7 +115,7 @@ export const fetchTransactions = async () => {
   });
 
   if (!filters.startDate || !filters.endDate) {
-    console.warn('❗ 필수 날짜(startDate 또는 endDate)가 없습니다.');
+    console.warn('Missing required startDate or endDate');
     return;
   }
 
@@ -129,6 +140,9 @@ export const fetchTransactions = async () => {
   if (data) setTransactions(data);
 };
 
+//
+// Fetch summary of grouped transactions
+//
 export const fetchTransactionSummary = async (params: DateFilterParams) => {
   const {
     actions: { setTransactionSummaryResponse, setLoading, setError },
@@ -143,6 +157,9 @@ export const fetchTransactionSummary = async (params: DateFilterParams) => {
   if (data) setTransactionSummaryResponse(data);
 };
 
+//
+// Fetch transaction data for calendar view
+//
 export const fetchTransactionCalendar = async (date: string) => {
   const {
     actions: { setCalendarItems, setLoading, setError },
@@ -157,7 +174,9 @@ export const fetchTransactionCalendar = async (date: string) => {
   if (data) setCalendarItems(data);
 };
 
-// ✅ 상태 저장 없이 단독 사용
+//
+// Fetch weekly grouped summary directly (no state)
+//
 export const fetchTransactionSummaryWeekly = async (
   params: DateFilterParams
 ): Promise<TransactionGroupSummaryDTO> => {
@@ -165,17 +184,21 @@ export const fetchTransactionSummaryWeekly = async (
     return await fetchTransactionSummaryAPI(params);
   } catch (err) {
     const message =
-      err instanceof Error ? err.message : '요약 데이터 조회 실패';
-    console.error('❌ fetchTransactionSummaryWeekly error:', message);
+      err instanceof Error ? err.message : 'Failed to fetch summary';
+    console.error('fetchTransactionSummaryWeekly error:', message);
     throw new Error(message);
   }
 };
 
+//
+// Delete transaction by ID
+//
 export const deleteTransaction = async (id: string) => {
   try {
-    // 1. 트랜잭션 삭제 요청 (linkedTransfer 포함 처리됨)
     await deleteTransactionAPI(id);
   } catch (err) {
-    throw new Error(err instanceof Error ? err.message : '삭제 실패');
+    throw new Error(
+      err instanceof Error ? err.message : 'Failed to delete transaction'
+    );
   }
 };

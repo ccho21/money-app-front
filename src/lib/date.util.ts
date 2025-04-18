@@ -121,12 +121,12 @@ export const getDateRange = (
 export function getNextDateByRange(
   inputDate: Date,
   diff: number,
-  range: RangeOption
+  groupBy: RangeOption
 ): Date {
   const baseDate = startOfDay(inputDate);
   const dayOfMonth = getDate(baseDate);
 
-  switch (range) {
+  switch (groupBy) {
     case 'yearly': {
       return new Date(getYear(baseDate) + diff, getMonth(baseDate), dayOfMonth);
     }
@@ -162,8 +162,11 @@ export const normalizeToLocalMidnight = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export const getDateLabelByRange = (date: Date, range: RangeOption): string => {
-  switch (range) {
+export const getDateLabelByRange = (
+  date: Date,
+  groupBy: RangeOption
+): string => {
+  switch (groupBy) {
     case 'yearly':
       return format(date, 'yyyy');
     case 'monthly':
@@ -180,8 +183,8 @@ export const getDateLabelByRange = (date: Date, range: RangeOption): string => {
   }
 };
 
-export const getStepByRange = (range: RangeOption): number => {
-  switch (range) {
+export const getStepByRange = (groupBy: RangeOption): number => {
+  switch (groupBy) {
     case 'yearly':
       return 10;
     case 'monthly':

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
-  TransactionDTO,
+  TransactionDetailDTO,
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
   TransactionCalendarDTO,
@@ -27,8 +27,8 @@ const defaultFilters: TransactionFilters = {
 };
 
 interface TransactionStoreState {
-  transactions: TransactionDTO[];
-  selectedTransaction?: TransactionDTO;
+  transactions: TransactionDetailDTO[];
+  selectedTransaction?: TransactionDetailDTO;
   transactionSummary: TransactionGroupItemDTO | null;
   transactionSummaryResponse: TransactionGroupSummaryDTO | null;
   transactionCalendarItems: TransactionCalendarDTO[];
@@ -39,8 +39,8 @@ interface TransactionStoreState {
 }
 
 interface TransactionStoreActions {
-  setTransactions: (txs: TransactionDTO[]) => void;
-  setSelectedTransaction: (tx: TransactionDTO) => void;
+  setTransactions: (txs: TransactionDetailDTO[]) => void;
+  setSelectedTransaction: (tx: TransactionDetailDTO) => void;
   setTransactionSummary: (data: TransactionGroupItemDTO) => void;
   setTransactionSummaryResponse: (data: TransactionGroupSummaryDTO) => void;
   setCalendarItems: (items: TransactionCalendarDTO[]) => void;

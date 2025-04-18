@@ -1,5 +1,5 @@
 import {
-  TransactionDTO,
+  TransactionDetailDTO,
   TransactionGroupSummaryDTO,
 } from '@/features/transaction/types';
 import SummaryBox from '@/components/stats/SummaryBox';
@@ -12,10 +12,13 @@ interface DailyViewProps {
   isLoading: boolean;
   data?: TransactionGroupSummaryDTO | null;
   summaryItems: SummaryItem[];
-  onTransactionClick?: (tx: TransactionDTO) => void;
+  onTransactionClick?: (tx: TransactionDetailDTO) => void;
   onHeaderClick?: (date: string) => void;
 }
 
+//
+// DailyView displays grouped transactions and a summary box.
+//
 export default function DailyView({
   isLoading,
   data,
@@ -24,7 +27,7 @@ export default function DailyView({
   onHeaderClick,
 }: DailyViewProps) {
   if (isLoading) {
-    return <p className='text-center mt-10 text-mute'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   if (!data) {
@@ -38,16 +41,16 @@ export default function DailyView({
       </Panel>
 
       <Panel>
-        {data.data.map((group) => (
+        {data.items.map((group) => (
           <TransactionGroup
             key={group.label}
             label={group.label}
             rangeStart={group.rangeStart}
             rangeEnd={group.rangeEnd}
-            incomeTotal={group.incomeTotal}
-            expenseTotal={group.expenseTotal}
+            groupIncome={group.groupIncome}
+            groupExpense={group.groupExpense}
             group={group}
-            onTransactionClick={(tx: TransactionDTO) => {
+            onTransactionClick={(tx: TransactionDetailDTO) => {
               onTransactionClick?.(tx);
             }}
             onHeaderClick={() => {

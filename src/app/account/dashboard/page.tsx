@@ -16,7 +16,7 @@ import { useUIStore } from '@/stores/useUIStore';
 export default function AccountsPage() {
   const router = useRouter();
   const {
-    actions: { setSelectedAccount },
+    setSelectedAccount,
     state: { accountDashboard, isLoading },
   } = useAccountStore();
 

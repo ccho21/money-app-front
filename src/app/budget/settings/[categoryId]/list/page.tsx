@@ -17,7 +17,7 @@ export default function ListBudgetCategoryPage() {
   const { categoryId } = useParams();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { range } = query;
+  const { groupBy } = query;
 
   const {
     state: { budgetCategoryGroupResponse },
@@ -29,8 +29,8 @@ export default function ListBudgetCategoryPage() {
   const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
 
   useEffect(() => {
-    if (range !== 'yearly') {
-      setQuery({ range: 'yearly' });
+    if (groupBy !== 'yearly') {
+      setQuery({ groupBy: 'yearly' });
     }
 
     const run = async () => {
@@ -49,7 +49,7 @@ export default function ListBudgetCategoryPage() {
     };
 
     run();
-  }, [categoryId, dateRangeKey, range, setQuery, reset]);
+  }, [categoryId, dateRangeKey, groupBy, setQuery, reset]);
 
   const budgets = budgetCategoryGroupResponse?.budgets ?? [];
 

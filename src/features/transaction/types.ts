@@ -1,8 +1,12 @@
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '../shared/types';
+
 export type TransactionType = 'income' | 'expense' | 'transfer';
 
 //
-// ✅ 트랜잭션 기본 DTO (조회용)
-export interface TransactionDTO {
+// Transaction detail DTO (response object)
+// Corresponds to: TransactionDetailDTO in structure
+//
+export interface TransactionDetailDTO {
   id: string;
   amount: number;
   date: string; // ISO format
@@ -19,8 +23,10 @@ export interface TransactionDTO {
 }
 
 //
-// ✅ 트랜잭션 생성 요청 DTO
-export interface TransactionIncomeOrExpenseRequestDTO {
+// Create transaction DTO for income/expense
+// Extends: BaseTransactionRequestDTO
+//
+export interface TransactionCreateRequestDTO {
   type: TransactionType;
   amount: number;
   date: string;
@@ -30,31 +36,57 @@ export interface TransactionIncomeOrExpenseRequestDTO {
   description?: string;
 }
 
-export type TransactionTransferRequestDTO = {
-  type: 'transfer';
-  amount: number;
-  fromAccountId: string;
-  toAccountId: string;
-  date: string;
-  note?: string;
-  description?: string;
-};
+//
+// Update transaction DTO (Partial type of Create)
+// Extends: PartialType<TransactionCreateRequestDTO>
+//
+export type TransactionUpdateRequestDTO = Partial<TransactionCreateRequestDTO>;
 
 //
-// ✅ 트랜잭션 그룹화 항목 (기간별 리스트)
-export interface TransactionGroupItemDTO {
+// Create transaction DTO for transfer
+// Extends: BaseTransactionRequestDTO + from/to
+//
+export interface TransactionTransferRequestDTO {
+  type: 'transfer';
+  amount: number;
+  date: string;
+  fromAccountId: string;
+  toAccountId: string;
+  note?: string;
+  description?: string;
+}
+
+//
+// Transaction calendar DTO (for calendar view)
+// Fields: date, income, expense
+//
+export interface TransactionCalendarDTO {
+  date: string;
+  income: number;
+  expense: number;
+}
+
+//
+// Grouped transactions per date unit
+// Extends: BaseGroupItemDTO
+//
+export interface TransactionGroupItemDTO
+  extends BaseGroupItemDTO<TransactionGroupItemDTO> {
   label: string;
   rangeStart: string;
   rangeEnd: string;
-  transactions: TransactionDTO[];
+  transactions: TransactionDetailDTO[];
   groupIncome: number;
   groupExpense: number;
   isCurrent?: boolean;
 }
 
 //
-// ✅ 트랜잭션 그룹화 응답 DTO
-export interface TransactionGroupSummaryDTO {
+// Response DTO for group summary
+// Extends: BaseListSummaryResponseDTO
+//
+export interface TransactionGroupSummaryDTO
+  extends BaseListSummaryResponseDTO<TransactionGroupSummaryDTO> {
   startDate: string;
   endDate: string;
   groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -66,14 +98,10 @@ export interface TransactionGroupSummaryDTO {
 }
 
 //
-// ✅ 캘린더 뷰용 트랜잭션 DTO
-export interface TransactionCalendarDTO {
-  date: string;
-  transactions: TransactionDTO[];
-}
-
-export type TransactionFormFields = {
-  type: 'income' | 'expense' | 'transfer';
+// Frontend form representation
+//
+export interface TransactionFormFields {
+  type: TransactionType;
   amount: string;
   accountId: string;
   categoryId: string;
@@ -82,8 +110,11 @@ export type TransactionFormFields = {
   description: string;
   from: string;
   to: string;
-};
+}
 
+//
+// Union for all valid transaction create DTOs
+//
 export type TransactionRequestDTO =
-  | TransactionIncomeOrExpenseRequestDTO
+  | TransactionCreateRequestDTO
   | TransactionTransferRequestDTO;

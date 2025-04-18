@@ -1,159 +1,150 @@
-import { CategoryType } from '../category/types';
+import {
+  BaseGroupItemDTO,
+  BaseListSummaryResponseDTO,
+} from '@/features/shared/types';
 
 export type SortKey = 'note' | 'count' | 'amount';
 export type SortDirection = 'asc' | 'desc';
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Query DTO
+//
+export interface StatsQuery {
+  type: 'income' | 'expense';
+  startDate: string;
+  endDate: string;
+  groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
+}
 
-export interface StatsByCategory {
+//
+// CATEGORY
+//
+
+export interface StatsCategoryGroupItemDTO extends BaseGroupItemDTO {
   categoryId: string;
   categoryName: string;
-  categoryIcon: string;
-  categoryType: CategoryType;
-  amount: number;
-  rate: number; // 퍼센트 단위, 소수점 포함
+  categoryType: 'income' | 'expense';
   color: string;
-  budget?: string;
-}
-
-export interface StatsByCategoryResponse {
-  totalIncome: number;
-  totalExpense: number;
-  data: StatsByCategory[];
-}
-
-export interface StatsByBudget {
-  categoryId: string;
-  categoryName: string;
-  categoryType: CategoryType;
-  icon: string;
-  color?: string;
-
-  budgetId?: string; // ✅ budgetCategoryId → budgetId로 이름 변경 (optional)
-  budget: number; // ✅ 예산 설정된 금액 (0일 수도 있음)
-  spent: number; // ✅ 실제 지출 금액
-  income: number; // ✅ 실제 수입 금액
-  remaining: number; // ✅ 예산 - 지출
-  rate: number; // ✅ 사용률: (spent / budget) * 100 (예산 없으면 0)
-
-  budgetRate?: number; // ⛔️ 이건 중복 개념. 제거 or 명확히 다르게 쓸 거 아니면 제외 추천
-  hasBudget: boolean; // ✅ 예산 설정 여부 (budgetId 존재 여부 기반)
-}
-
-export interface StatsByBudgetResponse {
-  totalBudget: number;
-  totalSpent: number;
-  totalIncome: number;
-  totalRemaining: number;
-  startDate: string;
-  endDate: string;
-  data: StatsByBudget[];
-}
-
-export interface StatsByNote {
-  note: string;
-  count: number;
   amount: number;
+  rate: number;
+  budgetId?: string;
+  budget?: number;
+  budgetRate?: number;
 }
 
-export interface StatsByNoteResponse {
-  totalIncome: number;
-  totalExpense: number;
-  data: StatsByNote[];
-}
-
-export interface StatsSummaryByCategory {
-  label: string;
-  startDate: string;
-  endDate: string;
-  isCurrent: boolean;
+export interface StatsCategoryGroupSummaryDTO extends BaseGroupItemDTO {
   income: number;
   expense: number;
-  total: number;
-
-  // 🔒 추후 확장용 필드
-  // transactionCount?: number;
-  // categoryMeta?: { icon: string; color: string };
+  isCurrent: boolean;
 }
-export interface StatsSummaryByCategoryResponse {
+
+export type StatsCategorySummaryDTO =
+  BaseListSummaryResponseDTO<StatsCategoryGroupSummaryDTO>;
+
+export interface StatsCategoryPeriodDTO extends BaseGroupItemDTO {
   categoryId: string;
   categoryName: string;
-  data: StatsSummaryByCategory[];
-  incomeTotal: number;
-  expenseTotal: number;
+  type: 'income' | 'expense';
+  icon: string;
+  color: string;
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+  totalIncome: number;
+  totalExpense: number;
+  data: StatsCategoryPeriodDTO[];
 }
 
-export interface StatsSummaryByBudget {
-  label: string; // e.g. "Apr", "2025-04-11"
-  startDate: string; // ISO
-  endDate: string; // ISO
-  expense: number;
+//
+// BUDGET
+//
+
+export interface StatsBudgetGroupItemDTO extends BaseGroupItemDTO {
+  categoryId: string;
+  categoryName: string;
+  categoryType: 'income' | 'expense';
+  icon: string;
+  color: string;
+  spent: number;
   income: number;
+  budget: number;
+  remaining: number;
+  rate: number;
+  hasBudget: boolean;
+  budgetId?: string;
+}
+
+export interface StatsBudgetGroupSummaryDTO extends BaseGroupItemDTO {
+  income: number;
+  expense: number;
   budgetAmount?: number;
   remaining?: number;
-
   isOver?: boolean;
   isCurrent: boolean;
 }
 
-export interface StatsSummaryByBudgetResponse {
+export type StatsBudgetSummaryDTO =
+  BaseListSummaryResponseDTO<StatsBudgetGroupSummaryDTO>;
+
+export interface StatsBudgetPeriodDTO extends BaseGroupItemDTO {
+  income: number;
+  expense: number;
+  budget: number;
+  remaining: number;
+  isOver: boolean;
+  isCurrent: boolean;
   categoryId: string;
   categoryName: string;
+  icon: string;
   color: string;
-  totalExpense: number;
-  totalBudget?: number;
-  totalRemaining?: number;
-  isOver?: boolean;
-  data: StatsSummaryByBudget[]; // 💡 unified monthly+daily
-}
-
-export interface NoteGroupSummary {
-  label: string;
-  startDate: string;
-  endDate: string;
-  income: number;
-  expense: number;
-  isCurrent: boolean;
-}
-
-export interface StatsByNote {
-  note: string;
-  totalIncome: number;
-  totalExpense: number;
-  data: NoteGroupSummary[];
-}
-
-export interface StatsByNoteResponse {
-  data: StatsByNote[];
-  totalIncome: number;
-  totalExpense: number;
-}
-
-export interface StatsSummaryByNote {
-  label: string;
-  startDate: string;
-  endDate: string;
-  income: number;
-  expense: number;
-  isCurrent: boolean;
-}
-
-export interface StatsSummaryByNoteTransaction {
-  id: string;
-  date: string;
-  amount: number;
   type: 'income' | 'expense';
-  accountId: string;
-  accountName: string;
-  note?: string;
-  categoryId?: string;
-  categoryName?: string;
+  totalExpense: number;
+  totalBudget: number;
+  totalRemaining: number;
+  data: StatsBudgetPeriodDTO[];
 }
 
-export interface StatsSummaryByNoteResponse {
+//
+// NOTE
+//
+
+export interface StatsNoteGroupItemDTO {
+  note: string;
+  type: 'income' | 'expense';
+  count: number;
+  totalIncome: number;
+  totalExpense: number;
+  data: StatsNoteGroupPeriodDTO[];
+}
+
+export interface StatsNoteGroupPeriodDTO extends BaseGroupItemDTO {
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+}
+
+export interface StatsNoteGroupSummaryDTO extends BaseGroupItemDTO {
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+}
+
+export type StatsNoteSummaryDTO =
+  BaseListSummaryResponseDTO<StatsNoteGroupSummaryDTO>;
+
+export interface StatsNotePeriodDTO extends BaseGroupItemDTO {
+  note: string;
+  income: number;
+  expense: number;
+  isCurrent: boolean;
+  totalIncome: number;
+  totalExpense: number;
+  data: StatsNotePeriodDTO[];
+}
+
+export interface StatsNoteDetailDTO {
   note: string;
   totalIncome: number;
   totalExpense: number;
-  data: StatsSummaryByNote[];
-  transactions: StatsSummaryByNoteTransaction[];
+  data: StatsNotePeriodDTO[];
 }

@@ -1,6 +1,6 @@
 import {
   AccountDashboardResponseDTO,
-  AccountDTO,
+  AccountDetailDTO,
   AccountTransactionSummaryDTO,
 } from '@/features/account/types';
 import { create } from 'zustand';
@@ -8,22 +8,20 @@ import { devtools } from 'zustand/middleware';
 
 interface AccountStoreState {
   state: {
-    accounts: AccountDTO[];
-    selectedAccount?: AccountDTO;
-    summaryResponse: AccountTransactionSummaryDTO[];
+    accounts: AccountDetailDTO[];
+    selectedAccount?: AccountDetailDTO;
+    summaryResponse?: AccountTransactionSummaryDTO;
     accountDashboard: AccountDashboardResponseDTO | null;
     isLoading: boolean;
     error: string | null;
   };
-  actions: {
-    setAccounts: (data: AccountDTO[]) => void;
-    setSelectedAccount: (acc: AccountDTO) => void;
-    setSummaryResponse: (data: AccountTransactionSummaryDTO[]) => void;
-    setAccountDashboard: (data: AccountDashboardResponseDTO) => void;
-    setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;
-    clear: () => void;
-  };
+  setAccounts: (data: AccountDetailDTO[]) => void;
+  setSelectedAccount: (acc: AccountDetailDTO) => void;
+  setSummaryResponse: (data: AccountTransactionSummaryDTO) => void;
+  setAccountDashboard: (data: AccountDashboardResponseDTO) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  clear: () => void;
 }
 
 export const useAccountStore = create<AccountStoreState>()(
@@ -40,7 +38,7 @@ export const useAccountStore = create<AccountStoreState>()(
       //
       // Set the entire accounts list
       //
-      setAccounts: (data: AccountDTO[]) =>
+      setAccounts: (data: AccountDetailDTO[]) =>
         set(
           (s) => ({ state: { ...s.state, accounts: data } }),
           false,
@@ -49,7 +47,7 @@ export const useAccountStore = create<AccountStoreState>()(
       //
       // Set the selected account
       //
-      setSelectedAccount: (acc: AccountDTO) =>
+      setSelectedAccount: (acc: AccountDetailDTO) =>
         set(
           (s) => ({ state: { ...s.state, selectedAccount: acc } }),
           false,
@@ -58,7 +56,7 @@ export const useAccountStore = create<AccountStoreState>()(
       //
       // Set the transaction summary per account
       //
-      setSummaryResponse: (data: AccountTransactionSummaryDTO[]) =>
+      setSummaryResponse: (data: AccountTransactionSummaryDTO) =>
         set(
           (s) => ({ state: { ...s.state, summaryResponse: data } }),
           false,
@@ -100,7 +98,7 @@ export const useAccountStore = create<AccountStoreState>()(
             state: {
               accounts: [],
               selectedAccount: undefined,
-              summaryResponse: [],
+              summaryResponse: undefined,
               accountDashboard: null,
               isLoading: false,
               error: null,

@@ -1,5 +1,3 @@
-// src/features/stats/service.ts
-
 import { DateFilterParams } from '@/features/shared/types';
 import {
   fetchStatsCategoryByCategoryIdAPI,
@@ -10,167 +8,182 @@ import {
   fetchStatsSummaryByBudgetAPI,
   fetchStatsSummaryByNoteAPI,
   fetchStatsNoteDetailAPI,
+  fetchStatBudgetByCategoryIdAPI,
 } from '@/features/stats/api';
 import { useStatsStore } from '@/stores/useStatsStore';
 
-export const fetchStatsByCatgory = async (params: DateFilterParams) => {
-  const {
-    actions: { setCategoryResponse, setLoading },
-  } = useStatsStore.getState();
+//
+// Fetch grouped category stats
+//
+export const fetchStatsByCategory = async (params: DateFilterParams) => {
+  const { setCategoryResponse, setLoading } = useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatByCategoryAPI(params);
     setCategoryResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch category stats:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch grouped budget stats
+//
 export const fetchStatsByBudget = async (params: DateFilterParams) => {
-  const {
-    actions: { setBudgetResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setBudgetResponse, setLoading } = useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatByBudgetAPI(params);
     setBudgetResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch budget stats:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch grouped note stats
+//
 export const fetchStatsByNote = async (params: DateFilterParams) => {
-  const {
-    actions: { setNoteResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setNoteResponse, setLoading } = useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsByNoteAPI(params);
     setNoteResponse(data);
   } catch (e) {
-    console.error('❌ 노트 통계 데이터 불러오기 실패:', e); // ✅ 수정된 로그
+    console.error('Failed to fetch note stats:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch category detail stats
+//
 export const fetchStatsCategoryByCategoryId = async (
   categoryId: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setCategoryDetailResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setCategoryDetailResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
-
     setCategoryDetailResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch category detail:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch budget detail stats
+//
 export const fetchStatsBudgetByCategoryId = async (
   categoryId: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setBudgetDetailResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setBudgetDetailResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
-    const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
+    const data = await fetchStatBudgetByCategoryIdAPI(categoryId, params);
     setBudgetDetailResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch budget detail:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch category summary
+//
 export const fetchStatsSummaryByCategoryId = async (
   categoryId: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setstatsSummaryCategoryResposne, setLoading },
-  } = useStatsStore.getState();
+  const { setCategorySummaryResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsSummaryByCategoryIdAPI(categoryId, params);
-    setstatsSummaryCategoryResposne(data);
+    setCategorySummaryResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch category summary:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch budget summary
+//
 export const fetchStatsSummaryByBudget = async (
   categoryId: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setstatsSummaryBudgetResposne, setLoading },
-  } = useStatsStore.getState();
+  const { setBudgetSummaryResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsSummaryByBudgetAPI(categoryId, params);
-    setstatsSummaryBudgetResposne(data);
+    setBudgetSummaryResponse(data);
   } catch (e) {
-    console.error('❌ 예산 사용 분석 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch budget summary:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch note detail stats
+//
 export const fetchStatsNoteDetail = async (
   note: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setNoteDetailResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setNoteDetailResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsNoteDetailAPI(note, params);
     setNoteDetailResponse(data);
   } catch (e) {
-    console.error('❌ 노트 상세 통계 불러오기 실패:', e);
+    console.error('Failed to fetch note detail:', e);
   } finally {
     setLoading(false);
   }
 };
 
+//
+// Fetch note summary
+//
 export const fetchStatsSummaryByNote = async (
   note: string,
   params: DateFilterParams
 ) => {
-  const {
-    actions: { setNoteSummaryResponse, setLoading },
-  } = useStatsStore.getState();
+  const { setNoteSummaryResponse, setLoading } =
+    useStatsStore.getState().actions;
 
   setLoading(true);
   try {
     const data = await fetchStatsSummaryByNoteAPI(note, params);
     setNoteSummaryResponse(data);
   } catch (e) {
-    console.error('❌ 노트 통계 상세 데이터 불러오기 실패:', e);
+    console.error('Failed to fetch note summary:', e);
   } finally {
     setLoading(false);
   }

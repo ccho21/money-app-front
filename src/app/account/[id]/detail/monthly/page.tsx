@@ -40,16 +40,16 @@ export default function AccountMonthlyPage() {
     }))
   );
 
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
   const dateRangeKey = useMemo(() => getDateRangeKey(0), [getDateRangeKey]);
 
   //
-  // Ensure range is set to 'yearly' for monthly breakdown
+  // Ensure groupBy is set to 'yearly' for monthly breakdown
   //
   useEffect(() => {
-    if (range !== 'yearly') {
-      setQuery({ range: 'yearly' });
+    if (groupBy !== 'yearly') {
+      setQuery({ groupBy: 'yearly' });
     }
   }, []);
 

@@ -16,6 +16,9 @@ import { TransactionGroupItemDTO } from '@/features/transaction/types';
 import { DateFilterParams } from '@/features/shared/types';
 import MonthlyView from '@/components/dashboard/MonthlyView';
 
+//
+// Monthly dashboard page: grouped by month + optional weekly toggle
+//
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [weeklySummaryByMonth, setWeeklySummaryByMonth] = useState<{
@@ -36,12 +39,19 @@ export default function MonthlyPage() {
       getDateRangeKey: s.getDateRangeKey,
     }))
   );
-  const { range, date } = query;
 
+  const { groupBy, date } = query;
+
+  //
+  // Ensure groupBy is set to 'yearly'
+  //
   useEffect(() => {
-    if (range !== 'yearly') setQuery({ range: 'yearly' });
-  }, [range, setQuery]);
+    if (groupBy !== 'yearly') setQuery({ groupBy: 'yearly' });
+  }, [groupBy, setQuery]);
 
+  //
+  // Fetch monthly transaction summary
+  //
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
@@ -49,20 +59,18 @@ export default function MonthlyPage() {
       startDate,
       endDate,
     };
-    (async () => {
-      fetchTransactionSummary(params);
-    })();
+    fetchTransactionSummary(params);
   }, [getDateRangeKey, date]);
 
+  //
+  // Toggle open/close weekly summary for a given month
+  //
   const handleToggle = useCallback(
     async (index: number, summary: TransactionGroupItemDTO) => {
       const isOpening = openIndex !== index;
       setOpenIndex(isOpening ? index : null);
 
       const label = summary.label;
-
-      console.log('### isOpening', isOpening, !weeklySummaryByMonth[label]);
-
       if (isOpening && !weeklySummaryByMonth[label]) {
         const monthDate = parse(label, 'yyyy-MM', new Date());
         const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
@@ -75,7 +83,7 @@ export default function MonthlyPage() {
         };
 
         const weeklyRes = await fetchTransactionSummaryWeekly(params);
-        const weeklyData: TransactionGroupItemDTO[] = weeklyRes?.data ?? [];
+        const weeklyData: TransactionGroupItemDTO[] = weeklyRes?.items ?? [];
 
         setWeeklySummaryByMonth((prev) => ({
           ...prev,
@@ -86,9 +94,10 @@ export default function MonthlyPage() {
     [openIndex, weeklySummaryByMonth]
   );
 
-  const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
-  const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
-  const items = [
+  const totalIncome = transactionSummaryResponse?.totalExpense ?? 0;
+  const totalExpense = transactionSummaryResponse?.totalExpense ?? 0;
+
+  const summaryItems = [
     {
       label: 'Income',
       value: totalIncome,
@@ -113,7 +122,7 @@ export default function MonthlyPage() {
     <MonthlyView
       isLoading={isLoading}
       data={transactionSummaryResponse}
-      summaryItems={items}
+      summaryItems={summaryItems}
       openIndex={openIndex}
       weeklySummaryByMonth={weeklySummaryByMonth}
       onToggle={handleToggle}

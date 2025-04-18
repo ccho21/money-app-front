@@ -81,8 +81,11 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
           ),
 
         syncWithDateFilter: () => {
-          const { date, range } = useFilterStore.getState().query;
-          const dateRangeKey = getDateRangeKey(date, { unit: range, amount: 0 });
+          const { date, groupBy } = useFilterStore.getState().query;
+          const dateRangeKey = getDateRangeKey(date, {
+            unit: groupBy,
+            amount: 0,
+          });
           const [startDate, endDate] = dateRangeKey.split('_');
 
           set((s) => ({
@@ -90,13 +93,14 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
               ...s.state,
               startDate,
               endDate,
-              groupBy: range,
+              groupBy: groupBy,
             },
           }));
         },
 
         getCreateFormData: () => {
-          const { categoryId, amount, startDate, endDate, groupBy } = get().state;
+          const { categoryId, amount, startDate, endDate, groupBy } =
+            get().state;
           return {
             categoryId,
             amount: Number(amount),

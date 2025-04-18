@@ -1,48 +1,54 @@
-// 📄 src/stores/stats/stats.store.ts
-
 import {
-  StatsByBudgetResponse,
-  StatsByCategoryResponse,
-  StatsByNoteResponse,
-  StatsSummaryByBudgetResponse,
-  StatsSummaryByCategoryResponse,
-  StatsSummaryByNoteResponse,
+  StatsCategoryGroupItemDTO,
+  StatsBudgetGroupItemDTO,
+  StatsNoteGroupItemDTO,
+  StatsCategorySummaryDTO,
+  StatsBudgetSummaryDTO,
+  StatsNoteSummaryDTO,
+  StatsCategoryPeriodDTO,
+  StatsBudgetPeriodDTO,
+  StatsNotePeriodDTO,
 } from '@/features/stats/types';
-import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
+
+import { BaseListSummaryResponseDTO } from '@/features/shared/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 interface StatsStore {
   state: {
-    statsSummaryCategoryResposne?: StatsSummaryByCategoryResponse;
-    statsSummaryBudgetResposne?: StatsSummaryByBudgetResponse;
-    noteSummaryResponse?: StatsSummaryByNoteResponse;
+    categorySummaryResponse?: StatsCategorySummaryDTO;
+    budgetSummaryResponse?: StatsBudgetSummaryDTO;
+    noteSummaryResponse?: StatsNoteSummaryDTO;
 
-    categoryResponse?: StatsByCategoryResponse;
-    budgetResponse?: StatsByBudgetResponse;
-    noteResponse?: StatsByNoteResponse;
+    categoryResponse?: BaseListSummaryResponseDTO<StatsCategoryGroupItemDTO>;
+    budgetResponse?: BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO>;
+    noteResponse?: BaseListSummaryResponseDTO<StatsNoteGroupItemDTO>;
 
-    categoryDetailResponse?: TransactionGroupSummaryDTO;
-    budgetDetailResponse?: TransactionGroupSummaryDTO;
-    noteDetailResponse?: TransactionGroupSummaryDTO;
+    categoryDetailResponse?: StatsCategoryPeriodDTO;
+    budgetDetailResponse?: StatsBudgetPeriodDTO;
+    noteDetailResponse?: StatsNotePeriodDTO;
 
     isLoading: boolean;
     error: string | null;
   };
   actions: {
-    setstatsSummaryCategoryResposne: (
-      data: StatsSummaryByCategoryResponse
+    setCategorySummaryResponse: (data: StatsCategorySummaryDTO) => void;
+    setBudgetSummaryResponse: (data: StatsBudgetSummaryDTO) => void;
+    setNoteSummaryResponse: (data: StatsNoteSummaryDTO) => void;
+
+    setCategoryResponse: (
+      data: BaseListSummaryResponseDTO<StatsCategoryGroupItemDTO>
     ) => void;
-    setstatsSummaryBudgetResposne: (data: StatsSummaryByBudgetResponse) => void;
-    setNoteSummaryResponse: (data: StatsSummaryByNoteResponse) => void;
+    setBudgetResponse: (
+      data: BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO>
+    ) => void;
+    setNoteResponse: (
+      data: BaseListSummaryResponseDTO<StatsNoteGroupItemDTO>
+    ) => void;
 
-    setCategoryResponse: (data: StatsByCategoryResponse) => void;
-    setBudgetResponse: (data: StatsByBudgetResponse) => void;
-    setNoteResponse: (data: StatsByNoteResponse) => void;
-
-    setCategoryDetailResponse: (data?: TransactionGroupSummaryDTO) => void;
-    setBudgetDetailResponse: (data: TransactionGroupSummaryDTO) => void;
-    setNoteDetailResponse: (data: TransactionGroupSummaryDTO) => void;
+    setCategoryDetailResponse: (data: StatsCategoryPeriodDTO) => void;
+    setBudgetDetailResponse: (data: StatsBudgetPeriodDTO) => void;
+    setNoteDetailResponse: (data: StatsNotePeriodDTO) => void;
 
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
@@ -58,108 +64,54 @@ export const useStatsStore = create<StatsStore>()(
         error: null,
       },
       actions: {
-        // ✅ Summary Setters
-        setstatsSummaryCategoryResposne: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, statsSummaryCategoryResposne: data },
-            }),
-            false,
-            'stats/setStatsSummaryCategoryResponse'
-          ),
-
-        setstatsSummaryBudgetResposne: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, statsSummaryBudgetResposne: data },
-            }),
-            false,
-            'stats/setStatsSummaryBudgetResposne'
-          ),
-
+        // Summary
+        setCategorySummaryResponse: (data) =>
+          set((s) => ({
+            state: { ...s.state, categorySummaryResponse: data },
+          })),
+        setBudgetSummaryResponse: (data) =>
+          set((s) => ({ state: { ...s.state, budgetSummaryResponse: data } })),
         setNoteSummaryResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, noteSummaryResponse: data } }),
-            false,
-            'noteDetail/setNoteSummaryResponse'
-          ),
+          set((s) => ({ state: { ...s.state, noteSummaryResponse: data } })),
 
-        // ✅ Response Setters
+        // Group responses
         setCategoryResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, categoryResponse: data } }),
-            false,
-            'stats/setCategoryResponse'
-          ),
-
+          set((s) => ({ state: { ...s.state, categoryResponse: data } })),
         setBudgetResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, budgetResponse: data } }),
-            false,
-            'stats/setBudgetResponse'
-          ),
-
+          set((s) => ({ state: { ...s.state, budgetResponse: data } })),
         setNoteResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, noteResponse: data } }),
-            false,
-            'stats/setNoteResponse'
-          ),
+          set((s) => ({ state: { ...s.state, noteResponse: data } })),
 
-        // ✅ Detail Setters
+        // Detail responses
         setCategoryDetailResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, categoryDetailResponse: data } }),
-            false,
-            'stats/setCategoryDetailResponse'
-          ),
-
+          set((s) => ({ state: { ...s.state, categoryDetailResponse: data } })),
         setBudgetDetailResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, budgetDetailResponse: data } }),
-            false,
-            'stats/setBudgetDetailResponse'
-          ),
-
+          set((s) => ({ state: { ...s.state, budgetDetailResponse: data } })),
         setNoteDetailResponse: (data) =>
-          set(
-            (s) => ({ state: { ...s.state, noteDetailResponse: data } }),
-            false,
-            'stats/setNoteDetailResponse'
-          ),
+          set((s) => ({ state: { ...s.state, noteDetailResponse: data } })),
 
-        // ✅ UI State
+        // UI
         setLoading: (loading) =>
-          set(
-            (s) => ({ state: { ...s.state, isLoading: loading } }),
-            false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
-          ),
+          set((s) => ({ state: { ...s.state, isLoading: loading } })),
+        setError: (error) => set((s) => ({ state: { ...s.state, error } })),
 
-        setError: (error) =>
-          set((s) => ({ state: { ...s.state, error } }), false, 'ui/setError'),
-
-        // ✅ Clear All
+        // Clear
         clear: () =>
-          set(
-            () => ({
-              state: {
-                statsSummaryCategoryResposne: undefined,
-                statsSummaryBudgetResposne: undefined,
-                noteSummaryResponse: undefined,
-                categoryResponse: undefined,
-                budgetResponse: undefined,
-                noteResponse: undefined,
-                categoryDetailResponse: undefined,
-                budgetDetailResponse: undefined,
-                noteDetailResponse: undefined,
-                isLoading: false,
-                error: null,
-              },
-            }),
-            false,
-            'stats/clearAll'
-          ),
+          set(() => ({
+            state: {
+              categorySummaryResponse: undefined,
+              budgetSummaryResponse: undefined,
+              noteSummaryResponse: undefined,
+              categoryResponse: undefined,
+              budgetResponse: undefined,
+              noteResponse: undefined,
+              categoryDetailResponse: undefined,
+              budgetDetailResponse: undefined,
+              noteDetailResponse: undefined,
+              isLoading: false,
+              error: null,
+            },
+          })),
       },
     }),
     { name: 'useStatsStore' }

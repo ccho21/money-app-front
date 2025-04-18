@@ -8,12 +8,11 @@ import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
-import { CategoryType } from '@/features/category/types';
-import { TransactionGroupItemDTO } from '@/features/transaction/types';
 import {
   fetchStatsCategoryByCategoryId,
   fetchStatsSummaryByCategoryId,
 } from '@/features/stats/hooks';
+import { CategoryType } from '@/features/category/types';
 
 import Panel from '@/components/ui/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
@@ -21,67 +20,75 @@ import StatComposedChart from '@/components/ui/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
 import EmptyMessage from '@/components/ui/EmptyMessage';
 
+//
+// Category detail stats page
+//
 export default function StatsCategoryDetailPage() {
-  const categoryId = useParams().id;
+  const { id: categoryId } = useParams();
   const router = useRouter();
 
-  const {
-    state: { categoryDetailResponse, statsSummaryCategoryResposne, isLoading },
-  } = useStatsStore();
+  const { categoryDetailResponse, categorySummaryResponse, isLoading } =
+    useStatsStore((s) => s.state);
 
   const resetTopNav = useUIStore((s) => s.resetTopNav);
   const setTopNav = useUIStore((s) => s.setTopNav);
 
   const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { range, transactionType, date } = query;
+  const { groupBy, transactionType, date } = query;
 
-  // const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
-  // const [startDate, endDate] = useMemo(() => rangeKey.split('_'), [rangeKey]);
+  //
+  // Construct params for API calls
+  //
+  const statsParams = useMemo(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    return {
+      startDate,
+      endDate,
+      type: transactionType as CategoryType,
+      groupBy: groupBy,
+    };
+  }, [getDateRangeKey, transactionType, groupBy, date]);
 
-  // ✅ 바 차트 데이터 가공
+  //
+  // Fetch detail + summary data on mount or param change
+  //
+  useEffect(() => {
+    if (!categoryId) return;
+    fetchStatsSummaryByCategoryId(String(categoryId), statsParams);
+    fetchStatsCategoryByCategoryId(String(categoryId), {
+      ...statsParams,
+      groupBy: 'daily',
+    });
+  }, [categoryId, statsParams]);
+
+  //
+  // Set top nav title from summary
+  //
+  useEffect(() => {
+    setTopNav({
+      title: categorySummaryResponse?.categoryName ?? 'Category',
+      onBack: () => router.back(),
+    });
+    return () => resetTopNav();
+  }, [setTopNav, resetTopNav, categorySummaryResponse, router]);
+
+  //
+  // Build chart data
+  //
   const barData = useMemo(() => {
-    if (!statsSummaryCategoryResposne) return [];
-    return statsSummaryCategoryResposne.data.map((summary) => ({
+    if (!categorySummaryResponse?.data) return [];
+    return categorySummaryResponse.data.map((summary) => ({
       month: summary.label,
       startDate: summary.startDate,
       endDate: summary.endDate,
       value: transactionType === 'expense' ? summary.expense : summary.income,
       isCurrent: summary.isCurrent,
     }));
-  }, [statsSummaryCategoryResposne, transactionType]);
+  }, [categorySummaryResponse, transactionType]);
 
-  // ✅ 상단 네비 설정
-  useEffect(() => {
-    setTopNav({
-      title: statsSummaryCategoryResposne?.categoryName ?? 'Category',
-      onBack: () => router.back(),
-    });
-    return () => resetTopNav();
-  }, [setTopNav, resetTopNav, statsSummaryCategoryResposne, router]);
-
-  // ✅ 최초 데이터 fetch
-  useEffect(() => {
-    if (!categoryId) return;
-    const run = async () => {
-      const [startDate, endDate] = getDateRangeKey().split('_');
-      const params = {
-        startDate,
-        endDate,
-        type: transactionType as CategoryType,
-        groupBy: range,
-      };
-      await Promise.all([
-        fetchStatsSummaryByCategoryId(String(categoryId), params),
-        fetchStatsCategoryByCategoryId(String(categoryId), {
-          ...params,
-          groupBy: 'daily',
-        }),
-      ]);
-    };
-    run();
-  }, [categoryId, transactionType, range, date, getDateRangeKey]);
-
-  // ✅ 바 차트 클릭 → 쿼리 날짜 이동
+  //
+  // Handle bar chart click
+  //
   const handleDateClick = (startDate: string) => {
     setQuery({ date: startOfDay(parseISO(startDate)) });
   };
@@ -91,8 +98,8 @@ export default function StatsCategoryDetailPage() {
   }
 
   return (
-    <div>
-      {/* 📊 요약 카드 */}
+    <div className='space-y-4'>
+      {/* Summary section */}
       {categoryDetailResponse && (
         <Panel>
           <SummaryBox
@@ -128,32 +135,27 @@ export default function StatsCategoryDetailPage() {
         </Panel>
       )}
 
-      {/* 📈 바 + 라인 차트 */}
+      {/* Chart section */}
       {barData.length > 0 && (
         <div className='w-full h-40'>
-          <StatComposedChart
-            data={barData}
-            onSelect={(startDate) => handleDateClick(startDate)}
-          />
+          <StatComposedChart data={barData} onSelect={handleDateClick} />
         </div>
       )}
 
-      {/* 🧾 일별 거래 리스트 */}
-      {categoryDetailResponse && categoryDetailResponse.data.length ? (
+      {/* Transaction breakdown */}
+      {categoryDetailResponse?.data?.length ? (
         <div className='space-y-4'>
-          {categoryDetailResponse.data.map(
-            (group: TransactionGroupItemDTO, i: number) => (
-              <TransactionGroup
-                key={group.label + i}
-                label={group.label}
-                rangeStart={group.rangeStart}
-                rangeEnd={group.rangeEnd}
-                incomeTotal={group.incomeTotal}
-                expenseTotal={group.expenseTotal}
-                group={group}
-              />
-            )
-          )}
+          {categoryDetailResponse.data.map((group, i) => (
+            <TransactionGroup
+              key={group.label + i}
+              label={group.label}
+              rangeStart={group.rangeStart}
+              rangeEnd={group.rangeEnd}
+              incomeTotal={group.incomeTotal}
+              expenseTotal={group.expenseTotal}
+              group={group}
+            />
+          ))}
         </div>
       ) : (
         <EmptyMessage />

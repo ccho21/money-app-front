@@ -5,41 +5,47 @@ import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByCatgory } from '@/features/stats/hooks';
-import type { CategoryType } from '@/features/category/types';
+import { fetchStatsByCategory } from '@/features/stats/hooks';
 import StatsView from '../_components/StatsView';
 import { DateFilterParams } from '@/features/shared/types';
+import { CategoryType } from '@/features/category/types';
 
-export default function StatsPage() {
+//
+// Category stats page - shows breakdown by category
+//
+export default function StatsCategoryPage() {
   const router = useRouter();
 
-  const {
-    state: { isLoading, categoryResponse },
-  } = useStatsStore();
-
+  const { categoryResponse, isLoading } = useStatsStore((s) => s.state);
   const { query, getDateRangeKey } = useFilterStore();
-  const { transactionType, date } = query;
+  const { transactionType, groupBy } = query;
 
-  const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
-  const [start, end] = dateRangeKey.split('_');
-
-  useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
-    const params: DateFilterParams = {
+  //
+  // Memoize the query params
+  //
+  const params: DateFilterParams = useMemo(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    return {
       startDate,
       endDate,
+      groupBy,
       type: transactionType as CategoryType,
     };
+  }, [getDateRangeKey, groupBy, transactionType]);
 
-    fetchStatsByCatgory(params);
-  }, [transactionType, dateRangeKey, date]);
+  //
+  // Fetch category stats on param change
+  //
+  useEffect(() => {
+    fetchStatsByCategory(params);
+  }, [params]);
 
   return (
     <StatsView
       isLoading={isLoading}
-      data={categoryResponse?.data ?? []}
-      startDate={start}
-      endDate={end}
+      data={categoryResponse?.items ?? []}
+      startDate={params.startDate}
+      endDate={params.endDate}
       onItemClick={(id: string) => router.push(`/stats/category/${id}`)}
     />
   );

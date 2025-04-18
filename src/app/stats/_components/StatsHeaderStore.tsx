@@ -21,10 +21,10 @@ export default function StatsHeaderStore() {
   const [showModal, setShowModal] = useState(false);
 
   const { query, setQuery, getQueryString } = useFilterStore();
-  const { range } = query;
+  const { groupBy } = query;
 
   const handleRangeSelect = (newRange: RangeOption) => {
-    setQuery({ range: newRange });
+    setQuery({ groupBy: newRange });
     const syncedURL = getQueryString(true); // ✅ type 포함
     router.replace(syncedURL);
     setShowModal(false);
@@ -67,7 +67,7 @@ export default function StatsHeaderStore() {
           onClick={() => setShowModal(true)}
           className='text-xs border px-2 py-1 rounded-md text-muted border-border hover:text-foreground'
         >
-          {range}
+          {groupBy}
         </button>
       </div>
 
@@ -79,7 +79,7 @@ export default function StatsHeaderStore() {
               key={option}
               className={cn(
                 'p-3 w-full text-left transition-all',
-                option === range
+                option === groupBy
                   ? 'bg-surface font-semibold text-foreground'
                   : 'text-muted hover:text-foreground'
               )}

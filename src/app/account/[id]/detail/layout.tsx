@@ -36,10 +36,10 @@ export default function AccountDetailDashboardLayout({
 
   const current = pathname.split('/')[4] || 'daily';
   const dateParam = searchParams.get('date');
-  const rangeParam = searchParams.get('range');
+  const rangeParam = searchParams.get('groupBy');
 
   const { query, setQuery } = useFilterStore();
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
   const {
     actions: { reset },
@@ -64,8 +64,8 @@ export default function AccountDetailDashboardLayout({
       }
 
       if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
-        if (range !== rangeParam) {
-          partialQuery.range = rangeParam as RangeOption;
+        if (groupBy !== rangeParam) {
+          partialQuery.groupBy = rangeParam as RangeOption;
         }
       }
 
@@ -75,7 +75,7 @@ export default function AccountDetailDashboardLayout({
 
       hasInitialized.current = true;
     }
-  }, [dateParam, rangeParam, date, range, current, setQuery]);
+  }, [dateParam, rangeParam, date, groupBy, current, setQuery]);
 
   useEffect(() => {
     useUIStore.getState().setTopNav({
@@ -109,7 +109,7 @@ export default function AccountDetailDashboardLayout({
           variant='underline'
           onChange={(key) => {
             const currentDate = formatDate(date);
-            const rangeParam = `range=${range}`;
+            const rangeParam = `groupBy=${groupBy}`;
             router.replace(
               `/account/${accountId}/detail/${key}?date=${currentDate}&${rangeParam}`
             );

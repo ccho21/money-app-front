@@ -27,7 +27,7 @@ export default function YearlyView({
     );
   }
 
-  if (!data || !data.data.length) {
+  if (!data || !data.items.length) {
     return <EmptyMessage />;
   }
 
@@ -38,12 +38,12 @@ export default function YearlyView({
       </Panel>
 
       <Panel className='bg-surface text-foreground divide-y divide-border'>
-        {data.data.map((summary) => (
+        {data.items.map((summary) => (
           <YearlyItem
             key={summary.label}
             date={summary.label}
-            income={summary.incomeTotal}
-            expense={summary.expenseTotal}
+            income={summary.groupIncome}
+            expense={summary.groupExpense}
             onClick={() => onItemClick(summary.label)}
           />
         ))}

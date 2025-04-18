@@ -1,12 +1,45 @@
-// 📁 types/account.dto.ts
+import { BaseListSummaryResponseDTO } from '../shared/types';
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';
 export type FinancialType = 'ASSET' | 'LIABILITY';
 
 //
-// ✅ Core account object - aligned with backend AccountDetailDTO
+// BaseAccountRequestDTO
+// From: accounts.module (Base DTO for both create and update)
 //
-export interface AccountDTO {
+export interface BaseAccountRequestDTO {
+  name: string;
+  type: AccountType;
+  autoPayment: boolean;
+  color?: string;
+  description?: string;
+  settlementDate?: number;
+  paymentDate?: number;
+}
+
+//
+// AccountCreateRequestDTO
+// From: accounts.module
+// Extends: BaseAccountRequestDTO + initialBalance
+//
+export interface AccountCreateRequestDTO extends BaseAccountRequestDTO {
+  initialBalance: number;
+}
+
+//
+// AccountUpdateRequestDTO
+// From: accounts.module
+// Extends: Partial<AccountCreateRequestDTO>
+// Implements: PartialType
+//
+export type AccountUpdateRequestDTO = Partial<AccountCreateRequestDTO>;
+
+//
+// AccountDetailDTO
+// From: accounts.module
+// Full account object used in response
+//
+export interface AccountDetailDTO {
   id: string;
   name: string;
   type: AccountType;
@@ -15,31 +48,15 @@ export interface AccountDTO {
   description?: string;
   settlementDate?: number;
   paymentDate?: number;
+  autoPayment?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  financialType?: FinancialType; // optional: backend includes this
+  financialType?: FinancialType;
 }
 
 //
-// ✅ Account creation request DTO - matches AccountCreateRequestDTO from backend
-//
-export interface AccountCreateRequestDTO {
-  name: string;
-  initialBalance: number; // renamed to match backend field
-  type: AccountType;
-  color?: string;
-  settlementDate?: number;
-  paymentDate?: number;
-  description?: string;
-}
-
-//
-// ✅ Account update request DTO - partial of create
-//
-export type AccountUpdateRequestDTO = Partial<AccountCreateRequestDTO>;
-
-//
-// ✅ Individual account item for dashboard grouping
+// AccountDashboardItemDTO
+// For: grouped dashboard display
 //
 export interface AccountDashboardItemDTO {
   id: string;
@@ -54,7 +71,8 @@ export interface AccountDashboardItemDTO {
 }
 
 //
-// ✅ Full dashboard response - grouped by account type
+// AccountDashboardResponseDTO
+// Grouped response for dashboard
 //
 export interface AccountDashboardResponseDTO {
   asset: number;
@@ -68,9 +86,12 @@ export interface AccountDashboardResponseDTO {
 }
 
 //
-// ✅ Time-range summary response per account - matches AccountGroupSummaryDTO
+// AccountTransactionSummaryDTO
+// From: common.module
+// Extends: BaseListSummaryResponseDTO
 //
-export interface AccountTransactionSummaryDTO {
+export interface AccountTransactionSummaryDTO
+  extends BaseListSummaryResponseDTO<AccountTransactionSummaryDTO> {
   accountId: string;
   accountName: string;
   balance: number;

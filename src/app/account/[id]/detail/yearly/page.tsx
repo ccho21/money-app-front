@@ -29,10 +29,10 @@ export default function YearlyPage() {
     }))
   );
 
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
   //
-  // Calculate 5-year date range from current date
+  // Calculate 5-year date groupBy from current date
   //
   const dateRangeKey = useMemo(() => {
     const start = startOfYear(addYears(date, -5));
@@ -41,7 +41,7 @@ export default function YearlyPage() {
   }, [date]);
 
   //
-  // Fetch yearly transaction summary if range is correct
+  // Fetch yearly transaction summary if groupBy is correct
   //
   useEffect(() => {
     const [startDate, endDate] = dateRangeKey.split('_');
@@ -51,12 +51,12 @@ export default function YearlyPage() {
       endDate,
     };
 
-    if (range !== 'yearly') {
-      setQuery({ range: 'yearly' });
+    if (groupBy !== 'yearly') {
+      setQuery({ groupBy: 'yearly' });
     } else {
       fetchTransactionSummary(params);
     }
-  }, [dateRangeKey, range, setQuery]);
+  }, [dateRangeKey, groupBy, setQuery]);
 
   const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
   const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;

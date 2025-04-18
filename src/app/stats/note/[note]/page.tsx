@@ -30,7 +30,7 @@ export default function StatsNoteDetailPage() {
   } = useStatsStore();
 
   const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { range, transactionType, date } = query;
+  const { groupBy, transactionType, date } = query;
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
@@ -39,10 +39,10 @@ export default function StatsNoteDetailPage() {
 
   const chartData = useMemo(() => {
     if (!noteSummaryResponse) return [];
-    return noteSummaryResponse.data.map((summary) => ({
+    return noteSummaryResponse.items.map((summary) => ({
       month: summary.label,
-      startDate: summary.startDate,
-      endDate: summary.endDate,
+      startDate: summary.rangeStart,
+      endDate: summary.rangeEnd,
       value: transactionType === 'expense' ? summary.expense : summary.income,
       isCurrent: summary.isCurrent,
     }));
@@ -67,7 +67,7 @@ export default function StatsNoteDetailPage() {
       startDate,
       endDate,
       type: transactionType as CategoryType,
-      groupBy: range,
+      groupBy,
     };
 
     const decodedNote = decodeURIComponent(String(note));
@@ -78,7 +78,7 @@ export default function StatsNoteDetailPage() {
       fetchStatsSummaryByNote(finalNote, params),
       fetchStatsNoteDetail(finalNote, params),
     ]).finally(() => setLoading(false));
-  }, [note, transactionType, range, setLoading, date, getDateRangeKey]);
+  }, [note, transactionType, groupBy, setLoading, date, getDateRangeKey]);
 
   const handleDateClick = (startDate: string) => {
     console.log('### STARTDTATE', startDate);
@@ -133,8 +133,8 @@ export default function StatsNoteDetailPage() {
                 label={group.label}
                 rangeStart={group.rangeStart}
                 rangeEnd={group.rangeEnd}
-                incomeTotal={group.incomeTotal}
-                expenseTotal={group.expenseTotal}
+                groupIncome={group.income}
+                groupExpense={group.expense}
                 group={group}
               />
             ))}

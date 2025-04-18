@@ -1,13 +1,13 @@
 'use client';
 
-import { TransactionDTO } from '@/features/transaction/types';
+import { TransactionDetailDTO } from '@/features/transaction/types';
 import { cn } from '@/lib/utils';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import CurrencyDisplay from '../ui/CurrencyDisplay';
 
 interface Props {
-  tx: TransactionDTO;
-  onClick?: (tx: TransactionDTO) => void;
+  tx: TransactionDetailDTO;
+  onClick?: (tx: TransactionDetailDTO) => void;
   showTransferLabel?: boolean;
   className?: string;
 }

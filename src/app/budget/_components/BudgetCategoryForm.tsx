@@ -33,7 +33,7 @@ export const BudgetCategoryForm = ({
   } = useBudgetCategoryFormStore();
 
   //
-  // Sync range from filter on mount
+  // Sync groupBy from filter on mount
   //
   useEffect(() => {
     syncWithDateFilter();

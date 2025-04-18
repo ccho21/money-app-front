@@ -34,7 +34,7 @@ export default function StatsBudgetDetailPage() {
   const resetTopNav = useUIStore((s) => s.resetTopNav);
 
   const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { date, range, transactionType } = query;
+  const { date, groupBy, transactionType } = query;
 
   const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
 
@@ -65,7 +65,7 @@ export default function StatsBudgetDetailPage() {
       startDate,
       endDate,
       type: transactionType as CategoryType,
-      groupBy: range,
+      groupBy: groupBy,
     };
 
     Promise.all([
@@ -75,7 +75,7 @@ export default function StatsBudgetDetailPage() {
         groupBy: 'daily',
       }),
     ]);
-  }, [categoryId, rangeKey, transactionType, range, date]);
+  }, [categoryId, rangeKey, transactionType, groupBy, date]);
 
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;

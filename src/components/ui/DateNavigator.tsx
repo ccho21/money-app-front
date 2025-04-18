@@ -14,10 +14,10 @@ interface DateNavigatorProps {
 function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   const router = useRouter();
 
-  const { date, range } = useFilterStore(
+  const { date, groupBy } = useFilterStore(
     useShallow((s) => ({
       date: s.query.date,
-      range: s.query.range,
+      groupBy: s.query.groupBy,
     }))
   );
 
@@ -26,17 +26,17 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
 
   const handleChange = useCallback(
     (diff: number) => {
-      const newDate = getNextDateByRange(date, diff, range);
+      const newDate = getNextDateByRange(date, diff, groupBy);
       setQuery({ date: newDate });
 
       const syncedURL = getQueryString(withTransactionType);
       router.replace(syncedURL);
     },
-    [date, range, setQuery, getQueryString, router, withTransactionType]
+    [date, groupBy, setQuery, getQueryString, router, withTransactionType]
   );
 
   const label = useFilterStore((s) =>
-    getDateLabelByRange(s.query.date, s.query.range)
+    getDateLabelByRange(s.query.date, s.query.groupBy)
   );
 
   return (

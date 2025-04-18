@@ -19,7 +19,7 @@ export default function BudgetPage() {
   const router = useRouter();
 
   const { query, getDateRangeKey: getRangeKey } = useFilterStore();
-  const { range } = query;
+  const { groupBy } = query;
 
   const {
     state: { budgetCategoryResponse, isLoading },
@@ -29,14 +29,14 @@ export default function BudgetPage() {
     const run = async () => {
       const [startDate, endDate] = getRangeKey().split('_');
       const params: DateFilterParams = {
-        groupBy: range,
+        groupBy: groupBy,
         startDate,
         endDate,
       };
       await fetchBudgetsByCategory(params);
     };
     run();
-  }, [getRangeKey, range]);
+  }, [getRangeKey, groupBy]);
 
   const handleClick = (categoryId: string, isNew: boolean) => {
     if (isNew) {

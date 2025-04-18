@@ -1,91 +1,83 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-
+import { useRouter } from 'next/navigation';
 import { useAccountStore } from '@/stores/useAccountStore';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-
-import SummaryBox from '@/components/stats/SummaryBox';
-import BudgetBox from '../../../components/stats/BudgetBox';
-import EmptyMessage from '@/components/ui/EmptyMessage';
-import Panel from '@/components/ui/Panel';
-
 import { fetchAccountSummary } from '@/features/account/hooks';
 import { fetchBudgetSummary } from '@/features/budget/hooks';
 import { DateFilterParams } from '@/features/shared/types';
-import AccountBox from '../../../components/stats/AccountBox';
+import SummaryBox from '@/components/stats/SummaryBox';
+import BudgetBox from '@/components/stats/BudgetBox';
+import AccountBox from '@/components/stats/AccountBox';
+import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/Panel';
 import Divider from '@/components/ui/Divider';
-import { useRouter } from 'next/navigation';
 
+//
+// Dashboard summary page: shows account + budget stats in a snapshot
+//
 export default function SummaryPage() {
   const router = useRouter();
   const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { date, range } = query;
+  const { date, groupBy } = query;
 
-  const {
-    summaryResponse,
-    isLoading: isAccountLoading,
-    error: accountError,
-  } = useAccountStore(
-    useShallow((state) => ({
-      summaryResponse: state.state.summaryResponse,
-      isLoading: state.state.isLoading,
-      error: state.state.error,
-    }))
+  const summaryResponse = useAccountStore((s) => s.state.summaryResponse);
+  const isAccountLoading = useAccountStore((s) => s.state.isLoading);
+  const accountError = useAccountStore((s) => s.state.error);
+
+  const budgetSummaryResponse = useBudgetStore(
+    (s) => s.state.budgetSummaryResponse
   );
+  const isBudgetLoading = useBudgetStore((s) => s.state.isLoading);
+  const budgetError = useBudgetStore((s) => s.state.error);
 
-  const {
-    budgetSummaryResponse,
-    isLoading: isBudgetLoading,
-    error: budgetError,
-  } = useBudgetStore(
-    useShallow((state) => ({
-      budgetSummaryResponse: state.state.budgetSummaryResponse,
-      isLoading: state.state.isLoading,
-      error: state.state.error,
-    }))
-  );
-
-  // ✅ 항상 monthly 기준으로
+  //
+  // Ensure groupBy is 'monthly' only when needed
+  //
   useEffect(() => {
-    if (range !== 'monthly') setQuery({ range: 'monthly' });
-  }, [range, setQuery]);
+    if (groupBy !== 'monthly') {
+      setQuery({ groupBy: 'monthly' });
+    }
+  }, [groupBy, setQuery]);
 
-  // ✅ 데이터 fetch
-  useEffect(() => {
+  //
+  // Compute startDate / endDate only once per groupBy change
+  //
+  const params: DateFilterParams = useMemo(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
-    const params: DateFilterParams = {
+    return {
       startDate,
       endDate,
-      groupBy: range,
+      groupBy: 'monthly',
     };
+  }, [getDateRangeKey]); // ✅ date를 꼭 포함해야 한다
 
-    console.log('### PARAMS', params);
-
+  //
+  // Fetch account and budget summaries only if missing
+  //
+  useEffect(() => {
     (async () => {
-      await Promise.all([
-        fetchAccountSummary(params),
-        fetchBudgetSummary(params),
-      ]);
+      fetchAccountSummary(params);
+      fetchBudgetSummary(params);
     })();
-  }, [getDateRangeKey, date, range]);
+  }, [params, date]);
 
-  // ✅ 총합 계산
-  const summaryItems = useMemo(() => {
-    if (!summaryResponse || summaryResponse.length === 0) return [];
-
-    const incomeTotal = summaryResponse.reduce(
-      (sum, item) => sum + item.incomeTotal,
-      0
-    );
-    const expenseTotal = summaryResponse.reduce(
-      (sum, item) => sum + item.expenseTotal,
-      0
-    );
-
+  //
+  // Memoize computed totals
+  //
+  const [incomeTotal, expenseTotal] = useMemo(() => {
+    if (!summaryResponse?.items || !summaryResponse?.items.length)
+      return [0, 0];
     return [
+      summaryResponse.items.reduce((sum, item) => sum + item.incomeTotal, 0),
+      summaryResponse.items.reduce((sum, item) => sum + item.expenseTotal, 0),
+    ];
+  }, [summaryResponse]);
+
+  const summaryItems = useMemo(
+    () => [
       {
         label: 'Income',
         value: incomeTotal,
@@ -104,11 +96,15 @@ export default function SummaryPage() {
         color: 'text-foreground',
         prefix: '$',
       },
-    ];
-  }, [summaryResponse]);
+    ],
+    [incomeTotal, expenseTotal]
+  );
 
+  //
+  // Handle loading and error state
+  //
   if (isAccountLoading || isBudgetLoading) {
-    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
+    return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   if (accountError || budgetError) {
@@ -119,22 +115,23 @@ export default function SummaryPage() {
     );
   }
 
-  if (!budgetSummaryResponse || !summaryResponse?.length) {
+  if (!budgetSummaryResponse || !summaryResponse?.items.length) {
     return <EmptyMessage />;
   }
 
   const handleClick = () => {
     router.push('/stats/budget');
   };
+
   return (
     <div className='space-y-4'>
       <Panel>
         <SummaryBox items={summaryItems} />
       </Panel>
       <Panel>
-        <AccountBox accounts={summaryResponse}></AccountBox>
+        <AccountBox accounts={summaryResponse.items} />
       </Panel>
-      <Divider></Divider>
+      <Divider />
       <Panel>
         <BudgetBox item={budgetSummaryResponse} handleClick={handleClick} />
       </Panel>

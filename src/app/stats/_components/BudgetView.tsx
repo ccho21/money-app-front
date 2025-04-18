@@ -5,13 +5,14 @@ import { CategoryListItem } from './CategoryListItem';
 import Panel from '@/components/ui/Panel';
 import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
-import { StatsByBudgetResponse } from '@/features/stats/types';
 
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
+import { BaseListSummaryResponseDTO } from '@/features/shared/types';
+import { StatsBudgetGroupItemDTO } from '@/features/stats/types';
 
 interface BudgetViewProps {
   transactionType: CategoryType;
-  budgetResponse: StatsByBudgetResponse;
+  budgetResponse: BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO>;
   handleClick?: (handleClick: string, hasBudget: boolean) => void;
 }
 
@@ -31,7 +32,7 @@ export default function BudgetView({
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
             <p className='text-md font-semibold text-foreground mt-0.5'>
-              <CurrencyDisplay amount={budgetResponse.totalRemaining} />
+              {/* <CurrencyDisplay amount={budgetResponse.remaining} /> */}
             </p>
           </div>
 
@@ -48,7 +49,7 @@ export default function BudgetView({
       </Panel>
 
       <Panel>
-        {budgetResponse.data.map((item) => (
+        {budgetResponse.items.map((item) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}

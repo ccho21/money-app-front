@@ -1,65 +1,79 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/stores/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 
-import EmptyMessage from '@/components/ui/EmptyMessage';
-
 import { CategoryType } from '@/features/category/types';
-import { SortDirection, SortKey } from '@/features/stats/types';
+import {
+  SortKey,
+  SortDirection,
+  StatsNoteGroupItemDTO,
+} from '@/features/stats/types';
 import { fetchStatsByNote } from '@/features/stats/hooks';
-import { useRouter } from 'next/navigation';
+
+import EmptyMessage from '@/components/ui/EmptyMessage';
 import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
 
+//
+// Stats by note summary table view
+//
 export default function NoteView() {
   const router = useRouter();
 
   const { query, getDateRangeKey } = useFilterStore();
-  const { date, range, transactionType } = query;
+  const { groupBy, transactionType } = query;
+  const txType = transactionType as CategoryType;
 
-  const {
-    state: { noteResponse, isLoading },
-  } = useStatsStore();
+  const noteResponse = useStatsStore((s) => s.state.noteResponse);
+  const isLoading = useStatsStore((s) => s.state.isLoading);
 
   const [sortKey, setSortKey] = useState<SortKey>('count');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
+  //
+  // Build API params
+  //
+  const params = useMemo(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    return { startDate, endDate, type: txType, groupBy: groupBy };
+  }, [getDateRangeKey, txType, groupBy]);
+
+  //
+  // Fetch on param change
+  //
   useEffect(() => {
-    (async () => {
-      const [startDate, endDate] = getDateRangeKey().split('_');
+    fetchStatsByNote(params);
+  }, [params]);
 
-      await fetchStatsByNote({
-        startDate,
-        endDate,
-        type: transactionType as CategoryType,
-        groupBy: range,
-      });
-    })();
-  }, [getDateRangeKey, range, transactionType, date]);
-
-  const rawList = useMemo(() => noteResponse?.data || [], [noteResponse]);
+  //
+  // Sorting logic
+  //
+  const rawList = useMemo(() => noteResponse?.items || [], [noteResponse]);
 
   const sortedList = useMemo(() => {
-    return [...rawList].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
+    return [...rawList].sort(
+      (a: StatsNoteGroupItemDTO, b: StatsNoteGroupItemDTO) => {
+        const aVal = a[sortKey];
+        const bVal = b[sortKey];
 
-      if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+
+        const aStr = (aVal || '').toString().toLowerCase();
+        const bStr = (bVal || '').toString().toLowerCase();
+        return sortDirection === 'asc'
+          ? aStr.localeCompare(bStr)
+          : bStr.localeCompare(aStr);
       }
-
-      const aStr = (aVal || '').toString().toLowerCase();
-      const bStr = (bVal || '').toString().toLowerCase();
-      return sortDirection === 'asc'
-        ? aStr.localeCompare(bStr)
-        : bStr.localeCompare(aStr);
-    });
+    );
   }, [rawList, sortKey, sortDirection]);
 
   const totalAmount =
-    transactionType === 'income'
+    txType === 'income'
       ? noteResponse?.totalIncome ?? 0
       : noteResponse?.totalExpense ?? 0;
 
@@ -77,35 +91,43 @@ export default function NoteView() {
     return sortDirection === 'asc' ? '↑' : '↓';
   };
 
-  const handleRowClick = (note: string) => {
-    console.log('### note', note, note || '_');
-    router.push(`/stats/note/${encodeURIComponent(note || '_')}`);
-  };
+  //
+  // Row click → navigate to detail page
+  //
+  const handleRowClick = useCallback(
+    (note: string) => {
+      router.push(`/stats/note/${encodeURIComponent(note || '_')}`);
+    },
+    [router]
+  );
 
+  //
+  // Render loading or empty
+  //
   if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
+  if (!noteResponse || rawList.length === 0) return <EmptyMessage />;
 
-  if (!noteResponse || rawList.length === 0) {
-    return <EmptyMessage />;
-  }
-
+  //
+  // Render note table
+  //
   return (
     <div className='p-4 space-y-4 bg-surface rounded-xl'>
-      {/* 상단 요약 */}
+      {/* Header summary */}
       <div className='flex justify-between items-center'>
         <span className='text-sm text-muted'>
-          {transactionType === 'expense' ? 'Expense Notes' : 'Income Notes'}
+          {txType === 'expense' ? 'Expense Notes' : 'Income Notes'}
         </span>
         <span
           className={`text-sm font-semibold ${
-            transactionType === 'expense' ? 'text-error' : 'text-success'
+            txType === 'expense' ? 'text-error' : 'text-success'
           }`}
         >
-          {transactionType === 'expense' ? 'Exp.' : 'Inc.'}{' '}
+          {txType === 'expense' ? 'Exp.' : 'Inc.'}{' '}
           <CurrencyDisplay amount={totalAmount} />
         </span>
       </div>
 
-      {/* 테이블 */}
+      {/* Table */}
       <table className='w-full text-sm text-left'>
         <thead className='text-muted border-b border-border'>
           <tr>
@@ -134,16 +156,14 @@ export default function NoteView() {
             <tr
               key={index}
               onClick={() => handleRowClick(item.note || '')}
-              className='border-b border-border hover:bg-muted/5 transition'
+              className='border-b border-border hover:bg-muted/5 transition cursor-pointer'
             >
               <td className='py-2'>{item.note || '-'}</td>
               <td className='py-2 text-center'>{item.count}</td>
               <td className='py-2 text-right'>
                 <CurrencyDisplay
                   amount={
-                    transactionType === 'income'
-                      ? item.totalIncome
-                      : item.totalExpense
+                    txType === 'income' ? item.totalIncome : item.totalExpense
                   }
                 />
               </td>

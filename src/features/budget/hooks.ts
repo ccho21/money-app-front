@@ -7,13 +7,10 @@ import {
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
 } from './api';
-import {
-  CreateBudgetCategoryDTO,
-  UpdateBudgetCategoryDTO,
-} from './types';
+import { CreateBudgetCategoryDTO, UpdateBudgetCategoryDTO } from './types';
 
 //
-// Fetch budget categories by filter range
+// Fetch budget categories by filter groupBy
 //
 export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   const {
@@ -27,7 +24,8 @@ export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
     const data = await fetchBudgetsByCategoryAPI(params);
     setBudgetCategoryResponse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to fetch budget categories';
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch budget categories';
     setError(message);
   } finally {
     setLoading(false);
@@ -49,7 +47,8 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
     const data = await fetchBudgetSummaryAPI(params);
     setBudgetSummaryResponse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to fetch budget summary';
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch budget summary';
     setError(message);
   } finally {
     setLoading(false);
@@ -63,12 +62,15 @@ export const createBudgetCategory = async (data: CreateBudgetCategoryDTO) => {
   try {
     const prepared = {
       ...data,
-      amount: typeof data.amount === 'string' ? Number(data.amount) : data.amount,
+      amount:
+        typeof data.amount === 'string' ? Number(data.amount) : data.amount,
     };
     const response = await createBudgetCategoryAPI(prepared);
     return response;
   } catch (err) {
-    throw new Error(err instanceof Error ? err.message : 'Failed to create budget');
+    throw new Error(
+      err instanceof Error ? err.message : 'Failed to create budget'
+    );
   }
 };
 
@@ -83,7 +85,9 @@ export const updateBudgetCategory = async (
     const response = await updateBudgetCategoryAPI(id, data);
     return response;
   } catch (err) {
-    throw new Error(err instanceof Error ? err.message : 'Failed to update budget');
+    throw new Error(
+      err instanceof Error ? err.message : 'Failed to update budget'
+    );
   }
 };
 
@@ -94,11 +98,8 @@ export const fetchBudgetCategoriesByCategoryId = async (
   categoryId: string,
   filter: DateFilterParams
 ) => {
-  const {
-    setLoading,
-    setError,
-    setBudgetCategoryGroupResponse,
-  } = useBudgetStore.getState().actions;
+  const { setLoading, setError, setBudgetCategoryGroupResponse } =
+    useBudgetStore.getState().actions;
 
   try {
     setLoading(true);
@@ -106,7 +107,8 @@ export const fetchBudgetCategoriesByCategoryId = async (
     const data = await getBudgetCategoriesByCategoryIdAPI(categoryId, filter);
     setBudgetCategoryGroupResponse(data);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to fetch budget group data';
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch budget group data';
     setError(message);
   } finally {
     setLoading(false);

@@ -1,132 +1,125 @@
 import { get } from '@/lib/api';
 import { DateFilterParams } from '../shared/types';
 import {
-  StatsByBudgetResponse,
-  StatsByCategoryResponse,
-  StatsByNoteResponse,
-  StatsSummaryByBudgetResponse,
-  StatsSummaryByCategoryResponse,
-  StatsSummaryByNoteResponse,
+  StatsCategoryGroupItemDTO,
+  StatsCategorySummaryDTO,
+  StatsBudgetGroupItemDTO,
+  StatsBudgetSummaryDTO,
+  StatsNoteSummaryDTO,
+  StatsCategoryPeriodDTO,
+  StatsBudgetPeriodDTO,
+  StatsNotePeriodDTO,
+  StatsNoteGroupItemDTO,
 } from './types';
-import { TransactionGroupSummaryDTO } from '../transaction/types';
+import { BaseListSummaryResponseDTO } from '../shared/types';
 
+function buildQuery(params: DateFilterParams): string {
+  const query = new URLSearchParams();
+  query.append('startDate', params.startDate);
+  query.append('endDate', params.endDate);
+  if (params.type) query.append('type', params.type);
+  if (params.groupBy) query.append('groupBy', params.groupBy);
+  return query.toString();
+}
+
+//
+// [GET] /stats/by-category
+// Returns: grouped category stats
+//
 export const fetchStatByCategoryAPI = (
   params: DateFilterParams
-): Promise<StatsByCategoryResponse> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  return get(`/stats/by-category?${query.toString()}`);
+): Promise<BaseListSummaryResponseDTO<StatsCategoryGroupItemDTO>> => {
+  return get(`/stats/by-category?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/by-budget
+// Returns: grouped budget stats
+//
 export const fetchStatByBudgetAPI = (
   params: DateFilterParams
-): Promise<StatsByBudgetResponse> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  return get(`/stats/by-budget?${query.toString()}`);
+): Promise<BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO>> => {
+  return get(`/stats/by-budget?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/by-note
+// Returns: grouped note stats
+//
 export const fetchStatsByNoteAPI = (
   params: DateFilterParams
-): Promise<StatsByNoteResponse> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  return get(`/stats/by-note?${query.toString()}`);
+): Promise<BaseListSummaryResponseDTO<StatsNoteGroupItemDTO>> => {
+  return get(`/stats/by-note?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/category/:categoryId
+// Returns: category detail data
+//
 export const fetchStatsCategoryByCategoryIdAPI = async (
   categoryId: string,
   params: DateFilterParams
-) => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  const res = await get(`/stats/category/${categoryId}?${query.toString()}`);
-  return res as Promise<TransactionGroupSummaryDTO>;
+): Promise<StatsCategoryPeriodDTO> => {
+  return await get(`/stats/category/${categoryId}?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/budget/:categoryId
+// Returns: budget detail data
+//
 export const fetchStatBudgetByCategoryIdAPI = async (
   categoryId: string,
   params: DateFilterParams
-) => {
-  const query = new URLSearchParams();
-  if (params.type) query.append('type', params.type);
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  const res = await get(`/stats/budget/${categoryId}?${query.toString()}`);
-  return res as Promise<TransactionGroupSummaryDTO>;
+): Promise<StatsBudgetPeriodDTO> => {
+  return await get(`/stats/budget/${categoryId}?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/category/:categoryId/summary
+// Returns: category summary
+//
 export const fetchStatsSummaryByCategoryIdAPI = async (
   categoryId: string,
   params: DateFilterParams
-) => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  const res = await get(
-    `/stats/category/${categoryId}/summary?${query.toString()}`
+): Promise<StatsCategorySummaryDTO> => {
+  return await get(
+    `/stats/category/${categoryId}/summary?${buildQuery(params)}`
   );
-  return res as Promise<StatsSummaryByCategoryResponse>;
 };
 
+//
+// [GET] /stats/budget/:categoryId/summary
+// Returns: budget summary
+//
 export const fetchStatsSummaryByBudgetAPI = async (
   categoryId: string,
   params: DateFilterParams
-) => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-  const res = await get(
-    `/stats/budget/${categoryId}/summary?${query.toString()}`
-  );
-  return res as Promise<StatsSummaryByBudgetResponse>;
+): Promise<StatsBudgetSummaryDTO> => {
+  return await get(`/stats/budget/${categoryId}/summary?${buildQuery(params)}`);
 };
 
+//
+// [GET] /stats/note/:note
+// Returns: note detail
+//
 export const fetchStatsNoteDetailAPI = async (
   note: string,
   params: DateFilterParams
-): Promise<TransactionGroupSummaryDTO> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-
-  const res = await get(
-    `/stats/note/${encodeURIComponent(note)}?${query.toString()}`
+): Promise<StatsNotePeriodDTO> => {
+  return await get(
+    `/stats/note/${encodeURIComponent(note)}?${buildQuery(params)}`
   );
-  return res as TransactionGroupSummaryDTO;
 };
 
+//
+// [GET] /stats/note/:note/summary
+// Returns: note summary
+//
 export const fetchStatsSummaryByNoteAPI = async (
   note: string,
   params: DateFilterParams
-): Promise<StatsSummaryByNoteResponse> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.type) query.append('type', params.type);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-
-  const res = await get(
-    `/stats/note/${encodeURIComponent(note)}/summary?${query.toString()}`
+): Promise<StatsNoteSummaryDTO> => {
+  return await get(
+    `/stats/note/${encodeURIComponent(note)}/summary?${buildQuery(params)}`
   );
-  return res as Promise<StatsSummaryByNoteResponse>;
 };
