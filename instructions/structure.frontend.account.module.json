@@ -26,5 +26,329 @@
     "/account/dashboard",
     "/account/new",
     "/account"
+  ],
+  "mainDTOs": [
+    {
+      "name": "AccountDashboardItemDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "AccountType",
+          "optional": false
+        },
+        {
+          "name": "financialType",
+          "type": "'ASSET' | 'LIABILITY'",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "balancePayable",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "outstandingBalance",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "settlementDate",
+          "type": "number | null",
+          "optional": true
+        },
+        {
+          "name": "paymentDate",
+          "type": "number | null",
+          "optional": true
+        },
+        {
+          "name": "autoPayment",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AccountDashboardDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "asset",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "liability",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "data",
+          "type": "{ CASH: AccountDashboardItemDTO[], BANK: AccountDashboardItemDTO[], CARD: AccountDashboardItemDTO[] }",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "AccountDetailDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "AccountType",
+          "optional": false
+        },
+        {
+          "name": "balance",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "settlementDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "paymentDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "autoPayment",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BaseAccountRequestDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "AccountType",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "balance",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "settlementDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "paymentDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "autoPayment",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AccountCreateRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseAccountRequestDTO",
+      "fields": [
+        {
+          "name": "type",
+          "type": "AccountType",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "balance",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "settlementDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "paymentDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "autoPayment",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AccountUpdateRequestDTO",
+      "file": "types.ts",
+      "extends": "PartialType",
+      "composedFrom": ["AccountCreateRequestDTO"],
+      "fields": [
+        {
+          "name": "type",
+          "type": "AccountType",
+          "optional": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "balance",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "settlementDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "paymentDate",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "autoPayment",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AccountTransactionItemDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "accountId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "accountName",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "balance",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalIncome",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalExpense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "transactions",
+          "type": "TransactionDetailDTO[]",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AccountTransactionSummaryDTO",
+      "file": "types.ts",
+      "extends": "BaseListSummaryResponseDTO",
+      "fromModule": "common",
+      "fields": []
+    }
   ]
 }

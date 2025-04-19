@@ -15,9 +15,122 @@
     "features/category/hooks.ts",
     "features/category/types.ts"
   ],
-  "routes": [
-    "/category/[id]/edit",
-    "/category/new",
-    "/category"
+  "routes": ["/category/[id]/edit", "/category/new", "/category"],
+  "mainDTOs": [
+    {
+      "name": "CategoryDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "CategoryCreateRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseCategoryDTO",
+      "fromModule": "categories",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "CategoryUpdateRequestDTO",
+      "file": "types.ts",
+      "extends": "PartialType",
+      "composedFrom": ["CategoryCreateRequestDTO"],
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BaseCategoryDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    }
   ]
 }

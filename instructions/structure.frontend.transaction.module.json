@@ -1,20 +1,306 @@
 {
-  "module": "transaction",
-  "entryPoints": [
-    "app/transaction/[id]/edit/page.tsx",
-    "app/transaction/new/page.tsx"
-  ],
-  "stores": [
-    "stores/forms/useTransactionFormStore.ts",
-    "stores/useTransactionStore.ts"
-  ],
+  "module": "transactions",
   "features": [
-    "features/transaction/api.ts",
-    "features/transaction/hooks.ts",
     "features/transaction/types.ts"
   ],
-  "routes": [
-    "/transaction/[id]/edit",
-    "/transaction/new"
+  "mainDTOs": [
+    {
+      "name": "TransactionGroupItemDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "groupIncome",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "groupExpense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isCurrent",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "transactions",
+          "type": "TransactionDetailDTO[]",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "TransactionCalendarDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "date",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "income",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "expense",
+          "type": "number",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "TransactionDetailDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "toAccountId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "linkedTransferId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "category",
+          "type": "CategoryDTO | null",
+          "optional": true
+        },
+        {
+          "name": "account",
+          "type": "{\n    id: string",
+          "optional": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string | null",
+          "optional": true
+        },
+        {
+          "name": "toAccount",
+          "type": "{\n    id: string",
+          "optional": true
+        },
+        {
+          "name": "dueDate",
+          "type": "string | null",
+          "optional": true
+        },
+        {
+          "name": "paidAt",
+          "type": "string | null",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BaseTransactionRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseTransactionRequestDTO",
+      "fromModule": "transactions",
+      "fields": [
+        {
+          "name": "type",
+          "type": "TransactionType",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "TransactionGroupSummaryDTO",
+      "file": "types.ts",
+      "extends": "BaseListSummaryResponseDTO",
+      "fromModule": "common",
+      "fields": []
+    },
+    {
+      "name": "TransactionCreateRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseTransactionRequestDTO",
+      "fromModule": "transactions",
+      "fields": [
+        {
+          "name": "type",
+          "type": "TransactionType",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "TransactionUpdateRequestDTO",
+      "file": "types.ts",
+      "extends": "PartialType",
+      "composedFrom": [
+        "TransactionCreateRequestDTO"
+      ],
+      "fields": [
+        {
+          "name": "type",
+          "type": "TransactionType",
+          "optional": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "date",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "accountId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "TransactionTransferRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseTransactionRequestDTO",
+      "fromModule": "transactions",
+      "fields": [
+        {
+          "name": "fromAccountId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "toAccountId",
+          "type": "string",
+          "optional": false
+        }
+      ]
+    }
   ]
 }

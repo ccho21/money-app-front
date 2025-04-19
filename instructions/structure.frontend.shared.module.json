@@ -3,5 +3,137 @@
   "features": [
     "features/shared/types.ts"
   ],
-  "description": "\uacf5\ud1b5\uc801\uc73c\ub85c \uc0ac\uc6a9\ud558\ub294 DTO, \ub0a0\uc9dc \ud544\ud130 \ud0c0\uc785, \uc694\uccad param \ub4f1"
+  "description": "\uacf5\ud1b5\uc801\uc73c\ub85c \uc0ac\uc6a9\ud558\ub294 DTO, \ub0a0\uc9dc \ud544\ud130 \ud0c0\uc785, \uc694\uccad param \ub4f1",
+  "mainDTOs": [
+    {
+      "name": "BaseDateQueryDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "date",
+          "type": "string",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "DateQueryDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "startDate",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "DateRangeWithTimezoneQueryDTO",
+      "file": "types.ts",
+      "extends": "DateQueryDTO",
+      "fields": [
+        {
+          "name": "timezone",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "DateRangeWithGroupQueryDTO",
+      "file": "types.ts",
+      "extends": "DateQueryDTO",
+      "fields": [
+        {
+          "name": "groupBy",
+          "type": "GroupBy",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "DateRangeFullQueryDTO",
+      "file": "types.ts",
+      "extends": "DateRangeWithTimezoneQueryDTO",
+      "fields": [
+        {
+          "name": "groupBy",
+          "type": "GroupBy",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BaseGroupItemDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "rangeStart",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "rangeEnd",
+          "type": "string",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BaseListSummaryResponseDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "startDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "groupBy",
+          "type": "GroupBy",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "'income' | 'expense'",
+          "optional": true
+        },
+        {
+          "name": "summary",
+          "type": "T",
+          "optional": true
+        },
+        {
+          "name": "items",
+          "type": "T[]",
+          "optional": false
+        },
+        {
+          "name": "totalIncome",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "totalExpense",
+          "type": "number",
+          "optional": true
+        }
+      ]
+    }
+  ]
 }

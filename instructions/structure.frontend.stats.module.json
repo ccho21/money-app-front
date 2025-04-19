@@ -23,5 +23,157 @@
     "/stats/category",
     "/stats/note/[note]",
     "/stats/note"
+  ],
+  "mainDTOs": [
+    {
+      "name": "StatsQuery",
+      "file": "types.ts",
+      "extends": "DateRangeWithGroupQueryDTO",
+      "fields": [
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "StatsNoteGroupItemDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "note",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalIncome",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalExpense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "data",
+          "type": "StatsNoteGroupPeriodDTO[]",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "StatsNoteGroupSummaryDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "income",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "expense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isCurrent",
+          "type": "boolean",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "StatsNoteGroupPeriodDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "income",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "expense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isCurrent",
+          "type": "boolean",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "StatsNoteSummaryDTO",
+      "file": "types.ts",
+      "extends": "BaseListSummaryResponseDTO",
+      "fromModule": "common",
+      "fields": []
+    },
+    {
+      "name": "StatsNotePeriodDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "income",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "expense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isCurrent",
+          "type": "boolean",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "StatsNoteDetailDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "note",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "totalIncome",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalExpense",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "data",
+          "type": "StatsNotePeriodDTO[]",
+          "optional": false
+        }
+      ]
+    }
   ]
 }

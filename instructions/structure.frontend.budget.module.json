@@ -20,5 +20,328 @@
     "/budget/settings/[categoryId]/list",
     "/budget/settings/[categoryId]/new",
     "/budget/settings"
+  ],
+  "mainDTOs": [
+    {
+      "name": "BudgetCategoryItemDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "categoryName",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "used",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "remaining",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isOver",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        },
+        {
+          "name": "budgetId",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BudgetCategoryListResponseDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "items",
+          "type": "BudgetCategoryItemDTO[]",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BudgetDetailDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "categoryIds",
+          "type": "string[]",
+          "optional": false
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "string",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BudgetGroupItemDTO",
+      "file": "types.ts",
+      "extends": null,
+      "fields": [
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "categoryName",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "totalBudget",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalUsed",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "totalRemaining",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isOver",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "budgets",
+          "type": "BudgetCategoryPeriodItemDTO[]",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BudgetCategoryPeriodItemDTO",
+      "file": "types.ts",
+      "extends": "BaseGroupItemDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "used",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "remaining",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "isOver",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "isCurrent",
+          "type": "boolean",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BudgetCategoryCreateRequestDTO",
+      "file": "types.ts",
+      "extends": "BaseBudgetCategoryRequestDTO",
+      "fromModule": "budgets",
+      "fields": [
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "startDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    },
+    {
+      "name": "BudgetCategoryUpdateRequestDTO",
+      "file": "types.ts",
+      "extends": "PartialType",
+      "composedFrom": ["BudgetCategoryCreateRequestDTO"],
+      "fields": [
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "startDate",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BudgetGroupSummaryDTO",
+      "file": "types.ts",
+      "extends": "BaseListSummaryResponseDTO",
+      "fromModule": "common",
+      "fields": [
+        {
+          "name": "totalBudget",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "BaseBudgetCategoryRequestDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "categoryId",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false
+        },
+        {
+          "name": "startDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "endDate",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "type",
+          "type": "CategoryType",
+          "optional": false
+        }
+      ]
+    }
   ]
 }

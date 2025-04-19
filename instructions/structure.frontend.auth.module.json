@@ -1,0 +1,41 @@
+{
+  "module": "auth",
+  "features": [
+    "features/auth/types.ts"
+  ],
+  "mainDTOs": [
+    {
+      "name": "SignupDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "password",
+          "type": "string"
+        },
+        {
+          "name": "timezone",
+          "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "SigninDTO",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "password",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}
