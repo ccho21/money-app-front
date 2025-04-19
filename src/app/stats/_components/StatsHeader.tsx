@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
 
-import { RANGE_OPTIONS, RangeOption } from '@/features/shared/types';
+import { RANGE_OPTIONS, GroupBy } from '@/features/shared/types';
 
 const tabs = [
   { name: 'Stats', href: '/stats/category' },
@@ -24,7 +24,7 @@ export default function StatsHeader() {
   const { query, setQuery, getQueryString } = useFilterStore();
   const { groupBy } = query;
 
-  const handleRangeSelect = (newRange: RangeOption) => {
+  const handleRangeSelect = (newRange: GroupBy) => {
     setQuery({ groupBy: newRange });
     const syncedURL = getQueryString(true); // ✅ type 포함
     router.replace(syncedURL);

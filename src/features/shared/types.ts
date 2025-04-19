@@ -1,7 +1,7 @@
 import { CategoryType } from '../category/types';
-export type RangeOption = 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type GroupBy = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
-export const RANGE_OPTIONS: RangeOption[] = [
+export const RANGE_OPTIONS: GroupBy[] = [
   'daily',
   'weekly',
   'monthly',
@@ -28,12 +28,12 @@ export interface BaseListSummaryResponseDTO<T> {
 export interface DateFilterParams {
   startDate: string;
   endDate: string;
-  groupBy?: RangeOption;
+  groupBy?: GroupBy;
   type?: CategoryType; // ✅ Only needed in stats-related contexts
 }
 
 export interface DateRangeOptions {
-  unit: RangeOption;
+  unit: GroupBy;
   amount?: number; // 기본 단위만큼 더할 값 (기본값은 1)
   customEndDate?: Date; // unit이 'custom'일 경우 종료일 지정
 }

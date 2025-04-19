@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import { TransactionType } from '@/features/transaction/types';
-import { RangeOption } from '@/features/shared/types';
+import { GroupBy } from '@/features/shared/types';
 import { formatDate, getDateRangeKey } from '@/lib/date.util';
 
 interface FilterQuery {
   date: Date;
-  groupBy: RangeOption;
+  groupBy: GroupBy;
   transactionType: TransactionType;
 }
 

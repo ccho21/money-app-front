@@ -2,7 +2,7 @@ import { CategoryType } from '@/features/category/types';
 import {
   BaseGroupItemDTO,
   BaseListSummaryResponseDTO,
-  RangeOption,
+  GroupBy,
 } from '@/features/shared/types';
 
 export interface BudgetCategoryItemDTO {
@@ -65,7 +65,7 @@ export interface CreateBudgetCategoryDTO {
   amount: string | number;
   startDate: string;
   endDate: string;
-  groupBy: RangeOption;
+  groupBy: GroupBy;
 }
 
 export interface UpdateBudgetCategoryDTO {

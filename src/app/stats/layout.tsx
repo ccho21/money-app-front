@@ -11,12 +11,12 @@ import TabMenu from '@/components/common/TabMenu';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
 import type { TransactionType } from '@/features/transaction/types';
-import type { RangeOption } from '@/features/shared/types';
+import type { GroupBy } from '@/features/shared/types';
 import { useUIStore } from '@/stores/useUIStore';
 import TopNav from '@/components/common/TopNav';
 import { getDefaultLayoutOptions } from '@/lib/layout.config';
 
-const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
+const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 const validTypes: TransactionType[] = ['expense', 'income'];
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
@@ -67,9 +67,9 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     }
 
     // ✅ groupBy 파싱
-    if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
+    if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
       if (groupBy !== rangeParam) {
-        partialQuery.groupBy = rangeParam as RangeOption;
+        partialQuery.groupBy = rangeParam as GroupBy;
       }
     }
 

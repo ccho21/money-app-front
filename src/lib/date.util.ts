@@ -19,7 +19,7 @@ import {
   startOfWeek,
   startOfYear,
 } from 'date-fns';
-import { DateRangeOptions, RangeOption } from '@/features/shared/types';
+import { DateRangeOptions, GroupBy } from '@/features/shared/types';
 
 // ✅ 사용자 브라우저 기준 timezone 자동 감지
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -121,7 +121,7 @@ export const getDateRange = (
 export function getNextDateByRange(
   inputDate: Date,
   diff: number,
-  groupBy: RangeOption
+  groupBy: GroupBy
 ): Date {
   const baseDate = startOfDay(inputDate);
   const dayOfMonth = getDate(baseDate);
@@ -162,10 +162,7 @@ export const normalizeToLocalMidnight = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-export const getDateLabelByRange = (
-  date: Date,
-  groupBy: RangeOption
-): string => {
+export const getDateLabelByRange = (date: Date, groupBy: GroupBy): string => {
   switch (groupBy) {
     case 'yearly':
       return format(date, 'yyyy');
@@ -183,7 +180,7 @@ export const getDateLabelByRange = (
   }
 };
 
-export const getStepByRange = (groupBy: RangeOption): number => {
+export const getStepByRange = (groupBy: GroupBy): number => {
   switch (groupBy) {
     case 'yearly':
       return 10;

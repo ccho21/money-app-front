@@ -7,7 +7,7 @@ import {
   CreateBudgetCategoryDTO,
   UpdateBudgetCategoryDTO,
 } from '@/features/budget/types';
-import { RangeOption } from '@/features/shared/types';
+import { GroupBy } from '@/features/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 
@@ -17,11 +17,11 @@ interface BudgetCategoryFormState {
   amount: string;
   startDate: string;
   endDate: string;
-  groupBy: RangeOption;
+  groupBy: GroupBy;
 }
 
 type UpdateBudgetCategoryGroupDTO = UpdateBudgetCategoryDTO & {
-  groupBy: RangeOption;
+  groupBy: GroupBy;
 };
 
 interface BudgetCategoryFormStore {

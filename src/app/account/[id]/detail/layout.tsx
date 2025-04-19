@@ -20,9 +20,9 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
 
-import type { RangeOption } from '@/features/shared/types';
+import type { GroupBy } from '@/features/shared/types';
 
-const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
+const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
 export default function AccountDetailDashboardLayout({
   children,
@@ -63,9 +63,9 @@ export default function AccountDetailDashboardLayout({
         }
       }
 
-      if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
+      if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
         if (groupBy !== rangeParam) {
-          partialQuery.groupBy = rangeParam as RangeOption;
+          partialQuery.groupBy = rangeParam as GroupBy;
         }
       }
 

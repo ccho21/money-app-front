@@ -13,9 +13,9 @@ import { Plus } from 'lucide-react';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
-import type { RangeOption } from '@/features/shared/types';
+import type { GroupBy } from '@/features/shared/types';
 
-const validRanges: RangeOption[] = ['daily', 'weekly', 'monthly', 'yearly'];
+const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -48,9 +48,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         }
       }
 
-      if (rangeParam && validRanges.includes(rangeParam as RangeOption)) {
+      if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
         if (groupBy !== rangeParam) {
-          partialQuery.groupBy = rangeParam as RangeOption;
+          partialQuery.groupBy = rangeParam as GroupBy;
         }
       }
 
@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
     // ✅ 매번 실행되어야 하는 부분
     // const needsFallback =
-    //   !dateParam || !validRanges.includes(rangeParam as RangeOption);
+    //   !dateParam || !validRanges.includes(rangeParam as GroupBy);
 
     //   if (needsFallback) {
     //     const fallbackDate = new Date();
