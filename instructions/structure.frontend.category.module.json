@@ -1,0 +1,23 @@
+{
+  "module": "category",
+  "entryPoints": [
+    "app/category/[id]/edit/page.tsx",
+    "app/category/new/page.tsx",
+    "app/category/page.tsx"
+  ],
+  "stores": [
+    "stores/forms/useBudgetCategoryFormStore.ts",
+    "stores/forms/useCategoryFormStore.ts",
+    "stores/useCategoryStore.ts"
+  ],
+  "features": [
+    "features/category/api.ts",
+    "features/category/hooks.ts",
+    "features/category/types.ts"
+  ],
+  "routes": [
+    "/category/[id]/edit",
+    "/category/new",
+    "/category"
+  ]
+}

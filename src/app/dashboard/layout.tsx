@@ -6,8 +6,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
-import DateNavigator from '@/components/ui/DateNavigator';
-import { Button } from '@/components/ui/Button';
+import DateNavigator from '@/components/ui/check/DateNavigator';
+import { Button } from '@/components/ui/check/Button';
 
 import { Plus } from 'lucide-react';
 import { parseLocalDate, formatDate } from '@/lib/date.util';

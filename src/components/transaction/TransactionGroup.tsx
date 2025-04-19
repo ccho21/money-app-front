@@ -13,7 +13,7 @@ import {
   ArrowUpFromLine,
 } from 'lucide-react';
 import TransactionItem from './TransactionItem';
-import CurrencyDisplay from '../ui/CurrencyDisplay';
+import CurrencyDisplay from '../ui/check/CurrencyDisplay';
 
 interface TransactionGroupProps {
   label: string;

@@ -1,9 +1,11 @@
+// 📁 src/stores/forms/useBudgetCategoryFormStore.ts
+
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import {
   CreateBudgetCategoryDTO,
-  UpdateBudgetCategoryGroupDTO,
+  UpdateBudgetCategoryDTO,
 } from '@/features/budget/types';
 import { RangeOption } from '@/features/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
@@ -11,12 +13,16 @@ import { useFilterStore } from '@/stores/useFilterStore';
 
 interface BudgetCategoryFormState {
   categoryId: string;
-  budgetId: string; // newly added
+  budgetId: string;
   amount: string;
   startDate: string;
   endDate: string;
   groupBy: RangeOption;
 }
+
+type UpdateBudgetCategoryGroupDTO = UpdateBudgetCategoryDTO & {
+  groupBy: RangeOption;
+};
 
 interface BudgetCategoryFormStore {
   state: BudgetCategoryFormState;
@@ -101,6 +107,7 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
         getCreateFormData: () => {
           const { categoryId, amount, startDate, endDate, groupBy } =
             get().state;
+
           return {
             categoryId,
             amount: Number(amount),
@@ -112,10 +119,11 @@ export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
 
         getUpdateFormData: () => {
           const { budgetId, amount, startDate, endDate, groupBy } = get().state;
+
           return {
             id: budgetId,
             data: {
-              amount,
+              amount: Number(amount),
               startDate,
               endDate,
               groupBy,

@@ -14,8 +14,8 @@ import {
 } from '@/features/stats/types';
 import { fetchStatsByNote } from '@/features/stats/hooks';
 
-import EmptyMessage from '@/components/ui/EmptyMessage';
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 
 //
 // Stats by note summary table view

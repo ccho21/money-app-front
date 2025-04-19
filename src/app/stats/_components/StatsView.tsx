@@ -2,10 +2,10 @@
 
 import { useMemo } from 'react';
 
-import Panel from '@/components/ui/Panel';
-import EmptyMessage from '@/components/ui/EmptyMessage';
+import Panel from '@/components/ui/check/Panel';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import { CategoryListItem } from './CategoryListItem';
-import CategoryPieChart from '@/components/ui/PieChart';
+import CategoryPieChart from '@/components/ui/check/PieChart';
 
 interface CategoryChartData {
   name: string;

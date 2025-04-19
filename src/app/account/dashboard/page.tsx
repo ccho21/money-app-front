@@ -7,7 +7,7 @@ import { fetchAccountDashboard } from '@/features/account/hooks';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { AccountDashboardItemDTO } from '@/features/account/types';
-import Panel from '@/components/ui/Panel';
+import Panel from '@/components/ui/check/Panel';
 import { useUIStore } from '@/stores/useUIStore';
 
 //

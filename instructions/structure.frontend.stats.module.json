@@ -1,0 +1,27 @@
+{
+  "module": "stats",
+  "entryPoints": [
+    "app/stats/budget/[id]/page.tsx",
+    "app/stats/budget/page.tsx",
+    "app/stats/category/[id]/page.tsx",
+    "app/stats/category/page.tsx",
+    "app/stats/note/[note]/page.tsx",
+    "app/stats/note/page.tsx"
+  ],
+  "stores": [
+    "stores/useStatsStore.ts"
+  ],
+  "features": [
+    "features/stats/api.ts",
+    "features/stats/hooks.ts",
+    "features/stats/types.ts"
+  ],
+  "routes": [
+    "/stats/budget/[id]",
+    "/stats/budget",
+    "/stats/category/[id]",
+    "/stats/category",
+    "/stats/note/[note]",
+    "/stats/note"
+  ]
+}

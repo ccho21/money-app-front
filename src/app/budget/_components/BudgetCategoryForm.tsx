@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/check/Input';
+import { Button } from '@/components/ui/check/Button';
 import { toast } from 'react-hot-toast';
 import {
   createBudgetCategory,

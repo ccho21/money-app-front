@@ -1,6 +1,6 @@
 'use client';
 
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 import { AccountTransactionSummaryDTO } from '@/features/account/types';
 
 import { Wallet } from 'lucide-react';

@@ -16,11 +16,11 @@ import {
 import { CategoryType } from '@/features/category/types';
 import { TransactionGroupItemDTO } from '@/features/transaction/types';
 
-import Panel from '@/components/ui/Panel';
+import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
-import ComposedChart from '@/components/ui/ComposedChart';
+import ComposedChart from '@/components/ui/check/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
-import EmptyMessage from '@/components/ui/EmptyMessage';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
 
 export default function StatsBudgetDetailPage() {
   const categoryId = useParams().id;

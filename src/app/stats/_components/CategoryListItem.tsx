@@ -1,10 +1,10 @@
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
-import Progress from '@/components/ui/Progress';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import Progress from '@/components/ui/check/Progress';
 import { cn } from '@/lib/utils';
 
 interface CategoryListItemData {
   name: string;
-  amount: number;
+  amount?: number;
   rate?: number; // % 사용률 (있으면 프로그레스 바 표시)
   budget?: number; // 예산
   spent?: number; // 지출 (budget과 함께 쓰이면 예산 대비 지출 표시됨)
@@ -59,8 +59,8 @@ export function CategoryListItem({
           )}
           <span className='text-sm font-medium text-foreground'>{name}</span>
         </div>
-        <div className='text-sm font-semibold text-muted-foreground'>
-          <CurrencyDisplay amount={amount} />
+        <div className='text-sm font-normal text-muted-foreground'>
+          <span>{rate || rate?.toFixed(1)}%</span>
         </div>
       </div>
 
@@ -69,10 +69,11 @@ export function CategoryListItem({
           <Progress value={rate!} startDate={startDate} endDate={endDate} />
           <div className='flex justify-between text-xs text-muted mt-1'>
             <span className='text-primary'>
+              <CurrencyDisplay amount={budget ?? 0} />
+            </span>
+            <span>
               <CurrencyDisplay amount={spent ?? 0} />
             </span>
-
-            <span>{rate?.toFixed(1)}%</span>
             <span>
               <CurrencyDisplay amount={(budget ?? 0) - (spent ?? 0)} />
             </span>

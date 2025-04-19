@@ -1,0 +1,30 @@
+{
+  "module": "account",
+  "entryPoints": [
+    "app/account/[id]/detail/daily/page.tsx",
+    "app/account/[id]/detail/monthly/page.tsx",
+    "app/account/[id]/detail/yearly/page.tsx",
+    "app/account/[id]/edit/page.tsx",
+    "app/account/dashboard/page.tsx",
+    "app/account/new/page.tsx",
+    "app/account/page.tsx"
+  ],
+  "stores": [
+    "stores/forms/useAccountFormStore.ts",
+    "stores/useAccountStore.ts"
+  ],
+  "features": [
+    "features/account/api.ts",
+    "features/account/hooks.ts",
+    "features/account/types.ts"
+  ],
+  "routes": [
+    "/account/[id]/detail/daily",
+    "/account/[id]/detail/monthly",
+    "/account/[id]/detail/yearly",
+    "/account/[id]/edit",
+    "/account/dashboard",
+    "/account/new",
+    "/account"
+  ]
+}

@@ -14,11 +14,11 @@ import {
 } from '@/features/stats/hooks';
 import { CategoryType } from '@/features/category/types';
 
-import Panel from '@/components/ui/Panel';
+import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
-import StatComposedChart from '@/components/ui/ComposedChart';
+import StatComposedChart from '@/components/ui/check/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
-import EmptyMessage from '@/components/ui/EmptyMessage';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
 
 //
 // Category detail stats page

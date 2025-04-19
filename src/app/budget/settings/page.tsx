@@ -1,24 +1,24 @@
-// 파일 경로: src/app/budget/page.tsx
+// 📁 src/app/budget/page.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import DateNavigator from '@/components/ui/DateNavigator';
-import Panel from '@/components/ui/Panel';
+import DateNavigator from '@/components/ui/check/DateNavigator';
+import Panel from '@/components/ui/check/Panel';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchBudgetsByCategory } from '@/features/budget/hooks';
 
-import type { BudgetCategoryGroupItem } from '@/features/budget/types';
+import type { BudgetCategoryItemDTO } from '@/features/budget/types';
 import type { DateFilterParams } from '@/features/shared/types';
 
 export default function BudgetPage() {
   const router = useRouter();
 
-  const { query, getDateRangeKey: getRangeKey } = useFilterStore();
+  const { query, getDateRangeKey } = useFilterStore();
   const { groupBy } = query;
 
   const {
@@ -27,7 +27,7 @@ export default function BudgetPage() {
 
   useEffect(() => {
     const run = async () => {
-      const [startDate, endDate] = getRangeKey().split('_');
+      const [startDate, endDate] = getDateRangeKey().split('_');
       const params: DateFilterParams = {
         groupBy: groupBy,
         startDate,
@@ -36,21 +36,23 @@ export default function BudgetPage() {
       await fetchBudgetsByCategory(params);
     };
     run();
-  }, [getRangeKey, groupBy]);
+  }, [getDateRangeKey, groupBy]);
 
   const handleClick = (categoryId: string, isNew: boolean) => {
-    if (isNew) {
-      router.push(`/budget/settings/${categoryId}/new`);
-    } else {
-      router.push(`/budget/settings/${categoryId}/list`);
-    }
+    router.push(
+      isNew
+        ? `/budget/settings/${categoryId}/new`
+        : `/budget/settings/${categoryId}/list`
+    );
   };
 
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
-  if (!budgetCategoryResponse || !budgetCategoryResponse.data.length) {
+  const items = budgetCategoryResponse?.items ?? [];
+
+  if (!items.length) {
     return (
       <p className='text-center mt-10 text-muted'>예산 데이터가 없습니다</p>
     );
@@ -61,13 +63,13 @@ export default function BudgetPage() {
       <DateNavigator withTransactionType={true} />
 
       <Panel>
-        {budgetCategoryResponse?.data.map((item: BudgetCategoryGroupItem) => (
+        {items.map((item: BudgetCategoryItemDTO) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
-            amount={item.budgetAmount}
+            amount={item.amount}
             color={item.color}
-            onClick={() => handleClick(item.categoryId, item.isNew)}
+            onClick={() => handleClick(item.categoryId, !item.budgetId)}
             showProgress={false}
           />
         ))}

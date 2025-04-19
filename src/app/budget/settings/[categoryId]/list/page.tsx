@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import DateNavigator from '@/components/ui/DateNavigator';
+import DateNavigator from '@/components/ui/check/DateNavigator';
 import { fetchBudgetCategoriesByCategoryId } from '@/features/budget/hooks';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import { useFilterStore } from '@/stores/useFilterStore';
@@ -11,13 +11,17 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { cn } from '@/lib/utils';
 import type { DateFilterParams } from '@/features/shared/types';
 import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
+import type { BudgetCategoryPeriodItemDTO } from '@/features/budget/types';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();
   const { categoryId } = useParams();
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { groupBy } = query;
+  const {
+    query: { groupBy },
+    setQuery,
+    getDateRangeKey,
+  } = useFilterStore();
 
   const {
     state: { budgetCategoryGroupResponse },
@@ -26,7 +30,7 @@ export default function ListBudgetCategoryPage() {
   const { reset } = useBudgetCategoryFormStore((s) => s.actions);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  const dateRangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
+  const dateRangeKey = getDateRangeKey(); // called immediately
 
   useEffect(() => {
     if (groupBy !== 'yearly') {
@@ -53,12 +57,11 @@ export default function ListBudgetCategoryPage() {
 
   const budgets = budgetCategoryGroupResponse?.budgets ?? [];
 
-  const handleSelect = (item: (typeof budgets)[0]) => {
-    if (item.categoryId) {
-      router.push(`/budget/settings/${categoryId}/edit`);
-    } else {
-      router.push(`/budget/settings/${categoryId}/new`);
-    }
+  const handleSelect = (item: BudgetCategoryPeriodItemDTO) => {
+    const path = item.categoryId
+      ? `/budget/settings/${categoryId}/edit`
+      : `/budget/settings/${categoryId}/new`;
+    router.push(path);
   };
 
   if (!categoryId) {
@@ -80,7 +83,7 @@ export default function ListBudgetCategoryPage() {
 
         <div className='space-y-2'>
           {budgets.map((b) => {
-            const key = `${b.startDate}_${b.endDate}`;
+            const key = `${b.rangeStart}_${b.rangeEnd}`;
             const isSelected = selectedKey === key;
 
             return (
@@ -95,7 +98,7 @@ export default function ListBudgetCategoryPage() {
                 )}
               >
                 <span>{b.label}</span>
-                <span>${b.budgetAmount.toFixed(2)}</span>
+                <span>${b.amount.toFixed(2)}</span>
               </button>
             );
           })}

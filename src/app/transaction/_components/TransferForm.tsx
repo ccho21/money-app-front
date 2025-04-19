@@ -13,12 +13,12 @@ import {
   deleteTransaction,
 } from '@/features/transaction/hooks';
 
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import Selector from '@/components/ui/Selector';
-import { Textarea } from '@/components/ui/Textarea';
-import DatePicker from '@/components/ui/DatePicker';
-import Divider from '@/components/ui/Divider';
+import { Input } from '@/components/ui/check/Input';
+import { Button } from '@/components/ui/check/Button';
+import Selector from '@/components/ui/check/Selector';
+import { Textarea } from '@/components/ui/check/Textarea';
+import DatePicker from '@/components/ui/check/DatePicker';
+import Divider from '@/components/ui/check/Divider';
 
 import { startOfDay } from 'date-fns';
 

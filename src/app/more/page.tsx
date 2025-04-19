@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useUserSettingStore } from '@/stores/useUserSettingStore';
 import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
 import { usePanelStore } from '@/stores/usePanelStore';
-import OptionSelectorModal from '@/components/ui/OptionSelectorModal';
+import OptionSelectorModal from '@/components/ui/check/OptionSelectorModal';
 import SlideInPanelRenderer from '@/app/more/_components/SlideInPanelRenderer';
 
 const Section = ({

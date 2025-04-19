@@ -4,7 +4,7 @@ import { useEffect, useRef, ReactNode } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 import BottomTabBar from '@/components/common/BottomTabBar';
-import DateNavigator from '@/components/ui/DateNavigator';
+import DateNavigator from '@/components/ui/check/DateNavigator';
 import StatsHeader from './_components/StatsHeader';
 import TabMenu from '@/components/common/TabMenu';
 

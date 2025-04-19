@@ -1,3 +1,5 @@
+// src/features/budget/hooks.ts
+
 import { DateFilterParams } from '@/features/shared/types';
 import { useBudgetStore } from '@/stores/useBudgetStore';
 import {
@@ -7,12 +9,26 @@ import {
   getBudgetCategoriesByCategoryIdAPI,
   updateBudgetCategoryAPI,
 } from './api';
-import { CreateBudgetCategoryDTO, UpdateBudgetCategoryDTO } from './types';
+import {
+  CreateBudgetCategoryDTO,
+  UpdateBudgetCategoryDTO,
+  BudgetSummaryResponseDTO,
+  BudgetCategoryListResponseDTO,
+  BudgetGroupItemDTO,
+} from './types';
 
 //
-// Fetch budget categories by filter groupBy
+// Normalize string/number amount to number
 //
-export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
+const normalizeAmount = (amount: string | number): number =>
+  typeof amount === 'string' ? Number(amount) : amount;
+
+//
+// Fetch budget categories by filter range
+//
+export const fetchBudgetsByCategory = async (
+  params: DateFilterParams
+): Promise<void> => {
   const {
     actions: { setBudgetCategoryResponse, setLoading, setError },
   } = useBudgetStore.getState();
@@ -21,7 +37,9 @@ export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
   setError(null);
 
   try {
-    const data = await fetchBudgetsByCategoryAPI(params);
+    const data: BudgetCategoryListResponseDTO = await fetchBudgetsByCategoryAPI(
+      params
+    );
     setBudgetCategoryResponse(data);
   } catch (err) {
     const message =
@@ -35,7 +53,9 @@ export const fetchBudgetsByCategory = async (params: DateFilterParams) => {
 //
 // Fetch budget summary for current period
 //
-export const fetchBudgetSummary = async (params: DateFilterParams) => {
+export const fetchBudgetSummary = async (
+  params: DateFilterParams
+): Promise<void> => {
   const {
     actions: { setBudgetSummaryResponse, setLoading, setError },
   } = useBudgetStore.getState();
@@ -44,7 +64,7 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
   setError(null);
 
   try {
-    const data = await fetchBudgetSummaryAPI(params);
+    const data: BudgetSummaryResponseDTO = await fetchBudgetSummaryAPI(params);
     setBudgetSummaryResponse(data);
   } catch (err) {
     const message =
@@ -58,15 +78,15 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
 //
 // Create a new budget category
 //
-export const createBudgetCategory = async (data: CreateBudgetCategoryDTO) => {
+export const createBudgetCategory = async (
+  data: CreateBudgetCategoryDTO
+): Promise<{ budgetId: string; message: string }> => {
   try {
     const prepared = {
       ...data,
-      amount:
-        typeof data.amount === 'string' ? Number(data.amount) : data.amount,
+      amount: normalizeAmount(data.amount),
     };
-    const response = await createBudgetCategoryAPI(prepared);
-    return response;
+    return await createBudgetCategoryAPI(prepared);
   } catch (err) {
     throw new Error(
       err instanceof Error ? err.message : 'Failed to create budget'
@@ -80,10 +100,9 @@ export const createBudgetCategory = async (data: CreateBudgetCategoryDTO) => {
 export const updateBudgetCategory = async (
   id: string,
   data: UpdateBudgetCategoryDTO
-) => {
+): Promise<{ budgetId: string; message: string }> => {
   try {
-    const response = await updateBudgetCategoryAPI(id, data);
-    return response;
+    return await updateBudgetCategoryAPI(id, data);
   } catch (err) {
     throw new Error(
       err instanceof Error ? err.message : 'Failed to update budget'
@@ -92,19 +111,24 @@ export const updateBudgetCategory = async (
 };
 
 //
-// Fetch all budget groups by category ID
+// Fetch all budget groups by category ID (detailed chart view)
 //
 export const fetchBudgetCategoriesByCategoryId = async (
   categoryId: string,
   filter: DateFilterParams
-) => {
-  const { setLoading, setError, setBudgetCategoryGroupResponse } =
-    useBudgetStore.getState().actions;
+): Promise<void> => {
+  const {
+    actions: { setLoading, setError, setBudgetCategoryGroupResponse },
+  } = useBudgetStore.getState();
+
+  setLoading(true);
+  setError(null);
 
   try {
-    setLoading(true);
-    setError(null);
-    const data = await getBudgetCategoriesByCategoryIdAPI(categoryId, filter);
+    const data: BudgetGroupItemDTO = await getBudgetCategoriesByCategoryIdAPI(
+      categoryId,
+      filter
+    );
     setBudgetCategoryGroupResponse(data);
   } catch (err) {
     const message =

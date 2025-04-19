@@ -3,7 +3,7 @@
 import { TransactionDetailDTO } from '@/features/transaction/types';
 import { cn } from '@/lib/utils';
 import { PlusIcon, MinusIcon } from 'lucide-react';
-import CurrencyDisplay from '../ui/CurrencyDisplay';
+import CurrencyDisplay from '../ui/check/CurrencyDisplay';
 
 interface Props {
   tx: TransactionDetailDTO;

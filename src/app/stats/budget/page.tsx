@@ -7,7 +7,7 @@ import { fetchStatsByBudget } from '@/features/stats/hooks';
 import type { CategoryType } from '@/features/category/types';
 
 import BudgetView from '../_components/BudgetView';
-import EmptyMessage from '@/components/ui/EmptyMessage';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import { useRouter } from 'next/navigation';
 
 //

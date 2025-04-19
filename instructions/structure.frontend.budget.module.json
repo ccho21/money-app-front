@@ -1,0 +1,24 @@
+{
+  "module": "budget",
+  "entryPoints": [
+    "app/budget/settings/[categoryId]/edit/page.tsx",
+    "app/budget/settings/[categoryId]/list/page.tsx",
+    "app/budget/settings/[categoryId]/new/page.tsx",
+    "app/budget/settings/page.tsx"
+  ],
+  "stores": [
+    "stores/forms/useBudgetCategoryFormStore.ts",
+    "stores/useBudgetStore.ts"
+  ],
+  "features": [
+    "features/budget/api.ts",
+    "features/budget/hooks.ts",
+    "features/budget/types.ts"
+  ],
+  "routes": [
+    "/budget/settings/[categoryId]/edit",
+    "/budget/settings/[categoryId]/list",
+    "/budget/settings/[categoryId]/new",
+    "/budget/settings"
+  ]
+}

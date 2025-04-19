@@ -13,7 +13,7 @@ import MainCurrencyPanel from './panels/MainCurrencyPanel';
 import SubCurrencyPanel from './panels/SubCurrencyPanel';
 import BackupResetPanel from './panels/BackupResetPanel';
 import AccountGroupPanel from './panels/AccountGroupPanel';
-import SlideInPanel from '../../../components/ui/SlideInPanel';
+import SlideInPanel from '../../../components/ui/check/SlideInPanel';
 
 export default function SlideInPanelRenderer() {
   const { currentPanel, closePanel } = usePanelStore();

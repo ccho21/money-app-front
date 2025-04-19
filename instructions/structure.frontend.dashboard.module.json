@@ -1,0 +1,17 @@
+{
+  "module": "dashboard",
+  "entryPoints": [
+    "app/dashboard/calendar/page.tsx",
+    "app/dashboard/daily/page.tsx",
+    "app/dashboard/monthly/page.tsx",
+    "app/dashboard/summary/page.tsx"
+  ],
+  "stores": [],
+  "features": [],
+  "routes": [
+    "/dashboard/calendar",
+    "/dashboard/daily",
+    "/dashboard/monthly",
+    "/dashboard/summary"
+  ]
+}

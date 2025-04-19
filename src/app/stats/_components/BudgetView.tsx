@@ -1,14 +1,15 @@
 'use client';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/check/Button';
 import { CategoryListItem } from './CategoryListItem';
-import Panel from '@/components/ui/Panel';
+import Panel from '@/components/ui/check/Panel';
 import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
 
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 import { BaseListSummaryResponseDTO } from '@/features/shared/types';
 import { StatsBudgetGroupItemDTO } from '@/features/stats/types';
+import { useMemo } from 'react';
 
 interface BudgetViewProps {
   transactionType: CategoryType;
@@ -23,6 +24,10 @@ export default function BudgetView({
 }: BudgetViewProps) {
   const router = useRouter();
 
+  const totalRemaning = useMemo(
+    () => budgetResponse.items.reduce((sum, item) => sum + item.remaining, 0),
+    [budgetResponse]
+  );
   return (
     <>
       <Panel className='p-3 mb-1'>
@@ -32,7 +37,7 @@ export default function BudgetView({
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
             <p className='text-md font-semibold text-foreground mt-0.5'>
-              {/* <CurrencyDisplay amount={budgetResponse.remaining} /> */}
+              <CurrencyDisplay amount={totalRemaning} />
             </p>
           </div>
 
@@ -54,7 +59,8 @@ export default function BudgetView({
             key={item.categoryId}
             name={item.categoryName}
             rate={item.rate}
-            amount={item.categoryType === 'expense' ? item.spent : item.income}
+            spent={item.spent}
+            budget={item.budget}
             color={item.color}
             startDate={budgetResponse.startDate}
             endDate={budgetResponse.endDate}

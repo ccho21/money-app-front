@@ -1,0 +1,7 @@
+{
+  "module": "shared",
+  "features": [
+    "features/shared/types.ts"
+  ],
+  "description": "\uacf5\ud1b5\uc801\uc73c\ub85c \uc0ac\uc6a9\ud558\ub294 DTO, \ub0a0\uc9dc \ud544\ud130 \ud0c0\uc785, \uc694\uccad param \ub4f1"
+}

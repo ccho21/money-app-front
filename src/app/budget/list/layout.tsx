@@ -1,6 +1,6 @@
 'use client';
 
-import DateNavigator from '@/components/ui/DateNavigator';
+import DateNavigator from '@/components/ui/check/DateNavigator';
 import { ReactNode } from 'react';
 
 export default function BudgetLayout({ children }: { children: ReactNode }) {

@@ -11,9 +11,9 @@ import { DateFilterParams } from '@/features/shared/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
-import EmptyMessage from '@/components/ui/EmptyMessage';
-import Panel from '@/components/ui/Panel';
-import Divider from '@/components/ui/Divider';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import Panel from '@/components/ui/check/Panel';
+import Divider from '@/components/ui/check/Divider';
 
 //
 // Dashboard summary page: shows account + budget stats in a snapshot

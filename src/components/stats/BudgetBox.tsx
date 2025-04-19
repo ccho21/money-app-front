@@ -1,7 +1,7 @@
 'use client';
 
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
-import Progress from '@/components/ui/Progress';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import Progress from '@/components/ui/check/Progress';
 import { BudgetSummaryResponseDTO } from '@/features/budget/types';
 
 import { ChartBar } from 'lucide-react';

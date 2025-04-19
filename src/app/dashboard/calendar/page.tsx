@@ -16,10 +16,10 @@ import {
 import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from '../_components/CalendarWithTransactions';
 import TransactionDetailView from '../_components/TransactionDetailView';
-import Panel from '@/components/ui/Panel';
+import Panel from '@/components/ui/check/Panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';
-import CurrencyDisplay from '@/components/ui/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 
 //
 // Calendar page: month view with per-day transaction summary

@@ -1,27 +1,24 @@
+// 📁 src/stores/useBudgetStore.ts
+
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
-  BudgetCategoryGroupItem,
-  BudgetCategoryGroupResponseDTO,
+  BudgetCategoryListResponseDTO,
+  BudgetGroupItemDTO,
   BudgetSummaryResponseDTO,
-  BudgetCategoryGroupResponseDTO,
 } from '@/features/budget/types';
 
 interface BudgetStoreState {
-  budgetCategoryResponse?: BudgetCategoryGroupResponseDTO;
-  budgetCategoryGroupResponse?: BudgetCategoryGroupResponseDTO;
-  budgetCategory?: BudgetCategoryGroupItem;
+  budgetCategoryResponse?: BudgetCategoryListResponseDTO;
+  budgetCategoryGroupResponse?: BudgetGroupItemDTO;
   budgetSummaryResponse?: BudgetSummaryResponseDTO;
   isLoading: boolean;
   error: string | null;
 }
 
 interface BudgetStoreActions {
-  setBudgetCategoryResponse: (data: BudgetCategoryGroupResponseDTO) => void;
-  setBudgetCategoryGroupResponse: (
-    data: BudgetCategoryGroupResponseDTO
-  ) => void;
-  setBudgetCategory: (data: BudgetCategoryGroupItem) => void;
+  setBudgetCategoryResponse: (data: BudgetCategoryListResponseDTO) => void;
+  setBudgetCategoryGroupResponse: (data: BudgetGroupItemDTO) => void;
   setBudgetSummaryResponse: (data: BudgetSummaryResponseDTO) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -36,7 +33,6 @@ interface BudgetStore {
 const initialState: BudgetStoreState = {
   budgetCategoryResponse: undefined,
   budgetCategoryGroupResponse: undefined,
-  budgetCategory: undefined,
   budgetSummaryResponse: undefined,
   isLoading: false,
   error: null,
@@ -63,15 +59,6 @@ export const useBudgetStore = create<BudgetStore>()(
             }),
             false,
             'budget/setBudgetCategoryGroupResponse'
-          ),
-
-        setBudgetCategory: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, budgetCategory: data },
-            }),
-            false,
-            'budget/setBudgetCategory'
           ),
 
         setBudgetSummaryResponse: (data) =>
