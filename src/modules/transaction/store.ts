@@ -1,3 +1,5 @@
+// 파일: src/modules/transaction/store.ts
+
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
@@ -5,9 +7,9 @@ import {
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
   TransactionCalendarDTO,
-} from '@/modules/transaction/types';
+} from './types';
 
-interface TransactionFilters {
+type TransactionFilters = {
   type?: 'income' | 'expense';
   categoryId?: string;
   search?: string;
@@ -17,7 +19,7 @@ interface TransactionFilters {
   limit?: number;
   startDate?: string;
   endDate?: string;
-}
+};
 
 const defaultFilters: TransactionFilters = {
   sort: 'date',
@@ -26,24 +28,22 @@ const defaultFilters: TransactionFilters = {
   limit: 20,
 };
 
-interface TransactionStoreState {
+interface TransactionStore {
   transactions: TransactionDetailDTO[];
-  selectedTransaction?: TransactionDetailDTO;
-  transactionSummary: TransactionGroupItemDTO | null;
-  transactionSummaryResponse: TransactionGroupSummaryDTO | null;
-  transactionCalendarItems: TransactionCalendarDTO[];
+  selectedTransaction: TransactionDetailDTO | undefined;
+  groupItems: TransactionGroupItemDTO[];
+  summary: TransactionGroupSummaryDTO | null;
+  calendar: TransactionCalendarDTO[];
   filters: TransactionFilters;
   isLoading: boolean;
-  lastUpdatedAt: number;
   error: string | null;
-}
+  lastUpdatedAt?: number;
 
-interface TransactionStoreActions {
   setTransactions: (txs: TransactionDetailDTO[]) => void;
   setSelectedTransaction: (tx: TransactionDetailDTO) => void;
-  setTransactionSummary: (data: TransactionGroupItemDTO) => void;
-  setTransactionSummaryResponse: (data: TransactionGroupSummaryDTO) => void;
-  setCalendarItems: (items: TransactionCalendarDTO[]) => void;
+  setGroupItems: (items: TransactionGroupItemDTO[]) => void;
+  setSummary: (summary: TransactionGroupSummaryDTO) => void;
+  setCalendar: (items: TransactionCalendarDTO[]) => void;
   setFilters: (filters: Partial<TransactionFilters>) => void;
   resetFilters: () => void;
   setDateRange: (start: string, end: string) => void;
@@ -52,96 +52,45 @@ interface TransactionStoreActions {
   clear: () => void;
 }
 
-export const useTransactionStore = create<
-  TransactionStoreState & { actions: TransactionStoreActions }
->()(
-  devtools(
-    (set) => ({
-      transactions: [],
-      selectedTransaction: undefined,
-      transactionSummaryResponse: null,
-      lastUpdatedAt: undefined,
-      transactionCalendarItems: [],
-      filters: { ...defaultFilters },
-      isLoading: false,
-      error: null,
-      actions: {
-        setTransactions: (txs) =>
-          set(() => ({ transactions: txs }), false, 'transactions/set'),
-        setSelectedTransaction: (tx) =>
-          set(
-            () => ({ selectedTransaction: tx }),
-            false,
-            'transactions/selectOne'
-          ),
-        setTransactionSummaryResponse: (data) =>
-          set(
-            () => ({
-              transactionSummaryResponse: data,
-              lastUpdatedAt: Date.now(),
-            }),
-            false,
-            'summary/setTransactionSummaryResponse'
-          ),
-        setTransactionSummary: (data) =>
-          set(
-            () => ({ transactionSummary: data }),
-            false,
-            'summary/setTransactionSummary'
-          ),
-        setCalendarItems: (items) =>
-          set(
-            () => ({ transactionCalendarItems: items }),
-            false,
-            'calendar/setItems'
-          ),
-        setFilters: (filters) =>
-          set(
-            (state) => ({
-              filters: { ...state.filters, ...filters },
-            }),
-            false,
-            'filters/updatePartial'
-          ),
-        resetFilters: () =>
-          set(
-            () => ({ filters: { ...defaultFilters } }),
-            false,
-            'filters/reset'
-          ),
-        setDateRange: (start, end) =>
-          set(
-            (state) => ({
-              filters: { ...state.filters, startDate: start, endDate: end },
-            }),
-            false,
-            'filters/setDateRange'
-          ),
-        setLoading: (isLoading) =>
-          set(
-            () => ({ isLoading }),
-            false,
-            isLoading ? 'ui/loading:start' : 'ui/loading:done'
-          ),
-        setError: (err) => set(() => ({ error: err }), false, 'ui/setError'),
-        clear: () =>
-          set(
-            () => ({
-              transactions: [],
-              selectedTransaction: undefined,
-              transactionSummaryResponse: null,
-              transactionSummary: null,
-              lastUpdatedAt: undefined,
-              transactionCalendarItems: [],
-              filters: { ...defaultFilters },
-              isLoading: false,
-              error: null,
-            }),
-            false,
-            'transactions/clearAll'
-          ),
-      },
-    }),
-    { name: 'useTransactionStore' }
-  )
+export const useTransactionStore = create<TransactionStore>()(
+  devtools((set) => ({
+    transactions: [],
+    selectedTransaction: undefined,
+    groupItems: [],
+    summary: null,
+    calendar: [],
+    filters: { ...defaultFilters },
+    isLoading: false,
+    error: null,
+    lastUpdatedAt: undefined,
+
+    setTransactions: (txs) => set({ transactions: txs }),
+    setSelectedTransaction: (tx) => set({ selectedTransaction: tx }),
+    setGroupItems: (items) => set({ groupItems: items }),
+    setSummary: (summary) => set({ summary, lastUpdatedAt: Date.now() }),
+    setCalendar: (items) => set({ calendar: items }),
+    setFilters: (filters) =>
+      set((state) => ({
+        filters: { ...state.filters, ...filters },
+      })),
+    resetFilters: () => set({ filters: { ...defaultFilters } }),
+    setDateRange: (start, end) =>
+      set((state) => ({
+        filters: { ...state.filters, startDate: start, endDate: end },
+      })),
+    setLoading: (isLoading) => set({ isLoading }),
+    setError: (err) => set({ error: err }),
+    clear: () =>
+      set({
+        transactions: [],
+        selectedTransaction: undefined,
+        groupItems: [],
+        summary: null,
+        calendar: [],
+        filters: { ...defaultFilters },
+        isLoading: false,
+        error: null,
+        lastUpdatedAt: undefined,
+      }),
+  }))
 );

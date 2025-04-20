@@ -1,42 +1,43 @@
-import {
-  createCategoryAPI,
-  deleteCategoryAPI,
-  getCategoriesAPI,
-  getCategoryByIdAPI,
-  updateCategoryAPI,
-} from '@/features/category/api';
-import {
-  CategoryCreateRequestDTO,
-  CategoryUpdateRequestDTO,
-} from '@/features/category/types';
-import { useCategoryFormStore } from '@/modules/category/formStore';
-import { useCategoryStore } from '@/modules/category/store';
+// 파일: src/modules/category/hooks.ts
 
-// ✅ 전체 카테고리 리스트 가져오기
+import {
+  fetchCategoriesAPI,
+  fetchCategoryByIdAPI,
+  createCategoryAPI,
+  updateCategoryAPI,
+  deleteCategoryAPI,
+} from './api';
+import { CategoryCreateRequestDTO, CategoryUpdateRequestDTO } from './types';
+import { useCategoryStore } from './store';
+import { useCategoryFormStore } from './formStore';
+
+// Fetch all categories and update store
 export const fetchCategories = async () => {
   try {
-    const data = await getCategoriesAPI();
-    useCategoryStore.getState().actions.setCategories(data);
+    const data = await fetchCategoriesAPI();
+    useCategoryStore.getState().setCategories(data);
   } catch (err) {
     console.error(
-      err instanceof Error ? err.message : '카테고리 목록 불러오기 실패'
+      err instanceof Error ? err.message : 'Failed to fetch categories'
     );
   }
 };
 
-// ✅ 카테고리 생성
+// Create a new category and refresh list
 export const createCategory = async (input: CategoryCreateRequestDTO) => {
   try {
     await createCategoryAPI(input);
     await fetchCategories();
-    useCategoryFormStore.getState().actions.reset();
+    useCategoryFormStore.getState().reset(); // ✅ 구조 문서 기반이므로 유지
   } catch (err) {
-    console.error(err instanceof Error ? err.message : '카테고리 생성 실패');
+    console.error(
+      err instanceof Error ? err.message : 'Failed to create category'
+    );
     throw err;
   }
 };
 
-// ✅ 카테고리 수정
+// Update existing category
 export const updateCategory = async (
   id: string,
   input: CategoryUpdateRequestDTO
@@ -45,29 +46,33 @@ export const updateCategory = async (
     await updateCategoryAPI(id, input);
     await fetchCategories();
   } catch (err) {
-    console.error(err instanceof Error ? err.message : '카테고리 수정 실패');
+    console.error(
+      err instanceof Error ? err.message : 'Failed to update category'
+    );
     throw err;
   }
 };
 
-// ✅ 카테고리 삭제
+// Delete a category
 export const deleteCategory = async (id: string) => {
   try {
     await deleteCategoryAPI(id);
     await fetchCategories();
   } catch (err) {
-    console.error(err instanceof Error ? err.message : '카테고리 삭제 실패');
+    console.error(
+      err instanceof Error ? err.message : 'Failed to delete category'
+    );
   }
 };
 
-// ✅ 단일 카테고리 조회 → edit 시 폼 초기화용
+// Fetch single category and fill form
 export const fillCategoryForm = async (id: string) => {
   try {
-    const data = await getCategoryByIdAPI(id);
-    useCategoryFormStore.getState().actions.fillForm(data);
+    const data = await fetchCategoryByIdAPI(id);
+    useCategoryFormStore.getState().setAllFields(data);
   } catch (err) {
     console.error(
-      err instanceof Error ? err.message : '카테고리 불러오기 실패'
+      err instanceof Error ? err.message : 'Failed to fetch category'
     );
   }
 };

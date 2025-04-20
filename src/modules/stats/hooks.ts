@@ -1,189 +1,129 @@
 import { DateFilterParams } from '@/shared/types';
 import {
-  fetchStatsCategoryByCategoryIdAPI,
-  fetchStatByBudgetAPI,
-  fetchStatByCategoryAPI,
-  fetchStatsByNoteAPI,
-  fetchStatsSummaryByCategoryIdAPI,
-  fetchStatsSummaryByBudgetAPI,
-  fetchStatsSummaryByNoteAPI,
-  fetchStatsNoteDetailAPI,
-  fetchStatBudgetByCategoryIdAPI,
-} from '@/features/stats/api';
-import { useStatsStore } from '@/modules/stats/store';
+  fetchStatsByCategory,
+  fetchStatsByBudget,
+  fetchStatsByNote,
+  fetchStatsCategoryDetail,
+  fetchStatsBudgetDetail,
+  fetchStatsNoteDetail,
+  fetchStatsCategorySummary,
+  fetchStatsBudgetSummary,
+  fetchStatsNoteSummary,
+} from './api';
+import { useStatsStore } from './store';
 
-//
-// Fetch grouped category stats
-//
-export const fetchStatsByCategory = async (params: DateFilterParams) => {
-  const { setCategoryResponse, setLoading } = useStatsStore.getState().actions;
-
+// [GROUP] category
+export const fetchCategoryStats = async (params: DateFilterParams) => {
+  const { setCategoryGroup, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatByCategoryAPI(params);
-    setCategoryResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch category stats:', e);
+    const data = await fetchStatsByCategory(params);
+    setCategoryGroup(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch grouped budget stats
-//
-export const fetchStatsByBudget = async (params: DateFilterParams) => {
-  const { setBudgetResponse, setLoading } = useStatsStore.getState().actions;
-
+// [GROUP] budget
+export const fetchBudgetStats = async (params: DateFilterParams) => {
+  const { setBudgetGroup, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatByBudgetAPI(params);
-    setBudgetResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch budget stats:', e);
+    const data = await fetchStatsByBudget(params);
+    setBudgetGroup(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch grouped note stats
-//
-export const fetchStatsByNote = async (params: DateFilterParams) => {
-  const { setNoteResponse, setLoading } = useStatsStore.getState().actions;
-
+// [GROUP] note
+export const fetchNoteStats = async (params: DateFilterParams) => {
+  const { setNoteGroup, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsByNoteAPI(params);
-    setNoteResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch note stats:', e);
+    const data = await fetchStatsByNote(params);
+    setNoteGroup(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch category detail stats
-//
-export const fetchStatsCategoryByCategoryId = async (
-  categoryId: string,
+// [DETAIL] category/:id
+export const fetchCategoryDetail = async (
+  id: string,
   params: DateFilterParams
 ) => {
-  const { setCategoryDetailResponse, setLoading } =
-    useStatsStore.getState().actions;
-
+  const { setCategoryDetail, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsCategoryByCategoryIdAPI(categoryId, params);
-    setCategoryDetailResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch category detail:', e);
+    const data = await fetchStatsCategoryDetail(id, params);
+    setCategoryDetail(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch budget detail stats
-//
-export const fetchStatsBudgetByCategoryId = async (
-  categoryId: string,
+// [DETAIL] budget/:id
+export const fetchBudgetDetail = async (
+  id: string,
   params: DateFilterParams
 ) => {
-  const { setBudgetDetailResponse, setLoading } =
-    useStatsStore.getState().actions;
-
+  const { setBudgetDetail, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatBudgetByCategoryIdAPI(categoryId, params);
-    setBudgetDetailResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch budget detail:', e);
+    const data = await fetchStatsBudgetDetail(id, params);
+    setBudgetDetail(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch category summary
-//
-export const fetchStatsSummaryByCategoryId = async (
-  categoryId: string,
-  params: DateFilterParams
-) => {
-  const { setCategorySummaryResponse, setLoading } =
-    useStatsStore.getState().actions;
-
-  setLoading(true);
-  try {
-    const data = await fetchStatsSummaryByCategoryIdAPI(categoryId, params);
-    setCategorySummaryResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch category summary:', e);
-  } finally {
-    setLoading(false);
-  }
-};
-
-//
-// Fetch budget summary
-//
-export const fetchStatsSummaryByBudget = async (
-  categoryId: string,
-  params: DateFilterParams
-) => {
-  const { setBudgetSummaryResponse, setLoading } =
-    useStatsStore.getState().actions;
-
-  setLoading(true);
-  try {
-    const data = await fetchStatsSummaryByBudgetAPI(categoryId, params);
-    setBudgetSummaryResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch budget summary:', e);
-  } finally {
-    setLoading(false);
-  }
-};
-
-//
-// Fetch note detail stats
-//
-export const fetchStatsNoteDetail = async (
+// [DETAIL] note/:note
+export const fetchNoteDetail = async (
   note: string,
   params: DateFilterParams
 ) => {
-  const { setNoteDetailResponse, setLoading } =
-    useStatsStore.getState().actions;
-
+  const { setNoteDetail, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsNoteDetailAPI(note, params);
-    setNoteDetailResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch note detail:', e);
+    const data = await fetchStatsNoteDetail(note, params);
+    setNoteDetail(data);
   } finally {
     setLoading(false);
   }
 };
 
-//
-// Fetch note summary
-//
-export const fetchStatsSummaryByNote = async (
-  note: string,
-  params: DateFilterParams
-) => {
-  const { setNoteSummaryResponse, setLoading } =
-    useStatsStore.getState().actions;
-
+// [SUMMARY] category
+export const fetchCategorySummary = async (params: DateFilterParams) => {
+  const { setCategorySummary, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsSummaryByNoteAPI(note, params);
-    setNoteSummaryResponse(data);
-  } catch (e) {
-    console.error('Failed to fetch note summary:', e);
+    const data = await fetchStatsCategorySummary(params);
+    setCategorySummary(data);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// [SUMMARY] budget
+export const fetchBudgetSummary = async (params: DateFilterParams) => {
+  const { setBudgetSummary, setLoading } = useStatsStore.getState();
+  setLoading(true);
+  try {
+    const data = await fetchStatsBudgetSummary(params);
+    setBudgetSummary(data);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// [SUMMARY] note
+export const fetchNoteSummary = async (params: DateFilterParams) => {
+  const { setNoteSummary, setLoading } = useStatsStore.getState();
+  setLoading(true);
+  try {
+    const data = await fetchStatsNoteSummary(params);
+    setNoteSummary(data);
   } finally {
     setLoading(false);
   }

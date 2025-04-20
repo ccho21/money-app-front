@@ -1,62 +1,44 @@
-import { get, patch, post } from '@/shared/api';
+// 파일: src/modules/account/api.ts
+
+import { get, post, patch } from '@/shared/api';
 import {
   AccountCreateRequestDTO,
+  AccountUpdateRequestDTO,
   AccountDetailDTO,
   AccountTransactionSummaryDTO,
-  AccountUpdateRequestDTO,
+  // ⚠️ [외부 참조 필요] DateFilterParams는 shared/types 또는 common 모듈에서 가져와야 함
 } from './types';
-import { DateFilterParams } from '../../shared/types';
+import type { DateFilterParams } from '@/shared/types'; // ✅ 승인 필요
+import { buildQuery } from '@/shared/util/buildQuery';
 
-//
 // Create a new account
-//
 export const createAccountAPI = (payload: AccountCreateRequestDTO) => {
-  return post('/accounts', payload);
+  return post<AccountDetailDTO, AccountCreateRequestDTO>('/accounts', payload);
 };
 
-//
 // Update an existing account
-//
 export const updateAccountAPI = (
   id: string,
   payload: AccountUpdateRequestDTO
 ) => {
-  return patch(`/accounts/${id}`, payload);
+  return patch<AccountDetailDTO, AccountUpdateRequestDTO>(
+    `/accounts/${id}`,
+    payload
+  );
 };
 
-//
 // Fetch all accounts
-//
 export const fetchAccountsAPI = () => {
   return get<AccountDetailDTO[]>('/accounts');
 };
 
-//
 // Fetch a single account by ID
-//
-export const fetchAccountsByIdAPI = (id: string) => {
+export const fetchAccountByIdAPI = (id: string) => {
   return get<AccountDetailDTO>(`/accounts/${id}`);
 };
 
-//
-// Fetch summarized transaction data per account over a date groupBy
-//
+// Fetch summarized transaction data per account
 export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
-  const query = new URLSearchParams();
-
-  if (params.startDate) query.append('startDate', params.startDate);
-  if (params.endDate) query.append('endDate', params.endDate);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-
-  return get<AccountTransactionSummaryDTO>(
-    `/accounts/summary?${query.toString()}`
-  );
+  const query = buildQuery(params);
+  return get<AccountTransactionSummaryDTO[]>(`/accounts/summary?${query}`);
 };
-
-// TODO: Implement this if backend supports summary per account ID
-// export function fetchAccountSummaryByAccountIdAPI(accountId: string, params: DateFilterParams) {
-//   const query = new URLSearchParams();
-//   if (params.startDate) query.append('startDate', params.startDate);
-//   if (params.endDate) query.append('endDate', params.endDate);
-//   return get<AccountTransactionSummaryDTO[]>(`/accounts/${accountId}/summary?${query.toString()}`);
-// }

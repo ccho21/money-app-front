@@ -1,31 +1,42 @@
-// 📄 src/api/category.api.ts
+// 파일: src/modules/category/api.ts
 
-import { del, get, patch, post } from '../../shared/api';
+import { del, get, patch, post } from '@/shared/api';
 import {
-  CategoryDTO,
+  CategoryDetailDTO,
   CategoryCreateRequestDTO,
   CategoryUpdateRequestDTO,
 } from './types';
 
-export const getCategoriesAPI = (): Promise<CategoryDTO[]> => {
-  return get('/categories');
+// Fetch all categories
+export const fetchCategoriesAPI = () => {
+  return get<CategoryDetailDTO[]>('/categories');
 };
 
-export const createCategoryAPI = async (data: CategoryCreateRequestDTO) => {
-  return post('/categories', data);
+// Fetch a single category by ID
+export const fetchCategoryByIdAPI = (id: string) => {
+  return get<CategoryDetailDTO>(`/categories/${id}`);
 };
 
-export const updateCategoryAPI = async (
+// Create a new category
+export const createCategoryAPI = (payload: CategoryCreateRequestDTO) => {
+  return post<CategoryDetailDTO, CategoryCreateRequestDTO>(
+    '/categories',
+    payload
+  );
+};
+
+// Update an existing category
+export const updateCategoryAPI = (
   id: string,
-  data: CategoryUpdateRequestDTO
+  payload: CategoryUpdateRequestDTO
 ) => {
-  return patch(`/categories/${id}`, data);
+  return patch<CategoryDetailDTO, CategoryUpdateRequestDTO>(
+    `/categories/${id}`,
+    payload
+  );
 };
 
-export const deleteCategoryAPI = async (id: string) => {
-  return del(`/categories/${id}`);
-};
-
-export const getCategoryByIdAPI = async (id: string): Promise<CategoryDTO> => {
-  return get(`/categories/${id}`);
+// Delete a category
+export const deleteCategoryAPI = (id: string) => {
+  return del<void>(`/categories/${id}`);
 };

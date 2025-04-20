@@ -1,137 +1,90 @@
-// 📁 src/stores/forms/useBudgetCategoryFormStore.ts
+// 파일: src/modules/budget/formStore.ts
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-
 import {
-  CreateBudgetCategoryDTO,
-  UpdateBudgetCategoryDTO,
-} from '@/features/budget/types';
-import { GroupBy } from '@/shared/types';
+  BudgetCategoryCreateRequestDTO,
+  BudgetCategoryUpdateRequestDTO,
+} from './types';
+import type { GroupBy } from '@/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 
+type Mode = 'new' | 'edit';
+
 interface BudgetCategoryFormState {
-  categoryId: string;
+  mode: Mode;
   budgetId: string;
-  amount: string;
+  categoryId: string;
+  amount: number;
   startDate: string;
   endDate: string;
   groupBy: GroupBy;
 }
 
-type UpdateBudgetCategoryGroupDTO = UpdateBudgetCategoryDTO & {
-  groupBy: GroupBy;
-};
-
-interface BudgetCategoryFormStore {
-  state: BudgetCategoryFormState;
-  actions: {
-    setField: <K extends keyof BudgetCategoryFormState>(
-      key: K,
-      value: BudgetCategoryFormState[K]
-    ) => void;
-    setAllFields: (data: Partial<BudgetCategoryFormState>) => void;
-    reset: () => void;
-    syncWithDateFilter: () => void;
-    getCreateFormData: () => CreateBudgetCategoryDTO;
-    getUpdateFormData: () => { id: string; data: UpdateBudgetCategoryGroupDTO };
-  };
+interface BudgetCategoryFormActions {
+  setField: <K extends keyof BudgetCategoryFormState>(
+    key: K,
+    value: BudgetCategoryFormState[K]
+  ) => void;
+  setAllFields: (data: Partial<BudgetCategoryFormState>) => void;
+  setMode: (mode: Mode) => void;
+  reset: () => void;
+  syncWithDateFilter: () => void; // ⚠️ 구조 문서 외 기능
+  getCreateFormData: () => BudgetCategoryCreateRequestDTO;
+  getUpdateFormData: () => { id: string; data: BudgetCategoryUpdateRequestDTO };
 }
 
 const initialState: BudgetCategoryFormState = {
-  categoryId: '',
+  mode: 'new',
   budgetId: '',
-  amount: '',
+  categoryId: '',
+  amount: 0,
   startDate: '',
   endDate: '',
   groupBy: 'monthly',
 };
 
-export const useBudgetCategoryFormStore = create<BudgetCategoryFormStore>()(
-  devtools(
-    (set, get) => ({
-      state: { ...initialState },
-      actions: {
-        setField: (key, value) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                [key]: value,
-              },
-            }),
-            false,
-            `BudgetCategoryForm/setField:${key}`
-          ),
+export const useBudgetCategoryFormStore = create<
+  BudgetCategoryFormState & BudgetCategoryFormActions
+>()(
+  devtools((set, get) => ({
+    ...initialState,
 
-        setAllFields: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                ...data,
-              },
-            }),
-            false,
-            'BudgetCategoryForm/setAllFields'
-          ),
+    setField: (key, value) => set({ [key]: value }),
+    setAllFields: (data) => set({ ...data }),
+    setMode: (mode) => set({ mode }),
+    reset: () => set(initialState),
 
-        reset: () =>
-          set(
-            () => ({
-              state: { ...initialState },
-            }),
-            false,
-            'BudgetCategoryForm/reset'
-          ),
+    syncWithDateFilter: () => {
+      const { date, groupBy } = useFilterStore.getState().query;
+      const range = getDateRangeKey(date, { unit: groupBy, amount: 0 });
+      const [startDate, endDate] = range.split('_');
+      set({ startDate, endDate, groupBy });
+    },
 
-        syncWithDateFilter: () => {
-          const { date, groupBy } = useFilterStore.getState().query;
-          const dateRangeKey = getDateRangeKey(date, {
-            unit: groupBy,
-            amount: 0,
-          });
-          const [startDate, endDate] = dateRangeKey.split('_');
+    getCreateFormData: () => {
+      const { categoryId, amount, startDate, endDate, groupBy } = get();
+      return {
+        categoryId,
+        amount,
+        startDate,
+        endDate,
+        groupBy,
+      };
+    },
 
-          set((s) => ({
-            state: {
-              ...s.state,
-              startDate,
-              endDate,
-              groupBy: groupBy,
-            },
-          }));
+    getUpdateFormData: () => {
+      const { budgetId, amount, startDate, endDate, groupBy } = get();
+      return {
+        id: budgetId,
+        data: {
+          amount,
+          startDate,
+          endDate,
+          groupBy,
         },
-
-        getCreateFormData: () => {
-          const { categoryId, amount, startDate, endDate, groupBy } =
-            get().state;
-
-          return {
-            categoryId,
-            amount: Number(amount),
-            startDate,
-            endDate,
-            groupBy,
-          };
-        },
-
-        getUpdateFormData: () => {
-          const { budgetId, amount, startDate, endDate, groupBy } = get().state;
-
-          return {
-            id: budgetId,
-            data: {
-              amount: Number(amount),
-              startDate,
-              endDate,
-              groupBy,
-            },
-          };
-        },
-      },
-    }),
-    { name: 'BudgetCategoryFormStore' }
-  )
+      };
+    },
+  }))
 );

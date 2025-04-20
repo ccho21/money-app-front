@@ -1,5 +1,5 @@
 import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/shared/types';
-import { CategoryDTO } from '../category/types';
+import { CategoryDetailDTO } from '../category/types';
 
 export type TransactionType = 'income' | 'expense' | 'transfer';
 
@@ -27,7 +27,7 @@ export interface TransactionDetailDTO {
   createdAt: string;
   note?: string;
   description?: string;
-  category?: CategoryDTO | null;
+  category?: CategoryDetailDTO | null;
   account: {
     id: string;
     name: string;

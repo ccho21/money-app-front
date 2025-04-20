@@ -1,77 +1,48 @@
-// src/features/budget/api.ts
+// 파일: src/modules/budget/api.ts
 
-import { get, post, put } from '@/shared/api';
+import { get, post, patch, del } from '@/shared/api';
+import { buildQuery } from '@/shared/util/buildQuery';
 import {
-  BudgetCategoryListResponseDTO,
-  BudgetSummaryResponseDTO,
-  CreateBudgetCategoryDTO,
-  UpdateBudgetCategoryDTO,
-  BudgetGroupItemDTO,
+  BudgetCategoryItemDTO,
+  BudgetCategoryPeriodItemDTO,
+  BudgetCategoryCreateRequestDTO,
+  BudgetCategoryUpdateRequestDTO,
 } from './types';
-import { DateFilterParams } from '@/shared/types';
-import { AccountDashboardResponseDTO } from '../../modules/account/types';
+import type { DateFilterParams } from '@/shared/types';
 
-//
-// Fetch budgets grouped by category
-//
-export const fetchBudgetsByCategoryAPI = (
-  params: DateFilterParams
-): Promise<BudgetCategoryListResponseDTO> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-
-  return get(`/budgets/by-category?${query.toString()}`);
+// Fetch current budget results per category
+export const fetchBudgetCategoriesAPI = (params: DateFilterParams) => {
+  const query = buildQuery(params);
+  return get<BudgetCategoryPeriodItemDTO[]>(`/budgets?${query}`);
 };
 
-//
-// Fetch budget summary for a given period
-//
-export const fetchBudgetSummaryAPI = (
-  params: DateFilterParams
-): Promise<BudgetSummaryResponseDTO> => {
-  const query = new URLSearchParams();
-  query.append('startDate', params.startDate);
-  query.append('endDate', params.endDate);
-  if (params.groupBy) query.append('groupBy', params.groupBy);
-
-  return get(`/budgets/summary?${query.toString()}`);
+// Fetch configured budget settings
+export const fetchBudgetSettingsAPI = () => {
+  return get<BudgetCategoryItemDTO[]>(`/budgets/settings`);
 };
 
-//
-// Create a new budget category
-//
+// Create new budget config
 export const createBudgetCategoryAPI = (
-  data: CreateBudgetCategoryDTO
-): Promise<{ budgetId: string; message: string }> => {
-  return post('/budgets/by-category', data);
+  payload: BudgetCategoryCreateRequestDTO
+) => {
+  return post<BudgetCategoryItemDTO, BudgetCategoryCreateRequestDTO>(
+    '/budgets',
+    payload
+  );
 };
 
-//
-// Update an existing budget category
-//
+// Update budget config
 export const updateBudgetCategoryAPI = (
   id: string,
-  data: UpdateBudgetCategoryDTO
-): Promise<{ budgetId: string; message: string }> => {
-  return put(`/budgets/by-category/${id}`, data);
+  payload: BudgetCategoryUpdateRequestDTO
+) => {
+  return patch<BudgetCategoryItemDTO, BudgetCategoryUpdateRequestDTO>(
+    `/budgets/${id}`,
+    payload
+  );
 };
 
-//
-// Fetch budget data grouped by categoryId (for detailed period view)
-//
-export const getBudgetCategoriesByCategoryIdAPI = (
-  categoryId: string,
-  data: DateFilterParams
-): Promise<BudgetGroupItemDTO> => {
-  return post(`/budgets/by-category/${categoryId}`, data);
+// Delete budget config
+export const deleteBudgetCategoryAPI = (id: string) => {
+  return del<void>(`/budgets/${id}`);
 };
-
-//
-// Fetch account dashboard info (for budget sidebar use)
-//
-export const fetchAccountsDashboardAPI =
-  (): Promise<AccountDashboardResponseDTO> => {
-    return get('/accounts/dashboard');
-  };

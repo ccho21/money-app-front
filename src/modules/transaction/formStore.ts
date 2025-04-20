@@ -1,38 +1,52 @@
+// 파일: src/modules/transaction/formStore.ts
+
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
-  TransactionFormFields,
+  TransactionCreateRequestDTO,
+  TransactionUpdateRequestDTO,
   TransactionTransferRequestDTO,
-  TransactionIncomeOrExpenseRequestDTO,
-} from '@/modules/transaction/types';
+} from './types';
 
 type Mode = 'new' | 'edit';
 
-type State = TransactionFormFields;
-type Actions = {
-  setField: <K extends keyof State>(key: K, value: State[K]) => void;
-  setAllFields: (data: Partial<State>) => void;
-  init: (preset?: Partial<State>) => void;
-  reset: () => void;
-  getCreateFormData: () =>
-    | TransactionTransferRequestDTO
-    | TransactionIncomeOrExpenseRequestDTO;
-  getUpdateFormData: () =>
-    | Partial<TransactionTransferRequestDTO>
-    | Partial<TransactionIncomeOrExpenseRequestDTO>;
-  isDirty: () => boolean;
-};
+interface TransactionFormState {
+  type: 'income' | 'expense' | 'transfer';
+  amount: string;
+  accountId: string;
+  categoryId?: string;
+  date: string;
+  note?: string;
+  description?: string;
+  from?: string;
+  to?: string;
+}
 
 interface TransactionFormStore {
-  state: State;
-  initialState: State;
   mode: Mode;
-  actions: Actions;
+  state: TransactionFormState;
+  initialState: TransactionFormState;
+
+  setField: <K extends keyof TransactionFormState>(
+    key: K,
+    value: TransactionFormState[K]
+  ) => void;
+  setAllFields: (data: Partial<TransactionFormState>) => void;
+  init: (preset?: Partial<TransactionFormState>) => void;
+  reset: () => void;
+  getCreateFormData: () =>
+    | TransactionCreateRequestDTO
+    | TransactionTransferRequestDTO;
+  getUpdateFormData: () => Partial<
+    TransactionUpdateRequestDTO | TransactionTransferRequestDTO
+  >;
+  getTransferFormData: () => TransactionTransferRequestDTO;
+  isDirty: () => boolean;
 }
 
 const nowISO = () => new Date().toISOString();
 
-const defaultState: State = {
+const defaultState: TransactionFormState = {
   type: 'expense',
   amount: '',
   accountId: '',
@@ -49,134 +63,121 @@ function deepEqual<T extends object>(a: T, b: T): boolean {
   const bKeys = Object.keys(b) as (keyof T)[];
   if (aKeys.length !== bKeys.length) return false;
   for (const key of aKeys) {
-    const valA = a[key];
-    const valB = b[key];
-    if (valA !== valB) return false;
+    if (a[key] !== b[key]) return false;
   }
   return true;
 }
 
 export const useTransactionFormStore = create<TransactionFormStore>()(
-  devtools(
-    (set, get) => ({
-      state: { ...defaultState },
-      initialState: { ...defaultState },
-      mode: 'new',
+  devtools((set, get) => ({
+    mode: 'new',
+    state: { ...defaultState },
+    initialState: { ...defaultState },
 
-      actions: {
-        setField: (key, value) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                [key]: value,
-              },
-            }),
-            false,
-            `transactionForm/setField:${key}`
-          ),
+    setField: (key, value) =>
+      set((s) => ({
+        state: { ...s.state, [key]: value },
+      })),
 
-        setAllFields: (data) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                ...data,
-                amount: String(data.amount ?? s.state.amount),
-              },
-            }),
-            false,
-            'transactionForm/setAllFields'
-          ),
-
-        init: (preset = {}) => {
-          const initialized = {
-            ...defaultState,
-            ...preset,
-            amount: String(preset.amount ?? '0'),
-          };
-          const isEdit = Object.keys(preset).length > 0;
-          set(
-            () => ({
-              state: initialized,
-              initialState: initialized,
-              mode: isEdit ? 'edit' : 'new',
-            }),
-            false,
-            'transactionForm/init'
-          );
+    setAllFields: (data) =>
+      set((s) => ({
+        state: {
+          ...s.state,
+          ...data,
+          amount: String(data.amount ?? s.state.amount),
         },
+      })),
 
-        reset: () => {
-          const { mode, initialState } = get();
-          const fallback = { ...defaultState };
-          set(
-            () => ({
-              state: mode === 'edit' ? { ...initialState } : fallback,
-            }),
-            false,
-            'transactionForm/reset'
-          );
-        },
+    init: (preset = {}) => {
+      const merged = {
+        ...defaultState,
+        ...preset,
+        amount: String(preset.amount ?? '0'),
+      };
+      const isEdit = Object.keys(preset).length > 0;
+      set(() => ({
+        state: merged,
+        initialState: merged,
+        mode: isEdit ? 'edit' : 'new',
+      }));
+    },
 
-        getCreateFormData: () => {
-          const { state } = get();
-          const base = {
-            amount: Number(state.amount),
-            date: state.date,
-            note: state.note || undefined,
-            description: state.description || undefined,
-          };
+    reset: () => {
+      const { mode, initialState } = get();
+      const fallback = { ...defaultState };
+      set(() => ({
+        state: mode === 'edit' ? { ...initialState } : fallback,
+      }));
+    },
 
-          if (state.type === 'transfer') {
-            return {
-              ...base,
-              type: 'transfer',
-              fromAccountId: state.from,
-              toAccountId: state.to,
-            };
-          }
+    getCreateFormData: () => {
+      const { state } = get();
+      const base = {
+        amount: Number(state.amount),
+        date: state.date,
+        note: state.note || undefined,
+        description: state.description || undefined,
+      };
 
-          return {
-            ...base,
-            type: state.type,
-            accountId: state.accountId,
-            categoryId: state.categoryId,
-          };
-        },
+      if (state.type === 'transfer') {
+        return {
+          ...base,
+          type: 'transfer',
+          fromAccountId: state.from!,
+          toAccountId: state.to!,
+        };
+      }
 
-        getUpdateFormData: () => {
-          const { state } = get();
-          const base = {
-            amount: state.amount ? Number(state.amount) : undefined,
-            date: state.date,
-            note: state.note || undefined,
-            description: state.description || undefined,
-          };
+      return {
+        ...base,
+        type: state.type,
+        accountId: state.accountId,
+        categoryId: state.categoryId,
+      };
+    },
 
-          if (state.type === 'transfer') {
-            return {
-              ...base,
-              type: 'transfer',
-              fromAccountId: state.from || undefined,
-              toAccountId: state.to || undefined,
-            };
-          }
+    getUpdateFormData: () => {
+      const { state } = get();
+      const base = {
+        amount: state.amount ? Number(state.amount) : undefined,
+        date: state.date,
+        note: state.note || undefined,
+        description: state.description || undefined,
+      };
 
-          return {
-            ...base,
-            type: state.type,
-            accountId: state.accountId || undefined,
-            categoryId: state.categoryId || undefined,
-          };
-        },
+      if (state.type === 'transfer') {
+        return {
+          ...base,
+          type: 'transfer',
+          fromAccountId: state.from || undefined,
+          toAccountId: state.to || undefined,
+        };
+      }
 
-        isDirty: () => {
-          const { state, initialState } = get();
-          return !deepEqual(state, initialState);
-        },
-      },
-    }),
-    { name: 'useTransactionFormStore' }
-  )
+      return {
+        ...base,
+        type: state.type,
+        accountId: state.accountId || undefined,
+        categoryId: state.categoryId || undefined,
+      };
+    },
+
+    getTransferFormData: () => {
+      const { state } = get();
+      return {
+        type: 'transfer',
+        amount: Number(state.amount),
+        date: state.date,
+        note: state.note,
+        description: state.description,
+        fromAccountId: state.from!,
+        toAccountId: state.to!,
+      };
+    },
+
+    isDirty: () => {
+      const { state, initialState } = get();
+      return !deepEqual(state, initialState);
+    },
+  }))
 );

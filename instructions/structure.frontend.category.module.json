@@ -17,13 +17,13 @@
       "function": "getCategoriesAPI",
       "method": "GET",
       "url": "/categories",
-      "responseDTO": "CategoryDTO[]",
+      "responseDTO": "CategoryDetailDTO[]",
       "description": "전체 카테고리 목록 조회",
       "usedBy": ["hooks.ts → fetchCategories"],
       "storeStrategy": {
         "store": "useCategoryStore.ts",
         "stateShape": {
-          "categories": "CategoryDTO[]"
+          "categories": "CategoryDetailDTO[]"
         }
       }
     },
@@ -75,7 +75,7 @@
   },
   "mainDTOs": [
     {
-      "name": "CategoryDTO",
+      "name": "CategoryDetailDTO",
       "file": "types.ts",
       "extends": null,
       "fields": [

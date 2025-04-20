@@ -186,7 +186,7 @@
         },
         {
           "name": "category",
-          "type": "CategoryDTO | null",
+          "type": "CategoryDetailDTO | null",
           "optional": true
         },
         {

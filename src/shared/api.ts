@@ -1,11 +1,11 @@
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // ⛳ 에러 응답 핸들링
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
-    const message = error.message || "API 요청 실패";
+    const message = error.message || 'API 요청 실패';
     throw new Error(message);
   }
   return res.json();
@@ -14,15 +14,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
 // ✅ Refresh 토큰 시도 함수
 async function tryRefreshToken(): Promise<boolean> {
   const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
-    method: "POST",
-    credentials: "include", // 반드시 있어야 함 (쿠키 기반 인증 시)
+    method: 'POST',
+    credentials: 'include', // 반드시 있어야 함 (쿠키 기반 인증 시)
   });
   return res.ok;
 }
 
 // 🚪 로그인 페이지 이동
 function redirectToSignin() {
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     // window.location.href = "/signin";
   }
 }
@@ -35,10 +35,10 @@ export async function api<T>(
   let res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...(options.headers || {}),
     },
-    credentials: "include",
+    credentials: 'include',
   });
 
   // ✅ 401 에러 시 자동 Refresh + 재시도
@@ -48,16 +48,16 @@ export async function api<T>(
       res = await fetch(`${API_BASE_URL}${path}`, {
         ...options,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           ...(options.headers || {}),
         },
-        credentials: "include",
+        credentials: 'include',
       });
     }
 
     if (res.status === 401) {
       redirectToSignin();
-      return Promise.reject("Unauthorized");
+      return Promise.reject('Unauthorized');
     }
   }
 
@@ -66,32 +66,32 @@ export async function api<T>(
 
 // ✅ HTTP 메서드 래퍼
 export function get<T>(path: string): Promise<T> {
-  return api<T>(path, { method: "GET" });
+  return api<T>(path, { method: 'GET' });
 }
 
 export function post<Res, Req>(path: string, data: Req): Promise<Res> {
   return api<Res>(path, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(data),
   });
 }
 
 export function put<Res, Req>(path: string, data: Req): Promise<Res> {
   return api<Res>(path, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify(data),
   });
 }
 
 export function del<T = void>(path: string): Promise<T> {
   return api<T>(path, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 }
 
 export function patch<Res, Req>(path: string, data: Req): Promise<Res> {
   return api<Res>(path, {
-    method: "PATCH",
+    method: 'PATCH',
     body: JSON.stringify(data),
   });
 }
@@ -105,9 +105,9 @@ export function handleAsync<T>(
   setError(null);
   return asyncFn()
     .catch((err) => {
-      const msg = err instanceof Error ? err.message : "요청 실패";
+      const msg = err instanceof Error ? err.message : '요청 실패';
       setError(msg);
-      console.error("❌ Service Error:", msg);
+      console.error('❌ Service Error:', msg);
       return undefined;
     })
     .finally(() => {

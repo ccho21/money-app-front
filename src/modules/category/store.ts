@@ -1,37 +1,21 @@
-// 📄 src/stores/category/category.store.ts
+// 파일: src/modules/category/store.ts
 
-import { CategoryDTO } from '@/features/category/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { CategoryDetailDTO } from './types';
 
-interface CategoryStore {
-  state: {
-    categories: CategoryDTO[];
-  };
-  actions: {
-    setCategories: (categories: CategoryDTO[]) => void;
-  };
+interface CategoryStoreState {
+  categories: CategoryDetailDTO[];
+  setCategories: (categories: CategoryDetailDTO[]) => void;
+  clear: () => void;
 }
 
-export const useCategoryStore = create<CategoryStore>()(
+export const useCategoryStore = create<CategoryStoreState>()(
   devtools(
     (set) => ({
-      state: {
-        categories: [],
-      },
-      actions: {
-        setCategories: (categories) =>
-          set(
-            (s) => ({
-              state: {
-                ...s.state,
-                categories,
-              },
-            }),
-            false,
-            'categories/setAll'
-          ),
-      },
+      categories: [],
+      setCategories: (categories) => set({ categories }),
+      clear: () => set({ categories: [] }),
     }),
     { name: 'useCategoryStore' }
   )

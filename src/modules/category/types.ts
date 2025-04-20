@@ -1,6 +1,6 @@
 export type CategoryType = 'income' | 'expense';
 
-export interface CategoryDTO {
+export interface CategoryDetailDTO {
   id: string;
   name: string;
   type: CategoryType;

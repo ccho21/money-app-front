@@ -1,101 +1,39 @@
-// 📁 src/stores/useBudgetStore.ts
+// 파일: src/modules/budget/store.ts
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import {
-  BudgetCategoryListResponseDTO,
-  BudgetGroupItemDTO,
-  BudgetSummaryResponseDTO,
-} from '@/features/budget/types';
+import { BudgetCategoryPeriodItemDTO, BudgetCategoryItemDTO } from './types';
 
 interface BudgetStoreState {
-  budgetCategoryResponse?: BudgetCategoryListResponseDTO;
-  budgetCategoryGroupResponse?: BudgetGroupItemDTO;
-  budgetSummaryResponse?: BudgetSummaryResponseDTO;
+  budgetCategoryResponse: BudgetCategoryPeriodItemDTO[];
+  budgetSettings: BudgetCategoryItemDTO[];
   isLoading: boolean;
   error: string | null;
-}
 
-interface BudgetStoreActions {
-  setBudgetCategoryResponse: (data: BudgetCategoryListResponseDTO) => void;
-  setBudgetCategoryGroupResponse: (data: BudgetGroupItemDTO) => void;
-  setBudgetSummaryResponse: (data: BudgetSummaryResponseDTO) => void;
+  setBudgetCategoryResponse: (data: BudgetCategoryPeriodItemDTO[]) => void;
+  setBudgetSettings: (data: BudgetCategoryItemDTO[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  clearStore: () => void;
+  clear: () => void;
 }
 
-interface BudgetStore {
-  state: BudgetStoreState;
-  actions: BudgetStoreActions;
-}
+export const useBudgetStore = create<BudgetStoreState>()(
+  devtools((set) => ({
+    budgetCategoryResponse: [],
+    budgetSettings: [],
+    isLoading: false,
+    error: null,
 
-const initialState: BudgetStoreState = {
-  budgetCategoryResponse: undefined,
-  budgetCategoryGroupResponse: undefined,
-  budgetSummaryResponse: undefined,
-  isLoading: false,
-  error: null,
-};
-
-export const useBudgetStore = create<BudgetStore>()(
-  devtools(
-    (set) => ({
-      state: { ...initialState },
-      actions: {
-        setBudgetCategoryResponse: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, budgetCategoryResponse: data },
-            }),
-            false,
-            'budget/setBudgetCategoryResponse'
-          ),
-
-        setBudgetCategoryGroupResponse: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, budgetCategoryGroupResponse: data },
-            }),
-            false,
-            'budget/setBudgetCategoryGroupResponse'
-          ),
-
-        setBudgetSummaryResponse: (data) =>
-          set(
-            (s) => ({
-              state: { ...s.state, budgetSummaryResponse: data },
-            }),
-            false,
-            'budget/setBudgetSummaryResponse'
-          ),
-
-        setLoading: (loading) =>
-          set(
-            (s) => ({
-              state: { ...s.state, isLoading: loading },
-            }),
-            false,
-            loading ? 'ui/loading:start' : 'ui/loading:done'
-          ),
-
-        setError: (error) =>
-          set(
-            (s) => ({
-              state: { ...s.state, error },
-            }),
-            false,
-            'ui/setError'
-          ),
-
-        clearStore: () =>
-          set(
-            () => ({ state: { ...initialState } }),
-            false,
-            'budget/clearStore'
-          ),
-      },
-    }),
-    { name: 'BudgetStore' }
-  )
+    setBudgetCategoryResponse: (data) => set({ budgetCategoryResponse: data }),
+    setBudgetSettings: (data) => set({ budgetSettings: data }),
+    setLoading: (loading) => set({ isLoading: loading }),
+    setError: (error) => set({ error }),
+    clear: () =>
+      set({
+        budgetCategoryResponse: [],
+        budgetSettings: [],
+        isLoading: false,
+        error: null,
+      }),
+  }))
 );
