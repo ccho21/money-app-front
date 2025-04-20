@@ -1,8 +1,19 @@
 {
   "module": "transactions",
+  "entryPoints": [
+    "app/transaction/[id]/edit/page.tsx",
+    "app/transaction/new/page.tsx"
+  ],
+  "stores": [
+    "stores/forms/useTransactionFormStore.ts",
+    "stores/useTransactionStore.ts"
+  ],
   "features": [
+    "features/transaction/api.ts",
+    "features/transaction/hooks.ts",
     "features/transaction/types.ts"
   ],
+  "routes": ["/transaction/[id]/edit", "/transaction/new"],
   "mainDTOs": [
     {
       "name": "TransactionGroupItemDTO",
@@ -243,9 +254,7 @@
       "name": "TransactionUpdateRequestDTO",
       "file": "types.ts",
       "extends": "PartialType",
-      "composedFrom": [
-        "TransactionCreateRequestDTO"
-      ],
+      "composedFrom": ["TransactionCreateRequestDTO"],
       "fields": [
         {
           "name": "type",
