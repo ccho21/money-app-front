@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
 
-import { RANGE_OPTIONS, GroupBy } from '@/shared/types';
+import { RANGE_OPTIONS, GroupBy } from '@/common/types';
 
 const tabs = [
   { name: 'Stats', href: '/stats/category' },

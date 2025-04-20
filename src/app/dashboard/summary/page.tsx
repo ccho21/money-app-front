@@ -6,7 +6,7 @@ import { useAccountStore } from '@/modules/account/store';
 import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchAccountSummary } from '@/modules/account/hooks';
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';

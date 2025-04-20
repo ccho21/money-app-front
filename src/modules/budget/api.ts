@@ -1,6 +1,6 @@
 // 파일: src/modules/budget/api.ts
 
-import { get, post, patch, del } from '@/shared/api';
+import { get, post, patch, del } from '@/common/api';
 import { buildQuery } from '@/shared/util/buildQuery';
 import {
   BudgetCategoryItemDTO,
@@ -8,7 +8,7 @@ import {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
 } from './types';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 
 // Fetch current budget results per category
 export const fetchBudgetCategoriesAPI = (params: DateFilterParams) => {

@@ -1,0 +1,75 @@
+{
+  "module": "common",
+  "description": "전역 공통 DTO 및 공통 응답 구조를 정의하는 모듈입니다.",
+  "entryPoints": [],
+  "tests": [],
+  "dto": {
+    "mainDTOs": [
+      {
+        "name": "BaseGroupItemDTO",
+        "file": "src/modules/common/dto/base-group-item.dto.ts",
+        "fields": [
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "rangeStart",
+            "type": "string"
+          },
+          {
+            "name": "rangeEnd",
+            "type": "string"
+          },
+          {
+            "name": "totalIncome",
+            "type": "number"
+          },
+          {
+            "name": "totalExpense",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "name": "BaseListSummaryResponseDTO<T>",
+        "file": "src/modules/common/dto/base-list-summary.dto.ts",
+        "fields": [
+          {
+            "name": "items",
+            "type": "T[]"
+          },
+          {
+            "name": "totalIncome",
+            "type": "number"
+          },
+          {
+            "name": "totalExpense",
+            "type": "number"
+          },
+          {
+            "name": "rangeStart",
+            "type": "string"
+          },
+          {
+            "name": "rangeEnd",
+            "type": "string"
+          },
+          {
+            "name": "label",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "routes": [],
+  "utils": [],
+  "guards": [],
+  "decorators": [],
+  "types": [],
+  "files": [
+    "src/modules/common/dto/base-group-item.dto.ts",
+    "src/modules/common/dto/base-list-summary.dto.ts"
+  ]
+}

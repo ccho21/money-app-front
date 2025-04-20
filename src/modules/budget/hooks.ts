@@ -13,7 +13,7 @@ import {
   BudgetCategoryUpdateRequestDTO,
   BudgetCategoryItemDTO,
 } from './types';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 
 // Normalize amount if needed
 const normalizeAmount = (amount: string | number): number =>

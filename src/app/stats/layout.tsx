@@ -11,7 +11,7 @@ import TabMenu from '@/components/common/TabMenu';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
 import type { TransactionType } from '@/modules/transaction/types';
-import type { GroupBy } from '@/shared/types';
+import type { GroupBy } from '@/common/types';
 import { useUIStore } from '@/stores/useUIStore';
 import TopNav from '@/components/common/TopNav';
 import { getDefaultLayoutOptions } from '@/lib/layout.config';

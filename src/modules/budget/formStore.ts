@@ -6,7 +6,7 @@ import {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
 } from './types';
-import type { GroupBy } from '@/shared/types';
+import type { GroupBy } from '@/common/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 

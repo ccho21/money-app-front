@@ -9,7 +9,7 @@ import {
   fetchAccountSummaryAPI,
 } from './api';
 import type { AccountCreateRequestDTO, AccountUpdateRequestDTO } from './types';
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 
 // Create a new account
 export const createAccount = async (payload: AccountCreateRequestDTO) => {

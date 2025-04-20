@@ -13,7 +13,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchBudgetsByCategory } from '@/features/budget/hooks';
 
 import type { BudgetCategoryItemDTO } from '@/features/budget/types';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 
 export default function BudgetPage() {
   const router = useRouter();

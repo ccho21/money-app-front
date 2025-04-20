@@ -8,7 +8,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import { fetchTransactionSummary } from '@/modules/transaction/hooks';
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 import YearlyView from '@/components/dashboard/YearlyView';
 
 //

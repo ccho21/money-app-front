@@ -9,7 +9,7 @@ import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 
 import { cn } from '@/lib/utils';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/features/budget/types';
 

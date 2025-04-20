@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import { TransactionType } from '@/modules/transaction/types';
-import { GroupBy } from '@/shared/types';
+import { GroupBy } from '@/common/types';
 import { formatDate, getDateRangeKey } from '@/lib/date.util';
 
 interface FilterQuery {

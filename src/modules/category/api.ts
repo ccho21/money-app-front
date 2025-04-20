@@ -1,6 +1,6 @@
 // 파일: src/modules/category/api.ts
 
-import { del, get, patch, post } from '@/shared/api';
+import { del, get, patch, post } from '@/common/api';
 import {
   CategoryDetailDTO,
   CategoryCreateRequestDTO,

@@ -20,7 +20,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAccountFormStore } from '@/modules/account/formStore';
 
-import type { GroupBy } from '@/shared/types';
+import type { GroupBy } from '@/common/types';
 
 const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 

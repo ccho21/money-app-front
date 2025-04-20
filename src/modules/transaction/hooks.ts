@@ -1,7 +1,7 @@
 // 파일: src/modules/transaction/hooks.ts
 
-import { handleAsync } from '@/shared/api';
-import { DateFilterParams } from '@/shared/types';
+import { handleAsync } from '@/common/api';
+import { DateFilterParams } from '@/common/types';
 import {
   createTransactionAPI,
   updateTransactionAPI,

@@ -1,4 +1,4 @@
-import { DateFilterParams } from '../types';
+import { DateFilterParams } from '../../common/types';
 
 export const buildQuery = (params: DateFilterParams): string => {
   const filteredParams: Record<string, string> = {};

@@ -6,7 +6,7 @@ import { addDays } from 'date-fns';
 import { useTransactionStore } from '@/modules/transaction/store';
 import { useShallow } from 'zustand/react/shallow';
 
-import { get } from '@/shared/api';
+import { get } from '@/common/api';
 import { fetchTransactionCalendar } from '@/modules/transaction/hooks';
 
 import {

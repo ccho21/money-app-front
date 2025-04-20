@@ -1,7 +1,7 @@
 import {
   BaseGroupItemDTO,
   BaseListSummaryResponseDTO,
-} from '../../shared/types';
+} from '../../common/types';
 import { TransactionDetailDTO } from '../transaction/types';
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';

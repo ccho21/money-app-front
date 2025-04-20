@@ -8,7 +8,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchTransactionSummary } from '@/modules/transaction/hooks';
 
 import { useShallow } from 'zustand/shallow';
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 

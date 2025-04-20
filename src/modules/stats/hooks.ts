@@ -1,4 +1,4 @@
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 import {
   fetchStatsByCategory,
   fetchStatsByBudget,

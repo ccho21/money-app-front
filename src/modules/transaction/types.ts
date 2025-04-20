@@ -1,4 +1,4 @@
-import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/shared/types';
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryDetailDTO } from '../category/types';
 
 export type TransactionType = 'income' | 'expense' | 'transfer';

@@ -1,6 +1,6 @@
 // 파일: src/modules/account/api.ts
 
-import { get, post, patch } from '@/shared/api';
+import { get, post, patch } from '@/common/api';
 import {
   AccountCreateRequestDTO,
   AccountUpdateRequestDTO,
@@ -8,7 +8,7 @@ import {
   AccountTransactionSummaryDTO,
   // ⚠️ [외부 참조 필요] DateFilterParams는 shared/types 또는 common 모듈에서 가져와야 함
 } from './types';
-import type { DateFilterParams } from '@/shared/types'; // ✅ 승인 필요
+import type { DateFilterParams } from '@/common/types'; // ✅ 승인 필요
 import { buildQuery } from '@/shared/util/buildQuery';
 
 // Create a new account

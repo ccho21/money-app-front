@@ -1,6 +1,6 @@
 // 📄 src/features/auth/services/authService.ts
 
-import { get } from '@/shared/api';
+import { get } from '@/common/api';
 import { useUserStore } from '@/stores/useUserStore';
 import { User } from './types';
 

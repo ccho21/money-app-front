@@ -13,7 +13,7 @@ import {
 } from '@/modules/transaction/hooks';
 
 import { TransactionGroupItemDTO } from '@/modules/transaction/types';
-import { DateFilterParams } from '@/shared/types';
+import { DateFilterParams } from '@/common/types';
 import MonthlyView from '@/components/dashboard/MonthlyView';
 
 //

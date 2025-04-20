@@ -1,6 +1,6 @@
 // 파일: src/modules/transaction/api.ts
 
-import { get, post, patch, del } from '@/shared/api';
+import { get, post, patch, del } from '@/common/api';
 import { buildQuery } from '@/shared/util/buildQuery';
 import {
   TransactionCreateRequestDTO,
@@ -11,7 +11,7 @@ import {
   TransactionGroupSummaryDTO,
   TransactionCalendarDTO,
 } from './types';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 
 // Create new income/expense transaction
 export const createTransactionAPI = (payload: TransactionCreateRequestDTO) => {

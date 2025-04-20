@@ -8,7 +8,7 @@ import {
   TransactionGroupSummaryDTO,
   TransactionGroupItemDTO,
 } from '@/modules/transaction/types';
-import { SummaryItem } from '@/shared/types';
+import { SummaryItem } from '@/common/types';
 
 import MonthlyItem from './MonthlyItem';
 

@@ -1,6 +1,6 @@
 // 파일: src/modules/stats/api.ts
 
-import { get } from '@/shared/api';
+import { get } from '@/common/api';
 import { buildQuery } from '@/shared/util/buildQuery';
 import {
   StatsCategoryGroupItemDTO,
@@ -13,7 +13,7 @@ import {
   StatsNoteSummaryDTO,
   StatsNoteDetailDTO,
 } from './types';
-import type { DateFilterParams } from '@/shared/types';
+import type { DateFilterParams } from '@/common/types';
 
 // [GET] /stats/category
 export const fetchStatsByCategory = (params: DateFilterParams) => {

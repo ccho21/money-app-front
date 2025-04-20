@@ -1,4 +1,4 @@
-import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/shared/types';
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryType } from '../category/types';
 
 export interface BudgetCategoryItemDTO {
