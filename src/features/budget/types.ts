@@ -2,7 +2,6 @@ import { CategoryType } from '@/features/category/types';
 import {
   BaseGroupItemDTO,
   BaseListSummaryResponseDTO,
-  GroupBy,
 } from '@/features/shared/types';
 
 export interface BudgetCategoryItemDTO {
@@ -23,18 +22,12 @@ export interface BudgetCategoryListResponseDTO {
   items: BudgetCategoryItemDTO[];
 }
 
-// ─────────────────────────────────────────────────────────
-// ✅ Grouped Budget View (category-wise, for trend charts)
-// ─────────────────────────────────────────────────────────
-
-export interface BudgetCategoryPeriodItemDTO extends BaseGroupItemDTO {
-  amount: number;
-  used: number;
-  remaining: number;
-  isOver?: boolean;
-  categoryId?: string;
-  isCurrent: boolean;
-  type: CategoryType;
+export interface BudgetDetailDTO {
+  id: string;
+  total: number;
+  categoryIds: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BudgetGroupItemDTO {
@@ -50,34 +43,38 @@ export interface BudgetGroupItemDTO {
   budgets: BudgetCategoryPeriodItemDTO[];
 }
 
-export interface BudgetSummaryResponseDTO
+export interface BudgetCategoryPeriodItemDTO extends BaseGroupItemDTO {
+  amount: number;
+  used: number;
+  remaining: number;
+  isOver?: boolean;
+  categoryId?: string;
+  isCurrent: boolean;
+  type: CategoryType;
+}
+
+export interface BudgetCategoryCreateRequestDTO
+  extends BaseBudgetCategoryRequestDTO {
+  categoryId: string;
+  amount: number;
+  startDate: string;
+  endDate: string;
+  type: CategoryType;
+}
+
+export type BudgetCategoryUpdateRequestDTO =
+  Partial<BudgetCategoryCreateRequestDTO>;
+
+export interface BudgetGroupSummaryDTO
   extends BaseListSummaryResponseDTO<BudgetGroupItemDTO> {
   totalBudget?: number;
   rate?: number;
 }
 
-// ─────────────────────────────────────────────────────────
-// ✅ Budget Create / Update DTOs
-// ─────────────────────────────────────────────────────────
-
-export interface CreateBudgetCategoryDTO {
+export interface BaseBudgetCategoryRequestDTO {
   categoryId: string;
-  amount: string | number;
+  amount: number;
   startDate: string;
   endDate: string;
-  groupBy: GroupBy;
-}
-
-export interface UpdateBudgetCategoryDTO {
-  amount?: number;
-  startDate?: string;
-  endDate?: string;
-}
-
-// Warning structure for overused budgets
-export interface BudgetAlertDTO {
-  category: string;
-  budget: number;
-  spent: number;
-  exceededBy: number;
+  type: CategoryType;
 }
