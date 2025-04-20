@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/check/Button';
 import { Input } from '@/components/ui/check/Input';
 import Selector from '@/components/ui/check/Selector';
-import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
+import { useCategoryFormStore } from '@/modules/category/formStore';
 import { Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';
 

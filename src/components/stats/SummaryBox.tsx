@@ -1,7 +1,7 @@
 // 📄 src/components/common/SummaryBox.tsx
 'use client';
 
-import { SummaryItem } from '@/features/shared/types';
+import { SummaryItem } from '@/shared/types';
 import { cn } from '@/lib/utils';
 
 interface SummaryBoxProps {

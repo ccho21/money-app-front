@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import {
   TransactionDetailDTO,
   TransactionGroupItemDTO,
-} from '@/features/transaction/types';
+} from '@/modules/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
 import {
   CalendarDaysIcon,

@@ -1,5 +1,5 @@
-import { handleAsync } from '@/lib/api';
-import { DateFilterParams } from '@/features/shared/types';
+import { handleAsync } from '@/shared/api';
+import { DateFilterParams } from '@/shared/types';
 import {
   createTransactionAPI,
   createTransferTransactionAPI,
@@ -14,8 +14,8 @@ import {
 
 import { TransactionGroupSummaryDTO, TransactionRequestDTO } from './types';
 
-import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionFormStore } from '@/modules/transaction/formStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 
 //
 // Fetch transaction by ID and store in selectedTransaction

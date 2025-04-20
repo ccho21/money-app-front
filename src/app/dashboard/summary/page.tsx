@@ -2,18 +2,18 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccountStore } from '@/stores/useAccountStore';
-import { useBudgetStore } from '@/stores/useBudgetStore';
+import { useAccountStore } from '@/modules/account/store';
+import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchAccountSummary } from '@/features/account/hooks';
-import { fetchBudgetSummary } from '@/features/budget/hooks';
-import { DateFilterParams } from '@/features/shared/types';
+import { fetchAccountSummary } from '@/modules/account/hooks';
+import { DateFilterParams } from '@/shared/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
 import Divider from '@/components/ui/check/Divider';
+import { fetchBudgetSummary } from '@/modules/budget/hooks';
 
 //
 // Dashboard summary page: shows account + budget stats in a snapshot

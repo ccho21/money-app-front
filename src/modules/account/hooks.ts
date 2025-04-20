@@ -1,17 +1,17 @@
-import { useAccountStore } from '@/stores/useAccountStore';
-import { DateFilterParams } from '@/features/shared/types';
+import { useAccountStore } from '@/modules/account/store';
+import { DateFilterParams } from '@/shared/types';
 import { fetchAccountsDashboardAPI } from '@/features/budget/api';
 import {
   AccountCreateRequestDTO,
   AccountUpdateRequestDTO,
-} from '@/features/account/types';
+} from '@/modules/account/types';
 import {
   createAccountAPI,
   fetchAccountsAPI,
   fetchAccountsByIdAPI,
   fetchAccountSummaryAPI,
   updateAccountAPI,
-} from '@/features/account/api';
+} from '@/modules/account/api';
 
 //
 // Create a new account

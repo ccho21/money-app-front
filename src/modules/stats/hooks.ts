@@ -1,4 +1,4 @@
-import { DateFilterParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/shared/types';
 import {
   fetchStatsCategoryByCategoryIdAPI,
   fetchStatByBudgetAPI,
@@ -10,7 +10,7 @@ import {
   fetchStatsNoteDetailAPI,
   fetchStatBudgetByCategoryIdAPI,
 } from '@/features/stats/api';
-import { useStatsStore } from '@/stores/useStatsStore';
+import { useStatsStore } from '@/modules/stats/useStatsStore';
 
 //
 // Fetch grouped category stats

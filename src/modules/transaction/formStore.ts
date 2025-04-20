@@ -4,7 +4,7 @@ import {
   TransactionFormFields,
   TransactionTransferRequestDTO,
   TransactionIncomeOrExpenseRequestDTO,
-} from '@/features/transaction/types';
+} from '@/modules/transaction/types';
 
 type Mode = 'new' | 'edit';
 
@@ -14,8 +14,12 @@ type Actions = {
   setAllFields: (data: Partial<State>) => void;
   init: (preset?: Partial<State>) => void;
   reset: () => void;
-  getCreateFormData: () => TransactionTransferRequestDTO | TransactionIncomeOrExpenseRequestDTO;
-  getUpdateFormData: () => Partial<TransactionTransferRequestDTO> | Partial<TransactionIncomeOrExpenseRequestDTO>;
+  getCreateFormData: () =>
+    | TransactionTransferRequestDTO
+    | TransactionIncomeOrExpenseRequestDTO;
+  getUpdateFormData: () =>
+    | Partial<TransactionTransferRequestDTO>
+    | Partial<TransactionIncomeOrExpenseRequestDTO>;
   isDirty: () => boolean;
 };
 
@@ -92,19 +96,27 @@ export const useTransactionFormStore = create<TransactionFormStore>()(
             amount: String(preset.amount ?? '0'),
           };
           const isEdit = Object.keys(preset).length > 0;
-          set(() => ({
-            state: initialized,
-            initialState: initialized,
-            mode: isEdit ? 'edit' : 'new',
-          }), false, 'transactionForm/init');
+          set(
+            () => ({
+              state: initialized,
+              initialState: initialized,
+              mode: isEdit ? 'edit' : 'new',
+            }),
+            false,
+            'transactionForm/init'
+          );
         },
 
         reset: () => {
           const { mode, initialState } = get();
           const fallback = { ...defaultState };
-          set(() => ({
-            state: mode === 'edit' ? { ...initialState } : fallback,
-          }), false, 'transactionForm/reset');
+          set(
+            () => ({
+              state: mode === 'edit' ? { ...initialState } : fallback,
+            }),
+            false,
+            'transactionForm/reset'
+          );
         },
 
         getCreateFormData: () => {

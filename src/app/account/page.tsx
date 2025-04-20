@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { fetchAccounts } from '@/features/account/hooks';
-import { useAccountStore } from '@/stores/useAccountStore';
+import { fetchAccounts } from '@/modules/account/hooks';
+import { useAccountStore } from '@/modules/account/store';
 import { useRouter } from 'next/navigation';
-import { AccountDetailDTO } from '@/features/account/types';
+import { AccountDetailDTO } from '@/modules/account/types';
 
 export default function AccountEditPage() {
   const router = useRouter();

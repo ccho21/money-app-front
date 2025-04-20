@@ -1,11 +1,11 @@
-import { get, patch, post } from '@/lib/api';
+import { get, patch, post } from '@/shared/api';
 import {
   AccountCreateRequestDTO,
   AccountDetailDTO,
   AccountTransactionSummaryDTO,
   AccountUpdateRequestDTO,
 } from './types';
-import { DateFilterParams } from '../shared/types';
+import { DateFilterParams } from '../../shared/types';
 
 //
 // Create a new account

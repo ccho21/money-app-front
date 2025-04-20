@@ -2,7 +2,7 @@ import {
   AccountDashboardResponseDTO,
   AccountDetailDTO,
   AccountTransactionSummaryDTO,
-} from '@/features/account/types';
+} from '@/modules/account/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 

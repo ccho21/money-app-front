@@ -3,17 +3,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
-} from '@/features/transaction/hooks';
+} from '@/modules/transaction/hooks';
 
-import { TransactionGroupItemDTO } from '@/features/transaction/types';
-import { DateFilterParams } from '@/features/shared/types';
+import { TransactionGroupItemDTO } from '@/modules/transaction/types';
+import { DateFilterParams } from '@/shared/types';
 import MonthlyView from '@/components/dashboard/MonthlyView';
 
 //

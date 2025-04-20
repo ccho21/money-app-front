@@ -3,11 +3,11 @@
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useStatsStore } from '@/stores/useStatsStore';
+import { useStatsStore } from '@/modules/stats/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByCategory } from '@/features/stats/hooks';
 import StatsView from '../_components/StatsView';
-import { DateFilterParams } from '@/features/shared/types';
+import { DateFilterParams } from '@/shared/types';
 import { CategoryType } from '@/features/category/types';
 
 //

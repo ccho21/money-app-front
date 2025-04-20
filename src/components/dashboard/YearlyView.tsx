@@ -5,8 +5,8 @@ import Panel from '@/components/ui/check/Panel';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import YearlyItem from './YearlyItem';
 
-import { TransactionGroupSummaryDTO } from '@/features/transaction/types';
-import { SummaryItem } from '@/features/shared/types';
+import { TransactionGroupSummaryDTO } from '@/modules/transaction/types';
+import { SummaryItem } from '@/shared/types';
 
 interface YearlyViewProps {
   isLoading: boolean;

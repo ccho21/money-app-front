@@ -1,7 +1,4 @@
-import {
-  BaseGroupItemDTO,
-  BaseListSummaryResponseDTO,
-} from '@/features/shared/types';
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/shared/types';
 import { CategoryType } from '../category/types';
 
 export type SortKey = 'note' | 'count' | 'amount';

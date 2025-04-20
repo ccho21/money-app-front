@@ -2,12 +2,12 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchAccountById, updateAccount } from '@/features/account/hooks';
-import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
+import { fetchAccountById, updateAccount } from '@/modules/account/hooks';
+import { useAccountFormStore } from '@/modules/account/formStore';
 import AccountForm from '../../_components/AccountForm';
-import { useAccountStore } from '@/stores/useAccountStore';
+import { useAccountStore } from '@/modules/account/store';
 import { useUIStore } from '@/stores/useUIStore';
-import { AccountUpdateRequestDTO } from '@/features/account/types';
+import { AccountUpdateRequestDTO } from '@/modules/account/types';
 
 //
 // Edit account page
@@ -82,5 +82,5 @@ export default function AccountEditPage() {
     }
   };
 
-  return <AccountForm onSubmit={handleUpdate} submitText="Update" />;
+  return <AccountForm onSubmit={handleUpdate} submitText='Update' />;
 }

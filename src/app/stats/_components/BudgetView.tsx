@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import type { CategoryType } from '@/features/category/types';
 
 import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
-import { BaseListSummaryResponseDTO } from '@/features/shared/types';
+import { BaseListSummaryResponseDTO } from '@/shared/types';
 import { StatsBudgetGroupItemDTO } from '@/features/stats/types';
 import { useMemo } from 'react';
 

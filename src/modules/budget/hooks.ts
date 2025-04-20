@@ -1,7 +1,7 @@
 // src/features/budget/hooks.ts
 
-import { DateFilterParams } from '@/features/shared/types';
-import { useBudgetStore } from '@/stores/useBudgetStore';
+import { DateFilterParams } from '@/shared/types';
+import { useBudgetStore } from '@/modules/budget/store';
 import {
   createBudgetCategoryAPI,
   fetchBudgetsByCategoryAPI,

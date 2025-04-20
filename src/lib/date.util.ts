@@ -19,7 +19,7 @@ import {
   startOfWeek,
   startOfYear,
 } from 'date-fns';
-import { DateRangeOptions, GroupBy } from '@/features/shared/types';
+import { DateRangeOptions, GroupBy } from '@/shared/types';
 
 // ✅ 사용자 브라우저 기준 timezone 자동 감지
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

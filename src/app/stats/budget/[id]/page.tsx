@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { parseISO, startOfDay } from 'date-fns';
 
-import { useStatsStore } from '@/stores/useStatsStore';
+import { useStatsStore } from '@/modules/stats/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
@@ -14,7 +14,7 @@ import {
 } from '@/features/stats/hooks';
 
 import { CategoryType } from '@/features/category/types';
-import { TransactionGroupItemDTO } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/modules/transaction/types';
 
 import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';

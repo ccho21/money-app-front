@@ -7,7 +7,7 @@ import {
   CreateBudgetCategoryDTO,
   UpdateBudgetCategoryDTO,
 } from '@/features/budget/types';
-import { GroupBy } from '@/features/shared/types';
+import { GroupBy } from '@/shared/types';
 import { getDateRangeKey } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 

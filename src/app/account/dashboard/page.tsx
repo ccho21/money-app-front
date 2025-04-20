@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useAccountStore } from '@/stores/useAccountStore';
+import { useAccountStore } from '@/modules/account/store';
 import SummaryBox from '@/components/stats/SummaryBox';
-import { fetchAccountDashboard } from '@/features/account/hooks';
+import { fetchAccountDashboard } from '@/modules/account/hooks';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';
-import { AccountDashboardItemDTO } from '@/features/account/types';
+import { AccountDashboardItemDTO } from '@/modules/account/types';
 import Panel from '@/components/ui/check/Panel';
 import { useUIStore } from '@/stores/useUIStore';
 

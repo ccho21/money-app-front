@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { fillCategoryForm, updateCategory } from '@/features/category/hooks';
-import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
+import { useCategoryFormStore } from '@/modules/category/formStore';
 import { CategoryForm } from '../../_components/CategoryForm';
 
 //
@@ -40,14 +40,15 @@ export default function EditCategoryPage() {
       reset();
       router.push('/category');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to update category';
+      const message =
+        err instanceof Error ? err.message : 'Failed to update category';
       alert(message);
     }
   };
 
   return (
-    <div className="pt-4">
-      <h2 className="text-md font-semibold px-4 pb-2">Edit Category</h2>
+    <div className='pt-4'>
+      <h2 className='text-md font-semibold px-4 pb-2'>Edit Category</h2>
       <CategoryForm onSubmit={handleSubmit} isEdit />
     </div>
   );

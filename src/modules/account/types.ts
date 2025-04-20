@@ -1,4 +1,7 @@
-import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '../shared/types';
+import {
+  BaseGroupItemDTO,
+  BaseListSummaryResponseDTO,
+} from '../../shared/types';
 import { TransactionDetailDTO } from '../transaction/types';
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';

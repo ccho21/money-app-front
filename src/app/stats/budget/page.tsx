@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useCallback } from 'react';
-import { useStatsStore } from '@/stores/useStatsStore';
+import { useStatsStore } from '@/modules/stats/useStatsStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByBudget } from '@/features/stats/hooks';
 import type { CategoryType } from '@/features/category/types';

@@ -1,4 +1,4 @@
-import { get } from '@/lib/api';
+import { get } from '@/shared/api';
 import { DateFilterParams } from '../shared/types';
 import {
   StatsCategoryGroupItemDTO,

@@ -5,12 +5,12 @@ import { useParams, useRouter } from 'next/navigation';
 
 import DateNavigator from '@/components/ui/check/DateNavigator';
 import { fetchBudgetCategoriesByCategoryId } from '@/features/budget/hooks';
-import { useBudgetStore } from '@/stores/useBudgetStore';
+import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 
 import { cn } from '@/lib/utils';
-import type { DateFilterParams } from '@/features/shared/types';
-import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
+import type { DateFilterParams } from '@/shared/types';
+import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/features/budget/types';
 
 export default function ListBudgetCategoryPage() {

@@ -10,7 +10,7 @@ import {
   StatsNotePeriodDTO,
 } from '@/features/stats/types';
 
-import { BaseListSummaryResponseDTO } from '@/features/shared/types';
+import { BaseListSummaryResponseDTO } from '@/shared/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 

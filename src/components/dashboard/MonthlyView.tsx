@@ -7,8 +7,8 @@ import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import {
   TransactionGroupSummaryDTO,
   TransactionGroupItemDTO,
-} from '@/features/transaction/types';
-import { SummaryItem } from '@/features/shared/types';
+} from '@/modules/transaction/types';
+import { SummaryItem } from '@/shared/types';
 
 import MonthlyItem from './MonthlyItem';
 

@@ -9,8 +9,8 @@ import {
   CategoryCreateRequestDTO,
   CategoryUpdateRequestDTO,
 } from '@/features/category/types';
-import { useCategoryFormStore } from '@/stores/forms/useCategoryFormStore';
-import { useCategoryStore } from '@/stores/useCategoryStore';
+import { useCategoryFormStore } from '@/modules/category/formStore';
+import { useCategoryStore } from '@/modules/category/store';
 
 // ✅ 전체 카테고리 리스트 가져오기
 export const fetchCategories = async () => {

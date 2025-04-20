@@ -1,7 +1,7 @@
 // 📄 src/features/auth/services/authService.ts
 
 import { User } from '@/features/auth/types';
-import { get } from '@/lib/api';
+import { get } from '@/shared/api';
 import { useUserStore } from '@/stores/useUserStore';
 
 const BASE_URL =

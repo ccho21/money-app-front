@@ -1,12 +1,12 @@
 import {
   TransactionDetailDTO,
   TransactionGroupSummaryDTO,
-} from '@/features/transaction/types';
+} from '@/modules/transaction/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
 import TransactionGroup from '../../../components/transaction/TransactionGroup';
-import { SummaryItem } from '@/features/shared/types';
+import { SummaryItem } from '@/shared/types';
 
 interface DailyViewProps {
   isLoading: boolean;

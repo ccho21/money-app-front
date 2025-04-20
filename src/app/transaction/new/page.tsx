@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
+import { useTransactionFormStore } from '@/modules/transaction/formStore';
 import IncomeForm from '../_components/IncomeForm';
 import TransferForm from '../_components/TransferForm';
 import ExpenseForm from '../_components/ExpenseForm';
-import { fetchAccounts } from '@/features/account/hooks';
+import { fetchAccounts } from '@/modules/account/hooks';
 import { fetchCategories } from '@/features/category/hooks';
 import { useSearchParams } from 'next/navigation';
 import { parse } from 'date-fns';
@@ -32,13 +32,13 @@ export default function TransactionNewPage() {
   }, [dateParam, init, setField]);
 
   if (!type) {
-    return <p className="text-center text-muted py-10">Loading...</p>;
+    return <p className='text-center text-muted py-10'>Loading...</p>;
   }
 
   //
   // Render appropriate form based on transaction type
   //
-  if (type === 'income') return <IncomeForm mode="new" />;
-  if (type === 'transfer') return <TransferForm mode="new" />;
-  return <ExpenseForm mode="new" />;
+  if (type === 'income') return <IncomeForm mode='new' />;
+  if (type === 'transfer') return <TransferForm mode='new' />;
+  return <ExpenseForm mode='new' />;
 }

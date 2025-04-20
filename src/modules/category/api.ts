@@ -1,6 +1,6 @@
 // 📄 src/api/category.api.ts
 
-import { del, get, patch, post } from '../../lib/api';
+import { del, get, patch, post } from '../../shared/api';
 import {
   CategoryDTO,
   CategoryCreateRequestDTO,

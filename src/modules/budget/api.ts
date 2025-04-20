@@ -1,6 +1,6 @@
 // src/features/budget/api.ts
 
-import { get, post, put } from '@/lib/api';
+import { get, post, put } from '@/shared/api';
 import {
   BudgetCategoryListResponseDTO,
   BudgetSummaryResponseDTO,
@@ -8,8 +8,8 @@ import {
   UpdateBudgetCategoryDTO,
   BudgetGroupItemDTO,
 } from './types';
-import { DateFilterParams } from '@/features/shared/types';
-import { AccountDashboardResponseDTO } from '../account/types';
+import { DateFilterParams } from '@/shared/types';
+import { AccountDashboardResponseDTO } from '../../modules/account/types';
 
 //
 // Fetch budgets grouped by category

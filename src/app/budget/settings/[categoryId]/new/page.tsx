@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
-import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
+import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
 import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
 
 //
@@ -31,15 +31,15 @@ export default function NewBudgetCategoryPage() {
   //
   if (!categoryId) {
     return (
-      <div className="p-4 text-sm text-error bg-surface text-center">
+      <div className='p-4 text-sm text-error bg-surface text-center'>
         Category ID is missing.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <main className="p-4">
+    <div className='min-h-screen bg-background text-foreground'>
+      <main className='p-4'>
         <BudgetCategoryForm />
       </main>
     </div>

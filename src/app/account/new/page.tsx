@@ -1,12 +1,12 @@
 'use client';
 
-import { createAccount } from '@/features/account/hooks';
+import { createAccount } from '@/modules/account/hooks';
 import { useRouter } from 'next/navigation';
 import AccountForm from '../_components/AccountForm';
-import { useAccountFormStore } from '@/stores/forms/useAccountFormStore';
+import { useAccountFormStore } from '@/modules/account/formStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
-import { AccountCreateRequestDTO } from '@/features/account/types';
+import { AccountCreateRequestDTO } from '@/modules/account/types';
 
 export default function NewAccountPage() {
   const {

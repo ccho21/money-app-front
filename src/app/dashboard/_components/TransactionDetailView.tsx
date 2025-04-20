@@ -7,8 +7,8 @@ import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
 import {
   TransactionDetailDTO,
   TransactionGroupItemDTO,
-} from '@/features/transaction/types';
-import { useTransactionStore } from '@/stores/useTransactionStore';
+} from '@/modules/transaction/types';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { useRouter } from 'next/navigation';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import TransactionItem from '@/components/transaction/TransactionItem';

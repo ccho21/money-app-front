@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { RANGE_OPTIONS, GroupBy } from '@/features/shared/types';
+import { RANGE_OPTIONS, GroupBy } from '@/shared/types';
 
 const tabs = [
   { name: 'Stats', href: 'category' },

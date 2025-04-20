@@ -1,8 +1,5 @@
 import { CategoryType } from '@/features/category/types';
-import {
-  BaseGroupItemDTO,
-  BaseListSummaryResponseDTO,
-} from '@/features/shared/types';
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/shared/types';
 
 export interface BudgetCategoryItemDTO {
   categoryId: string;

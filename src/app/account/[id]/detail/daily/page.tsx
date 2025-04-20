@@ -3,13 +3,13 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchTransactionSummary } from '@/features/transaction/hooks';
+import { fetchTransactionSummary } from '@/modules/transaction/hooks';
 
 import { useShallow } from 'zustand/shallow';
-import { DateFilterParams } from '@/features/shared/types';
-import { TransactionDetailDTO } from '@/features/transaction/types';
+import { DateFilterParams } from '@/shared/types';
+import { TransactionDetailDTO } from '@/modules/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
 
 //

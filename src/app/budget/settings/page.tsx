@@ -8,12 +8,12 @@ import DateNavigator from '@/components/ui/check/DateNavigator';
 import Panel from '@/components/ui/check/Panel';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 
-import { useBudgetStore } from '@/stores/useBudgetStore';
+import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchBudgetsByCategory } from '@/features/budget/hooks';
 
 import type { BudgetCategoryItemDTO } from '@/features/budget/types';
-import type { DateFilterParams } from '@/features/shared/types';
+import type { DateFilterParams } from '@/shared/types';
 
 export default function BudgetPage() {
   const router = useRouter();

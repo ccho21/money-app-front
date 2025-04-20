@@ -3,16 +3,16 @@
 import { JSX, useEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { useShallow } from 'zustand/react/shallow';
 
-import { get } from '@/lib/api';
-import { fetchTransactionCalendar } from '@/features/transaction/hooks';
+import { get } from '@/shared/api';
+import { fetchTransactionCalendar } from '@/modules/transaction/hooks';
 
 import {
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
-} from '@/features/transaction/types';
+} from '@/modules/transaction/types';
 import { formatDate } from '@/lib/date.util';
 import CalendarWithTransactions from '../_components/CalendarWithTransactions';
 import TransactionDetailView from '../_components/TransactionDetailView';

@@ -9,7 +9,7 @@ import {
   updateBudgetCategory,
 } from '@/features/budget/hooks';
 import { useRouter } from 'next/navigation';
-import { useBudgetCategoryFormStore } from '@/stores/forms/useBudgetCategoryFormStore';
+import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
 
 //
 // Budget category form for both create and edit

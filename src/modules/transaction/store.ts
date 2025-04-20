@@ -5,7 +5,7 @@ import {
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
   TransactionCalendarDTO,
-} from '@/features/transaction/types';
+} from '@/modules/transaction/types';
 
 interface TransactionFilters {
   type?: 'income' | 'expense';

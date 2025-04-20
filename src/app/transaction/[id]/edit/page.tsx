@@ -3,16 +3,16 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import { useTransactionFormStore } from '@/stores/forms/useTransactionFormStore';
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionFormStore } from '@/modules/transaction/formStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 
 import IncomeForm from '../../_components/IncomeForm';
 import TransferForm from '../../_components/TransferForm';
 import ExpenseForm from '../../_components/ExpenseForm';
 
-import { fetchAccounts } from '@/features/account/hooks';
+import { fetchAccounts } from '@/modules/account/hooks';
 import { fetchCategories } from '@/features/category/hooks';
-import { fetchTransactionById } from '@/features/transaction/hooks';
+import { fetchTransactionById } from '@/modules/transaction/hooks';
 
 //
 // Edit transaction page

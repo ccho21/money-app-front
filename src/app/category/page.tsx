@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Pencil, MinusCircle } from 'lucide-react';
 
-import { useCategoryStore } from '@/stores/useCategoryStore';
+import { useCategoryStore } from '@/modules/category/store';
 import { deleteCategory, fetchCategories } from '@/features/category/hooks';
 import { Button } from '@/components/ui/check/Button';
 

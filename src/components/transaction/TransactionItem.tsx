@@ -1,6 +1,6 @@
 'use client';
 
-import { TransactionDetailDTO } from '@/features/transaction/types';
+import { TransactionDetailDTO } from '@/modules/transaction/types';
 import { cn } from '@/lib/utils';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import CurrencyDisplay from '../ui/check/CurrencyDisplay';

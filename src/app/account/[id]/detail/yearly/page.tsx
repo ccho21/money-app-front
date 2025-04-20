@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useCallback } from 'react';
 import { format, startOfYear, endOfYear, addYears, parse } from 'date-fns';
 
-import { useTransactionStore } from '@/stores/useTransactionStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/react/shallow';
 
-import { fetchTransactionSummary } from '@/features/transaction/hooks';
-import { DateFilterParams } from '@/features/shared/types';
+import { fetchTransactionSummary } from '@/modules/transaction/hooks';
+import { DateFilterParams } from '@/shared/types';
 import YearlyView from '@/components/dashboard/YearlyView';
 
 //

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 
-import { TransactionGroupItemDTO } from '@/features/transaction/types';
+import { TransactionGroupItemDTO } from '@/modules/transaction/types';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import CurrencyDisplay from '../ui/check/CurrencyDisplay';
