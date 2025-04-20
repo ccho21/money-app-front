@@ -1,8 +1,8 @@
 // 📄 src/features/auth/services/authService.ts
 
-import { User } from '@/features/auth/types';
 import { get } from '@/shared/api';
 import { useUserStore } from '@/stores/useUserStore';
+import { User } from './types';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';

@@ -1,4 +1,5 @@
-import { CategoryType } from '../category/types';
+import { CategoryType } from '@/modules/category/types';
+
 export type GroupBy = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export const RANGE_OPTIONS: GroupBy[] = [

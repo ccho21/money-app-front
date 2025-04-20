@@ -10,7 +10,7 @@ import {
   fetchStatsNoteDetailAPI,
   fetchStatBudgetByCategoryIdAPI,
 } from '@/features/stats/api';
-import { useStatsStore } from '@/modules/stats/useStatsStore';
+import { useStatsStore } from '@/modules/stats/store';
 
 //
 // Fetch grouped category stats
