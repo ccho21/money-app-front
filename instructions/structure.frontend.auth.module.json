@@ -1,7 +1,7 @@
 {
   "module": "auth",
   "features": [
-    "features/auth/types.ts"
+    "modules/auth/types.ts"
   ],
   "mainDTOs": [
     {

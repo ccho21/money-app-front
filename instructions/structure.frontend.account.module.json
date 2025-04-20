@@ -1,32 +1,106 @@
 {
   "module": "account",
   "entryPoints": [
+    "app/account/page.tsx",
+    "app/account/new/page.tsx",
+    "app/account/[id]/edit/page.tsx",
     "app/account/[id]/detail/daily/page.tsx",
     "app/account/[id]/detail/monthly/page.tsx",
     "app/account/[id]/detail/yearly/page.tsx",
-    "app/account/[id]/edit/page.tsx",
-    "app/account/dashboard/page.tsx",
-    "app/account/new/page.tsx",
-    "app/account/page.tsx"
-  ],
-  "stores": [
-    "stores/forms/useAccountFormStore.ts",
-    "stores/useAccountStore.ts"
-  ],
-  "features": [
-    "features/account/api.ts",
-    "features/account/hooks.ts",
-    "features/account/types.ts"
+    "app/account/dashboard/page.tsx"
   ],
   "routes": [
+    "/account",
+    "/account/new",
+    "/account/[id]/edit",
     "/account/[id]/detail/daily",
     "/account/[id]/detail/monthly",
     "/account/[id]/detail/yearly",
-    "/account/[id]/edit",
-    "/account/dashboard",
-    "/account/new",
-    "/account"
+    "/account/dashboard"
   ],
+  "stores": ["modules/account/store.ts", "modules/account/formStore.ts"],
+  "features": [
+    "modules/account/api.ts",
+    "modules/account/hooks.ts",
+    "modules/account/types.ts"
+  ],
+  "api": {
+    "createAccountAPI": {
+      "function": "createAccountAPI",
+      "method": "POST",
+      "url": "/accounts",
+      "requestDTO": "AccountCreateRequestDTO",
+      "responseDTO": "AccountDetailDTO",
+      "description": "새 계좌를 생성한다.",
+      "usedBy": ["hooks.ts → createAccount"],
+      "validation": {
+        "frontend": ["name, type 필수", "amount은 숫자 입력"],
+        "backend": ["@IsString name", "@IsEnum type", "@IsInt amount"]
+      },
+      "storeStrategy": {
+        "store": "useAccountStore.ts",
+        "afterSuccess": "accountList refetch",
+        "stateShape": {
+          "accounts": "AccountDetailDTO[]"
+        }
+      }
+    },
+    "updateAccountAPI": {
+      "function": "updateAccountAPI",
+      "method": "PATCH",
+      "url": "/accounts/:id",
+      "requestDTO": "AccountUpdateRequestDTO",
+      "responseDTO": "AccountDetailDTO",
+      "description": "기존 계좌 정보를 수정한다.",
+      "usedBy": ["hooks.ts → updateAccount"],
+      "storeStrategy": {
+        "store": "useAccountStore.ts",
+        "afterSuccess": "selectedAccount 갱신"
+      }
+    },
+    "fetchAccountsAPI": {
+      "function": "fetchAccountsAPI",
+      "method": "GET",
+      "url": "/accounts",
+      "responseDTO": "AccountDetailDTO[]",
+      "description": "전체 계좌 목록을 조회한다.",
+      "usedBy": ["hooks.ts → fetchAccounts"],
+      "storeStrategy": {
+        "store": "useAccountStore.ts",
+        "stateShape": {
+          "accounts": "AccountDetailDTO[]"
+        }
+      }
+    },
+    "fetchAccountsByIdAPI": {
+      "function": "fetchAccountsByIdAPI",
+      "method": "GET",
+      "url": "/accounts/:id",
+      "responseDTO": "AccountDetailDTO",
+      "description": "단일 계좌 상세 조회",
+      "usedBy": ["hooks.ts → fetchAccountById"],
+      "storeStrategy": {
+        "store": "useAccountStore.ts",
+        "stateShape": {
+          "selectedAccount": "AccountDetailDTO"
+        }
+      }
+    },
+    "fetchAccountSummaryAPI": {
+      "function": "fetchAccountSummaryAPI",
+      "method": "GET",
+      "url": "/accounts/summary?startDate=...&endDate=...",
+      "responseDTO": "AccountTransactionSummaryDTO",
+      "description": "계좌 거래 요약 데이터를 조회한다.",
+      "usedBy": ["hooks.ts → fetchAccountSummary"],
+      "storeStrategy": {
+        "store": "useAccountStore.ts",
+        "stateShape": {
+          "summaryResponse": "AccountTransactionSummaryDTO"
+        }
+      }
+    }
+  },
   "mainDTOs": [
     {
       "name": "AccountDashboardItemDTO",

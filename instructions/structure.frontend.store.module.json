@@ -1,17 +1,17 @@
 {
   "module": "store",
   "stores": [
-    "stores/useAccountStore.ts",
-    "stores/useBudgetStore.ts",
-    "stores/useCategoryStore.ts",
-    "stores/useFilterStore.ts",
-    "stores/useOptionModalStore.ts",
-    "stores/usePanelStore.ts",
-    "stores/useStatsStore.ts",
-    "stores/useTransactionStore.ts",
-    "stores/useUIStore.ts",
-    "stores/useUserSettingStore.ts",
-    "stores/useUserStore.ts"
+    "modules/store/Accountstore.ts.ts",
+    "modules/store/Budgetstore.ts.ts",
+    "modules/store/Categorystore.ts.ts",
+    "modules/store/Filterstore.ts.ts",
+    "modules/store/OptionModalstore.ts.ts",
+    "modules/store/Panelstore.ts.ts",
+    "modules/store/Statsstore.ts.ts",
+    "modules/store/Transactionstore.ts.ts",
+    "modules/store/UIstore.ts.ts",
+    "modules/store/UserSettingstore.ts.ts",
+    "modules/store/Userstore.ts.ts"
   ],
-  "description": "Zustand \uae30\ubc18 \uc804\uc5ed \uc0c1\ud0dc \uc800\uc7a5\uc18c (UI \uc0c1\ud0dc, \ud544\ud130, \uc0ac\uc6a9\uc790 \uc124\uc815 \ub4f1)"
+  "description": "Zustand 기반 전역 상태 저장소 (UI 상태, 필터, 사용자 설정 등)"
 }

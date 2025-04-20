@@ -1,19 +1,83 @@
 {
-  "module": "transactions",
+  "module": "transaction",
   "entryPoints": [
-    "app/transaction/[id]/edit/page.tsx",
-    "app/transaction/new/page.tsx"
+    "app/transaction/page.tsx",
+    "app/transaction/new/page.tsx",
+    "app/transaction/[id]/edit/page.tsx"
   ],
+  "routes": ["/transaction", "/transaction/new", "/transaction/[id]/edit"],
   "stores": [
-    "stores/forms/useTransactionFormStore.ts",
-    "stores/useTransactionStore.ts"
+    "modules/transaction/store.ts",
+    "modules/transaction/formStore.ts"
   ],
   "features": [
-    "features/transaction/api.ts",
-    "features/transaction/hooks.ts",
-    "features/transaction/types.ts"
+    "modules/transaction/api.ts",
+    "modules/transaction/hooks.ts",
+    "modules/transaction/types.ts"
   ],
-  "routes": ["/transaction/[id]/edit", "/transaction/new"],
+  "api": {
+    "createTransactionAPI": {
+      "function": "createTransactionAPI",
+      "method": "POST",
+      "url": "/transactions",
+      "requestDTO": "TransactionCreateRequestDTO",
+      "responseDTO": "TransactionDetailDTO",
+      "description": "수입 또는 지출 트랜잭션을 생성한다.",
+      "usedBy": ["hooks.ts → createTransaction"],
+      "validation": {
+        "frontend": ["type, amount, date, accountId 필수"],
+        "backend": [
+          "@IsEnum type",
+          "@IsInt amount",
+          "@IsUUID accountId",
+          "@IsDateString date"
+        ]
+      },
+      "storeStrategy": {
+        "store": "useTransactionStore.ts",
+        "afterSuccess": "transactions refetch"
+      }
+    },
+    "updateTransactionAPI": {
+      "function": "updateTransactionAPI",
+      "method": "PUT",
+      "url": "/transactions/:id",
+      "requestDTO": "TransactionUpdateRequestDTO",
+      "responseDTO": "TransactionDetailDTO",
+      "description": "수입/지출 트랜잭션을 수정한다.",
+      "usedBy": ["hooks.ts → updateTransaction"],
+      "validation": {
+        "frontend": ["필드 일부만 수정 가능"],
+        "backend": ["PartialType 기반 모든 필드 optional"]
+      },
+      "storeStrategy": {
+        "store": "useTransactionStore.ts",
+        "afterSuccess": "refetch 또는 selectedTransaction 갱신"
+      }
+    },
+    "createTransferTransactionAPI": {
+      "function": "createTransferTransactionAPI",
+      "method": "POST",
+      "url": "/transactions/transfer",
+      "requestDTO": "TransactionTransferRequestDTO",
+      "responseDTO": "TransactionDetailDTO",
+      "description": "이체 트랜잭션을 생성한다.",
+      "usedBy": ["hooks.ts → createTransferTransaction"],
+      "storeStrategy": {
+        "store": "useTransactionStore.ts",
+        "afterSuccess": "transactions refetch"
+      }
+    },
+    "updateTransferTransactionAPI": {
+      "function": "updateTransferTransactionAPI",
+      "method": "PUT",
+      "url": "/transactions/transfer/:id",
+      "requestDTO": "TransactionTransferRequestDTO",
+      "responseDTO": "TransactionDetailDTO",
+      "description": "이체 트랜잭션을 수정한다.",
+      "usedBy": ["hooks.ts → updateTransferTransaction"]
+    }
+  },
   "mainDTOs": [
     {
       "name": "TransactionGroupItemDTO",

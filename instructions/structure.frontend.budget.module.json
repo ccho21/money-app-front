@@ -1,26 +1,90 @@
 {
   "module": "budget",
   "entryPoints": [
-    "app/budget/settings/[categoryId]/edit/page.tsx",
-    "app/budget/settings/[categoryId]/list/page.tsx",
-    "app/budget/settings/[categoryId]/new/page.tsx",
-    "app/budget/settings/page.tsx"
-  ],
-  "stores": [
-    "stores/forms/useBudgetCategoryFormStore.ts",
-    "stores/useBudgetStore.ts"
-  ],
-  "features": [
-    "features/budget/api.ts",
-    "features/budget/hooks.ts",
-    "features/budget/types.ts"
+    "app/budget/page.tsx",
+    "app/budget/new/page.tsx",
+    "app/budget/[id]/edit/page.tsx",
+    "app/budget/settings/[categoryId]/page.tsx"
   ],
   "routes": [
-    "/budget/settings/[categoryId]/edit",
-    "/budget/settings/[categoryId]/list",
-    "/budget/settings/[categoryId]/new",
-    "/budget/settings"
+    "/budget",
+    "/budget/new",
+    "/budget/[id]/edit",
+    "/budget/settings/[categoryId]"
   ],
+  "stores": ["modules/budget/store.ts", "modules/budget/formStore.ts"],
+  "features": [
+    "modules/budget/api.ts",
+    "modules/budget/hooks.ts",
+    "modules/budget/types.ts"
+  ],
+  "api": {
+    "fetchBudgetsByCategoryAPI": {
+      "function": "fetchBudgetsByCategoryAPI",
+      "method": "GET",
+      "url": "/budgets/by-category?startDate=...&endDate=...",
+      "responseDTO": "BudgetCategoryListResponseDTO",
+      "description": "카테고리별 예산 정보를 불러온다.",
+      "usedBy": ["hooks.ts → fetchBudgetsByCategory"],
+      "storeStrategy": {
+        "store": "useBudgetStore.ts",
+        "stateShape": {
+          "budgetCategoryResponse": "BudgetCategoryListResponseDTO"
+        }
+      }
+    },
+    "fetchBudgetSummaryAPI": {
+      "function": "fetchBudgetSummaryAPI",
+      "method": "GET",
+      "url": "/budgets/summary?startDate=...&endDate=...",
+      "responseDTO": "BudgetGroupSummaryDTO",
+      "description": "예산 요약 통계를 조회한다.",
+      "usedBy": ["hooks.ts → fetchBudgetSummary"],
+      "storeStrategy": {
+        "store": "useBudgetStore.ts",
+        "stateShape": {
+          "budgetSummaryResponse": "BudgetGroupSummaryDTO"
+        }
+      }
+    },
+    "createBudgetCategoryAPI": {
+      "function": "createBudgetCategoryAPI",
+      "method": "POST",
+      "url": "/budgets",
+      "requestDTO": "BudgetCategoryCreateRequestDTO",
+      "description": "새로운 예산 카테고리를 생성한다.",
+      "usedBy": ["hooks.ts → createBudgetCategory"],
+      "validation": {
+        "frontend": ["categoryId, amount, startDate, endDate, type 필요"],
+        "backend": [
+          "@IsUUID categoryId",
+          "@IsInt amount",
+          "@IsDateString startDate/endDate",
+          "@IsEnum type"
+        ]
+      },
+      "storeStrategy": {
+        "store": "useBudgetCategoryFormStore.ts",
+        "afterSuccess": "form reset + refetch"
+      }
+    },
+    "updateBudgetCategoryAPI": {
+      "function": "updateBudgetCategoryAPI",
+      "method": "PUT",
+      "url": "/budgets/:id",
+      "requestDTO": "BudgetCategoryUpdateRequestDTO",
+      "description": "기존 예산 카테고리 정보를 수정한다.",
+      "usedBy": ["hooks.ts → updateBudgetCategory"],
+      "validation": {
+        "frontend": ["amount 등 일부 필드 수정"],
+        "backend": ["PartialType 기반 모든 필드 optional"]
+      },
+      "storeStrategy": {
+        "store": "useBudgetCategoryFormStore.ts",
+        "afterSuccess": "refetch"
+      }
+    }
+  },
   "mainDTOs": [
     {
       "name": "BudgetCategoryItemDTO",
