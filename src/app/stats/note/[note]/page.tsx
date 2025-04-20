@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { parseISO, startOfDay } from 'date-fns';
 
-import { useStatsStore } from '@/modules/stats/useStatsStore';
+import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 

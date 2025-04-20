@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useStatsStore } from '@/modules/stats/useStatsStore';
+import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchStatsByCategory } from '@/features/stats/hooks';
 import StatsView from '../_components/StatsView';
