@@ -1,439 +1,1453 @@
-{
-  "/account/[id]/detail/daily": {
-    "entryPoint": "src/app/account/[id]/detail/daily/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account/[id]/detail/monthly": {
-    "entryPoint": "src/app/account/[id]/detail/monthly/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account/[id]/detail/yearly": {
-    "entryPoint": "src/app/account/[id]/detail/yearly/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account/[id]/edit": {
-    "entryPoint": "src/app/account/[id]/edit/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account/dashboard": {
-    "entryPoint": "src/app/account/dashboard/page.tsx",
-    "usesModules": ["account", "dashboard", "store"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account/new": {
-    "entryPoint": "src/app/account/new/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/account": {
-    "entryPoint": "src/app/account/page.tsx",
-    "usesModules": ["account"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/budget/settings/[categoryId]/edit": {
-    "entryPoint": "src/app/budget/settings/[categoryId]/edit/page.tsx",
-    "usesModules": ["budget"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/budget/settings/[categoryId]/list": {
-    "entryPoint": "src/app/budget/settings/[categoryId]/list/page.tsx",
-    "usesModules": ["budget"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/budget/settings/[categoryId]/new": {
-    "entryPoint": "src/app/budget/settings/[categoryId]/new/page.tsx",
-    "usesModules": ["budget"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/budget/settings": {
-    "entryPoint": "src/app/budget/settings/page.tsx",
-    "usesModules": ["budget"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/category/[id]/edit": {
-    "entryPoint": "src/app/category/[id]/edit/page.tsx",
-    "usesModules": ["category"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/category/new": {
-    "entryPoint": "src/app/category/new/page.tsx",
-    "usesModules": ["category"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/category": {
-    "entryPoint": "src/app/category/page.tsx",
-    "usesModules": ["category"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/dashboard/calendar": {
-    "entryPoint": "src/app/dashboard/calendar/page.tsx",
-    "purpose": "월간 달력 뷰를 통해 일별 소비/수입을 시각적으로 보여주는 화면",
-    "entryType": "dashboard",
-    "designSpec": {
-      "layout": "전체 페이지에 달력 UI, 날짜별 소형 수입/지출 요약 표시",
-      "components": [
-        {
-          "name": "CalendarView",
-          "props": {
-            "calendarData": "TransactionCalendarDTO[]",
-            "onDateClick": "(date: string) => void"
-          }
-        }
-      ],
-      "interaction": [
-        "날짜 클릭 시 해당 일자 상세 이동",
-        "달력 상호작용으로 월 전환"
-      ],
-      "wireframe": "structure.frontend.routes.dashboard-calendar.png"
-    },
-    "criticalData": ["TransactionCalendarDTO"],
-    "stores": ["useTransactionStore", "useFilterStore"],
-    "features": ["getTransactionCalendarView"],
-    "components": ["CalendarView", "CalendarGrid", "CalendarCell"],
-    "atomicComponents": ["Card", "Badge", "Skeleton"],
-    "roleComponents": ["CalendarView"]
-  },
-  "/dashboard/daily": {
-    "entryPoint": "src/app/dashboard/daily/page.tsx",
+[
+  {
+    "entryPoint": "app/dashboard/daily",
     "module": "dashboard",
     "entryType": "dashboard",
-    "purpose": "일별 거래 요약 및 카테고리 기반 분류",
-    "uses": {
-      "store": ["src/modules/transaction/store.ts"],
-      "formStore": ["src/modules/transaction/formStore.ts"],
-      "api": ["src/modules/stats/api.ts"],
-      "hooks": ["src/modules/stats/hooks.ts"],
-      "types": ["src/modules/stats/types.ts"]
-    },
-    "dto": {
-      "request": "StatsQuery",
-      "response": "TransactionGroupSummaryDTO",
-      "fromModule": "stats"
-    },
-    "components": [
-      "DailyView",
-      "SummaryBox",
-      "TransactionGroup",
-      "TransactionItem",
-      "DateNavigator"
+    "purpose": "일일 거래 요약 및 그룹별 시각화 제공",
+    "uses": [
+      "@/app/dashboard/_components/DailyView",
+      "@/common/types",
+      "@/modules/transaction/hooks",
+      "@/modules/transaction/store",
+      "@/modules/transaction/types",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react",
+      "zustand/shallow"
     ],
+    "dto": [
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      }
+    ],
+    "components": ["DailyView"],
     "componentProps": {
       "DailyView": {
-        "isLoading": "boolean",
-        "data": "TransactionGroupSummaryDTO | null",
-        "summaryItems": "SummaryItem[]",
-        "onTransactionClick": "(tx: TransactionDetailDTO) => void",
-        "onHeaderClick": "(date: string) => void"
+        "items": "TransactionGroupItemDTO[]",
+        "range": "string"
       }
     },
-    "designSpec": {
-      "layout": "Top summary cards followed by grouped transaction list",
-      "interaction": [
-        "Group header click navigates to /stats/category/[id]",
-        "Transaction item click opens transaction detail modal"
-      ],
-      "components": [
-        {
-          "name": "DateNavigator",
-          "props": {
-            "date": "string",
-            "onChange": "(date: string) => void"
-          }
-        },
-        {
-          "name": "SummaryBox",
-          "props": {
-            "items": "SummaryItem[]"
-          }
-        },
-        {
-          "name": "TransactionGroup",
-          "props": {
-            "data": "TransactionGroupSummaryDTO"
-          }
-        }
-      ],
-      "wireframe": "structure.frontend.routes.dashboard-daily.png"
-    },
-    "style": {
-      "theme": "flat, minimalist, custom-tailored",
-      "goal": "Move away from legacy finance app look; emphasize whitespace and clean flow.",
-      "colors": {
-        "background": "#F8F9FA",
-        "card": "#FFFFFF",
-        "textPrimary": "#111827",
-        "textMuted": "#6B7280",
-        "income": "#16A34A",
-        "expense": "#EF4444",
-        "accent": "#3B82F6"
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
       },
-      "designNotes": [
-        "Rounded cards with large touch targets",
-        "Light shadows for element grouping",
-        "Text-based hierarchy over graphical emphasis",
-        "Avoid heavy borders and gradients",
-        "Use lucide-react icons with consistent spacing"
-      ]
-    },
-    "dataFlow": [
-      "DailyPage → fetchTransactionSummary() → useTransactionStore.transactionSummaryResponse",
-      "→ DailyView(data: TransactionGroupSummaryDTO)",
-      "→ TransactionGroup(group: TransactionGroupItemDTO)",
-      "→ TransactionItem(tx: TransactionDetailDTO)"
+      {
+        "source": "store",
+        "name": "setTransactionGroupSummary",
+        "type": "action"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/dashboard/monthly",
+    "module": "dashboard",
+    "entryType": "dashboard",
+    "purpose": "월간 거래 요약 및 시각화",
+    "uses": [
+      "@/common/types",
+      "@/components/dashboard/MonthlyView",
+      "@/modules/transaction/store",
+      "@/modules/transaction/types",
+      "@/stores/useFilterStore",
+      "date-fns",
+      "react",
+      "zustand/react/shallow"
     ],
-    "storeContracts": {
-      "useTransactionStore": {
-        "state": [
-          "transactions",
-          "selectedTransaction",
-          "transactionSummaryResponse",
-          "transactionSummary",
-          "transactionCalendarItems",
-          "filters",
-          "isLoading",
-          "lastUpdatedAt",
-          "error"
-        ],
-        "actions": [
-          "setTransactions",
-          "setSelectedTransaction",
-          "setTransactionSummary",
-          "setTransactionSummaryResponse",
-          "setCalendarItems",
-          "setFilters",
-          "resetFilters",
-          "setDateRange",
-          "setLoading",
-          "setError",
-          "clear"
-        ]
-      },
-      "useFilterStore": {
-        "state": ["query"],
-        "actions": ["getDateRangeKey", "setQuery"]
+    "dto": [
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      }
+    ],
+    "components": ["MonthlyView"],
+    "componentProps": {
+      "MonthlyView": {
+        "items": "TransactionGroupItemDTO[]",
+        "range": "string"
       }
     },
-    "featureContracts": {
-      "fetchTransactionSummaryAPI": {
-        "input": "StatsQuery",
-        "output": "TransactionGroupSummaryDTO"
-      },
-      "fetchAndSetTransactionSummary": {
-        "wraps": "fetchTransactionSummaryAPI",
-        "sets": "useTransactionStore.transactionSummaryResponse"
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
       }
-    }
+    ]
   },
-  "/dashboard/monthly": {
-    "entryPoint": "src/app/dashboard/monthly/page.tsx",
-    "purpose": "월별 총 소비 및 수입을 요약 카드 + 카테고리별 리스트로 보여주는 화면",
+  {
+    "entryPoint": "app/dashboard/calendar",
+    "module": "dashboard",
     "entryType": "dashboard",
-    "designSpec": {
-      "layout": "상단 SummaryCardGroup, 하단 카테고리 요약 리스트",
-      "components": [
-        {
-          "name": "MonthlyView",
-          "props": {
-            "summaryItems": "SummaryItem[]",
-            "groupItems": "TransactionGroupItemDTO[]"
-          }
-        }
-      ],
-      "interaction": [
-        "카테고리 항목 클릭 시 상세 페이지 이동",
-        "상단 카드 클릭 시 통계 요약 모달 또는 페이지 이동"
-      ],
-      "wireframe": "structure.frontend.routes.dashboard-monthly.png"
+    "purpose": "달력 기반 거래 요약 및 상세 조회",
+    "uses": [
+      "../_components/CalendarWithTransactions",
+      "../_components/TransactionDetailView",
+      "@/common/api",
+      "@/components/ui/check/CurrencyDisplay",
+      "@/components/ui/check/Panel",
+      "@/lib/date.util",
+      "@/modules/transaction/hooks",
+      "@/modules/transaction/store",
+      "@/stores/useFilterStore",
+      "date-fns",
+      "react",
+      "zustand/react/shallow"
+    ],
+    "dto": [
+      {
+        "name": "TransactionCalendarDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      }
+    ],
+    "components": [
+      "CalendarWithTransactions",
+      "CurrencyDisplay",
+      "Panel",
+      "TransactionDetailView"
+    ],
+    "componentProps": {
+      "CalendarWithTransactions": {
+        "calendarData": "TransactionCalendarDTO[]"
+      },
+      "TransactionDetailView": {
+        "transaction": "TransactionDetailDTO"
+      }
     },
-    "criticalData": ["TransactionGroupItemDTO", "SummaryItem"],
-    "stores": ["useTransactionStore", "useFilterStore"],
-    "features": ["fetchTransactionSummary"],
-    "components": ["MonthlyView", "SummaryCardGroup", "CategoryListItem"],
-    "atomicComponents": ["Card", "Badge", "Progress", "DateNavigator"],
-    "roleComponents": ["MonthlyView"]
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionCalendar",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "TransactionCalendarDTO[]"
+      }
+    ]
   },
-  "/dashboard/summary": {
-    "entryPoint": "src/app/dashboard/summary/page.tsx",
-    "purpose": "이번 달의 총 수입/지출/잔액 요약 및 카테고리 비율 파이 차트를 시각적으로 제공하는 화면",
+  {
+    "entryPoint": "app/dashboard/summary",
+    "module": "dashboard",
     "entryType": "dashboard",
-    "designSpec": {
-      "layout": "상단 SummaryCardGroup, 하단 카테고리 파이 차트",
-      "components": [
-        {
-          "name": "SummaryView",
-          "props": {
-            "summaryItems": "SummaryItem[]",
-            "categoryData": "StatsCategoryGroupItemDTO[]"
-          }
-        }
-      ],
-      "interaction": [
-        "파이 차트 항목 클릭 시 해당 카테고리 상세 페이지로 이동",
-        "카드 클릭 시 상단 강조 처리 또는 전환"
-      ],
-      "wireframe": "structure.frontend.routes.dashboard-summary.png"
+    "purpose": "대시보드 종합 요약 정보 제공 (계좌 + 예산)",
+    "uses": [
+      "@/common/types",
+      "@/components/stats/AccountBox",
+      "@/components/stats/BudgetBox",
+      "@/components/stats/SummaryBox",
+      "@/components/ui/check/Divider",
+      "@/components/ui/check/EmptyMessage",
+      "@/components/ui/check/Panel",
+      "@/modules/account/hooks",
+      "@/modules/account/store",
+      "@/modules/budget/hooks",
+      "@/modules/budget/store",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      },
+      {
+        "name": "AccountTransactionSummaryDTO",
+        "fromModule": "account"
+      },
+      {
+        "name": "BudgetSummaryDTO",
+        "fromModule": "budget"
+      }
+    ],
+    "components": [
+      "AccountBox",
+      "BudgetBox",
+      "Divider",
+      "EmptyMessage",
+      "Panel",
+      "SummaryBox"
+    ],
+    "componentProps": {
+      "AccountBox": {
+        "summary": "AccountTransactionSummaryDTO"
+      },
+      "BudgetBox": {
+        "summary": "BudgetSummaryDTO"
+      }
     },
-    "criticalData": ["StatsCategoryGroupItemDTO", "SummaryItem"],
-    "stores": ["useTransactionStore", "useFilterStore"],
-    "features": ["getStatsByCategorySummary"],
-    "components": ["SummaryView", "SummaryCardGroup", "PieChart"],
-    "atomicComponents": ["Card", "Progress", "Badge", "PieChart"],
-    "roleComponents": ["SummaryView"]
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useAccountStore",
+        "type": "state",
+        "outputDTO": "AccountTransactionSummaryDTO"
+      },
+      {
+        "source": "store",
+        "name": "useBudgetStore",
+        "type": "state",
+        "outputDTO": "BudgetSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchAccountSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "AccountTransactionSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchBudgetSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "BudgetSummaryDTO"
+      }
+    ]
   },
-  "/more": {
-    "entryPoint": "src/app/more/page.tsx",
-    "usesModules": [],
-    "stores": [],
-    "features": [],
-    "components": []
+  {
+    "entryPoint": "app/account",
+    "module": "account",
+    "entryType": "list",
+    "purpose": "계좌 목록을 조회하고 선택할 수 있는 진입 페이지",
+    "uses": [
+      "@/modules/account/hooks",
+      "@/modules/account/store",
+      "@/modules/account/types",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "AccountDetailDTO",
+        "fromModule": "account"
+      }
+    ],
+    "components": [],
+    "componentProps": {},
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useAccountStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "fetchAccounts",
+        "type": "query",
+        "outputDTO": "AccountDetailDTO"
+      }
+    ]
   },
-  "/signin": {
-    "entryPoint": "src/app/signin/page.tsx",
-    "usesModules": [],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/signup": {
-    "entryPoint": "src/app/signup/page.tsx",
-    "usesModules": [],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/stats/budget/[id]": {
-    "entryPoint": "src/app/stats/budget/[id]/page.tsx",
-    "usesModules": ["budget", "stats"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/stats/budget": {
-    "entryPoint": "src/app/stats/budget/page.tsx",
-    "usesModules": ["budget", "stats"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/stats/category/[id]": {
-    "entryPoint": "src/app/stats/category/[id]/page.tsx",
-    "purpose": "특정 카테고리의 월별 소비/비율/그래프를 보여주는 상세 분석 페이지",
-    "entryType": "detail",
-    "designSpec": {
-      "layout": "상단에는 카테고리 정보와 총 지출 요약, 하단에는 월별 그래프와 리스트",
-      "components": [
-        {
-          "name": "StatsCategoryDetail",
-          "props": {
-            "categoryId": "string",
-            "data": "StatsCategoryDetailDTO"
-          }
-        }
-      ],
-      "interaction": [
-        "카테고리 선택 시 해당 카테고리의 월별 분석 정보를 렌더링",
-        "월별 막대 그래프 클릭 시 해당 월 데이터 강조"
-      ],
-      "wireframe": "structure.frontend.routes.stats-category-id.png"
-    },
-    "criticalData": ["StatsCategoryDetailDTO", "StatsPeriodItemDTO"],
-    "stores": ["useStatsCategoryDetailStore"],
-    "features": ["getStatsCategoryDetail"],
-    "components": ["StatsCategoryDetail"],
-    "atomicComponents": ["Card", "Progress", "Badge", "ComposedChart"],
-    "roleComponents": ["StatsCategoryDetail"]
-  },
-  "/stats/category": {
-    "entryPoint": "src/app/stats/category/page.tsx",
-    "usesModules": ["category", "stats"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/stats/note/[note]": {
-    "entryPoint": "src/app/stats/note/[note]/page.tsx",
-    "usesModules": ["stats"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/stats/note": {
-    "entryPoint": "src/app/stats/note/page.tsx",
-    "usesModules": ["stats"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/transaction/[id]/edit": {
-    "entryPoint": "src/app/transaction/[id]/edit/page.tsx",
-    "usesModules": ["transaction"],
-    "stores": [],
-    "features": [],
-    "components": []
-  },
-  "/transaction/new": {
-    "entryPoint": "src/app/transaction/new/page.tsx",
+  {
+    "entryPoint": "app/account/new",
+    "module": "account",
     "entryType": "form",
-    "purpose": "새로운 거래(수입/지출/이체)를 입력하는 화면",
-    "designSpec": {
-      "layout": "전체 패널 영역 내 거래 입력 폼",
-      "components": [
-        {
-          "name": "TransactionForm",
-          "props": {
-            "onSubmit": "(data: TransactionCreateRequestDTO) => void",
-            "initialValues": "TransactionFormState"
-          }
-        }
-      ],
-      "interaction": [
-        "사용자가 입력한 거래 데이터를 제출 시 저장",
-        "이체일 경우 fromAccount/toAccount 입력",
-        "거래 후 리스트 리디렉션 or 모달 닫기"
-      ],
-      "wireframe": "structure.frontend.routes.transaction-new.png"
-    },
-    "criticalData": [
-      "TransactionCreateRequestDTO",
-      "TransactionType",
-      "TransactionFormState"
+    "purpose": "새 계좌 생성을 위한 폼 페이지",
+    "uses": [
+      "../_components/AccountForm",
+      "@/modules/account/formStore",
+      "@/modules/account/hooks",
+      "@/modules/account/types",
+      "@/stores/useUIStore",
+      "next/navigation",
+      "react"
     ],
-    "stores": ["useTransactionFormStore"],
-    "features": ["createTransaction"],
-    "components": ["TransactionForm"],
-    "atomicComponents": ["Input", "Select", "Textarea", "Button", "DatePicker"],
-    "roleComponents": ["TransactionForm"]
+    "dto": [
+      {
+        "name": "AccountCreateRequestDTO",
+        "fromModule": "account"
+      },
+      {
+        "name": "AccountDetailDTO",
+        "fromModule": "account"
+      }
+    ],
+    "components": ["AccountForm"],
+    "componentProps": {
+      "AccountForm": {
+        "mode": "'new'",
+        "formState": "AccountFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useAccountFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "createAccount",
+        "type": "mutation",
+        "inputDTO": "AccountCreateRequestDTO",
+        "outputDTO": "AccountDetailDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/account/[id]/edit",
+    "module": "account",
+    "entryType": "form",
+    "purpose": "기존 계좌 정보를 수정하는 페이지",
+    "uses": [
+      "../../_components/AccountForm",
+      "@/modules/account/formStore",
+      "@/modules/account/hooks",
+      "@/modules/account/store",
+      "@/modules/account/types",
+      "@/stores/useUIStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "AccountUpdateRequestDTO",
+        "fromModule": "account"
+      },
+      {
+        "name": "AccountDetailDTO",
+        "fromModule": "account"
+      }
+    ],
+    "components": ["AccountForm"],
+    "componentProps": {
+      "AccountForm": {
+        "mode": "'edit'",
+        "formState": "AccountFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useAccountFormStore",
+        "type": "state"
+      },
+      {
+        "source": "store",
+        "name": "useAccountStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "updateAccount",
+        "type": "mutation",
+        "inputDTO": "AccountUpdateRequestDTO",
+        "outputDTO": "AccountDetailDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchAccountById",
+        "type": "query",
+        "outputDTO": "AccountDetailDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/account/dashboard",
+    "module": "account",
+    "entryType": "dashboard",
+    "purpose": "계좌별 요약 정보를 보여주는 대시보드",
+    "uses": [
+      "@/app/stats/_components/CategoryListItem",
+      "@/components/stats/SummaryBox",
+      "@/components/ui/check/Panel",
+      "@/modules/account/hooks",
+      "@/modules/account/store",
+      "@/modules/account/types",
+      "@/stores/useUIStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      },
+      {
+        "name": "AccountTransactionSummaryDTO",
+        "fromModule": "account"
+      }
+    ],
+    "components": ["CategoryListItem", "Panel", "SummaryBox"],
+    "componentProps": {
+      "SummaryBox": {
+        "summary": "AccountTransactionSummaryDTO"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useAccountStore",
+        "type": "state",
+        "outputDTO": "AccountTransactionSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchAccountSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "AccountTransactionSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/account/[id]/detail/daily",
+    "module": "account",
+    "entryType": "detail",
+    "purpose": "계좌별 일일 거래 요약 및 시각화",
+    "uses": [
+      "@/app/dashboard/_components/DailyView",
+      "@/common/types",
+      "@/modules/transaction/hooks",
+      "@/modules/transaction/store",
+      "@/modules/transaction/types",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react",
+      "zustand/shallow"
+    ],
+    "dto": [
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      }
+    ],
+    "components": ["DailyView"],
+    "componentProps": {
+      "DailyView": {
+        "items": "TransactionGroupItemDTO[]"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/account/[id]/detail/monthly",
+    "module": "account",
+    "entryType": "detail",
+    "purpose": "계좌별 월간 거래 요약",
+    "uses": [
+      "@/common/types",
+      "@/components/dashboard/MonthlyView",
+      "@/modules/transaction/store",
+      "@/modules/transaction/types",
+      "@/stores/useFilterStore",
+      "date-fns",
+      "react",
+      "zustand/react/shallow"
+    ],
+    "dto": [
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      }
+    ],
+    "components": ["MonthlyView"],
+    "componentProps": {
+      "MonthlyView": {
+        "items": "TransactionGroupItemDTO[]"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/account/[id]/detail/yearly",
+    "module": "account",
+    "entryType": "detail",
+    "purpose": "계좌별 연간 거래 요약",
+    "uses": [
+      "@/common/types",
+      "@/components/dashboard/YearlyView",
+      "@/modules/transaction/hooks",
+      "@/modules/transaction/store",
+      "@/stores/useFilterStore",
+      "date-fns",
+      "react",
+      "zustand/react/shallow"
+    ],
+    "dto": [
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      }
+    ],
+    "components": ["YearlyView"],
+    "componentProps": {
+      "YearlyView": {
+        "items": "TransactionGroupItemDTO[]"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/budget/settings",
+    "module": "budget",
+    "entryType": "settings",
+    "purpose": "카테고리별 예산 요약 정보를 확인하고 진입 가능한 설정 페이지",
+    "uses": [
+      "@/app/stats/_components/CategoryListItem",
+      "@/common/types",
+      "@/components/ui/check/DateNavigator",
+      "@/components/ui/check/Panel",
+      "@/features/budget/hooks",
+      "@/features/budget/types",
+      "@/modules/budget/store",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      },
+      {
+        "name": "BudgetSummaryDTO",
+        "fromModule": "budget"
+      }
+    ],
+    "components": ["CategoryListItem", "DateNavigator", "Panel"],
+    "componentProps": {
+      "CategoryListItem": {
+        "categoryId": "string",
+        "amount": "number"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useBudgetStore",
+        "type": "state",
+        "outputDTO": "BudgetSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchBudgetsByCategory",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "BudgetSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/budget/settings/[categoryId]/list",
+    "module": "budget",
+    "entryType": "list",
+    "purpose": "카테고리별 예산 항목 목록을 보여주는 필터 기반 리스트",
+    "uses": [
+      "@/common/types",
+      "@/components/ui/check/DateNavigator",
+      "@/features/budget/hooks",
+      "@/features/budget/types",
+      "@/lib/utils",
+      "@/modules/budget/formStore",
+      "@/modules/budget/store",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "DateFilterParams",
+        "fromModule": "common"
+      },
+      {
+        "name": "BudgetItemDTO",
+        "fromModule": "budget"
+      }
+    ],
+    "components": ["DateNavigator"],
+    "componentProps": {
+      "DateNavigator": {
+        "range": "string",
+        "onChange": "(range: string) => void"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useBudgetStore",
+        "type": "state",
+        "outputDTO": "BudgetItemDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchBudgetsByCategory",
+        "type": "query",
+        "inputDTO": "DateFilterParams",
+        "outputDTO": "BudgetItemDTO[]"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/budget/settings/[categoryId]/new",
+    "module": "budget",
+    "entryType": "form",
+    "purpose": "카테고리별 신규 예산을 생성하는 폼 페이지",
+    "uses": [
+      "@/app/budget/_components/BudgetCategoryForm",
+      "@/modules/budget/formStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "BudgetCreateRequestDTO",
+        "fromModule": "budget"
+      },
+      {
+        "name": "BudgetItemDTO",
+        "fromModule": "budget"
+      }
+    ],
+    "components": ["BudgetCategoryForm"],
+    "componentProps": {
+      "BudgetCategoryForm": {
+        "mode": "'new'",
+        "formState": "BudgetFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useBudgetFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "createBudget",
+        "type": "mutation",
+        "inputDTO": "BudgetCreateRequestDTO",
+        "outputDTO": "BudgetItemDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/budget/settings/[categoryId]/edit",
+    "module": "budget",
+    "entryType": "form",
+    "purpose": "기존 예산 항목을 수정하는 폼 페이지",
+    "uses": [
+      "@/app/budget/_components/BudgetCategoryForm",
+      "@/modules/budget/formStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "BudgetUpdateRequestDTO",
+        "fromModule": "budget"
+      },
+      {
+        "name": "BudgetItemDTO",
+        "fromModule": "budget"
+      }
+    ],
+    "components": ["BudgetCategoryForm"],
+    "componentProps": {
+      "BudgetCategoryForm": {
+        "mode": "'edit'",
+        "formState": "BudgetFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useBudgetFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "updateBudget",
+        "type": "mutation",
+        "inputDTO": "BudgetUpdateRequestDTO",
+        "outputDTO": "BudgetItemDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchBudgetById",
+        "type": "query",
+        "outputDTO": "BudgetItemDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/category",
+    "module": "category",
+    "entryType": "list",
+    "purpose": "등록된 카테고리 리스트를 확인하고 관리하는 페이지",
+    "uses": [
+      "@/components/ui/check/Button",
+      "@/features/category/hooks",
+      "@/modules/category/store",
+      "lucide-react",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "CategoryDTO",
+        "fromModule": "category"
+      }
+    ],
+    "components": ["Button", "MinusCircle", "Pencil"],
+    "componentProps": {},
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useCategoryStore",
+        "type": "state",
+        "outputDTO": "CategoryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchCategories",
+        "type": "query",
+        "outputDTO": "CategoryDTO[]"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/category/new",
+    "module": "category",
+    "entryType": "form",
+    "purpose": "새 카테고리를 생성하는 폼 페이지",
+    "uses": [
+      "../_components/CategoryForm",
+      "@/features/category/hooks",
+      "@/modules/category/formStore",
+      "next/navigation"
+    ],
+    "dto": [
+      {
+        "name": "CategoryCreateRequestDTO",
+        "fromModule": "category"
+      },
+      {
+        "name": "CategoryDTO",
+        "fromModule": "category"
+      }
+    ],
+    "components": ["CategoryForm"],
+    "componentProps": {
+      "CategoryForm": {
+        "mode": "'new'",
+        "formState": "CategoryFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useCategoryFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "createCategory",
+        "type": "mutation",
+        "inputDTO": "CategoryCreateRequestDTO",
+        "outputDTO": "CategoryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/category/[id]/edit",
+    "module": "category",
+    "entryType": "form",
+    "purpose": "기존 카테고리를 수정하는 폼 페이지",
+    "uses": [
+      "../../_components/CategoryForm",
+      "@/features/category/hooks",
+      "@/modules/category/formStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "CategoryUpdateRequestDTO",
+        "fromModule": "category"
+      },
+      {
+        "name": "CategoryDTO",
+        "fromModule": "category"
+      }
+    ],
+    "components": ["CategoryForm"],
+    "componentProps": {
+      "CategoryForm": {
+        "mode": "'edit'",
+        "formState": "CategoryFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useCategoryFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "updateCategory",
+        "type": "mutation",
+        "inputDTO": "CategoryUpdateRequestDTO",
+        "outputDTO": "CategoryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchCategoryById",
+        "type": "query",
+        "outputDTO": "CategoryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/more",
+    "module": "more",
+    "entryType": "settings",
+    "purpose": "앱 설정 및 개인화 옵션을 제공하는 설정 진입 페이지",
+    "uses": [
+      "@/app/more/_components/SlideInPanelRenderer",
+      "@/components/ui/check/OptionSelectorModal",
+      "@/stores/useOptionModalStore",
+      "@/stores/usePanelStore",
+      "@/stores/useUserSettingStore",
+      "next/navigation"
+    ],
+    "dto": [],
+    "components": [
+      "CalendarDays",
+      "ChevronRight",
+      "DollarSign",
+      "LayoutDashboard",
+      "Menu",
+      "OptionSelectorModal",
+      "PiggyBank",
+      "RotateCcw",
+      "Rows3",
+      "Section",
+      "SettingItem",
+      "SettingKey",
+      "Settings",
+      "SlideInPanelRenderer",
+      "Wallet",
+      "Wallet2"
+    ],
+    "componentProps": {},
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useUserSettingStore",
+        "type": "state"
+      },
+      {
+        "source": "store",
+        "name": "usePanelStore",
+        "type": "state"
+      },
+      {
+        "source": "store",
+        "name": "useOptionModalStore",
+        "type": "state"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/signin",
+    "module": "auth",
+    "entryType": "form",
+    "purpose": "사용자 로그인을 처리하는 인증 폼 페이지",
+    "uses": [
+      "@/components/common/RedirectIfAuthenticated",
+      "@/features/auth/hooks",
+      "@/stores/useUserStore",
+      "next/navigation",
+      "react",
+      "react-hot-toast"
+    ],
+    "dto": [
+      {
+        "name": "SignInRequestDTO",
+        "fromModule": "auth"
+      },
+      {
+        "name": "UserInfoDTO",
+        "fromModule": "auth"
+      }
+    ],
+    "components": ["RedirectIfAuthenticated"],
+    "componentProps": {},
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useUserStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "signIn",
+        "type": "mutation",
+        "inputDTO": "SignInRequestDTO",
+        "outputDTO": "UserInfoDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/signup",
+    "module": "auth",
+    "entryType": "form",
+    "purpose": "사용자 회원가입을 위한 인증 폼 페이지",
+    "uses": [
+      "@/components/common/RedirectIfAuthenticated",
+      "@/features/auth/hooks",
+      "@/stores/useUserStore",
+      "next/navigation",
+      "react",
+      "react-hot-toast"
+    ],
+    "dto": [
+      {
+        "name": "SignUpRequestDTO",
+        "fromModule": "auth"
+      },
+      {
+        "name": "UserInfoDTO",
+        "fromModule": "auth"
+      }
+    ],
+    "components": ["RedirectIfAuthenticated"],
+    "componentProps": {},
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useUserStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "signUp",
+        "type": "mutation",
+        "inputDTO": "SignUpRequestDTO",
+        "outputDTO": "UserInfoDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/budget",
+    "module": "stats",
+    "entryType": "dashboard",
+    "purpose": "예산 기반 통계 요약을 그룹별로 시각화",
+    "uses": [
+      "../_components/BudgetView",
+      "@/components/ui/check/EmptyMessage",
+      "@/features/category/types",
+      "@/features/stats/hooks",
+      "@/modules/stats/store",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      }
+    ],
+    "components": ["BudgetView", "EmptyMessage"],
+    "componentProps": {
+      "BudgetView": {
+        "items": "TransactionGroupItemDTO[]",
+        "range": "string"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/budget/[id]",
+    "module": "stats",
+    "entryType": "detail",
+    "purpose": "특정 예산의 상세 통계를 차트 및 트랜잭션 그룹으로 제공",
+    "uses": [
+      "@/components/stats/SummaryBox",
+      "@/components/transaction/TransactionGroup",
+      "@/components/ui/check/ComposedChart",
+      "@/components/ui/check/EmptyMessage",
+      "@/components/ui/check/Panel",
+      "@/features/category/types",
+      "@/modules/stats/store",
+      "@/modules/transaction/types",
+      "@/stores/useFilterStore",
+      "@/stores/useUIStore",
+      "date-fns",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionDetailDTO",
+        "fromModule": "transaction"
+      }
+    ],
+    "components": [
+      "ComposedChart",
+      "EmptyMessage",
+      "Panel",
+      "SummaryBox",
+      "TransactionGroup"
+    ],
+    "componentProps": {
+      "TransactionGroup": {
+        "transactions": "TransactionDetailDTO[]"
+      },
+      "SummaryBox": {
+        "summary": "TransactionGroupSummaryDTO"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionDetail",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionDetailDTO[]"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/category",
+    "module": "stats",
+    "entryType": "dashboard",
+    "purpose": "카테고리 기반 거래 통계를 그룹별로 시각화",
+    "uses": [
+      "../_components/StatsView",
+      "@/common/types",
+      "@/features/category/types",
+      "@/features/stats/hooks",
+      "@/modules/stats/store",
+      "@/stores/useFilterStore",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      }
+    ],
+    "components": ["StatsView"],
+    "componentProps": {
+      "StatsView": {
+        "items": "TransactionGroupItemDTO[]"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionSummary",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/category/[id]",
+    "module": "stats",
+    "entryType": "detail",
+    "purpose": "특정 카테고리의 상세 통계 제공",
+    "uses": [
+      "@/components/stats/SummaryBox",
+      "@/components/transaction/TransactionGroup",
+      "@/components/ui/check/ComposedChart",
+      "@/components/ui/check/EmptyMessage",
+      "@/components/ui/check/Panel",
+      "@/features/category/types",
+      "@/modules/stats/store",
+      "@/stores/useFilterStore",
+      "@/stores/useUIStore",
+      "date-fns",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionDetailDTO",
+        "fromModule": "transaction"
+      }
+    ],
+    "components": [
+      "EmptyMessage",
+      "Panel",
+      "StatComposedChart",
+      "SummaryBox",
+      "TransactionGroup"
+    ],
+    "componentProps": {
+      "TransactionGroup": {
+        "transactions": "TransactionDetailDTO[]"
+      },
+      "SummaryBox": {
+        "summary": "TransactionGroupSummaryDTO"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionDetail",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionDetailDTO[]"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/note",
+    "module": "stats",
+    "entryType": "dashboard",
+    "purpose": "노트 기반 통계 요약 제공",
+    "uses": ["../_components/NoteView"],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      }
+    ],
+    "components": ["NoteView"],
+    "componentProps": {
+      "NoteView": {
+        "items": "TransactionGroupItemDTO[]",
+        "notes": "string[]"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchStatsByNote",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/stats/note/[note]",
+    "module": "stats",
+    "entryType": "detail",
+    "purpose": "특정 노트 기반 상세 통계 시각화 제공",
+    "uses": [
+      "@/components/stats/SummaryBox",
+      "@/components/transaction/TransactionGroup",
+      "@/components/ui/check/ComposedChart",
+      "@/components/ui/check/EmptyMessage",
+      "@/components/ui/check/Panel",
+      "@/features/category/types",
+      "@/modules/stats/store",
+      "@/stores/useFilterStore",
+      "@/stores/useUIStore",
+      "date-fns",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "StatsQueryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionGroupSummaryDTO",
+        "fromModule": "stats"
+      },
+      {
+        "name": "TransactionDetailDTO",
+        "fromModule": "transaction"
+      }
+    ],
+    "components": [
+      "ComposedChart",
+      "EmptyMessage",
+      "Panel",
+      "SummaryBox",
+      "TransactionGroup"
+    ],
+    "componentProps": {
+      "TransactionGroup": {
+        "transactions": "TransactionDetailDTO[]"
+      },
+      "SummaryBox": {
+        "summary": "TransactionGroupSummaryDTO"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useStatsStore",
+        "type": "state",
+        "outputDTO": "TransactionGroupSummaryDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionDetail",
+        "type": "query",
+        "inputDTO": "StatsQueryDTO",
+        "outputDTO": "TransactionDetailDTO[]"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/transaction/new",
+    "module": "transaction",
+    "entryType": "form",
+    "purpose": "새 거래 (수입/지출/이체)를 생성하는 폼 페이지",
+    "uses": [
+      "../_components/ExpenseForm",
+      "../_components/IncomeForm",
+      "../_components/TransferForm",
+      "@/features/category/hooks",
+      "@/modules/account/hooks",
+      "@/modules/transaction/formStore",
+      "date-fns",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "TransactionCreateRequestDTO",
+        "fromModule": "transaction"
+      },
+      {
+        "name": "TransactionDetailDTO",
+        "fromModule": "transaction"
+      }
+    ],
+    "components": ["ExpenseForm", "IncomeForm", "TransferForm"],
+    "componentProps": {
+      "ExpenseForm": {
+        "formState": "TransactionFormState"
+      },
+      "IncomeForm": {
+        "formState": "TransactionFormState"
+      },
+      "TransferForm": {
+        "formState": "TransactionFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionFormStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "createTransaction",
+        "type": "mutation",
+        "inputDTO": "TransactionCreateRequestDTO",
+        "outputDTO": "TransactionDetailDTO"
+      }
+    ]
+  },
+  {
+    "entryPoint": "app/transaction/[id]/edit",
+    "module": "transaction",
+    "entryType": "form",
+    "purpose": "기존 거래를 수정하는 폼 페이지",
+    "uses": [
+      "../../_components/ExpenseForm",
+      "../../_components/IncomeForm",
+      "../../_components/TransferForm",
+      "@/features/category/hooks",
+      "@/modules/account/hooks",
+      "@/modules/transaction/formStore",
+      "@/modules/transaction/hooks",
+      "@/modules/transaction/store",
+      "next/navigation",
+      "react"
+    ],
+    "dto": [
+      {
+        "name": "TransactionUpdateRequestDTO",
+        "fromModule": "transaction"
+      },
+      {
+        "name": "TransactionDetailDTO",
+        "fromModule": "transaction"
+      }
+    ],
+    "components": ["ExpenseForm", "IncomeForm", "TransferForm"],
+    "componentProps": {
+      "ExpenseForm": {
+        "formState": "TransactionFormState"
+      },
+      "IncomeForm": {
+        "formState": "TransactionFormState"
+      },
+      "TransferForm": {
+        "formState": "TransactionFormState"
+      }
+    },
+    "moduleContracts": [
+      {
+        "source": "store",
+        "name": "useTransactionFormStore",
+        "type": "state"
+      },
+      {
+        "source": "store",
+        "name": "useTransactionStore",
+        "type": "state"
+      },
+      {
+        "source": "api",
+        "name": "updateTransaction",
+        "type": "mutation",
+        "inputDTO": "TransactionUpdateRequestDTO",
+        "outputDTO": "TransactionDetailDTO"
+      },
+      {
+        "source": "api",
+        "name": "fetchTransactionById",
+        "type": "query",
+        "outputDTO": "TransactionDetailDTO"
+      }
+    ]
   }
-}
+]
