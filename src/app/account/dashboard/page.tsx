@@ -1,28 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useAccountStore } from '@/modules/account/store';
 import SummaryBox from '@/components/stats/SummaryBox';
-import { fetchAccountDashboard } from '@/modules/account/hooks';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { AccountDashboardItemDTO } from '@/modules/account/types';
 import Panel from '@/components/ui/check/Panel';
 import { useUIStore } from '@/stores/useUIStore';
+import { fetchAccountDashboard } from '@/modules/account/hooks';
 
-//
-// Account dashboard summary page
-//
-export default function AccountsPage() {
+export default function AccountDashboardPage() {
   const router = useRouter();
-  const {
-    setSelectedAccount,
-    state: { accountDashboard, isLoading },
-  } = useAccountStore();
+  const { setSelectedAccount, accountDashboard, isLoading } = useAccountStore();
 
-  //
-  // Set top navigation when mounted
-  //
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Accounts.',
@@ -30,69 +21,67 @@ export default function AccountsPage() {
     });
 
     return () => {
-      //
-      // Reset top navigation when unmounted
-      //
       useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
-  //
-  // Fetch account dashboard data on mount
-  //
   useEffect(() => {
     (async () => {
       await fetchAccountDashboard();
     })();
   }, []);
 
+  const summaryItems = accountDashboard
+    ? [
+        {
+          label: 'Assets',
+          value: accountDashboard.asset,
+          color: 'text-info',
+          prefix: '$',
+        },
+        {
+          label: 'Liabilities',
+          value: accountDashboard.liability,
+          color: 'text-error',
+          prefix: '$',
+        },
+        {
+          label: 'Total',
+          value: accountDashboard.total,
+          color: 'text-success',
+          prefix: '$',
+        },
+      ]
+    : [];
+
+  const handleClick = useCallback(
+    (acc: AccountDashboardItemDTO) => {
+      setSelectedAccount({
+        id: acc.id,
+        type: acc.type,
+        name: acc.name,
+        balance: acc.amount,
+        description: '',
+        color: '',
+        settlementDate: acc.settlementDate ?? undefined,
+        paymentDate: acc.paymentDate ?? undefined,
+        autoPayment: acc.autoPayment ?? false,
+      });
+      router.push(`/account/${acc.id}/detail/daily`);
+    },
+    [router, setSelectedAccount]
+  );
+
   if (isLoading || !accountDashboard) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
-  const { asset, liability, total, data } = accountDashboard;
-  const { CASH, BANK, CARD } = data;
-
-  //
-  // Navigate to detail page with selected account
-  //
-  const handleClick = (acc: AccountDashboardItemDTO) => {
-    setSelectedAccount({
-      id: acc.id,
-      type: acc.type,
-      name: acc.name,
-      balance: acc.amount,
-      settlementDate: acc.settlementDate,
-      paymentDate: acc.paymentDate,
-    });
-    router.push(`/account/${acc.id}/detail/daily`);
-  };
+  const { CASH, BANK, CARD } = accountDashboard.data;
 
   return (
     <div className='space-y-4 bg-surface min-h-screen text-foreground'>
       <Panel>
-        <SummaryBox
-          items={[
-            {
-              label: 'Assets',
-              value: asset,
-              color: 'text-info',
-              prefix: '$',
-            },
-            {
-              label: 'Liabilities',
-              value: liability,
-              color: 'text-error',
-              prefix: '$',
-            },
-            {
-              label: 'Total',
-              value: total,
-              color: 'text-success',
-              prefix: '$',
-            },
-          ]}
-        />
+        <SummaryBox items={summaryItems} />
       </Panel>
 
       <Panel>

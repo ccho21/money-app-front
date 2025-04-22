@@ -6,41 +6,25 @@ import AccountForm from '../_components/AccountForm';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
-import { AccountCreateRequestDTO } from '@/modules/account/types';
 
 export default function NewAccountPage() {
-  const {
-    actions: { getCreateFormData, reset },
-  } = useAccountFormStore();
-
+  const { getCreateFormData, reset } = useAccountFormStore();
   const router = useRouter();
 
-  //
-  // Configure top navigation on mount
-  //
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Account New.',
-      onBack: () => {
-        router.back();
-      },
+      onBack: () => router.back(),
     });
 
     return () => {
-      //
-      // Reset top navigation on unmount
-      //
       useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
-  //
-  // Handle form submission
-  //
   const handleSave = async () => {
-    const payload: AccountCreateRequestDTO = getCreateFormData();
-
     try {
+      const payload = getCreateFormData();
       await createAccount(payload);
       reset();
       router.back();

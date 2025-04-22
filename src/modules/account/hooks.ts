@@ -7,9 +7,14 @@ import {
   fetchAccountsAPI,
   fetchAccountByIdAPI,
   fetchAccountSummaryAPI,
+  fetchAccountsDashboardAPI,
 } from './api';
 import type { AccountCreateRequestDTO, AccountUpdateRequestDTO } from './types';
-import { DateFilterParams } from '@/common/types';
+import { DateFilterParams, GroupBy } from '@/common/types';
+import { useTransactionStore } from '../transaction/store';
+import { useFilterStore } from '@/stores/useFilterStore';
+import { useEffect } from 'react';
+import { fetchTransactionSummary } from '../transaction/hooks';
 
 // Create a new account
 export const createAccount = async (payload: AccountCreateRequestDTO) => {
@@ -97,3 +102,37 @@ export const fetchAccountSummary = async (params: DateFilterParams) => {
     setLoading(false);
   }
 };
+
+export const fetchAccountDashboard = async () => {
+  const { setAccountDashboard, setLoading, setError } =
+    useAccountStore.getState();
+  setLoading(true);
+  setError(null);
+  try {
+    const data = await fetchAccountsDashboardAPI();
+    setAccountDashboard(data);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch dashboard data';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export function useAccountDetailSummary(accountId: string, groupBy: GroupBy) {
+  const { summary, isLoading } = useTransactionStore();
+  const { getDateRangeKey } = useFilterStore();
+
+  useEffect(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+
+    fetchTransactionSummary({
+      groupBy,
+      startDate,
+      endDate,
+    });
+  }, [groupBy, accountId, getDateRangeKey]);
+
+  return { summary, isLoading };
+}

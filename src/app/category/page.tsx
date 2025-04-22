@@ -5,16 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Pencil, MinusCircle } from 'lucide-react';
 
 import { useCategoryStore } from '@/modules/category/store';
-import { deleteCategory, fetchCategories } from '@/features/category/hooks';
 import { Button } from '@/components/ui/check/Button';
+import { deleteCategory, fetchCategories } from '@/modules/category/hooks';
 
 //
 // Category list and management page
 //
 export default function CategoryPage() {
-  const {
-    state: { categories },
-  } = useCategoryStore();
+  const { categories } = useCategoryStore();
   const router = useRouter();
 
   //

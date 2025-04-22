@@ -14,7 +14,12 @@ interface AccountFormState {
   mode: Mode;
   name: string;
   type: AccountType;
-  initialBalance: number;
+  balance: number;
+  description?: string;
+  color?: string;
+  settlementDate?: number;
+  paymentDate?: number;
+  autoPayment?: boolean;
 }
 
 interface AccountFormActions {
@@ -33,7 +38,12 @@ const initialState: AccountFormState = {
   mode: 'new',
   name: '',
   type: 'CASH',
-  initialBalance: 0,
+  balance: 0,
+  description: '',
+  color: '',
+  settlementDate: undefined,
+  paymentDate: undefined,
+  autoPayment: false,
 };
 
 export const useAccountFormStore = create<
@@ -43,26 +53,57 @@ export const useAccountFormStore = create<
     ...initialState,
 
     setField: (key, value) => set({ [key]: value }),
-    setAllFields: (data) => set(data),
+    setAllFields: (data) => set({ ...get(), ...data }),
     setMode: (mode) => set({ mode }),
     reset: () => set(initialState),
 
     getCreateFormData: () => {
-      const { name, type, initialBalance } = get();
+      const {
+        name,
+        type,
+        balance,
+        description,
+        color,
+        settlementDate,
+        paymentDate,
+        autoPayment,
+      } = get();
+
       return {
         name,
         type,
-        initialBalance,
+        balance,
+        description,
+        color,
+        settlementDate,
+        paymentDate,
+        autoPayment,
       };
     },
 
     getUpdateFormData: () => {
-      const { name, type, initialBalance } = get();
-      return {
+      const {
         name,
         type,
-        initialBalance,
-      };
+        balance,
+        description,
+        color,
+        settlementDate,
+        paymentDate,
+        autoPayment,
+      } = get();
+
+      const dto: AccountUpdateRequestDTO = {};
+      if (name) dto.name = name;
+      if (type) dto.type = type;
+      if (balance !== undefined) dto.balance = balance;
+      if (description) dto.description = description;
+      if (color) dto.color = color;
+      if (settlementDate !== undefined) dto.settlementDate = settlementDate;
+      if (paymentDate !== undefined) dto.paymentDate = paymentDate;
+      if (autoPayment !== undefined) dto.autoPayment = autoPayment;
+
+      return dto;
     },
   }))
 );

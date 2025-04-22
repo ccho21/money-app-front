@@ -6,9 +6,9 @@ import IncomeForm from '../_components/IncomeForm';
 import TransferForm from '../_components/TransferForm';
 import ExpenseForm from '../_components/ExpenseForm';
 import { fetchAccounts } from '@/modules/account/hooks';
-import { fetchCategories } from '@/features/category/hooks';
 import { useSearchParams } from 'next/navigation';
 import { parse } from 'date-fns';
+import { fetchCategories } from '@/modules/category/hooks';
 
 export default function TransactionNewPage() {
   const searchParams = useSearchParams();

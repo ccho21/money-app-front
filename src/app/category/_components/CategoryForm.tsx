@@ -21,10 +21,7 @@ export const CategoryForm = ({
   onSubmit,
   isEdit = false,
 }: CategoryFormProps) => {
-  const {
-    state: { name, type },
-    actions: { setField },
-  } = useCategoryFormStore();
+  const { name, type, setField } = useCategoryFormStore();
 
   const [error, setError] = useState('');
 

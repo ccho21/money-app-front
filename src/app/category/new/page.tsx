@@ -1,22 +1,14 @@
 'use client';
 
-import { createCategory } from '@/features/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { useRouter } from 'next/navigation';
 import { CategoryForm } from '../_components/CategoryForm';
+import { createCategory } from '@/modules/category/hooks';
 
-//
-// Category creation page
-//
 export default function AddCategoryPage() {
   const router = useRouter();
-  const {
-    actions: { getCreateFormData, reset },
-  } = useCategoryFormStore();
+  const { getCreateFormData, reset } = useCategoryFormStore();
 
-  //
-  // Handle category creation
-  //
   const handleSubmit = async () => {
     try {
       const data = getCreateFormData();

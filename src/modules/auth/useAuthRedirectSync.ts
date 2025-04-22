@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { fetchUser } from '@/features/auth/hooks';
 import { useUserStore } from '@/stores/useUserStore';
+import { fetchUser } from './hooks';
 
 export default function useAuthRedirectSync() {
   const {

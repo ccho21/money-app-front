@@ -6,6 +6,7 @@ import {
   AccountUpdateRequestDTO,
   AccountDetailDTO,
   AccountTransactionSummaryDTO,
+  AccountDashboardDTO,
   // ⚠️ [외부 참조 필요] DateFilterParams는 shared/types 또는 common 모듈에서 가져와야 함
 } from './types';
 import type { DateFilterParams } from '@/common/types'; // ✅ 승인 필요
@@ -41,4 +42,8 @@ export const fetchAccountByIdAPI = (id: string) => {
 export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   const query = buildQuery(params);
   return get<AccountTransactionSummaryDTO[]>(`/accounts/summary?${query}`);
+};
+
+export const fetchAccountsDashboardAPI = (): Promise<AccountDashboardDTO> => {
+  return get('/accounts/dashboard');
 };

@@ -18,6 +18,7 @@ import {
   TransactionCreateRequestDTO,
   TransactionUpdateRequestDTO,
   TransactionTransferRequestDTO,
+  TransactionGroupSummaryDTO,
 } from './types';
 
 import { useTransactionFormStore } from './formStore';
@@ -131,4 +132,20 @@ export const deleteTransaction = async (id: string) => {
 // Delete transfer transaction
 export const deleteTransfer = async (id: string) => {
   await deleteTransferAPI(id);
+};
+
+//
+// Fetch weekly grouped summary directly (no state)
+//
+export const fetchTransactionSummaryWeekly = async (
+  params: DateFilterParams
+): Promise<TransactionGroupSummaryDTO> => {
+  try {
+    return await fetchTransactionSummaryAPI(params);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch summary';
+    console.error('fetchTransactionSummaryWeekly error:', message);
+    throw new Error(message);
+  }
 };

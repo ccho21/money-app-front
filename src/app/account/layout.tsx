@@ -9,9 +9,7 @@ import { useUIStore } from '@/stores/useUIStore';
 
 export default function AccountLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const {
-    actions: { reset },
-  } = useAccountFormStore();
+  const { reset } = useAccountFormStore();
 
   useEffect(() => {
     useUIStore.getState().setTopNav({

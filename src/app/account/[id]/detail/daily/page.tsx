@@ -1,107 +1,79 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
-import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchTransactionSummary } from '@/modules/transaction/hooks';
+import { useTransactionStore } from '@/modules/transaction/store';
 
 import { useShallow } from 'zustand/shallow';
-import { DateFilterParams } from '@/common/types';
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import DailyView from '@/app/dashboard/_components/DailyView';
+import { useAccountDetailSummary } from '@/modules/account/hooks';
 
-//
-// Daily account transaction detail page
-//
 export default function AccountDailyPage() {
   const router = useRouter();
+  const { id: accountId } = useParams();
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore(
+  const { query, setQuery } = useFilterStore(
     useShallow((s) => ({
       query: s.query,
       setQuery: s.setQuery,
-      getDateRangeKey: s.getDateRangeKey,
     }))
   );
 
-  const { date, groupBy } = query;
+  const { groupBy } = query;
+  const { summary, isLoading } = useAccountDetailSummary(
+    accountId as string,
+    'daily'
+  );
 
-  const { isLoading, transactionSummaryResponse, actions } =
-    useTransactionStore(
-      useShallow((state) => ({
-        isLoading: state.isLoading,
-        transactionSummaryResponse: state.transactionSummaryResponse,
-        actions: state.actions,
-      }))
-    );
+  const { setSelectedTransaction } = useTransactionStore(
+    useShallow((s) => ({
+      setSelectedTransaction: s.setSelectedTransaction,
+    }))
+  );
 
-  //
-  // Fetch daily grouped transaction summary
-  //
   useEffect(() => {
-    const updateAndFetch = async () => {
-      if (groupBy !== 'monthly') {
-        setQuery({ groupBy: 'monthly' });
-        return;
-      }
+    if (groupBy !== 'monthly') {
+      setQuery({ groupBy: 'monthly' });
+    }
+  }, [groupBy, setQuery]);
 
-      const [startDate, endDate] = getDateRangeKey().split('_');
-      const params: DateFilterParams = {
-        groupBy: 'daily',
-        startDate,
-        endDate,
-      };
-      await fetchTransactionSummary(params);
-    };
+  const handleTransactionClick = (tx: TransactionDetailDTO) => {
+    setSelectedTransaction(tx);
+    router.push(`/transaction/${tx.id}/edit`);
+  };
 
-    updateAndFetch();
-  }, [date, groupBy, setQuery, getDateRangeKey]);
-
-  const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
-  const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
+  const handleHeaderClick = (date: string) => {
+    router.push(`/transaction/new?date=${date}`);
+  };
 
   const items = [
     {
       label: 'Income',
-      value: totalIncome,
-      color: totalIncome > 0 ? 'text-info' : 'text-muted',
+      value: summary?.totalIncome ?? 0,
+      color: (summary?.totalIncome ?? 0) > 0 ? 'text-info' : 'text-muted',
       prefix: '$',
     },
     {
       label: 'Exp.',
-      value: totalExpense,
-      color: totalExpense > 0 ? 'text-error' : 'text-muted',
+      value: summary?.totalExpense ?? 0,
+      color: (summary?.totalExpense ?? 0) > 0 ? 'text-error' : 'text-muted',
       prefix: '$',
     },
     {
       label: 'Total',
-      value: totalIncome - totalExpense,
+      value: (summary?.totalIncome ?? 0) - (summary?.totalExpense ?? 0),
       color: 'text-foreground',
       prefix: '$',
     },
   ];
 
-  //
-  // Handle transaction item click
-  //
-  const handleTransactionClick = (tx: TransactionDetailDTO) => {
-    actions.setSelectedTransaction(tx);
-    router.push(`/transaction/${tx.id}/edit`);
-  };
-
-  //
-  // Handle header (date) click
-  //
-  const handleHeaderClick = (date: string) => {
-    router.push(`/transaction/new?date=${date}`);
-  };
-
   return (
     <DailyView
       isLoading={isLoading}
-      data={transactionSummaryResponse}
+      data={summary}
       summaryItems={items}
       onTransactionClick={handleTransactionClick}
       onHeaderClick={handleHeaderClick}

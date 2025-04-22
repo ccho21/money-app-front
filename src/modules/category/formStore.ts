@@ -1,5 +1,3 @@
-// 파일: src/modules/category/formStore.ts
-
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {

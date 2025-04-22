@@ -3,36 +3,21 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { fillCategoryForm, updateCategory } from '@/features/category/hooks';
+import { fillCategoryForm, updateCategory } from '@/modules/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
-import { CategoryForm } from '../../_components/CategoryForm';
+import { CategoryForm } from '@app/category/_components/CategoryForm';
 
-//
-// Edit category page
-//
 export default function EditCategoryPage() {
   const router = useRouter();
   const pathname = usePathname();
-
-  const {
-    actions: { getUpdateFormData, reset },
-  } = useCategoryFormStore();
-
-  //
-  // Extract ID from pathname (/category/:id/edit)
-  //
   const id = pathname.split('/')[2];
 
-  //
-  // Load category data into form on mount
-  //
+  const { getUpdateFormData, reset } = useCategoryFormStore();
+
   useEffect(() => {
     fillCategoryForm(id);
   }, [id]);
 
-  //
-  // Submit category update
-  //
   const handleSubmit = async () => {
     try {
       const data = getUpdateFormData();

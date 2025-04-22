@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/check/Input';
 import { Textarea } from '@/components/ui/check/Textarea';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { AccountType } from '@/modules/account/types';
-// import { Switch } from '@/components/ui/Switch'; // ✅ 자동결제 toggle용
+import Switch from '@/components/ui/switch/Switch';
 
 const GROUP_OPTIONS = [
   { label: 'Cash', value: 'CASH' },
@@ -21,19 +21,26 @@ interface Props {
 
 export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
   const {
-    state: { group, name, amount, description, settlementDate, paymentDate },
-    actions: { setField },
+    type,
+    name,
+    balance,
+    description,
+    color,
+    settlementDate,
+    paymentDate,
+    autoPayment,
+    setField,
   } = useAccountFormStore();
 
-  const isCard = group === 'CARD';
+  const isCard = type === 'CARD';
 
   return (
-    <div className='min-h-screen  px-4 pt-4 pb-10'>
+    <div className='min-h-screen px-4 pt-4 pb-10'>
       <div className='space-y-4'>
         <Selector
-          label='Group'
-          value={group}
-          onChange={(val) => setField('group', val as AccountType)}
+          label='Account Type'
+          value={type}
+          onChange={(val) => setField('type', val as AccountType)}
           getOptionLabel={(o) => o.label}
           getOptionValue={(o) => o.value}
           options={GROUP_OPTIONS}
@@ -46,20 +53,26 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
         />
 
         <Input
-          label='Amount'
+          label='Balance'
           type='number'
-          value={amount}
-          onChange={(e) => setField('amount', e.target.value)}
+          value={balance}
+          onChange={(e) => setField('balance', Number(e.target.value))}
         />
 
         <Textarea
-          value={description}
+          value={description ?? ''}
           onChange={(e) => setField('description', e.target.value)}
           placeholder='Description'
           rows={1}
         />
 
-        {/* ✅ 카드 선택 시 추가 필드 렌더링 */}
+        <Input
+          label='Color'
+          type='text'
+          value={color ?? ''}
+          onChange={(e) => setField('color', e.target.value)}
+        />
+
         {isCard && (
           <div className='space-y-4 border-t pt-4'>
             <Input
@@ -70,12 +83,23 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
                 setField('settlementDate', Number(e.target.value))
               }
             />
+
             <Input
               label='Payment Date'
               type='number'
               value={paymentDate ?? ''}
               onChange={(e) => setField('paymentDate', Number(e.target.value))}
             />
+
+            <div className='flex items-center justify-between'>
+              <span className='text-sm text-muted-foreground'>
+                Auto Payment
+              </span>
+              <Switch
+                checked={autoPayment ?? false}
+                onChange={(val) => setField('autoPayment', val)}
+              />
+            </div>
           </div>
         )}
       </div>

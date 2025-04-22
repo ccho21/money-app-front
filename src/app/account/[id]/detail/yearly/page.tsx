@@ -1,25 +1,22 @@
 'use client';
 
-import { useEffect, useMemo, useCallback } from 'react';
-import { format, startOfYear, endOfYear, addYears, parse } from 'date-fns';
+import { useEffect, useCallback } from 'react';
+import { format, parse, startOfMonth } from 'date-fns';
+import { useParams, useRouter } from 'next/navigation';
 
-import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useShallow } from 'zustand/shallow';
 
-import { fetchTransactionSummary } from '@/modules/transaction/hooks';
-import { DateFilterParams } from '@/common/types';
 import YearlyView from '@/components/dashboard/YearlyView';
+import { useAccountDetailSummary } from '@/modules/account/hooks';
 
-//
-// Yearly transaction summary page
-//
 export default function YearlyPage() {
-  const { transactionSummaryResponse, isLoading } = useTransactionStore(
-    useShallow((s) => ({
-      transactionSummaryResponse: s.transactionSummaryResponse,
-      isLoading: s.isLoading,
-    }))
+  const { id: accountId } = useParams();
+  const router = useRouter();
+
+  const { summary, isLoading } = useAccountDetailSummary(
+    accountId as string,
+    'yearly'
   );
 
   const { query, setQuery } = useFilterStore(
@@ -29,37 +26,16 @@ export default function YearlyPage() {
     }))
   );
 
-  const { date, groupBy } = query;
+  const { groupBy } = query;
 
-  //
-  // Calculate 5-year date groupBy from current date
-  //
-  const dateRangeKey = useMemo(() => {
-    const start = startOfYear(addYears(date, -5));
-    const end = endOfYear(date);
-    return `${format(start, 'yyyy-MM-dd')}_${format(end, 'yyyy-MM-dd')}`;
-  }, [date]);
-
-  //
-  // Fetch yearly transaction summary if groupBy is correct
-  //
   useEffect(() => {
-    const [startDate, endDate] = dateRangeKey.split('_');
-    const params: DateFilterParams = {
-      groupBy: 'yearly',
-      startDate,
-      endDate,
-    };
-
     if (groupBy !== 'yearly') {
       setQuery({ groupBy: 'yearly' });
-    } else {
-      fetchTransactionSummary(params);
     }
-  }, [dateRangeKey, groupBy, setQuery]);
+  }, [groupBy, setQuery]);
 
-  const totalIncome = transactionSummaryResponse?.incomeTotal ?? 0;
-  const totalExpense = transactionSummaryResponse?.expenseTotal ?? 0;
+  const totalIncome = summary?.totalIncome ?? 0;
+  const totalExpense = summary?.totalExpense ?? 0;
 
   const items = [
     {
@@ -82,21 +58,21 @@ export default function YearlyPage() {
     },
   ];
 
-  //
-  // Handle year item click by updating the query date
-  //
   const handleClick = useCallback(
     (dateStr: string) => {
       const parsed = parse(dateStr, 'yyyy', new Date());
-      setQuery({ date: parsed });
+      const formatted = format(startOfMonth(parsed), 'yyyy-MM-dd');
+      router.push(
+        `/account/${accountId}/detail/monthly?date=${formatted}&groupBy=yearly`
+      );
     },
-    [setQuery]
+    [router, accountId]
   );
 
   return (
     <YearlyView
       isLoading={isLoading}
-      data={transactionSummaryResponse}
+      data={summary}
       summaryItems={items}
       onItemClick={handleClick}
     />
