@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAccountStore } from '@/modules/account/store';
@@ -31,18 +31,14 @@ export default function IncomeForm({ mode, id }: Props) {
   const router = useRouter();
   const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
-  const {
-    state: { amount, accountId, categoryId, note, description, date },
-    actions: { setField, isDirty },
-  } = useTransactionFormStore();
+  const form = useTransactionFormStore((s) => s.state);
+  const setField = useTransactionFormStore((s) => s.setField);
+  const isDirty = useTransactionFormStore((s) => s.isDirty);
 
-  const {
-    state: { accounts = [] },
-  } = useAccountStore();
+  const { amount, accountId, categoryId, note, description, date } = form;
 
-  const {
-    state: { categories = [] },
-  } = useCategoryStore();
+  const { accounts = [] } = useAccountStore();
+  const { categories = [] } = useCategoryStore();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);
@@ -72,40 +68,46 @@ export default function IncomeForm({ mode, id }: Props) {
     }
   };
 
-  // 💡 입력 순서 동적 렌더링
-  const orderedInputs = useMemo(() => {
-    const amountInput = (
-      <Input
-        key='amount'
-        label='Amount'
-        value={amount}
-        onChange={(e) => setField('amount', e.target.value)}
-        type='number'
-      />
-    );
-
-    const accountSelector = (
-      <Selector
-        key='account'
-        label='Account'
-        value={selectedAccount?.name ?? ''}
-        onChange={(val) => setField('accountId', val)}
-        options={accounts}
-        getOptionLabel={(a) => a.name}
-        getOptionValue={(a) => a.id}
-        onEdit={() => router.push('/account')}
-      />
-    );
-
-    return inputOrder === 'amount-first'
-      ? [amountInput, accountSelector]
-      : [accountSelector, amountInput];
-  }, [inputOrder, amount, selectedAccount, accounts, setField, router]);
-
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
-      {/* 🔁 Amount ↔ Account 순서 전환 */}
-      {orderedInputs}
+      {/* 🔁 inputOrder 적용 */}
+      {inputOrder === 'amount-first' ? (
+        <>
+          <Input
+            label='Amount'
+            value={amount}
+            onChange={(e) => setField('amount', e.target.value)}
+            type='number'
+          />
+          <Selector
+            label='Account'
+            value={selectedAccount?.name ?? ''}
+            onChange={(val) => setField('accountId', val)}
+            options={accounts}
+            getOptionLabel={(a) => a.name}
+            getOptionValue={(a) => a.id}
+            onEdit={() => router.push('/account')}
+          />
+        </>
+      ) : (
+        <>
+          <Selector
+            label='Account'
+            value={selectedAccount?.name ?? ''}
+            onChange={(val) => setField('accountId', val)}
+            options={accounts}
+            getOptionLabel={(a) => a.name}
+            getOptionValue={(a) => a.id}
+            onEdit={() => router.push('/account')}
+          />
+          <Input
+            label='Amount'
+            value={amount}
+            onChange={(e) => setField('amount', e.target.value)}
+            type='number'
+          />
+        </>
+      )}
 
       <Selector
         label='Category'

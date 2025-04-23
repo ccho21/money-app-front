@@ -27,22 +27,18 @@ type Props = {
   id?: string;
 };
 
-export default function IncomeForm({ mode, id }: Props) {
+export default function ExpenseForm({ mode, id }: Props) {
   const router = useRouter();
   const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
-  const {
-    state: { amount, accountId, categoryId, note, description, date },
-    actions: { setField, isDirty },
-  } = useTransactionFormStore();
+  const form = useTransactionFormStore((s) => s.state);
+  const setField = useTransactionFormStore((s) => s.setField);
+  const isDirty = useTransactionFormStore((s) => s.isDirty);
 
-  const {
-    state: { accounts = [] },
-  } = useAccountStore();
+  const { amount, accountId, categoryId, note, description, date } = form;
 
-  const {
-    state: { categories = [] },
-  } = useCategoryStore();
+  const { accounts = [] } = useAccountStore();
+  const { categories = [] } = useCategoryStore();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);
@@ -51,7 +47,7 @@ export default function IncomeForm({ mode, id }: Props) {
 
   useEffect(() => {
     setDirty(isDirty());
-  }, [amount, accountId, categoryId, note, description, date, isDirty]);
+  }, [form, isDirty]);
 
   const handleSubmit = async () => {
     try {
@@ -74,7 +70,6 @@ export default function IncomeForm({ mode, id }: Props) {
 
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
-      {/* 🔁 inputOrder 적용 */}
       {inputOrder === 'amount-first' ? (
         <>
           <Input
@@ -117,7 +112,7 @@ export default function IncomeForm({ mode, id }: Props) {
         label='Category'
         value={selectedCategory?.name ?? ''}
         onChange={(val) => setField('categoryId', val)}
-        options={categories.filter((c) => c.type === 'income')}
+        options={categories.filter((c) => c.type === 'expense')}
         getOptionLabel={(c) => c.name}
         getOptionValue={(c) => c.id}
         onEdit={() => router.push('/category')}

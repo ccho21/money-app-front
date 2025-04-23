@@ -11,34 +11,25 @@ import TransferForm from '../../_components/TransferForm';
 import ExpenseForm from '../../_components/ExpenseForm';
 
 import { fetchAccounts } from '@/modules/account/hooks';
-import { fetchCategories } from '@/features/category/hooks';
 import { fetchTransactionById } from '@/modules/transaction/hooks';
+import { fetchCategories } from '@/modules/category/hooks';
 
-//
-// Edit transaction page
-//
 export default function TransactionEditPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const {
-    state: { type },
-    actions: { init },
-  } = useTransactionFormStore();
+  const type = useTransactionFormStore((s) => s.state.type);
+  const init = useTransactionFormStore((s) => s.init);
 
-  //
-  // Fetch and initialize transaction data for editing
-  //
   useEffect(() => {
     const run = async () => {
       if (!id) return;
 
       try {
-        //
-        // Fetch required related data (accounts, categories)
-        //
+        // 📦 Load accounts + categories
         await Promise.all([fetchAccounts(), fetchCategories()]);
 
+        // 🧠 Use cache if already selected
         const cached = useTransactionStore.getState().selectedTransaction;
         const tx =
           cached && cached.id === id
@@ -47,17 +38,15 @@ export default function TransactionEditPage() {
 
         if (!tx) throw new Error();
 
-        //
-        // Prepare preset fields to populate form
-        //
+        // 📝 Map response → preset
         const preset = {
-          type: tx.type,
+          type: tx.type as 'income' | 'expense' | 'transfer',
           amount: String(tx.amount),
           date: tx.date,
           note: tx.note ?? '',
           description: tx.description ?? '',
           accountId: tx.accountId || '',
-          categoryId: tx.categoryId || '',
+          categoryId: tx.category?.id || '',
           from: tx.accountId || '',
           to: tx.toAccountId ?? '',
         };
@@ -72,18 +61,14 @@ export default function TransactionEditPage() {
     run();
   }, [id, init, router]);
 
-  //
-  // Show loading until type is set
-  //
+  // ⏳ Loading
   if (!type) {
     return (
       <div className='text-center text-muted py-10'>Loading transaction...</div>
     );
   }
 
-  //
-  // Render form based on transaction type
-  //
+  // 🧾 Render form
   if (type === 'income') return <IncomeForm mode='edit' id={id as string} />;
   if (type === 'transfer')
     return <TransferForm mode='edit' id={id as string} />;

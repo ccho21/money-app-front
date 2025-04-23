@@ -31,18 +31,14 @@ export default function TransferForm({ mode, id }: Props) {
   const router = useRouter();
   const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
-  const {
-    state: { amount, accountId, categoryId, note, description, date },
-    actions: { setField, isDirty },
-  } = useTransactionFormStore();
+  const form = useTransactionFormStore((s) => s.state);
+  const setField = useTransactionFormStore((s) => s.setField);
+  const isDirty = useTransactionFormStore((s) => s.isDirty);
 
-  const {
-    state: { accounts = [] },
-  } = useAccountStore();
+  const { amount, accountId, categoryId, note, description, date } = form;
 
-  const {
-    state: { categories = [] },
-  } = useCategoryStore();
+  const { accounts = [] } = useAccountStore();
+  const { categories = [] } = useCategoryStore();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);
@@ -51,7 +47,7 @@ export default function TransferForm({ mode, id }: Props) {
 
   useEffect(() => {
     setDirty(isDirty());
-  }, [amount, accountId, categoryId, note, description, date, isDirty]);
+  }, [form, isDirty]);
 
   const handleSubmit = async () => {
     try {
@@ -72,7 +68,6 @@ export default function TransferForm({ mode, id }: Props) {
     }
   };
 
-  // ✅ Amount ↔ Account 순서 리팩토링
   const orderedInputs = useMemo(() => {
     const amountInput = (
       <Input

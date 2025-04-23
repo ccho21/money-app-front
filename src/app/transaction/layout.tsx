@@ -1,9 +1,10 @@
 'use client';
 
-import { TransactionType } from '@/modules/transaction/types';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+
 import { useTransactionFormStore } from '@/modules/transaction/formStore';
-import { usePathname, useRouter } from 'next/navigation';
-import { ReactNode, useEffect, useState } from 'react';
+import { TransactionType } from '@/modules/transaction/types';
 import TopNav from '@/components/common/TopNav';
 import TabMenu from '@/components/common/TabMenu';
 import { useUIStore } from '@/stores/useUIStore';
@@ -17,18 +18,19 @@ const TABS = [
 export default function TransactionLayout({
   children,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { state, actions } = useTransactionFormStore(); // ✅ 구조 기반 접근
 
-  const [activeTab, setActiveTab] = useState<string>(state.type || 'expense');
+  const type = useTransactionFormStore((s) => s.form.type);
+  const setField = useTransactionFormStore((s) => s.setField);
+  const [activeTab, setActiveTab] = useState<string>(type || 'expense');
 
   const handleTabChange = (key: string) => {
     if (['income', 'expense', 'transfer'].includes(key)) {
       setActiveTab(key);
-      actions.setField('type', key as TransactionType);
+      setField('type', key as TransactionType);
     }
   };
 
@@ -36,19 +38,17 @@ export default function TransactionLayout({
     useUIStore.getState().setTopNav({
       title: 'Trans.',
       onBack: () => router.back(),
-      // onAdd: () => router.push('/category/new'),
     });
-
     return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+      useUIStore.getState().resetTopNav();
     };
   }, [router]);
 
   useEffect(() => {
-    if (state.type && state.type !== activeTab) {
-      setActiveTab(state.type);
+    if (type && type !== activeTab) {
+      setActiveTab(type);
     }
-  }, [pathname, state.type, activeTab]);
+  }, [pathname, type, activeTab]);
 
   return (
     <div className='min-h-screen flex flex-col h-full'>
@@ -59,8 +59,6 @@ export default function TransactionLayout({
         onChange={handleTabChange}
         variant='pill'
       />
-
-      {/* 폼 영역 */}
       <div className='flex-1 overflow-y-auto'>{children}</div>
     </div>
   );
