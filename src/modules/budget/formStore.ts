@@ -1,90 +1,133 @@
-// 파일: src/modules/budget/formStore.ts
-
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
+  createBudgetCategoryAPI,
+  updateBudgetCategoryAPI,
+  fetchGroupedBudgetCategoryAPI,
+} from './api';
+import type {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
 } from './types';
-import type { GroupBy } from '@/common/types';
-import { getDateRangeKey } from '@/lib/date.util';
-import { useFilterStore } from '@/stores/useFilterStore';
+import type { DateFilterParams } from '@/common/types';
 
 type Mode = 'new' | 'edit';
 
-interface BudgetCategoryFormState {
+type BudgetFormState = {
+  form: BudgetCategoryCreateRequestDTO;
+  loading: boolean;
+  error: string | null;
+  success: boolean;
   mode: Mode;
-  budgetId: string;
-  categoryId: string;
-  amount: number;
-  startDate: string;
-  endDate: string;
-  groupBy: GroupBy;
-}
+};
 
-interface BudgetCategoryFormActions {
-  setField: <K extends keyof BudgetCategoryFormState>(
+type BudgetFormActions = {
+  setForm: (form: BudgetCategoryCreateRequestDTO) => void;
+  setField: <K extends keyof BudgetCategoryCreateRequestDTO>(
     key: K,
-    value: BudgetCategoryFormState[K]
+    value: BudgetCategoryCreateRequestDTO[K]
   ) => void;
-  setAllFields: (data: Partial<BudgetCategoryFormState>) => void;
   setMode: (mode: Mode) => void;
-  reset: () => void;
-  syncWithDateFilter: () => void; // ⚠️ 구조 문서 외 기능
-  getCreateFormData: () => BudgetCategoryCreateRequestDTO;
-  getUpdateFormData: () => { id: string; data: BudgetCategoryUpdateRequestDTO };
-}
+  resetForm: () => void;
+  submitForm: () => Promise<void>;
+  loadForm: (categoryId: string, params: DateFilterParams) => Promise<void>;
+};
 
-const initialState: BudgetCategoryFormState = {
-  mode: 'new',
-  budgetId: '',
+const initialForm: BudgetCategoryCreateRequestDTO = {
   categoryId: '',
   amount: 0,
   startDate: '',
   endDate: '',
-  groupBy: 'monthly',
+  type: 'expense', // default; adjust if needed
 };
 
-export const useBudgetCategoryFormStore = create<
-  BudgetCategoryFormState & BudgetCategoryFormActions
->()(
+export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
   devtools((set, get) => ({
-    ...initialState,
+    form: initialForm,
+    loading: false,
+    error: null,
+    success: false,
+    mode: 'new',
 
-    setField: (key, value) => set({ [key]: value }),
-    setAllFields: (data) => set({ ...data }),
-    setMode: (mode) => set({ mode }),
-    reset: () => set(initialState),
+    setForm: (form) => set({ form }, false, 'budgetForm/setForm'),
 
-    syncWithDateFilter: () => {
-      const { date, groupBy } = useFilterStore.getState().query;
-      const range = getDateRangeKey(date, { unit: groupBy, amount: 0 });
-      const [startDate, endDate] = range.split('_');
-      set({ startDate, endDate, groupBy });
-    },
+    setField: (key, value) =>
+      set(
+        (state) => ({
+          form: { ...state.form, [key]: value },
+        }),
+        false,
+        'budgetForm/setField'
+      ),
 
-    getCreateFormData: () => {
-      const { categoryId, amount, startDate, endDate, groupBy } = get();
-      return {
-        categoryId,
-        amount,
-        startDate,
-        endDate,
-        groupBy,
-      };
-    },
+    setMode: (mode) => set({ mode }, false, 'budgetForm/setMode'),
 
-    getUpdateFormData: () => {
-      const { budgetId, amount, startDate, endDate, groupBy } = get();
-      return {
-        id: budgetId,
-        data: {
-          amount,
-          startDate,
-          endDate,
-          groupBy,
+    resetForm: () =>
+      set(
+        {
+          form: initialForm,
+          error: null,
+          success: false,
         },
-      };
+        false,
+        'budgetForm/resetForm'
+      ),
+
+    submitForm: async () => {
+      const { form, mode } = get();
+      set(
+        { loading: true, error: null, success: false },
+        false,
+        'budgetForm/submit:start'
+      );
+      try {
+        if (mode === 'new') {
+          await createBudgetCategoryAPI(form);
+        } else {
+          await updateBudgetCategoryAPI(
+            form.categoryId,
+            form as BudgetCategoryUpdateRequestDTO
+          );
+        }
+        set({ success: true }, false, 'budgetForm/submit:success');
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Submission failed';
+        set({ error: message }, false, 'budgetForm/submit:error');
+      } finally {
+        set({ loading: false }, false, 'budgetForm/submit:end');
+      }
+    },
+
+    loadForm: async (categoryId, params) => {
+      set({ loading: true, error: null }, false, 'budgetForm/load:start');
+      try {
+        const data = await fetchGroupedBudgetCategoryAPI(categoryId, params);
+        const firstPeriod = data.budgets[0];
+        if (!firstPeriod) {
+          throw new Error('No budget data found for this category');
+        }
+        set(
+          {
+            form: {
+              categoryId,
+              amount: firstPeriod.amount,
+              startDate: firstPeriod.rangeStart,
+              endDate: firstPeriod.rangeEnd,
+              type: data.type,
+            },
+            mode: 'edit',
+          },
+          false,
+          'budgetForm/load:success'
+        );
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to load form';
+        set({ error: message }, false, 'budgetForm/load:error');
+      } finally {
+        set({ loading: false }, false, 'budgetForm/load:end');
+      }
     },
   }))
 );

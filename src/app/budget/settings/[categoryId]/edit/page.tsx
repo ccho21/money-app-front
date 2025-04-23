@@ -2,32 +2,24 @@
 
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
+
+import { useBudgetFormStore } from '@/modules/budget/formStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
 
-//
-// Page for editing an existing budget category
-//
 export default function EditBudgetCategoryPage() {
   const { categoryId } = useParams();
+  const getDateRangeKey = useFilterStore((s) => s.getDateRangeKey);
+  const loadForm = useBudgetFormStore((s) => s.loadForm);
+  const resetForm = useBudgetFormStore((s) => s.resetForm);
 
-  const { reset, syncWithDateFilter, setField } = useBudgetCategoryFormStore(
-    (s) => s.actions
-  );
-
-  //
-  // Initialize form for editing
-  //
   useEffect(() => {
     if (!categoryId) return;
-    reset();
-    syncWithDateFilter();
-    setField('categoryId', String(categoryId));
-  }, [categoryId, reset, syncWithDateFilter, setField]);
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    resetForm();
+    loadForm(String(categoryId), { startDate, endDate, groupBy: 'monthly' });
+  }, [categoryId]);
 
-  //
-  // Handle missing category ID
-  //
   if (!categoryId) {
     return (
       <div className='p-4 text-sm text-error bg-surface text-center'>

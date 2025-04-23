@@ -4,33 +4,25 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import DateNavigator from '@/components/ui/check/DateNavigator';
-import { fetchBudgetCategoriesByCategoryId } from '@/features/budget/hooks';
-import { useBudgetStore } from '@/modules/budget/store';
+import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-
-import { cn } from '@/lib/utils';
-import type { DateFilterParams } from '@/common/types';
-import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
-import type { BudgetCategoryPeriodItemDTO } from '@/features/budget/types';
+import { useBudgetGroup } from '@/modules/budget/hooks';
+import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();
   const { categoryId } = useParams();
-
   const {
     query: { groupBy },
     setQuery,
     getDateRangeKey,
   } = useFilterStore();
 
-  const {
-    state: { budgetCategoryGroupResponse },
-  } = useBudgetStore();
+  const { budgets, fetchGroupedBudgets, loading, error } = useBudgetGroup();
 
-  const { reset } = useBudgetCategoryFormStore((s) => s.actions);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
-
-  const dateRangeKey = getDateRangeKey(); // called immediately
+  const resetForm = useBudgetFormStore((s) => s.resetForm);
+  const [, setSelectedKey] = useState<string | null>(null);
+  const dateRangeKey = getDateRangeKey();
 
   useEffect(() => {
     if (groupBy !== 'yearly') {
@@ -41,21 +33,17 @@ export default function ListBudgetCategoryPage() {
       if (!categoryId) return;
 
       const [startDate, endDate] = dateRangeKey.split('_');
-      const filter: DateFilterParams = {
+      await fetchGroupedBudgets(String(categoryId), {
         startDate,
         endDate,
         groupBy: 'monthly',
-      };
-
-      await fetchBudgetCategoriesByCategoryId(String(categoryId), filter);
-      reset();
+      });
+      resetForm();
       setSelectedKey(null);
     };
 
     run();
-  }, [categoryId, dateRangeKey, groupBy, setQuery, reset]);
-
-  const budgets = budgetCategoryGroupResponse?.budgets ?? [];
+  }, [categoryId, dateRangeKey, groupBy]);
 
   const handleSelect = (item: BudgetCategoryPeriodItemDTO) => {
     const path = item.categoryId
@@ -65,45 +53,36 @@ export default function ListBudgetCategoryPage() {
   };
 
   if (!categoryId) {
-    return (
-      <div className='p-4 text-sm text-error bg-surface text-center'>
-        잘못된 접근입니다
-      </div>
-    );
+    return <div className='p-4 text-sm text-error'>잘못된 접근입니다</div>;
+  }
+
+  if (loading) {
+    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
+  }
+
+  if (error) {
+    return <p className='text-center mt-10 text-error'>{error}</p>;
   }
 
   return (
-    <div className='min-h-screen bg-background text-foreground'>
+    <div>
       <DateNavigator withTransactionType={true} />
-      <main className='p-4 space-y-4'>
-        <div className='rounded-md bg-muted/10 dark:bg-muted/20 p-4 text-sm text-muted'>
-          You can set the budget settings for each month. If you change the
-          default budget, it will be applied starting next month.
-        </div>
-
-        <div className='space-y-2'>
-          {budgets.map((b) => {
-            const key = `${b.rangeStart}_${b.rangeEnd}`;
-            const isSelected = selectedKey === key;
-
-            return (
-              <button
-                key={key}
-                onClick={() => handleSelect(b)}
-                className={cn(
-                  'w-full flex justify-between items-center rounded-md border px-4 py-3 transition-all',
-                  isSelected
-                    ? 'border-error text-error'
-                    : 'bg-surface hover:bg-muted/10 border-border text-foreground'
-                )}
-              >
-                <span>{b.label}</span>
-                <span>${b.amount.toFixed(2)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </main>
+      <div className='divide-y'>
+        {budgets.map((item) => (
+          <div
+            key={item.rangeStart}
+            className='p-4 cursor-pointer'
+            onClick={() => handleSelect(item)}
+          >
+            <div className='flex justify-between'>
+              <div>{item.label}</div>
+              <div className='font-semibold'>
+                {item.amount.toLocaleString()}원
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

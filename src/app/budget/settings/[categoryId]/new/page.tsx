@@ -3,32 +3,26 @@
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
-import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
+import { useBudgetFormStore } from '@/modules/budget/formStore';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
 
-//
-// Page for creating a new budget category
-//
 export default function NewBudgetCategoryPage() {
   const { categoryId } = useParams();
+  const getDateRangeKey = useFilterStore((s) => s.getDateRangeKey);
+  const resetForm = useBudgetFormStore((s) => s.resetForm);
+  const setField = useBudgetFormStore((s) => s.setField);
 
-  const { reset, syncWithDateFilter, setField } = useBudgetCategoryFormStore(
-    (s) => s.actions
-  );
-
-  //
-  // Initialize form state on mount
-  //
   useEffect(() => {
     if (!categoryId) return;
-    reset();
-    syncWithDateFilter();
-    setField('categoryId', String(categoryId));
-  }, [categoryId, reset, syncWithDateFilter, setField]);
 
-  //
-  // Handle missing category ID
-  //
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    resetForm();
+    setField('categoryId', String(categoryId));
+    setField('startDate', startDate);
+    setField('endDate', endDate);
+  }, [categoryId]);
+
   if (!categoryId) {
     return (
       <div className='p-4 text-sm text-error bg-surface text-center'>

@@ -15,12 +15,11 @@ interface CategoryListItemData {
   balancePayable?: number;
   outstandingBalance?: number;
   isMatched?: boolean;
-  showProgress: boolean;
+  showProgress?: boolean;
 }
 
 export function CategoryListItem({
   name,
-  amount,
   rate,
   budget,
   spent,

@@ -1,79 +1,116 @@
-// 파일: src/modules/budget/hooks.ts
-
-import { useBudgetStore } from './store';
+import { useState } from 'react';
 import {
-  createBudgetCategoryAPI,
-  updateBudgetCategoryAPI,
-  deleteBudgetCategoryAPI,
-  fetchBudgetCategoriesAPI,
-  fetchBudgetSettingsAPI,
+  fetchBudgetByCategoryAPI,
+  fetchBudgetSummaryAPI,
+  fetchGroupedBudgetCategoryAPI,
 } from './api';
-import {
-  BudgetCategoryCreateRequestDTO,
-  BudgetCategoryUpdateRequestDTO,
-  BudgetCategoryItemDTO,
-} from './types';
+import { useBudgetStore } from './store';
 import type { DateFilterParams } from '@/common/types';
+import { BudgetCategoryPeriodItemDTO, BudgetGroupItemDTO } from './types';
 
-// Normalize amount if needed
-const normalizeAmount = (amount: string | number): number =>
-  typeof amount === 'string' ? Number(amount) : amount;
+// 📌 예산 리스트 조회용 훅
+export const useBudgetList = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { budgets, setBudgets } = useBudgetStore((state) => ({
+    budgets: state.budgets,
+    setBudgets: state.setBudgets,
+  }));
 
-// Fetch active budgets by category
-export const fetchBudgetCategories = async (params: DateFilterParams) => {
-  const { setBudgetCategoryResponse, setLoading, setError } =
-    useBudgetStore.getState();
-  setLoading(true);
-  setError(null);
-
-  try {
-    const data = await fetchBudgetCategoriesAPI(params);
-    setBudgetCategoryResponse(data);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch budgets';
-    setError(msg);
-  } finally {
-    setLoading(false);
-  }
-};
-
-// Fetch all saved budget category settings
-export const fetchBudgetSettings = async () => {
-  const { setBudgetSettings, setLoading, setError } = useBudgetStore.getState();
-  setLoading(true);
-  setError(null);
-
-  try {
-    const data = await fetchBudgetSettingsAPI();
-    setBudgetSettings(data);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch settings';
-    setError(msg);
-  } finally {
-    setLoading(false);
-  }
-};
-
-// Create new budget config
-export const createBudgetCategory = async (
-  payload: BudgetCategoryCreateRequestDTO
-): Promise<BudgetCategoryItemDTO> => {
-  const normalized = {
-    ...payload,
-    amount: normalizeAmount(payload.amount),
+  const fetchBudgets = async (params: DateFilterParams) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchBudgetByCategoryAPI(params);
+      setBudgets(data);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to fetch budgets';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
-  return await createBudgetCategoryAPI(normalized);
+
+  return {
+    budgets: budgets?.items || [],
+    fetchBudgets,
+    loading,
+    error,
+  };
 };
 
-// Update budget config
-export const updateBudgetCategory = async (
-  id: string,
-  payload: BudgetCategoryUpdateRequestDTO
-): Promise<BudgetCategoryItemDTO> => {
-  return await updateBudgetCategoryAPI(id, payload);
+// 📌 예산 요약 조회용 훅
+export const useBudgetSummary = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { summary, setSummary } = useBudgetStore((state) => ({
+    summary: state.summary,
+    setSummary: state.setSummary,
+  }));
+
+  const fetchSummary = async (params: DateFilterParams) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchBudgetSummaryAPI(params);
+      setSummary(data);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to fetch summary';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    summary,
+    fetchSummary,
+    loading,
+    error,
+  };
 };
 
-// Delete budget config
-export const deleteBudgetCategory = async (id: string): Promise<void> => {
-  await deleteBudgetCategoryAPI(id);
+// 📌 budget 항목 삭제용 액션 훅
+export const useBudgetActions = () => {
+  const { deleteBudgetItem } = useBudgetStore((state) => ({
+    deleteBudgetItem: state.deleteBudgetItem,
+  }));
+
+  return { deleteBudgetItem };
+};
+
+export const useBudgetGroup = () => {
+  const [budgets, setBudgets] = useState<BudgetCategoryPeriodItemDTO[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchGroupedBudgets = async (
+    categoryId: string,
+    params: DateFilterParams
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data: BudgetGroupItemDTO = await fetchGroupedBudgetCategoryAPI(
+        categoryId,
+        params
+      );
+      setBudgets(data.budgets);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to fetch grouped budgets';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    budgets,
+    fetchGroupedBudgets,
+    loading,
+    error,
+  };
 };

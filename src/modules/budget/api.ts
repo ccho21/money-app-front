@@ -1,48 +1,55 @@
-// 파일: src/modules/budget/api.ts
-
-import { get, post, patch, del } from '@/common/api';
+import { get, post, put } from '@/common/api';
 import { buildQuery } from '@/shared/util/buildQuery';
-import {
+import type {
+  BudgetCategoryListResponseDTO,
   BudgetCategoryItemDTO,
-  BudgetCategoryPeriodItemDTO,
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
+  BudgetGroupItemDTO,
+  BudgetGroupSummaryDTO,
 } from './types';
 import type { DateFilterParams } from '@/common/types';
 
-// Fetch current budget results per category
-export const fetchBudgetCategoriesAPI = (params: DateFilterParams) => {
+// ✅ [GET] /budgets/by-category → 카테고리별 예산 항목 조회
+export const fetchBudgetByCategoryAPI = (params: DateFilterParams) => {
   const query = buildQuery(params);
-  return get<BudgetCategoryPeriodItemDTO[]>(`/budgets?${query}`);
+  return get<BudgetCategoryListResponseDTO>(`/budgets/by-category?${query}`);
 };
 
-// Fetch configured budget settings
-export const fetchBudgetSettingsAPI = () => {
-  return get<BudgetCategoryItemDTO[]>(`/budgets/settings`);
-};
-
-// Create new budget config
+// ✅ [POST] /budgets/by-category → 예산 항목 생성
 export const createBudgetCategoryAPI = (
   payload: BudgetCategoryCreateRequestDTO
 ) => {
   return post<BudgetCategoryItemDTO, BudgetCategoryCreateRequestDTO>(
-    '/budgets',
+    '/budgets/by-category',
     payload
   );
 };
 
-// Update budget config
+// ✅ [PUT] /budgets/by-category/:id → 예산 항목 수정
 export const updateBudgetCategoryAPI = (
   id: string,
   payload: BudgetCategoryUpdateRequestDTO
 ) => {
-  return patch<BudgetCategoryItemDTO, BudgetCategoryUpdateRequestDTO>(
-    `/budgets/${id}`,
+  return put<BudgetCategoryItemDTO, BudgetCategoryUpdateRequestDTO>(
+    `/budgets/by-category/${id}`,
     payload
   );
 };
 
-// Delete budget config
-export const deleteBudgetCategoryAPI = (id: string) => {
-  return del<void>(`/budgets/${id}`);
+// ✅ [POST] /budgets/by-category/:categoryId → 그룹 예산 조회
+export const fetchGroupedBudgetCategoryAPI = (
+  categoryId: string,
+  params: DateFilterParams
+) => {
+  return post<BudgetGroupItemDTO, DateFilterParams>(
+    `/budgets/by-category/${categoryId}`,
+    params
+  );
+};
+
+// ✅ [GET] /budgets/summary → 예산 요약
+export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
+  const query = buildQuery(params);
+  return get<BudgetGroupSummaryDTO>(`/budgets/summary?${query}`);
 };

@@ -1,59 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { Input } from '@/components/ui/check/Input';
 import { Button } from '@/components/ui/check/Button';
 import { toast } from 'react-hot-toast';
-import {
-  createBudgetCategory,
-  updateBudgetCategory,
-} from '@/features/budget/hooks';
-import { useRouter } from 'next/navigation';
-import { useBudgetCategoryFormStore } from '@/modules/budget/formStore';
 
-//
-// Budget category form for both create and edit
-//
-export const BudgetCategoryForm = ({
-  isEdit = false,
-}: {
-  isEdit?: boolean;
-}) => {
+export const BudgetCategoryForm = () => {
   const router = useRouter();
+  const amount = useBudgetFormStore((s) => s.form.amount);
+  const setField = useBudgetFormStore((s) => s.setField);
+  const mode = useBudgetFormStore((s) => s.mode);
+  const submitForm = useBudgetFormStore((s) => s.submitForm);
+  const resetForm = useBudgetFormStore((s) => s.resetForm);
 
-  const {
-    state: { amount },
-    actions: {
-      syncWithDateFilter,
-      getCreateFormData,
-      getUpdateFormData,
-      reset,
-      setField,
-    },
-  } = useBudgetCategoryFormStore();
-
-  //
-  // Sync groupBy from filter on mount
-  //
-  useEffect(() => {
-    syncWithDateFilter();
-  }, [syncWithDateFilter]);
-
-  //
-  // Handle form submission
-  //
   const handleSubmit = async () => {
     try {
-      if (isEdit) {
-        const { id, data } = getUpdateFormData();
-        await updateBudgetCategory(id, data);
-        toast.success('Budget updated.');
-      } else {
-        const data = getCreateFormData();
-        await createBudgetCategory(data);
-        toast.success('Budget created.');
-      }
-      reset();
+      await submitForm();
+      toast.success(mode === 'edit' ? 'Budget updated.' : 'Budget created.');
+      resetForm();
       router.push('/budget/settings');
     } catch (err) {
       const message =
@@ -64,17 +29,14 @@ export const BudgetCategoryForm = ({
 
   return (
     <div className='space-y-4 bg-surface text-foreground p-4 rounded-md shadow-sm'>
-      {/* Budget amount input */}
       <Input
         type='number'
         inputMode='numeric'
         placeholder='Enter amount'
         value={amount}
         className='text-center'
-        onChange={(e) => setField('amount', e.target.value)}
+        onChange={(e) => setField('amount', Number(e.target.value))}
       />
-
-      {/* Save button */}
       <Button className='w-full' onClick={handleSubmit}>
         Save
       </Button>
