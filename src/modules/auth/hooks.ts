@@ -1,11 +1,8 @@
 // 📄 src/features/auth/services/authService.ts
 
-import { get } from '@/common/api';
+import { API_BASE_URL, get } from '@/common/api';
 import { useUserStore } from '@/stores/useUserStore';
 import { User } from './types';
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
 
 export const signin = async (
   email: string,
@@ -20,7 +17,7 @@ export const signin = async (
 
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const res = await fetch(`${BASE_URL}/auth/signin`, {
+    const res = await fetch(`${API_BASE_URL}/auth/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -54,7 +51,7 @@ export const signup = async (
 
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const res = await fetch(`${BASE_URL}/auth/signup`, {
+    const res = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, timezone }),
@@ -100,7 +97,7 @@ export const signout = async (): Promise<void> => {
   } = useUserStore.getState();
 
   try {
-    await fetch(`${BASE_URL}/auth/signout`, {
+    await fetch(`${API_BASE_URL}/auth/signout`, {
       method: 'POST',
       credentials: 'include',
     });

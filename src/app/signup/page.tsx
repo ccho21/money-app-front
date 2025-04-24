@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/useUserStore';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
 import toast from 'react-hot-toast';
 import { signin } from '@/modules/auth/hooks';
+import { API_BASE_URL } from '@/common/api';
 
 export default function SigninPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function SigninPage() {
   };
 
   const handleGoogleSignin = () => {
-    window.location.href = 'http://localhost:3000/auth/google';
+    window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
   return (
