@@ -16,10 +16,10 @@ import { useTransactionFormStore } from '@/modules/transaction/formStore';
 
 type Props = {
   mode: 'new' | 'edit';
-  id?: string;
+  transactionId?: string;
 };
 
-export default function TransferForm({ mode, id }: Props) {
+export default function TransferForm({ mode, transactionId }: Props) {
   const router = useRouter();
 
   const form = useTransactionFormStore((s) => s.state);
@@ -41,7 +41,7 @@ export default function TransferForm({ mode, id }: Props) {
 
   const handleSubmit = async () => {
     try {
-      await submitTransfer(mode, id);
+      await submitTransfer(mode, transactionId);
       router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '이체 저장 실패');
@@ -113,11 +113,11 @@ export default function TransferForm({ mode, id }: Props) {
 
       <Divider />
 
-      {mode === 'edit' && !dirty && id && (
+      {mode === 'edit' && !dirty && transactionId && (
         <Button
           color='danger'
           variant='outline'
-          onClick={() => handleDelete(id)}
+          onClick={() => handleDelete(transactionId)}
           className='w-full mt-4'
         >
           Delete

@@ -2,6 +2,7 @@
 
 import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryType } from '../category/types';
+import { TransactionGroupItemDTO } from '../transaction/types';
 
 export type SortKey = 'note' | 'count';
 export type SortDirection = 'asc' | 'desc';
@@ -98,7 +99,7 @@ export interface StatsCategoryDetailDTO {
   color: string;
   totalIncome: number;
   totalExpense: number;
-  data: StatsCategoryPeriodDTO[];
+  items: TransactionGroupItemDTO[];
 }
 
 export interface StatsNoteDetailDTO {

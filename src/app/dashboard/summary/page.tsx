@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { useAccountStore } from '@/modules/account/store';
 import { useBudgetStore } from '@/modules/budget/store';
@@ -12,7 +12,7 @@ import { fetchAccountSummary } from '@/modules/account/hooks';
 import type { DateFilterParams } from '@/common/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-// import BudgetBox from '@/components/stats/BudgetBox';
+import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
@@ -21,10 +21,10 @@ import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
 
 export default function SummaryPage() {
-  // const router = useRouter();
+  const router = useRouter();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { groupBy } = query;
+  const { groupBy, date } = query;
 
   const {
     summary: accountSummary,
@@ -50,7 +50,6 @@ export default function SummaryPage() {
     }))
   );
 
-  // ✅ groupBy: 'monthly' 강제
   useEffect(() => {
     if (groupBy !== 'monthly') {
       setQuery({ groupBy: 'monthly' });
@@ -58,22 +57,18 @@ export default function SummaryPage() {
   }, [groupBy, setQuery]);
 
   // ✅ 필터 기준 params
-  const params: DateFilterParams = useMemo(() => {
+
+  useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
-    return {
+    const params: DateFilterParams = {
       startDate,
       endDate,
       groupBy: 'monthly',
     };
-  }, [getDateRangeKey]);
-
-  // ✅ fetch 요약 데이터
-  useEffect(() => {
     fetchAccountSummary(params);
     fetchBudgetSummary(params);
-  }, [params]);
+  }, [date]);
 
-  // ✅ 총합 계산
   const [incomeTotal, expenseTotal] = useMemo(() => {
     if (!accountSummary?.items?.length) return [0, 0];
     return [
@@ -124,9 +119,9 @@ export default function SummaryPage() {
     return <EmptyMessage />;
   }
 
-  // const handleBudgetClick = () => {
-  //   router.push('/stats/budget');
-  // };
+  const handleBudgetClick = () => {
+    router.push('/stats/budget');
+  };
 
   return (
     <div className='space-y-4'>
@@ -140,9 +135,9 @@ export default function SummaryPage() {
 
       <Divider />
 
-      {/* <Panel>
+      <Panel>
         <BudgetBox item={budgetSummary} handleClick={handleBudgetClick} />
-      </Panel> */}
+      </Panel>
     </div>
   );
 }

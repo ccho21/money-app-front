@@ -6,6 +6,7 @@ import Panel from '@/components/ui/check/Panel';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import { CategoryListItem } from './CategoryListItem';
 import CategoryPieChart from '@/components/ui/check/PieChart';
+import { StatsCategoryGroupItemDTO } from '@/modules/stats/types';
 
 interface CategoryChartData {
   name: string;
@@ -16,25 +17,11 @@ interface CategoryChartData {
 
 interface Props {
   isLoading: boolean;
-  startDate?: string;
-  endDate?: string;
-  data: {
-    categoryId: string;
-    categoryName: string;
-    amount: number;
-    rate: number;
-    color: string;
-  }[];
+  data: StatsCategoryGroupItemDTO[];
   onItemClick: (categoryId: string) => void;
 }
 
-export default function StatsView({
-  isLoading,
-  data,
-  startDate,
-  endDate,
-  onItemClick,
-}: Props) {
+export default function StatsView({ isLoading, data, onItemClick }: Props) {
   const categoryChart: CategoryChartData[] = useMemo(() => {
     return (
       data
@@ -52,7 +39,7 @@ export default function StatsView({
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
-  if (!data || data.length === 0) {
+  if (data.every((item) => !item.amount)) {
     return <EmptyMessage />;
   }
 
@@ -67,13 +54,19 @@ export default function StatsView({
             key={item.categoryId}
             name={item.categoryName}
             rate={item.rate}
-            startDate={startDate}
-            endDate={endDate}
             amount={item.amount}
-            onClick={() => onItemClick(item.categoryId)}
             color={item.color}
-            showProgress={item.amount > 0}
+            startDate={item.rangeStart}
+            endDate={item.rangeEnd}
+            onClick={() => onItemClick(item.categoryId)}
+            showProgress={false}
           />
+          // CATEGORY ITEM 이니까, 카테고리 버젯 을 보여주는 정보들만있으면 되겠네.
+          // Category ID, name,
+          // 버젯이 있으면,
+          // amount, rate
+          // 기한이있으면?? startDate, endDate progress 에 필요함.
+          //
         ))}
       </Panel>
     </div>

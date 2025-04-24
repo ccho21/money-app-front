@@ -15,7 +15,7 @@ import { fetchTransactionById } from '@/modules/transaction/hooks';
 import { fetchCategories } from '@/modules/category/hooks';
 
 export default function TransactionEditPage() {
-  const { id } = useParams();
+  const { id: transactionId } = useParams();
   const router = useRouter();
 
   const type = useTransactionFormStore((s) => s.state.type);
@@ -23,7 +23,7 @@ export default function TransactionEditPage() {
 
   useEffect(() => {
     const run = async () => {
-      if (!id) return;
+      if (!transactionId) return;
 
       try {
         // 📦 Load accounts + categories
@@ -32,9 +32,9 @@ export default function TransactionEditPage() {
         // 🧠 Use cache if already selected
         const cached = useTransactionStore.getState().selectedTransaction;
         const tx =
-          cached && cached.id === id
+          cached && cached.id === transactionId
             ? cached
-            : await fetchTransactionById(String(id));
+            : await fetchTransactionById(String(transactionId));
 
         if (!tx) throw new Error();
 
@@ -59,7 +59,7 @@ export default function TransactionEditPage() {
     };
 
     run();
-  }, [id, init, router]);
+  }, [transactionId, init, router]);
 
   // ⏳ Loading
   if (!type) {
@@ -69,8 +69,8 @@ export default function TransactionEditPage() {
   }
 
   // 🧾 Render form
-  if (type === 'income') return <IncomeForm mode='edit' id={id as string} />;
+  if (type === 'income') return <IncomeForm mode='edit' transactionId={String(transactionId)} />;
   if (type === 'transfer')
-    return <TransferForm mode='edit' id={id as string} />;
-  return <ExpenseForm mode='edit' id={id as string} />;
+    return <TransferForm mode='edit' transactionId={String(transactionId)} />;
+  return <ExpenseForm mode='edit' transactionId={String(transactionId)} />;
 }

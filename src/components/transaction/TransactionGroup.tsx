@@ -21,7 +21,7 @@ interface TransactionGroupProps {
   rangeEnd?: string;
   groupIncome: number;
   groupExpense: number;
-  group?: TransactionGroupItemDTO;
+  group: TransactionGroupItemDTO;
   onTransactionClick?: (tx: TransactionDetailDTO) => void;
   onHeaderClick?: () => void;
   showDateHeader?: boolean;
@@ -104,7 +104,7 @@ export default function TransactionGroup({
 
       {/* 거래 리스트 */}
       <ul className='mt-3 space-y-2'>
-        {group?.transactions.map((tx: TransactionDetailDTO) => (
+        {group.transactions.map((tx: TransactionDetailDTO) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}
       </ul>

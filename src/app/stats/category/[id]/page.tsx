@@ -127,16 +127,17 @@ export default function StatsCategoryDetailPage() {
       )}
 
       {/* Transaction breakdown */}
-      {categoryDetail?.data?.length ? (
+      {categoryDetail?.items?.length ? (
         <div className='space-y-4'>
-          {categoryDetail.data.map((group, i) => (
+          {categoryDetail.items.map((group, i) => (
             <TransactionGroup
               key={group.label + i}
               label={group.label}
               rangeStart={group.rangeStart}
               rangeEnd={group.rangeEnd}
-              groupIncome={group.income}
-              groupExpense={group.expense}
+              groupIncome={group.groupIncome}
+              groupExpense={group.groupExpense}
+              group={group}
             />
           ))}
         </div>

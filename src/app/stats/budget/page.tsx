@@ -64,7 +64,7 @@ export default function BudgetPage() {
   return (
     <BudgetView
       transactionType={transactionType as CategoryType}
-      budgetResponse={budgetGroup}
+      budgetGroup={budgetGroup}
       handleClick={handleClick}
     />
   );

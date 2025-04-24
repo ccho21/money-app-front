@@ -24,7 +24,7 @@ export default function StatsCategoryPage() {
   );
 
   const { query, getDateRangeKey } = useFilterStore();
-  const { groupBy, transactionType } = query;
+  const { groupBy, transactionType, date } = query;
 
   const params: DateFilterParams = useMemo(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
@@ -34,7 +34,7 @@ export default function StatsCategoryPage() {
       groupBy,
       type: transactionType as CategoryType,
     };
-  }, [getDateRangeKey, groupBy, transactionType]);
+  }, [getDateRangeKey, groupBy, transactionType, date]);
 
   useEffect(() => {
     fetchCategoryStats(params);
@@ -44,8 +44,6 @@ export default function StatsCategoryPage() {
     <StatsView
       isLoading={isLoading}
       data={categoryGroup?.items ?? []}
-      startDate={params.startDate}
-      endDate={params.endDate}
       onItemClick={(id: string) => router.push(`/stats/category/${id}`)}
     />
   );

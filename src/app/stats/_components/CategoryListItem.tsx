@@ -7,7 +7,6 @@ interface CategoryListItemData {
   amount?: number;
   rate?: number; // % 사용률 (있으면 프로그레스 바 표시)
   budget?: number; // 예산
-  spent?: number; // 지출 (budget과 함께 쓰이면 예산 대비 지출 표시됨)
   startDate?: string;
   endDate?: string;
   color?: string;
@@ -21,8 +20,8 @@ interface CategoryListItemData {
 export function CategoryListItem({
   name,
   rate,
+  amount,
   budget,
-  spent,
   startDate,
   endDate,
   color = '#ccc',
@@ -58,9 +57,9 @@ export function CategoryListItem({
           )}
           <span className='text-sm font-medium text-foreground'>{name}</span>
         </div>
-        <div className='text-sm font-normal text-muted-foreground'>
-          <span>{rate || rate?.toFixed(1)}%</span>
-        </div>
+        <span>
+          <CurrencyDisplay amount={amount ?? 0} />
+        </span>
       </div>
 
       {showProgress && (
@@ -71,10 +70,7 @@ export function CategoryListItem({
               <CurrencyDisplay amount={budget ?? 0} />
             </span>
             <span>
-              <CurrencyDisplay amount={spent ?? 0} />
-            </span>
-            <span>
-              <CurrencyDisplay amount={(budget ?? 0) - (spent ?? 0)} />
+              <CurrencyDisplay amount={(budget ?? 0) - (amount ?? 0)} />
             </span>
           </div>
         </>

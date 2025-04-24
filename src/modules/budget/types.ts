@@ -62,10 +62,10 @@ export interface BudgetCategoryCreateRequestDTO
 export type BudgetCategoryUpdateRequestDTO =
   Partial<BudgetCategoryCreateRequestDTO>;
 
-export interface BudgetGroupSummaryDTO
-  extends BaseListSummaryResponseDTO<BudgetGroupItemDTO> {
-  totalBudget?: number;
-  rate?: number;
+export interface BudgetSummaryDTO extends BaseGroupItemDTO {
+  totalBudget: number;
+  totalSpent: number;
+  rate: number;
 }
 
 export interface BaseBudgetCategoryRequestDTO {

@@ -24,10 +24,10 @@ import { startOfDay } from 'date-fns';
 
 type Props = {
   mode: 'new' | 'edit';
-  id?: string;
+  transactionId?: string;
 };
 
-export default function IncomeForm({ mode, id }: Props) {
+export default function IncomeForm({ mode, transactionId }: Props) {
   const router = useRouter();
   const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
@@ -51,16 +51,16 @@ export default function IncomeForm({ mode, id }: Props) {
 
   const handleSubmit = async () => {
     try {
-      await submitTransaction(mode, id);
+      await submitTransaction(mode, transactionId);
       router.push('/dashboard/daily');
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
     try {
-      await deleteTransaction(id);
+      await deleteTransaction(String(transactionId));
       router.back();
       router.refresh();
     } catch (err) {
@@ -146,11 +146,11 @@ export default function IncomeForm({ mode, id }: Props) {
 
       <Divider />
 
-      {mode === 'edit' && !dirty && id && (
+      {mode === 'edit' && !dirty && transactionId && (
         <Button
           color='danger'
           variant='outline'
-          onClick={() => handleDelete(id)}
+          onClick={handleDelete}
           className='w-full mt-4'
         >
           Delete

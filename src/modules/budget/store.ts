@@ -2,13 +2,13 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type {
   BudgetCategoryListResponseDTO,
-  BudgetGroupSummaryDTO,
   BudgetGroupItemDTO,
+  BudgetSummaryDTO,
 } from './types';
 
 type BudgetStoreState = {
   budgets: BudgetCategoryListResponseDTO | null;
-  summary: BudgetGroupSummaryDTO | null;
+  summary: BudgetSummaryDTO | null;
   budgetGroup: BudgetGroupItemDTO | null;
   isLoading: boolean;
   error: string | null;
@@ -16,7 +16,7 @@ type BudgetStoreState = {
 
 type BudgetStoreActions = {
   setBudgets: (budgets: BudgetCategoryListResponseDTO) => void;
-  setSummary: (summary: BudgetGroupSummaryDTO) => void;
+  setSummary: (summary: BudgetSummaryDTO) => void;
   setBudgetGroup: (group: BudgetGroupItemDTO) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
