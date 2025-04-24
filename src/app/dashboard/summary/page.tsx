@@ -18,12 +18,13 @@ import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
 import Divider from '@/components/ui/check/Divider';
 import { useShallow } from 'zustand/shallow';
+import { fetchBudgetSummary } from '@/modules/budget/hooks';
 
 export default function SummaryPage() {
   const router = useRouter();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
-  const { groupBy, date } = query;
+  const { groupBy } = query;
 
   const {
     summary: accountSummary,
@@ -64,12 +65,12 @@ export default function SummaryPage() {
       endDate,
       groupBy: 'monthly',
     };
-  }, [getDateRangeKey, date]);
+  }, [getDateRangeKey]);
 
   // ✅ fetch 요약 데이터
   useEffect(() => {
     fetchAccountSummary(params);
-    // fetchBudgetSummary(params);
+    fetchBudgetSummary(params);
   }, [params]);
 
   // ✅ 총합 계산
@@ -117,8 +118,9 @@ export default function SummaryPage() {
       </p>
     );
   }
-
-  if (!budgetSummary || !accountSummary?.items?.length) {
+  console.log('### budgetSummary', budgetSummary);
+  console.log('### accountSummary', accountSummary);
+  if (!budgetSummary || !accountSummary) {
     return <EmptyMessage />;
   }
 

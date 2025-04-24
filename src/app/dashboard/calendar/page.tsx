@@ -101,7 +101,6 @@ export default function CalendarPage() {
     }
 
     try {
-      debugger;
       setLoading(true);
       const [startDate, endDate] = getDateRangeKey().split('_');
       const params = new URLSearchParams({

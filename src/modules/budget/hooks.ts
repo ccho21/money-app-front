@@ -1,116 +1,108 @@
-import { useState } from 'react';
+import { DateFilterParams } from '@/common/types';
 import {
+  BudgetCategoryCreateRequestDTO,
+  BudgetCategoryItemDTO,
+  BudgetCategoryListResponseDTO,
+  BudgetCategoryUpdateRequestDTO,
+  BudgetGroupItemDTO,
+  BudgetGroupSummaryDTO,
+} from './types';
+import {
+  createBudgetCategoryAPI,
   fetchBudgetByCategoryAPI,
   fetchBudgetSummaryAPI,
   fetchGroupedBudgetCategoryAPI,
+  updateBudgetCategoryAPI,
 } from './api';
 import { useBudgetStore } from './store';
-import type { DateFilterParams } from '@/common/types';
-import { BudgetCategoryPeriodItemDTO, BudgetGroupItemDTO } from './types';
 
-// 📌 예산 리스트 조회용 훅
-export const useBudgetList = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { budgets, setBudgets } = useBudgetStore((state) => ({
-    budgets: state.budgets,
-    setBudgets: state.setBudgets,
-  }));
+const normalizeAmount = (amount: string | number): number =>
+  typeof amount === 'string' ? Number(amount) : amount;
 
-  const fetchBudgets = async (params: DateFilterParams) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchBudgetByCategoryAPI(params);
-      setBudgets(data);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Failed to fetch budgets';
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    budgets: budgets?.items || [],
-    fetchBudgets,
-    loading,
-    error,
-  };
+/**
+ * ✅ [GET] /budgets/by-category
+ */
+export const fetchBudgetsByCategory = async (
+  params: DateFilterParams
+): Promise<void> => {
+  const { setBudgets, setLoading, setError } = useBudgetStore.getState();
+  setLoading(true);
+  try {
+    const data: BudgetCategoryListResponseDTO = await fetchBudgetByCategoryAPI(
+      params
+    );
+    setBudgets(data);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch budget categories';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
 };
 
-// 📌 예산 요약 조회용 훅
-export const useBudgetSummary = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { summary, setSummary } = useBudgetStore((state) => ({
-    summary: state.summary,
-    setSummary: state.setSummary,
-  }));
-
-  const fetchSummary = async (params: DateFilterParams) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchBudgetSummaryAPI(params);
-      setSummary(data);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Failed to fetch summary';
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    summary,
-    fetchSummary,
-    loading,
-    error,
-  };
+/**
+ * ✅ [GET] /budgets/summary
+ */
+export const fetchBudgetSummary = async (
+  params: DateFilterParams
+): Promise<void> => {
+  const { setSummary, setLoading, setError } = useBudgetStore.getState();
+  setLoading(true);
+  try {
+    const data: BudgetGroupSummaryDTO = await fetchBudgetSummaryAPI(params);
+    setSummary(data);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Failed to fetch budget summary';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
 };
 
-// 📌 budget 항목 삭제용 액션 훅
-export const useBudgetActions = () => {
-  const { deleteBudgetItem } = useBudgetStore((state) => ({
-    deleteBudgetItem: state.deleteBudgetItem,
-  }));
-
-  return { deleteBudgetItem };
+/**
+ * ✅ [POST] /budgets/by-category
+ */
+export const createBudgetCategory = async (
+  data: BudgetCategoryCreateRequestDTO
+): Promise<BudgetCategoryItemDTO> => {
+  const prepared = { ...data, amount: normalizeAmount(data.amount) };
+  return await createBudgetCategoryAPI(prepared);
 };
 
-export const useBudgetGroup = () => {
-  const [budgets, setBudgets] = useState<BudgetCategoryPeriodItemDTO[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+/**
+ * ✅ [PUT] /budgets/by-category/:id
+ */
+export const updateBudgetCategory = async (
+  id: string,
+  data: BudgetCategoryUpdateRequestDTO
+): Promise<BudgetCategoryItemDTO> => {
+  return await updateBudgetCategoryAPI(id, data);
+};
 
-  const fetchGroupedBudgets = async (
-    categoryId: string,
-    params: DateFilterParams
-  ) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data: BudgetGroupItemDTO = await fetchGroupedBudgetCategoryAPI(
-        categoryId,
-        params
-      );
-      setBudgets(data.budgets);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Failed to fetch grouped budgets';
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    budgets,
-    fetchGroupedBudgets,
-    loading,
-    error,
-  };
+/**
+ * ✅ [POST] /budgets/by-category/:categoryId (grouped view)
+ */
+export const fetchBudgetCategoriesByCategoryId = async (
+  categoryId: string,
+  filter: DateFilterParams
+): Promise<void> => {
+  const { setBudgetGroup, setLoading, setError } = useBudgetStore.getState();
+  setLoading(true);
+  try {
+    const data: BudgetGroupItemDTO = await fetchGroupedBudgetCategoryAPI(
+      categoryId,
+      filter
+    );
+    setBudgetGroup(data);
+  } catch (err) {
+    const message =
+      err instanceof Error
+        ? err.message
+        : 'Failed to fetch grouped budget data';
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
 };
