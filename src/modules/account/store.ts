@@ -11,7 +11,7 @@ import { devtools } from 'zustand/middleware';
 interface AccountStoreState {
   accounts: AccountDetailDTO[];
   selectedAccount: AccountDetailDTO | null;
-  summary: AccountTransactionSummaryDTO[]; // ✅ 배열로 수정
+  summary: AccountTransactionSummaryDTO | null;
   accountDashboard: AccountDashboardDTO | null;
 
   isLoading: boolean;
@@ -19,7 +19,7 @@ interface AccountStoreState {
 
   setAccounts: (data: AccountDetailDTO[]) => void;
   setSelectedAccount: (acc: AccountDetailDTO) => void;
-  setSummary: (data: AccountTransactionSummaryDTO[]) => void;
+  setSummary: (data: AccountTransactionSummaryDTO) => void;
   setAccountDashboard: (data: AccountDashboardDTO) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -45,7 +45,7 @@ export const useAccountStore = create<AccountStoreState>()(
       set({
         accounts: [],
         selectedAccount: null,
-        summary: [],
+        summary: null,
         isLoading: false,
         error: null,
       }),

@@ -7,7 +7,6 @@ import BottomTabBar from '@/components/common/BottomTabBar';
 import DateNavigator from '@/components/ui/check/DateNavigator';
 import StatsHeader from './_components/StatsHeader';
 import TabMenu from '@/components/common/TabMenu';
-
 import { useFilterStore } from '@/stores/useFilterStore';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
 import type { TransactionType } from '@/modules/transaction/types';
@@ -38,19 +37,18 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     (s) => s.layoutOptions
   );
 
-  const hasInitialized = useRef(false); // 최초 1회 실행 제어
+  const hasInitialized = useRef(false);
 
+  // 👉 레이아웃 옵션 동기화
   useEffect(() => {
-    const layoutOptions = getDefaultLayoutOptions(pathname);
-    setLayoutOptions(layoutOptions);
+    setLayoutOptions(getDefaultLayoutOptions(pathname));
+    return resetLayoutOptions;
+  }, [pathname, setLayoutOptions, resetLayoutOptions]);
 
-    return () => {
-      resetLayoutOptions(); // optional
-    };
-  }, [pathname]);
-
+  // 👉 쿼리 파싱 후 store 반영 (최초 1회)
   useEffect(() => {
     if (hasInitialized.current) return;
+
     const partialQuery: Partial<typeof query> = {};
     let parsedDate: Date | null = null;
 
@@ -93,8 +91,6 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     groupBy,
     transactionType,
     setQuery,
-    router,
-    pathname,
   ]);
 
   const tabs = [
@@ -109,7 +105,7 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
+    <div className="min-h-screen pb-[10vh] flex flex-col h-full">
       {!hideTopNav && <TopNav />}
       {!hideStatsHeader && <StatsHeader />}
       {!hideDateNav && <DateNavigator withTransactionType />}
@@ -118,11 +114,11 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
           tabs={tabs}
           active={transactionType}
           onChange={handleTabChange}
-          variant='underline'
+          variant="underline"
         />
       )}
 
-      <main className='flex-1 overflow-y-auto bg-surface'>{children}</main>
+      <main className="flex-1 overflow-y-auto bg-surface">{children}</main>
 
       <BottomTabBar />
     </div>

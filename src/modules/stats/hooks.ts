@@ -1,3 +1,5 @@
+// 파일: src/modules/stats/hooks.ts
+
 import { DateFilterParams } from '@/common/types';
 import {
   fetchStatsByCategory,
@@ -94,11 +96,14 @@ export const fetchNoteDetail = async (
 };
 
 // [SUMMARY] category
-export const fetchCategorySummary = async (params: DateFilterParams) => {
+export const fetchCategorySummary = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
   const { setCategorySummary, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsCategorySummary(params);
+    const data = await fetchStatsCategorySummary(categoryId, params);
     setCategorySummary(data);
   } finally {
     setLoading(false);
@@ -106,11 +111,14 @@ export const fetchCategorySummary = async (params: DateFilterParams) => {
 };
 
 // [SUMMARY] budget
-export const fetchBudgetSummary = async (params: DateFilterParams) => {
+export const fetchBudgetSummary = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
   const { setBudgetSummary, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsBudgetSummary(params);
+    const data = await fetchStatsBudgetSummary(categoryId, params);
     setBudgetSummary(data);
   } finally {
     setLoading(false);
@@ -118,11 +126,14 @@ export const fetchBudgetSummary = async (params: DateFilterParams) => {
 };
 
 // [SUMMARY] note
-export const fetchNoteSummary = async (params: DateFilterParams) => {
+export const fetchNoteSummary = async (
+  categoryId: string,
+  params: DateFilterParams
+) => {
   const { setNoteSummary, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsNoteSummary(params);
+    const data = await fetchStatsNoteSummary(categoryId, params);
     setNoteSummary(data);
   } finally {
     setLoading(false);

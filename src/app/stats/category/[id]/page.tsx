@@ -9,86 +9,74 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
 import {
-  fetchStatsCategoryByCategoryId,
-  fetchStatsSummaryByCategoryId,
-} from '@/features/stats/hooks';
-import { CategoryType } from '@/features/category/types';
+  fetchCategoryDetail,
+  fetchCategorySummary,
+} from '@/modules/stats/hooks';
+import { CategoryType } from '@/modules/category/types';
 
-import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
-import StatComposedChart from '@/components/ui/check/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
+import StatComposedChart from '@/components/ui/check/ComposedChart';
+import Panel from '@/components/ui/check/Panel';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import { useShallow } from 'zustand/shallow';
 
-//
-// Category detail stats page
-//
 export default function StatsCategoryDetailPage() {
-  const { id: categoryId } = useParams();
   const router = useRouter();
+  const { id: categoryId } = useParams();
 
-  const { categoryDetailResponse, categorySummaryResponse, isLoading } =
-    useStatsStore((s) => s.state);
+  const { groupBy, transactionType, date } = useFilterStore((s) => s.query);
+  const { getDateRangeKey, setQuery } = useFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
 
-  const resetTopNav = useUIStore((s) => s.resetTopNav);
-  const setTopNav = useUIStore((s) => s.setTopNav);
-
-  const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { groupBy, transactionType, date } = query;
-
-  //
-  // Construct params for API calls
-  //
-  const statsParams = useMemo(() => {
-    const [startDate, endDate] = getDateRangeKey().split('_');
-    return {
+  const params = useMemo(
+    () => ({
       startDate,
       endDate,
+      groupBy,
       type: transactionType as CategoryType,
-      groupBy: groupBy,
-    };
-  }, [getDateRangeKey, transactionType, groupBy, date]);
+    }),
+    [startDate, endDate, groupBy, transactionType]
+  );
 
-  //
-  // Fetch detail + summary data on mount or param change
-  //
+  const { categoryDetail, categorySummary, isLoading } = useStatsStore(
+    useShallow((s) => ({
+      categoryDetail: s.categoryDetail,
+      categorySummary: s.categorySummary,
+      isLoading: s.isLoading,
+    }))
+  );
+
+  const setTopNav = useUIStore((s) => s.setTopNav);
+  const resetTopNav = useUIStore((s) => s.resetTopNav);
+
+  // Fetch detail + summary
   useEffect(() => {
     if (!categoryId) return;
-    fetchStatsSummaryByCategoryId(String(categoryId), statsParams);
-    fetchStatsCategoryByCategoryId(String(categoryId), {
-      ...statsParams,
-      groupBy: 'daily',
-    });
-  }, [categoryId, statsParams]);
+    fetchCategorySummary(String(categoryId), params);
+    fetchCategoryDetail(String(categoryId), { ...params, groupBy: 'daily' });
+  }, [categoryId, params]);
 
-  //
-  // Set top nav title from summary
-  //
+  // Set top nav title
   useEffect(() => {
     setTopNav({
-      title: categorySummaryResponse?.categoryName ?? 'Category',
+      title: 'Category',
       onBack: () => router.back(),
     });
     return () => resetTopNav();
-  }, [setTopNav, resetTopNav, categorySummaryResponse, router]);
+  }, [setTopNav, resetTopNav, categorySummary, router]);
 
-  //
-  // Build chart data
-  //
-  const barData = useMemo(() => {
-    if (!categorySummaryResponse?.data) return [];
-    return categorySummaryResponse.data.map((summary) => ({
-      month: summary.label,
-      startDate: summary.startDate,
-      endDate: summary.endDate,
-      value: transactionType === 'expense' ? summary.expense : summary.income,
-      isCurrent: summary.isCurrent,
+  const chartData = useMemo(() => {
+    if (!categorySummary || !categorySummary.items.length) return [];
+    return categorySummary.items.map((item) => ({
+      month: item.label,
+      startDate: item.rangeStart,
+      endDate: item.rangeEnd,
+      value: transactionType === 'expense' ? item.expense : item.income,
+      isCurrent: item.isCurrent,
     }));
-  }, [categorySummaryResponse, transactionType]);
+  }, [categorySummary, transactionType]);
 
-  //
-  // Handle bar chart click
-  //
   const handleDateClick = (startDate: string) => {
     setQuery({ date: startOfDay(parseISO(startDate)) });
   };
@@ -100,33 +88,29 @@ export default function StatsCategoryDetailPage() {
   return (
     <div className='space-y-4'>
       {/* Summary section */}
-      {categoryDetailResponse && (
+      {categoryDetail && (
         <Panel>
           <SummaryBox
             items={[
               {
                 label: 'Income',
-                value: categoryDetailResponse.incomeTotal,
+                value: categoryDetail.totalIncome,
                 color:
-                  categoryDetailResponse.incomeTotal > 0
+                  categoryDetail.totalIncome > 0
                     ? 'text-primary'
                     : 'text-muted',
                 prefix: '$',
               },
               {
                 label: 'Exp.',
-                value: categoryDetailResponse.expenseTotal,
+                value: categoryDetail.totalExpense,
                 color:
-                  categoryDetailResponse.expenseTotal > 0
-                    ? 'text-error'
-                    : 'text-muted',
+                  categoryDetail.totalExpense > 0 ? 'text-error' : 'text-muted',
                 prefix: '$',
               },
               {
                 label: 'Total',
-                value:
-                  categoryDetailResponse.incomeTotal -
-                  categoryDetailResponse.expenseTotal,
+                value: categoryDetail.totalIncome - categoryDetail.totalExpense,
                 color: 'text-foreground',
                 prefix: '$',
               },
@@ -135,25 +119,24 @@ export default function StatsCategoryDetailPage() {
         </Panel>
       )}
 
-      {/* Chart section */}
-      {barData.length > 0 && (
+      {/* Chart */}
+      {chartData.length > 0 && (
         <div className='w-full h-40'>
-          <StatComposedChart data={barData} onSelect={handleDateClick} />
+          <StatComposedChart data={chartData} onSelect={handleDateClick} />
         </div>
       )}
 
       {/* Transaction breakdown */}
-      {categoryDetailResponse?.data?.length ? (
+      {categoryDetail?.data?.length ? (
         <div className='space-y-4'>
-          {categoryDetailResponse.data.map((group, i) => (
+          {categoryDetail.data.map((group, i) => (
             <TransactionGroup
               key={group.label + i}
               label={group.label}
               rangeStart={group.rangeStart}
               rangeEnd={group.rangeEnd}
-              incomeTotal={group.incomeTotal}
-              expenseTotal={group.expenseTotal}
-              group={group}
+              groupIncome={group.income}
+              groupExpense={group.expense}
             />
           ))}
         </div>

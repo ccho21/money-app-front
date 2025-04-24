@@ -2,49 +2,61 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { useAccountStore } from '@/modules/account/store';
 import { useBudgetStore } from '@/modules/budget/store';
 import { useFilterStore } from '@/stores/useFilterStore';
+
 import { fetchAccountSummary } from '@/modules/account/hooks';
-import { DateFilterParams } from '@/common/types';
+
+import type { DateFilterParams } from '@/common/types';
+
 import SummaryBox from '@/components/stats/SummaryBox';
 import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
 import Divider from '@/components/ui/check/Divider';
-import { fetchBudgetSummary } from '@/modules/budget/hooks';
+import { useShallow } from 'zustand/shallow';
 
-//
-// Dashboard summary page: shows account + budget stats in a snapshot
-//
 export default function SummaryPage() {
   const router = useRouter();
-  const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { date, groupBy } = query;
 
-  const summaryResponse = useAccountStore((s) => s.state.summaryResponse);
-  const isAccountLoading = useAccountStore((s) => s.state.isLoading);
-  const accountError = useAccountStore((s) => s.state.error);
+  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { groupBy, date } = query;
 
-  const budgetSummaryResponse = useBudgetStore(
-    (s) => s.state.budgetSummaryResponse
+  const {
+    summary: accountSummary,
+    isLoading: isAccountLoading,
+    error: accountError,
+  } = useAccountStore(
+    useShallow((s) => ({
+      summary: s.summary,
+      isLoading: s.isLoading,
+      error: s.error,
+    }))
   );
-  const isBudgetLoading = useBudgetStore((s) => s.state.isLoading);
-  const budgetError = useBudgetStore((s) => s.state.error);
 
-  //
-  // Ensure groupBy is 'monthly' only when needed
-  //
+  const {
+    summary: budgetSummary,
+    isLoading: isBudgetLoading,
+    error: budgetError,
+  } = useBudgetStore(
+    useShallow((s) => ({
+      summary: s.summary,
+      isLoading: s.isLoading,
+      error: s.error,
+    }))
+  );
+
+  // ✅ groupBy: 'monthly' 강제
   useEffect(() => {
     if (groupBy !== 'monthly') {
       setQuery({ groupBy: 'monthly' });
     }
   }, [groupBy, setQuery]);
 
-  //
-  // Compute startDate / endDate only once per groupBy change
-  //
+  // ✅ 필터 기준 params
   const params: DateFilterParams = useMemo(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
     return {
@@ -52,29 +64,22 @@ export default function SummaryPage() {
       endDate,
       groupBy: 'monthly',
     };
-  }, [getDateRangeKey]); // ✅ date를 꼭 포함해야 한다
+  }, [getDateRangeKey, date]);
 
-  //
-  // Fetch account and budget summaries only if missing
-  //
+  // ✅ fetch 요약 데이터
   useEffect(() => {
-    (async () => {
-      fetchAccountSummary(params);
-      fetchBudgetSummary(params);
-    })();
-  }, [params, date]);
+    fetchAccountSummary(params);
+    // fetchBudgetSummary(params);
+  }, [params]);
 
-  //
-  // Memoize computed totals
-  //
+  // ✅ 총합 계산
   const [incomeTotal, expenseTotal] = useMemo(() => {
-    if (!summaryResponse?.items || !summaryResponse?.items.length)
-      return [0, 0];
+    if (!accountSummary?.items?.length) return [0, 0];
     return [
-      summaryResponse.items.reduce((sum, item) => sum + item.incomeTotal, 0),
-      summaryResponse.items.reduce((sum, item) => sum + item.expenseTotal, 0),
+      accountSummary.items.reduce((sum, item) => sum + item.totalIncome, 0),
+      accountSummary.items.reduce((sum, item) => sum + item.totalExpense, 0),
     ];
-  }, [summaryResponse]);
+  }, [accountSummary]);
 
   const summaryItems = useMemo(
     () => [
@@ -100,9 +105,7 @@ export default function SummaryPage() {
     [incomeTotal, expenseTotal]
   );
 
-  //
-  // Handle loading and error state
-  //
+  // ✅ 로딩 / 에러 / 비어있음 처리
   if (isAccountLoading || isBudgetLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
@@ -115,11 +118,11 @@ export default function SummaryPage() {
     );
   }
 
-  if (!budgetSummaryResponse || !summaryResponse?.items.length) {
+  if (!budgetSummary || !accountSummary?.items?.length) {
     return <EmptyMessage />;
   }
 
-  const handleClick = () => {
+  const handleBudgetClick = () => {
     router.push('/stats/budget');
   };
 
@@ -128,12 +131,15 @@ export default function SummaryPage() {
       <Panel>
         <SummaryBox items={summaryItems} />
       </Panel>
+
       <Panel>
-        <AccountBox accounts={summaryResponse.items} />
+        <AccountBox accounts={accountSummary.items} />
       </Panel>
+
       <Divider />
+
       <Panel>
-        <BudgetBox item={budgetSummaryResponse} handleClick={handleClick} />
+        <BudgetBox item={budgetSummary} handleClick={handleBudgetClick} />
       </Panel>
     </div>
   );

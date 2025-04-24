@@ -23,7 +23,7 @@ export default function TransactionLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  const type = useTransactionFormStore((s) => s.form.type);
+  const type = useTransactionFormStore((s) => s.state.type);
   const setField = useTransactionFormStore((s) => s.setField);
   const [activeTab, setActiveTab] = useState<string>(type || 'expense');
 

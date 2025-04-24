@@ -99,24 +99,38 @@ export default function TransferForm({ mode, id }: Props) {
 
   return (
     <div className='space-y-5 px-4 pt-5 pb-10'>
-      {orderedInputs}
+      <Input
+        label='Amount'
+        placeholder='$ 0'
+        value={amount}
+        onChange={(e) => setField('amount', e.target.value)}
+        type='number'
+      />
 
       <Selector
-        label='Category'
-        value={selectedCategory?.name ?? ''}
-        onChange={(val) => setField('categoryId', val)}
-        options={categories.filter((c) => c.type === 'income')}
-        getOptionLabel={(c) => c.name}
-        getOptionValue={(c) => c.id}
-        onEdit={() => router.push('/category')}
+        label='From Account'
+        value={fromAccount?.name ?? ''}
+        onChange={(val) => setField('from', val)}
+        options={accounts}
+        getOptionLabel={(a) => a.name}
+        getOptionValue={(a) => a.id}
+        onEdit={() => router.push('/account')}
+      />
+
+      <Selector
+        label='To Account'
+        value={toAccount?.name ?? ''}
+        onChange={(val) => setField('to', val)}
+        options={accounts}
+        getOptionLabel={(a) => a.name}
+        getOptionValue={(a) => a.id}
+        onEdit={() => router.push('/account')}
       />
 
       <DatePicker
         label='Date'
         value={startOfDay(new Date(date))}
-        onChange={(val: Date) => {
-          setField('date', val.toISOString());
-        }}
+        onChange={(val) => setField('date', val.toISOString())}
       />
 
       <Input
@@ -132,7 +146,7 @@ export default function TransferForm({ mode, id }: Props) {
         rows={1}
       />
 
-      <Button onClick={handleSubmit} disabled={!dirty} className='w-full'>
+      <Button onClick={handleSubmit} className='w-full'>
         {mode === 'edit' ? 'Update' : 'Save'}
       </Button>
 

@@ -1,50 +1,41 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useShallow } from 'zustand/shallow';
+import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
+import { useTransactionStore } from '@/modules/transaction/store';
 import { fetchTransactionSummary } from '@/modules/transaction/hooks';
-import { DateFilterParams } from '@/common/types';
-import { TransactionDetailDTO } from '@/modules/transaction/types';
+
+import type { DateFilterParams } from '@/common/types';
+import type { TransactionDetailDTO } from '@/modules/transaction/types';
 
 import DailyView from '@/app/dashboard/_components/DailyView';
+import { useShallow } from 'zustand/shallow';
 
-//
-// Daily dashboard page: shows income/expense by day
-//
 export default function DailyPage() {
   const router = useRouter();
-  const pathname = usePathname();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
   const { groupBy, date } = query;
 
-  const { isLoading, transactionSummaryResponse, actions } =
-    useTransactionStore(
-      useShallow((state) => ({
-        isLoading: state.isLoading,
-        transactionSummaryResponse: state.transactionSummaryResponse,
-        actions: state.actions,
-      }))
-    );
+  const { summary, isLoading, setSelectedTransaction } = useTransactionStore(
+    useShallow((s) => ({
+      summary: s.summary,
+      isLoading: s.isLoading,
+      setSelectedTransaction: s.setSelectedTransaction,
+    }))
+  );
 
-  //
-  // Ensure groupBy is set to 'monthly' for daily view
-  //
   useEffect(() => {
     if (groupBy !== 'monthly') {
       setQuery({ groupBy: 'monthly' });
     }
   }, [groupBy, setQuery]);
 
-  //
-  // Fetch daily transaction summary for the current month groupBy
-  //
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
+
     const params: DateFilterParams = {
       groupBy: 'daily',
       startDate,
@@ -52,43 +43,40 @@ export default function DailyPage() {
     };
 
     fetchTransactionSummary(params);
-  }, [getDateRangeKey, pathname, date]);
+  }, [getDateRangeKey, date]);
 
-  const totalIncome = transactionSummaryResponse?.totalIncome ?? 0;
-  const totalExpense = transactionSummaryResponse?.totalExpense ?? 0;
+  const totalIncome = summary?.totalIncome ?? 0;
+  const totalExpense = summary?.totalExpense ?? 0;
 
-  const summaryItems = [
-    {
-      label: 'Income',
-      value: totalIncome,
-      color: totalIncome > 0 ? 'text-info' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Exp.',
-      value: totalExpense,
-      color: totalExpense > 0 ? 'text-error' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Total',
-      value: totalIncome - totalExpense,
-      color: 'text-foreground',
-      prefix: '$',
-    },
-  ];
+  const summaryItems = useMemo(
+    () => [
+      {
+        label: 'Income',
+        value: totalIncome,
+        color: totalIncome > 0 ? 'text-info' : 'text-muted',
+        prefix: '$',
+      },
+      {
+        label: 'Exp.',
+        value: totalExpense,
+        color: totalExpense > 0 ? 'text-error' : 'text-muted',
+        prefix: '$',
+      },
+      {
+        label: 'Total',
+        value: totalIncome - totalExpense,
+        color: 'text-foreground',
+        prefix: '$',
+      },
+    ],
+    [totalIncome, totalExpense]
+  );
 
-  //
-  // Handle transaction click
-  //
   const handleTransactionClick = (tx: TransactionDetailDTO) => {
-    actions.setSelectedTransaction(tx);
+    setSelectedTransaction(tx);
     router.push(`/transaction/${tx.id}/edit`);
   };
 
-  //
-  // Handle day header click to create new transaction
-  //
   const handleHeaderClick = (date: string) => {
     router.push(`/transaction/new?date=${date}`);
   };
@@ -96,7 +84,7 @@ export default function DailyPage() {
   return (
     <DailyView
       isLoading={isLoading}
-      data={transactionSummaryResponse}
+      data={summary}
       summaryItems={summaryItems}
       onTransactionClick={handleTransactionClick}
       onHeaderClick={handleHeaderClick}

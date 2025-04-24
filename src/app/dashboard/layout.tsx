@@ -6,14 +6,14 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
-import DateNavigator from '@/components/ui/check/DateNavigator';
-import { Button } from '@/components/ui/check/Button';
 
 import { Plus } from 'lucide-react';
 import { parseLocalDate, formatDate } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import type { GroupBy } from '@/common/types';
+import { Button } from '@/components/ui/check/Button';
+import DateNavigator from '@/components/ui/check/DateNavigator';
 
 const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
@@ -22,63 +22,46 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const current = pathname.split('/')[2] || 'daily';
-  const dateParam = searchParams.get('date');
-  const rangeParam = searchParams.get('groupBy');
-
   const { query, setQuery } = useFilterStore();
   const { date, groupBy } = query;
 
-  const hasInitialized = useRef(false); // ✅ 최초 1회만 실행 제어
+  const hasInitialized = useRef(false);
+  const currentTab = pathname.split('/')[2] || 'daily';
 
+  const dateParam = searchParams.get('date');
+  const groupByParam = searchParams.get('groupBy');
+
+  // ✅ 최초 진입 시 쿼리 파라미터 → 상태로 반영
   useEffect(() => {
-    const partialQuery: Partial<typeof query> = {};
-    let parsedDate: Date | null = null;
+    if (hasInitialized.current) return;
 
-    // ✅ 최초 1회만 실행
-    if (!hasInitialized.current) {
-      if (dateParam) {
-        try {
-          parsedDate = parseLocalDate(dateParam);
-          if (formatDate(parsedDate) !== formatDate(date)) {
-            partialQuery.date = parsedDate;
-          }
-        } catch (err) {
-          console.log('❌ Invalid dateParam', err);
+    const patch: Partial<typeof query> = {};
+
+    if (dateParam) {
+      try {
+        const parsed = parseLocalDate(dateParam);
+        if (formatDate(parsed) !== formatDate(date)) {
+          patch.date = parsed;
         }
+      } catch (err) {
+        console.warn('Invalid date param', err);
       }
-
-      if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
-        if (groupBy !== rangeParam) {
-          partialQuery.groupBy = rangeParam as GroupBy;
-        }
-      }
-
-      if (Object.keys(partialQuery).length > 0) {
-        setQuery(partialQuery);
-      }
-
-      hasInitialized.current = true;
     }
 
-    // ✅ 매번 실행되어야 하는 부분
-    // const needsFallback =
-    //   !dateParam || !validRanges.includes(rangeParam as GroupBy);
+    if (groupByParam && validRanges.includes(groupByParam as GroupBy)) {
+      if (groupBy !== groupByParam) {
+        patch.groupBy = groupByParam as GroupBy;
+      }
+    }
 
-    //   if (needsFallback) {
-    //     const fallbackDate = new Date();
+    if (Object.keys(patch).length > 0) {
+      setQuery(patch);
+    }
 
-    //     setQuery({
-    //       date: fallbackDate,
-    //       groupBy: 'monthly',
-    //     });
+    hasInitialized.current = true;
+  }, [dateParam, groupByParam, setQuery, date, groupBy]);
 
-    //     // 선택: URL도 맞춰주고 싶다면 ↓
-    //     const fallbackURL = `/dashboard/${current}?date=${formatDate(fallbackDate)}&groupBy=monthly`;
-    //     router.replace(fallbackURL);
-    //   }
-  }, [dateParam, rangeParam, date, groupBy, current, setQuery, router]);
-
+  // ✅ 네비게이션 상단 타이틀 세팅
   useEffect(() => {
     useUIStore.getState().setTopNav({ title: 'Trans.' });
     return () => useUIStore.getState().resetTopNav();
@@ -91,33 +74,33 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     { key: 'summary', label: 'Summary' },
   ];
 
+  const handleTabChange = (key: string) => {
+    const currentDate = formatDate(date);
+    router.push(`/dashboard/${key}?date=${currentDate}&groupBy=${groupBy}`);
+  };
+
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
+    <div className="min-h-screen pb-[10vh] flex flex-col h-full">
       <div>
         <TopNav />
         <DateNavigator />
         <TabMenu
           tabs={tabs}
-          active={current}
-          variant='underline'
-          onChange={(key) => {
-            const currentDate = formatDate(date);
-            router.push(
-              `/dashboard/${key}?date=${currentDate}&groupBy=${groupBy}`
-            );
-          }}
+          active={currentTab}
+          variant="underline"
+          onChange={handleTabChange}
         />
       </div>
 
-      <div className='flex-1 overflow-y-auto bg-surface'>{children}</div>
+      <div className="flex-1 overflow-y-auto bg-surface">{children}</div>
 
       <BottomTabBar />
       <Button
-        variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80'
+        variant="solid"
+        className="fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80"
         onClick={() => router.push('/transaction/new')}
       >
-        <Plus className='w-4 h-4' />
+        <Plus className="w-4 h-4" />
       </Button>
     </div>
   );

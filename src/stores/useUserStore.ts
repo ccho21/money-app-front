@@ -1,8 +1,8 @@
 // 📄 src/stores/user/user.store.ts
 
+import { User } from '@/modules/auth/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { User } from '@/features/auth/types';
 
 interface UserStoreState {
   state: {

@@ -1,3 +1,5 @@
+// 파일: src/modules/stats/store.ts
+
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
@@ -11,17 +13,18 @@ import {
   StatsBudgetDetailDTO,
   StatsNoteDetailDTO,
 } from './types';
+import { BaseListSummaryResponseDTO } from '@/common/types';
 
 type StatsStore = {
+  // Group
+  categoryGroup: BaseListSummaryResponseDTO<StatsCategoryGroupItemDTO> | null;
+  budgetGroup: BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO> | null;
+  noteGroup: BaseListSummaryResponseDTO<StatsNoteGroupItemDTO> | null;
+
   // Summary
   categorySummary: StatsCategorySummaryDTO | null;
   budgetSummary: StatsBudgetSummaryDTO | null;
   noteSummary: StatsNoteSummaryDTO | null;
-
-  // Group
-  categoryGroup: StatsCategoryGroupItemDTO[];
-  budgetGroup: StatsBudgetGroupItemDTO[];
-  noteGroup: StatsNoteGroupItemDTO[];
 
   // Detail
   categoryDetail: StatsCategoryDetailDTO | null;
@@ -33,9 +36,15 @@ type StatsStore = {
   error: string | null;
 
   // Actions
-  setCategoryGroup: (data: StatsCategoryGroupItemDTO[]) => void;
-  setBudgetGroup: (data: StatsBudgetGroupItemDTO[]) => void;
-  setNoteGroup: (data: StatsNoteGroupItemDTO[]) => void;
+  setCategoryGroup: (
+    data: BaseListSummaryResponseDTO<StatsCategoryGroupItemDTO>
+  ) => void;
+  setBudgetGroup: (
+    data: BaseListSummaryResponseDTO<StatsBudgetGroupItemDTO>
+  ) => void;
+  setNoteGroup: (
+    data: BaseListSummaryResponseDTO<StatsNoteGroupItemDTO>
+  ) => void;
 
   setCategoryDetail: (data: StatsCategoryDetailDTO) => void;
   setBudgetDetail: (data: StatsBudgetDetailDTO) => void;
@@ -56,9 +65,9 @@ export const useStatsStore = create<StatsStore>()(
     budgetSummary: null,
     noteSummary: null,
 
-    categoryGroup: [],
-    budgetGroup: [],
-    noteGroup: [],
+    categoryGroup: null,
+    budgetGroup: null,
+    noteGroup: null,
 
     categoryDetail: null,
     budgetDetail: null,
@@ -87,9 +96,9 @@ export const useStatsStore = create<StatsStore>()(
         categorySummary: null,
         budgetSummary: null,
         noteSummary: null,
-        categoryGroup: [],
-        budgetGroup: [],
-        noteGroup: [],
+        categoryGroup: null,
+        budgetGroup: null,
+        noteGroup: null,
         categoryDetail: null,
         budgetDetail: null,
         noteDetail: null,

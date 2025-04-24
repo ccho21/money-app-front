@@ -41,9 +41,7 @@ export default function AccountDetailDashboardLayout({
   const { query, setQuery } = useFilterStore();
   const { date, groupBy } = query;
 
-  const {
-    actions: { reset },
-  } = useAccountFormStore();
+  const { reset } = useAccountFormStore();
 
   const hasInitialized = useRef(false);
 

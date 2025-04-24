@@ -5,24 +5,27 @@ import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByCategory } from '@/features/stats/hooks';
-import StatsView from '../_components/StatsView';
-import { DateFilterParams } from '@/common/types';
-import { CategoryType } from '@/features/category/types';
+import { fetchCategoryStats } from '@/modules/stats/hooks';
 
-//
-// Category stats page - shows breakdown by category
-//
+import { CategoryType } from '@/modules/category/types';
+import { DateFilterParams } from '@/common/types';
+
+import StatsView from '../_components/StatsView';
+import { useShallow } from 'zustand/shallow';
+
 export default function StatsCategoryPage() {
   const router = useRouter();
 
-  const { categoryResponse, isLoading } = useStatsStore((s) => s.state);
-  const { query, getDateRangeKey } = useFilterStore();
-  const { transactionType, groupBy } = query;
+  const { categoryGroup, isLoading } = useStatsStore(
+    useShallow((s) => ({
+      categoryGroup: s.categoryGroup,
+      isLoading: s.isLoading,
+    }))
+  );
 
-  //
-  // Memoize the query params
-  //
+  const { query, getDateRangeKey } = useFilterStore();
+  const { groupBy, transactionType } = query;
+
   const params: DateFilterParams = useMemo(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
     return {
@@ -33,17 +36,14 @@ export default function StatsCategoryPage() {
     };
   }, [getDateRangeKey, groupBy, transactionType]);
 
-  //
-  // Fetch category stats on param change
-  //
   useEffect(() => {
-    fetchStatsByCategory(params);
+    fetchCategoryStats(params);
   }, [params]);
 
   return (
     <StatsView
       isLoading={isLoading}
-      data={categoryResponse?.items ?? []}
+      data={categoryGroup?.items ?? []}
       startDate={params.startDate}
       endDate={params.endDate}
       onItemClick={(id: string) => router.push(`/stats/category/${id}`)}

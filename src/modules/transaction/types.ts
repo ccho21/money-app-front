@@ -1,5 +1,6 @@
 import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryDetailDTO } from '../category/types';
+import { AccountDetailDTO } from '../account/types';
 
 export type TransactionType = 'income' | 'expense' | 'transfer';
 
@@ -18,24 +19,18 @@ export interface TransactionCalendarDTO {
 
 export interface TransactionDetailDTO {
   id: string;
-  type: string;
+  type: TransactionType;
   amount: number;
   accountId: string;
-  toAccountId?: string;
-  linkedTransferId?: string;
+  toAccountId: string | null;
+  linkedTransferId: string | null;
   date: string;
   createdAt: string;
-  note?: string;
-  description?: string;
+  note?: string | null;
+  description?: string | null;
+  account: AccountDetailDTO;
+  toAccount?: AccountDetailDTO | null;
   category?: CategoryDetailDTO | null;
-  account: {
-    id: string;
-    name: string;
-    color?: string | null;
-  };
-  toAccount?: {
-    id: string;
-  };
   dueDate?: string | null;
   paidAt?: string | null;
 }

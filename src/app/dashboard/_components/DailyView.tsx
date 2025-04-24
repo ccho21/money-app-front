@@ -48,13 +48,13 @@ export default function DailyView({
             rangeEnd={group.rangeEnd}
             groupIncome={group.groupIncome}
             groupExpense={group.groupExpense}
-            group={group}
             onTransactionClick={(tx: TransactionDetailDTO) => {
               onTransactionClick?.(tx);
             }}
             onHeaderClick={() => {
               onHeaderClick?.(group.label);
             }}
+            group={group}
           />
         ))}
       </Panel>

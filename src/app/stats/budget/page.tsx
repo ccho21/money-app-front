@@ -1,74 +1,70 @@
 'use client';
 
 import { useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { fetchStatsByBudget } from '@/features/stats/hooks';
-import type { CategoryType } from '@/features/category/types';
+import { fetchBudgetStats } from '@/modules/stats/hooks';
+
+import type { CategoryType } from '@/modules/category/types';
 
 import BudgetView from '../_components/BudgetView';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/shallow';
 
-//
-// Budget stats overview page
-//
 export default function BudgetPage() {
   const router = useRouter();
 
   const { query, getDateRangeKey } = useFilterStore();
-  const { date, groupBy, transactionType } = query;
+  const { transactionType, groupBy } = query;
 
-  const budgetResponse = useStatsStore((s) => s.state.budgetResponse);
-  const isLoading = useStatsStore((s) => s.state.isLoading);
+  const [startDate, endDate] = getDateRangeKey().split('_');
 
-  //
-  // Build API params
-  //
-  const params = useMemo(() => {
-    const [startDate, endDate] = getDateRangeKey().split('_');
-    return {
+  const params = useMemo(
+    () => ({
       startDate,
       endDate,
-      type: transactionType as CategoryType,
       groupBy,
-    };
-  }, [getDateRangeKey, transactionType, groupBy]);
+      type: transactionType as CategoryType,
+    }),
+    [startDate, endDate, groupBy, transactionType]
+  );
 
-  //
-  // Fetch budget stats on param change
-  //
+  const { budgetGroup, isLoading } = useStatsStore(
+    useShallow((s) => ({
+      budgetGroup: s.budgetGroup,
+      isLoading: s.isLoading,
+    }))
+  );
+
   useEffect(() => {
-    fetchStatsByBudget(params);
+    fetchBudgetStats(params);
   }, [params]);
 
-  //
-  // Handle click from chart/list
-  //
   const handleClick = useCallback(
     (categoryId: string, hasBudget: boolean) => {
-      if (hasBudget) {
-        router.push(`/stats/budget/${categoryId}`);
-      } else {
-        router.push(`/budget/settings/${categoryId}/new`);
-      }
+      router.push(
+        hasBudget
+          ? `/stats/budget/${categoryId}`
+          : `/budget/settings/${categoryId}/new`
+      );
     },
     [router]
   );
 
-  //
-  // Render loading or empty state
-  //
-  if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
-  if (!budgetResponse) return <EmptyMessage />;
+  if (isLoading) {
+    return <p className='p-4 text-muted'>Loading...</p>;
+  }
 
-  //
-  // Render view
-  //
+  if (!budgetGroup || budgetGroup.items?.length === 0) {
+    return <EmptyMessage />;
+  }
+
   return (
     <BudgetView
       transactionType={transactionType as CategoryType}
-      budgetResponse={budgetResponse}
+      budgetResponse={budgetGroup}
       handleClick={handleClick}
     />
   );

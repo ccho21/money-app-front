@@ -8,108 +8,108 @@ import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
-import {
-  fetchStatsBudgetByCategoryId,
-  fetchStatsSummaryByBudget,
-} from '@/features/stats/hooks';
+import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
 
-import { CategoryType } from '@/features/category/types';
+import { CategoryType } from '@/modules/category/types';
 import { TransactionGroupItemDTO } from '@/modules/transaction/types';
 
-import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
-import ComposedChart from '@/components/ui/check/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
+import Panel from '@/components/ui/check/Panel';
+import ComposedChart from '@/components/ui/check/ComposedChart';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import { useShallow } from 'zustand/shallow';
 
 export default function StatsBudgetDetailPage() {
-  const categoryId = useParams().id;
+  const { id: categoryId } = useParams();
   const router = useRouter();
 
-  const {
-    state: { statsSummaryBudgetResposne, budgetDetailResponse, isLoading },
-  } = useStatsStore();
+  const { groupBy, transactionType, date } = useFilterStore((s) => s.query);
+  const { getDateRangeKey, setQuery } = useFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
+
+  const params = useMemo(
+    () => ({
+      startDate,
+      endDate,
+      type: transactionType as CategoryType,
+      groupBy,
+    }),
+    [startDate, endDate, groupBy, transactionType]
+  );
+
+  const { budgetSummary, budgetDetail, isLoading } = useStatsStore(
+    useShallow((s) => ({
+      budgetSummary: s.budgetSummary,
+      budgetDetail: s.budgetDetail,
+      isLoading: s.isLoading,
+    }))
+  );
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
 
-  const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { date, groupBy, transactionType } = query;
-
-  const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
-
-  const chartData = useMemo(() => {
-    if (!statsSummaryBudgetResposne) return [];
-    return statsSummaryBudgetResposne.data.map((summary) => ({
-      month: summary.label,
-      startDate: summary.startDate,
-      endDate: summary.endDate,
-      value: transactionType === 'expense' ? summary.expense : summary.income,
-      isCurrent: summary.isCurrent,
-    }));
-  }, [statsSummaryBudgetResposne, transactionType]);
-
-  useEffect(() => {
-    setTopNav({
-      title: statsSummaryBudgetResposne?.categoryName ?? 'Budget',
-      onBack: () => router.back(),
-    });
-    return () => resetTopNav();
-  }, [setTopNav, resetTopNav, statsSummaryBudgetResposne, router]);
-
   useEffect(() => {
     if (!categoryId) return;
 
-    const [startDate, endDate] = rangeKey.split('_');
-    const params = {
-      startDate,
-      endDate,
-      type: transactionType as CategoryType,
-      groupBy: groupBy,
-    };
+    fetchBudgetSummary(String(categoryId), params);
+    fetchBudgetDetail(String(categoryId), { ...params, groupBy: 'daily' });
+  }, [categoryId, params]);
 
-    Promise.all([
-      fetchStatsSummaryByBudget(String(categoryId), params),
-      fetchStatsBudgetByCategoryId(String(categoryId), {
-        ...params,
-        groupBy: 'daily',
-      }),
-    ]);
-  }, [categoryId, rangeKey, transactionType, groupBy, date]);
+  useEffect(() => {
+    setTopNav({
+      title: 'Budget',
+      onBack: () => router.back(),
+    });
+    return () => resetTopNav();
+  }, [setTopNav, resetTopNav, budgetSummary, router]);
+
+  const chartData = useMemo(() => {
+    if (!budgetSummary?.items) return [];
+    return budgetSummary.items.map((item) => ({
+      month: item.label,
+      startDate: item.rangeStart,
+      endDate: item.rangeEnd,
+      value: transactionType === 'expense' ? item.expense : item.income,
+      isCurrent: item.isCurrent,
+    }));
+  }, [budgetSummary, transactionType]);
 
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
 
   return (
-    <div>
+    <div className='space-y-4'>
       {/* 요약 정보 */}
-      <Panel>
-        <SummaryBox
-          items={[
-            {
-              label: 'Budget',
-              value: statsSummaryBudgetResposne?.totalBudget ?? 0,
-              color: 'text-primary',
-              prefix: '$',
-            },
-            {
-              label: 'Exp.',
-              value: statsSummaryBudgetResposne?.totalExpense ?? 0,
-              color: 'text-error',
-              prefix: '$',
-            },
-            {
-              label: 'Remaining',
-              value: statsSummaryBudgetResposne?.totalRemaining ?? 0,
-              color: statsSummaryBudgetResposne?.isOver
-                ? 'text-error'
-                : 'text-foreground',
-              prefix: '$',
-            },
-          ]}
-        />
-      </Panel>
+      {budgetSummary && (
+        <Panel>
+          <SummaryBox
+            items={[
+              {
+                label: 'Budget',
+                value: budgetSummary.summary?.budgetAmount ?? 0,
+                color: 'text-primary',
+                prefix: '$',
+              },
+              {
+                label: 'Exp.',
+                value: budgetSummary.summary?.expense ?? 0,
+                color: 'text-error',
+                prefix: '$',
+              },
+              {
+                label: 'Remaining',
+                value: budgetSummary.summary?.remaining ?? 0,
+                color: budgetSummary.summary?.isOver
+                  ? 'text-error'
+                  : 'text-foreground',
+                prefix: '$',
+              },
+            ]}
+          />
+        </Panel>
+      )}
 
       {/* 바 차트 */}
       {chartData.length > 0 && (
@@ -126,22 +126,19 @@ export default function StatsBudgetDetailPage() {
       )}
 
       {/* 거래 리스트 */}
-      {budgetDetailResponse?.data.length ? (
+      {budgetDetail?.data?.length ? (
         <Panel>
           <div className='space-y-4'>
-            {budgetDetailResponse.data.map(
-              (group: TransactionGroupItemDTO, i) => (
-                <TransactionGroup
-                  key={group.label + i}
-                  label={group.label}
-                  rangeStart={group.rangeStart}
-                  rangeEnd={group.rangeEnd}
-                  incomeTotal={group.incomeTotal}
-                  expenseTotal={group.expenseTotal}
-                  group={group}
-                />
-              )
-            )}
+            {budgetDetail.data.map((group, i) => (
+              <TransactionGroup
+                key={group.label + i}
+                label={group.label}
+                rangeStart={group.rangeStart}
+                rangeEnd={group.rangeEnd}
+                groupIncome={group.income}
+                groupExpense={group.expense}
+              />
+            ))}
           </div>
         </Panel>
       ) : (

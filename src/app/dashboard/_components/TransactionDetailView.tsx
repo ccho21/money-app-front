@@ -34,9 +34,7 @@ export default function TransactionDetailView({
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
   const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}`;
 
-  const {
-    actions: { setSelectedTransaction },
-  } = useTransactionStore();
+  const { setSelectedTransaction } = useTransactionStore();
 
   const onTransactionClick = (tx: TransactionDetailDTO) => {
     setSelectedTransaction(tx);
@@ -67,7 +65,7 @@ export default function TransactionDetailView({
               <PlusIcon size={13} />
               <span>
                 <CurrencyDisplay
-                  amount={transactionSummary?.incomeTotal ?? 0}
+                  amount={transactionSummary?.groupIncome ?? 0}
                 />
               </span>
             </span>
@@ -75,7 +73,7 @@ export default function TransactionDetailView({
               <MinusIcon size={13} />
               <span>
                 <CurrencyDisplay
-                  amount={Math.abs(transactionSummary?.expenseTotal ?? 0)}
+                  amount={Math.abs(transactionSummary?.groupExpense ?? 0)}
                 />
                 {}
               </span>

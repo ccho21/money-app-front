@@ -3,37 +3,37 @@
 import { JSX, useEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useTransactionStore } from '@/modules/transaction/store';
-import { useShallow } from 'zustand/react/shallow';
-
-import { get } from '@/common/api';
 import { fetchTransactionCalendar } from '@/modules/transaction/hooks';
 
-import {
+import { get } from '@/common/api';
+import { formatDate } from '@/lib/date.util';
+
+import type {
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
-import { formatDate } from '@/lib/date.util';
+
 import CalendarWithTransactions from '../_components/CalendarWithTransactions';
 import TransactionDetailView from '../_components/TransactionDetailView';
 import Panel from '@/components/ui/check/Panel';
-
-import { useFilterStore } from '@/stores/useFilterStore';
 import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import { DateFilterParams } from '@/common/types';
+import { useShallow } from 'zustand/shallow';
 
-//
-// Calendar page: month view with per-day transaction summary
-//
 export default function CalendarPage() {
-  const { transactionCalendarItems, transactionSummaryResponse, isLoading } =
+  const { calendar, summary, isLoading, setCalendar, setSummary, setLoading } =
     useTransactionStore(
       useShallow((s) => ({
-        transactionCalendarItems: s.transactionCalendarItems,
-        transactionSummaryResponse: s.transactionSummaryResponse,
+        calendar: s.calendar,
+        summary: s.summary,
         isLoading: s.isLoading,
+        setCalendar: s.setCalendar,
+        setSummary: s.setSummary,
+        setLoading: s.setLoading,
       }))
     );
-  const { setTransactionSummaryResponse } = useTransactionStore().actions;
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
   const { date, groupBy } = query;
@@ -44,26 +44,41 @@ export default function CalendarPage() {
     open: boolean;
   } | null>(null);
 
-  //
-  // Prepare map of income/expense for calendar tile display
-  //
+  // ✅ 강제 groupBy: 'monthly'
+  useEffect(() => {
+    if (groupBy !== 'monthly') {
+      setQuery({ groupBy: 'monthly' });
+    }
+  }, [groupBy, setQuery]);
+
+  // ✅ calendar 데이터 fetch
+  useEffect(() => {
+    const [startDate, endDate] = getDateRangeKey().split('_');
+
+    const params: DateFilterParams = {
+      groupBy: 'daily',
+      startDate,
+      endDate,
+    };
+    fetchTransactionCalendar(params);
+  }, [date, setCalendar]);
+
+  // ✅ tile 렌더링 구성
   const calendarTileMap = useMemo(() => {
     const map = new Map<string, JSX.Element>();
 
-    transactionCalendarItems.forEach((item) => {
-      const hasIncome = item.income > 0;
-      const hasExpense = item.expense > 0;
-      if (!hasIncome && !hasExpense) return;
+    calendar.forEach((item) => {
+      if (item.income <= 0 && item.expense <= 0) return;
 
       map.set(
         item.date,
         <div className='text-[10px]'>
-          {hasIncome && (
+          {item.income > 0 && (
             <div className='text-primary'>
               +<CurrencyDisplay amount={item.income} />
             </div>
           )}
-          {hasExpense && (
+          {item.expense > 0 && (
             <div className='text-error'>
               -<CurrencyDisplay amount={item.expense} />
             </div>
@@ -73,39 +88,21 @@ export default function CalendarPage() {
     });
 
     return map;
-  }, [transactionCalendarItems]);
+  }, [calendar]);
 
-  //
-  // Force groupBy to 'monthly' for calendar view
-  //
-  useEffect(() => {
-    if (groupBy !== 'monthly') {
-      setQuery({ groupBy: 'monthly' });
-    }
-  }, [groupBy, setQuery]);
-
-  //
-  // Fetch calendar data on month change
-  //
-  useEffect(() => {
-    fetchTransactionCalendar(formatDate(date));
-  }, [date]);
-
-  //
-  // Handle date click → fetch summary if not already cached
-  //
+  // ✅ 날짜 클릭 → summary 캐시 확인 or API fetch
   const handleDateClick = async (clickedDate: Date) => {
     const dateStr = formatDate(clickedDate);
+    const cached = summary?.items?.find((g) => g.label === dateStr);
 
-    const fromStore = transactionSummaryResponse?.items.find(
-      (g) => g.label === dateStr
-    );
-    if (fromStore) {
-      setSelectedDetail({ date: clickedDate, summary: fromStore, open: true });
+    if (cached) {
+      setSelectedDetail({ date: clickedDate, summary: cached, open: true });
       return;
     }
 
     try {
+      debugger;
+      setLoading(true);
       const [startDate, endDate] = getDateRangeKey().split('_');
       const params = new URLSearchParams({
         groupBy: 'daily',
@@ -117,15 +114,13 @@ export default function CalendarPage() {
         `/transactions/summary?${params.toString()}`
       );
 
-      const summary = res.items?.find((s) => s.label === dateStr);
-      if (summary) {
-        if (transactionSummaryResponse) {
-          setTransactionSummaryResponse({
-            ...transactionSummaryResponse,
-            items: [...transactionSummaryResponse.items, summary],
-          });
-        }
-        setSelectedDetail({ date: clickedDate, summary, open: true });
+      const found = res.items?.find((s) => s.label === dateStr);
+      if (found) {
+        setSummary({
+          ...summary!,
+          items: [...(summary?.items ?? []), found],
+        });
+        setSelectedDetail({ date: clickedDate, summary: found, open: true });
       } else {
         setSelectedDetail({
           date: clickedDate,
@@ -135,11 +130,9 @@ export default function CalendarPage() {
       }
     } catch (err) {
       console.error('Failed to fetch daily summary:', err);
-      setSelectedDetail({
-        date: clickedDate,
-        summary: undefined,
-        open: true,
-      });
+      setSelectedDetail({ date: clickedDate, summary: undefined, open: true });
+    } finally {
+      setLoading(false);
     }
   };
 

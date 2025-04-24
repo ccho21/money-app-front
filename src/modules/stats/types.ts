@@ -1,7 +1,9 @@
+// 파일: src/modules/stats/types.ts
+
 import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryType } from '../category/types';
 
-export type SortKey = 'note' | 'count' | 'amount';
+export type SortKey = 'note' | 'count';
 export type SortDirection = 'asc' | 'desc';
 
 //
@@ -14,14 +16,6 @@ export interface StatsQuery {
   endDate: string;
   groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
 }
-
-// Response DTOs
-export type StatsBudgetSummaryDTO =
-  BaseListSummaryResponseDTO<StatsBudgetGroupSummaryDTO>;
-export type StatsCategorySummaryDTO =
-  BaseListSummaryResponseDTO<StatsCategoryGroupSummaryDTO>;
-export type StatsNoteSummaryDTO =
-  BaseListSummaryResponseDTO<StatsNoteGroupSummaryDTO>;
 
 // Group Item DTOs
 export interface StatsBudgetGroupItemDTO extends BaseGroupItemDTO {
@@ -121,6 +115,13 @@ export interface StatsNotePeriodDTO extends BaseGroupItemDTO {
 }
 
 // Summary DTOs
+export type StatsBudgetSummaryDTO =
+  BaseListSummaryResponseDTO<StatsBudgetGroupSummaryDTO>;
+export type StatsCategorySummaryDTO =
+  BaseListSummaryResponseDTO<StatsCategoryGroupSummaryDTO>;
+export type StatsNoteSummaryDTO =
+  BaseListSummaryResponseDTO<StatsNoteGroupSummaryDTO>;
+
 export interface StatsBudgetGroupSummaryDTO extends BaseGroupItemDTO {
   income: number;
   expense: number;

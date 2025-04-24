@@ -8,10 +8,7 @@ import { AccountDetailDTO } from '@/modules/account/types';
 
 export default function AccountEditPage() {
   const router = useRouter();
-  const {
-    state: { accounts },
-    actions: { setSelectedAccount },
-  } = useAccountStore();
+  const { accounts, setSelectedAccount } = useAccountStore();
 
   const accountGroups = useMemo(
     () => ({

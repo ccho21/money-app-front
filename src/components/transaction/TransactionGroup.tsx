@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import TransactionItem from './TransactionItem';
 import CurrencyDisplay from '../ui/check/CurrencyDisplay';
+import { StatsCategoryPeriodDTO } from '@/modules/stats/types';
 
 interface TransactionGroupProps {
   label: string;
@@ -21,7 +22,7 @@ interface TransactionGroupProps {
   rangeEnd?: string;
   groupIncome: number;
   groupExpense: number;
-  group: TransactionGroupItemDTO;
+  group?: TransactionGroupItemDTO;
   onTransactionClick?: (tx: TransactionDetailDTO) => void;
   onHeaderClick?: () => void;
   showDateHeader?: boolean;
@@ -104,9 +105,9 @@ export default function TransactionGroup({
 
       {/* 거래 리스트 */}
       <ul className='mt-3 space-y-2'>
-        {/* {group.transactions.map((tx: TransactionDetailDTO) => (
+        {group?.transactions.map((tx: TransactionDetailDTO) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
-        ))} */}
+        ))}
       </ul>
     </div>
   );

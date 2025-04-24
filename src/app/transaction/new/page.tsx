@@ -25,8 +25,7 @@ export default function TransactionNewPage() {
       setField('date', parsed);
     }
 
-    // Optionally load: fetchAccounts(), fetchCategories()
-  }, [dateParam, init, setField]);
+  }, [dateParam, init, setField, type]);
 
   if (!type) {
     return <p className='text-center text-muted py-10'>Loading...</p>;

@@ -5,53 +5,42 @@ import { parse, startOfMonth, endOfMonth, format } from 'date-fns';
 
 import { useTransactionStore } from '@/modules/transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useShallow } from 'zustand/react/shallow';
 
 import {
   fetchTransactionSummary,
   fetchTransactionSummaryWeekly,
 } from '@/modules/transaction/hooks';
 
-import { TransactionGroupItemDTO } from '@/modules/transaction/types';
-import { DateFilterParams } from '@/common/types';
-import MonthlyView from '@/components/dashboard/MonthlyView';
+import type { TransactionGroupItemDTO } from '@/modules/transaction/types';
+import type { DateFilterParams } from '@/common/types';
 
-//
-// Monthly dashboard page: grouped by month + optional weekly toggle
-//
+import MonthlyView from '@/components/dashboard/MonthlyView';
+import { useShallow } from 'zustand/shallow';
+
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [weeklySummaryByMonth, setWeeklySummaryByMonth] = useState<{
     [key: string]: TransactionGroupItemDTO[];
   }>({});
 
-  const { transactionSummaryResponse, isLoading } = useTransactionStore(
+  const { summary, isLoading } = useTransactionStore(
     useShallow((s) => ({
-      transactionSummaryResponse: s.transactionSummaryResponse,
+      summary: s.summary,
       isLoading: s.isLoading,
     }))
   );
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore(
-    useShallow((s) => ({
-      query: s.query,
-      setQuery: s.setQuery,
-      getDateRangeKey: s.getDateRangeKey,
-    }))
-  );
-
+  const { query, setQuery, getDateRangeKey } = useFilterStore();
   const { groupBy, date } = query;
 
-  //
-  // Ensure groupBy is set to 'yearly'
-  //
+  // ✅ groupBy를 'yearly'로 고정
   useEffect(() => {
-    if (groupBy !== 'yearly') setQuery({ groupBy: 'yearly' });
+    if (groupBy !== 'yearly') {
+      setQuery({ groupBy: 'yearly' });
+    }
   }, [groupBy, setQuery]);
 
-  //
-  // Fetch monthly transaction summary
-  //
+  // ✅ monthly summary fetch
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
@@ -62,16 +51,16 @@ export default function MonthlyPage() {
     fetchTransactionSummary(params);
   }, [getDateRangeKey, date]);
 
-  //
-  // Toggle open/close weekly summary for a given month
-  //
+  // ✅ 주간 요약 fetch 핸들러
   const handleToggle = useCallback(
-    async (index: number, summary: TransactionGroupItemDTO) => {
+    async (index: number, summaryItem: TransactionGroupItemDTO) => {
       const isOpening = openIndex !== index;
       setOpenIndex(isOpening ? index : null);
 
-      const label = summary.label;
-      if (isOpening && !weeklySummaryByMonth[label]) {
+      const label = summaryItem.label;
+      if (!isOpening || weeklySummaryByMonth[label]) return;
+
+      try {
         const monthDate = parse(label, 'yyyy-MM', new Date());
         const startDate = format(startOfMonth(monthDate), 'yyyy-MM-dd');
         const endDate = format(endOfMonth(monthDate), 'yyyy-MM-dd');
@@ -89,13 +78,15 @@ export default function MonthlyPage() {
           ...prev,
           [label]: weeklyData,
         }));
+      } catch (err) {
+        console.error(`Failed to load weekly summary for ${label}:`, err);
       }
     },
     [openIndex, weeklySummaryByMonth]
   );
 
-  const totalIncome = transactionSummaryResponse?.totalExpense ?? 0;
-  const totalExpense = transactionSummaryResponse?.totalExpense ?? 0;
+  const totalIncome = summary?.totalIncome ?? 0;
+  const totalExpense = summary?.totalExpense ?? 0;
 
   const summaryItems = [
     {
@@ -121,7 +112,7 @@ export default function MonthlyPage() {
   return (
     <MonthlyView
       isLoading={isLoading}
-      data={transactionSummaryResponse}
+      data={summary}
       summaryItems={summaryItems}
       openIndex={openIndex}
       weeklySummaryByMonth={weeklySummaryByMonth}

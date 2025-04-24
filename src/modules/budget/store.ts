@@ -8,14 +8,14 @@ import type {
 type BudgetStoreState = {
   budgets: BudgetCategoryListResponseDTO | null;
   summary: BudgetGroupSummaryDTO | null;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
 };
 
 type BudgetStoreActions = {
   setBudgets: (budgets: BudgetCategoryListResponseDTO) => void;
   setSummary: (summary: BudgetGroupSummaryDTO) => void;
-  setLoading: (loading: boolean) => void;
+  setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   deleteBudgetItem: (id: string) => void;
 };
@@ -24,12 +24,12 @@ export const useBudgetStore = create<BudgetStoreState & BudgetStoreActions>()(
   devtools((set, get) => ({
     budgets: null,
     summary: null,
-    loading: false,
+    isLoading: false,
     error: null,
 
     setBudgets: (budgets) => set({ budgets }, false, 'budget/setBudgets'),
     setSummary: (summary) => set({ summary }, false, 'budget/setSummary'),
-    setLoading: (loading) => set({ loading }, false, 'budget/setLoading'),
+    setLoading: (isLoading) => set({ isLoading }, false, 'budget/setLoading'),
     setError: (error) => set({ error }, false, 'budget/setError'),
 
     deleteBudgetItem: (id) => {

@@ -8,80 +8,83 @@ import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 
-import { CategoryType } from '@/features/category/types';
+import { CategoryType } from '@/modules/category/types';
 
-import Panel from '@/components/ui/check/Panel';
 import SummaryBox from '@/components/stats/SummaryBox';
-import ComposedChart from '@/components/ui/check/ComposedChart';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
+
+import { fetchNoteDetail, fetchNoteSummary } from '@/modules/stats/hooks';
+import Panel from '@/components/ui/check/Panel';
+import ComposedChart from '@/components/ui/check/ComposedChart';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import {
-  fetchStatsNoteDetail,
-  fetchStatsSummaryByNote,
-} from '@/features/stats/hooks';
+import { useShallow } from 'zustand/shallow';
 
 export default function StatsNoteDetailPage() {
   const { note } = useParams();
   const router = useRouter();
 
-  const {
-    state: { noteSummaryResponse, noteDetailResponse, isLoading },
-    actions: { setLoading },
-  } = useStatsStore();
+  const { groupBy, transactionType } = useFilterStore((s) => s.query);
+  const { getDateRangeKey, setQuery } = useFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
 
-  const { query, getDateRangeKey, setQuery } = useFilterStore();
-  const { groupBy, transactionType, date } = query;
+  const params = useMemo(
+    () => ({
+      startDate,
+      endDate,
+      groupBy,
+      type: transactionType as CategoryType,
+    }),
+    [startDate, endDate, groupBy, transactionType]
+  );
+
+  const { noteSummary, noteDetail, isLoading, setLoading } = useStatsStore(
+    useShallow((s) => ({
+      noteSummary: s.noteSummary,
+      noteDetail: s.noteDetail,
+      isLoading: s.isLoading,
+      setLoading: s.setLoading,
+    }))
+  );
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
-
-  // const rangeKey = useMemo(() => getDateRangeKey(), [getDateRangeKey]);
-
-  const chartData = useMemo(() => {
-    if (!noteSummaryResponse) return [];
-    return noteSummaryResponse.items.map((summary) => ({
-      month: summary.label,
-      startDate: summary.rangeStart,
-      endDate: summary.rangeEnd,
-      value: transactionType === 'expense' ? summary.expense : summary.income,
-      isCurrent: summary.isCurrent,
-    }));
-  }, [noteSummaryResponse, transactionType]);
 
   useEffect(() => {
     const decodedNote =
       typeof note === 'string' ? decodeURIComponent(note) : '';
     const displayNote = decodedNote === '_' ? '비어있는 노트' : decodedNote;
+
     setTopNav({
       title: displayNote,
       onBack: () => router.back(),
     });
+
     return () => resetTopNav();
   }, [note, router, setTopNav, resetTopNav]);
 
   useEffect(() => {
     if (!note) return;
-
-    const [startDate, endDate] = getDateRangeKey().split('_');
-    const params = {
-      startDate,
-      endDate,
-      type: transactionType as CategoryType,
-      groupBy,
-    };
-
-    const decodedNote = decodeURIComponent(String(note));
-    const finalNote = decodedNote === '' ? '_' : decodedNote;
+    const decodedNote = decodeURIComponent(String(note)) || '_';
 
     setLoading(true);
     Promise.all([
-      fetchStatsSummaryByNote(finalNote, params),
-      fetchStatsNoteDetail(finalNote, params),
+      fetchNoteSummary(decodedNote, params),
+      fetchNoteDetail(decodedNote, params),
     ]).finally(() => setLoading(false));
-  }, [note, transactionType, groupBy, setLoading, date, getDateRangeKey]);
+  }, [note, params, setLoading]);
+
+  const chartData = useMemo(() => {
+    if (!noteSummary?.items) return [];
+    return noteSummary.items.map((item) => ({
+      month: item.label,
+      startDate: item.rangeStart,
+      endDate: item.rangeEnd,
+      value: transactionType === 'expense' ? item.expense : item.income,
+      isCurrent: item.isCurrent,
+    }));
+  }, [noteSummary, transactionType]);
 
   const handleDateClick = (startDate: string) => {
-    console.log('### STARTDTATE', startDate);
     setQuery({ date: startOfDay(parseISO(startDate)) });
   };
 
@@ -90,44 +93,43 @@ export default function StatsNoteDetailPage() {
   }
 
   return (
-    <div>
+    <div className='space-y-4'>
       {/* 요약 정보 */}
-      <Panel>
-        <SummaryBox
-          items={[
-            {
-              label: 'Income',
-              value: noteSummaryResponse?.totalIncome ?? 0,
-              color: 'text-success',
-              prefix: '$',
-            },
-            {
-              label: 'Expense',
-              value: noteSummaryResponse?.totalExpense ?? 0,
-              color: 'text-error',
-              prefix: '$',
-            },
-          ]}
-        />
-      </Panel>
+      {noteSummary && (
+        <Panel>
+          <SummaryBox
+            items={[
+              {
+                label: 'Income',
+                value: noteSummary.totalIncome ?? 0,
+                color: 'text-success',
+                prefix: '$',
+              },
+              {
+                label: 'Expense',
+                value: noteSummary.totalExpense ?? 0,
+                color: 'text-error',
+                prefix: '$',
+              },
+            ]}
+          />
+        </Panel>
+      )}
 
       {/* 차트 */}
       {chartData.length > 0 && (
         <Panel>
           <div className='w-full h-36'>
-            <ComposedChart
-              data={chartData}
-              onSelect={(startDate) => handleDateClick(startDate)}
-            />
+            <ComposedChart data={chartData} onSelect={handleDateClick} />
           </div>
         </Panel>
       )}
 
       {/* 거래 리스트 */}
-      {noteDetailResponse?.data.length ? (
+      {noteDetail?.data?.length ? (
         <Panel>
           <div className='space-y-4'>
-            {noteDetailResponse.data.map((group, i) => (
+            {noteDetail.data.map((group, i) => (
               <TransactionGroup
                 key={group.label + i}
                 label={group.label}
@@ -135,7 +137,6 @@ export default function StatsNoteDetailPage() {
                 rangeEnd={group.rangeEnd}
                 groupIncome={group.income}
                 groupExpense={group.expense}
-                group={group}
               />
             ))}
           </div>

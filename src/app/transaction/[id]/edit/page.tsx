@@ -34,7 +34,7 @@ export default function TransactionEditPage() {
         const tx =
           cached && cached.id === id
             ? cached
-            : await fetchTransactionById(id.toString());
+            : await fetchTransactionById(String(id));
 
         if (!tx) throw new Error();
 
