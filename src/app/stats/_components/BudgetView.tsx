@@ -1,10 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/check/Button';
-import { CategoryListItem } from './CategoryListItem';
 import Panel from '@/components/ui/check/Panel';
 import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 

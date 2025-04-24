@@ -6,7 +6,7 @@ import type {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
   BudgetGroupItemDTO,
-  BudgetGroupSummaryDTO,
+  BudgetSummaryDTO,
 } from './types';
 import type { DateFilterParams } from '@/common/types';
 
@@ -51,5 +51,5 @@ export const fetchGroupedBudgetCategoryAPI = (
 // ✅ [GET] /budgets/summary → 예산 요약
 export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
   const query = buildQuery(params);
-  return get<BudgetGroupSummaryDTO>(`/budgets/summary?${query}`);
+  return get<BudgetSummaryDTO>(`/budgets/summary?${query}`);
 };

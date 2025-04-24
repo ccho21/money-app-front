@@ -1,7 +1,5 @@
 import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 import Progress from '@/components/ui/check/Progress';
-import { cn } from '@/lib/utils';
-import { ChartBar } from 'lucide-react';
 
 interface CategoryListItemData {
   name: string;
@@ -24,28 +22,18 @@ interface CategoryListItemData {
 export function BudgetListItem({
   name,
   rate,
-  amount,
   remaining,
   spent,
   budget,
   label,
   rangeStart,
   rangeEnd,
-  color = '#ccc',
-  balancePayable,
   hasBudget,
-  outstandingBalance,
-  isMatched = true,
   onClick,
-  className,
-  showProgress = true,
 }: CategoryListItemData & {
   onClick: () => void;
   className?: string;
 }) {
-  const showCardInfo =
-    balancePayable !== undefined || outstandingBalance !== undefined;
-
   return (
     <div className='px-4 py-4 border-b border-border' onClick={onClick}>
       <div className='bg-surface dark:bg-gray-800 rounded p-3 text-sm grid grid-cols-12 gap-4 items-center'>

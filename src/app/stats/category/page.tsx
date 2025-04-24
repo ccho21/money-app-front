@@ -34,11 +34,11 @@ export default function StatsCategoryPage() {
       groupBy,
       type: transactionType as CategoryType,
     };
-  }, [getDateRangeKey, groupBy, transactionType, date]);
+  }, [getDateRangeKey, groupBy, transactionType]);
 
   useEffect(() => {
     fetchCategoryStats(params);
-  }, [params]);
+  }, [params, date]);
 
   return (
     <StatsView

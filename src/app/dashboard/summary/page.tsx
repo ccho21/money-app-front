@@ -67,7 +67,7 @@ export default function SummaryPage() {
     };
     fetchAccountSummary(params);
     fetchBudgetSummary(params);
-  }, [date]);
+  }, [date, getDateRangeKey]);
 
   const [incomeTotal, expenseTotal] = useMemo(() => {
     if (!accountSummary?.items?.length) return [0, 0];

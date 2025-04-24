@@ -5,7 +5,7 @@ import {
   BudgetCategoryListResponseDTO,
   BudgetCategoryUpdateRequestDTO,
   BudgetGroupItemDTO,
-  BudgetGroupSummaryDTO,
+  BudgetSummaryDTO,
 } from './types';
 import {
   createBudgetCategoryAPI,
@@ -50,7 +50,7 @@ export const fetchBudgetSummary = async (
   const { setSummary, setLoading, setError } = useBudgetStore.getState();
   setLoading(true);
   try {
-    const data: BudgetGroupSummaryDTO = await fetchBudgetSummaryAPI(params);
+    const data: BudgetSummaryDTO = await fetchBudgetSummaryAPI(params);
     setSummary(data);
   } catch (err) {
     const message =

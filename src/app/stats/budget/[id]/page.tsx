@@ -13,7 +13,7 @@ import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-import TransactionGroup from '@/components/transaction/TransactionGroup';
+// import TransactionGroup from '@/components/transaction/TransactionGroup';
 import Panel from '@/components/ui/check/Panel';
 import ComposedChart from '@/components/ui/check/ComposedChart';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
@@ -128,7 +128,7 @@ export default function StatsBudgetDetailPage() {
       {budgetDetail?.data?.length ? (
         <Panel>
           <div className='space-y-4'>
-            {budgetDetail.data.map((group, i) => (
+            {/* {budgetDetail.data.map((group, i) => (
               <TransactionGroup
                 key={group.label + i}
                 label={group.label}
@@ -136,8 +136,9 @@ export default function StatsBudgetDetailPage() {
                 rangeEnd={group.rangeEnd}
                 groupIncome={group.income}
                 groupExpense={group.expense}
+                group={group}
               />
-            ))}
+            ))} */}
           </div>
         </Panel>
       ) : (
