@@ -6,8 +6,10 @@ import { useParams, useRouter } from 'next/navigation';
 import DateNavigator from '@/components/ui/check/DateNavigator';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useBudgetGroup } from '@/modules/budget/hooks';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
+import { useBudgetStore } from '@/modules/budget/store';
+import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
+import EmptyMessage from '@/components/ui/check/EmptyMessage';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();
@@ -18,7 +20,7 @@ export default function ListBudgetCategoryPage() {
     getDateRangeKey,
   } = useFilterStore();
 
-  const { budgets, fetchGroupedBudgets, loading, error } = useBudgetGroup();
+  const { budgetGroup, isLoading } = useBudgetStore();
 
   const resetForm = useBudgetFormStore((s) => s.resetForm);
   const [, setSelectedKey] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export default function ListBudgetCategoryPage() {
       if (!categoryId) return;
 
       const [startDate, endDate] = dateRangeKey.split('_');
-      await fetchGroupedBudgets(String(categoryId), {
+      await fetchGroupedBudgetCategory(String(categoryId), {
         startDate,
         endDate,
         groupBy: 'monthly',
@@ -43,7 +45,7 @@ export default function ListBudgetCategoryPage() {
     };
 
     run();
-  }, [categoryId, dateRangeKey, groupBy]);
+  }, [categoryId, dateRangeKey, groupBy, resetForm, setQuery]);
 
   const handleSelect = (item: BudgetCategoryPeriodItemDTO) => {
     const path = item.categoryId
@@ -56,19 +58,19 @@ export default function ListBudgetCategoryPage() {
     return <div className='p-4 text-sm text-error'>잘못된 접근입니다</div>;
   }
 
-  if (loading) {
+  if (isLoading) {
     return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
-  if (error) {
-    return <p className='text-center mt-10 text-error'>{error}</p>;
+  if (!budgetGroup) {
+    return <EmptyMessage />;
   }
 
   return (
     <div>
       <DateNavigator withTransactionType={true} />
       <div className='divide-y'>
-        {budgets.map((item) => (
+        {budgetGroup.budgets.map((item) => (
           <div
             key={item.rangeStart}
             className='p-4 cursor-pointer'

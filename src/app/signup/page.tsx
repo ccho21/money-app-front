@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/stores/useUserStore';
 import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated';
 import toast from 'react-hot-toast';
-import { signin } from '@/features/auth/hooks';
+import { signin } from '@/modules/auth/hooks';
 
 export default function SigninPage() {
   const router = useRouter();

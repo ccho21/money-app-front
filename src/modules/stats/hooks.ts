@@ -118,7 +118,7 @@ export const fetchBudgetSummary = async (
   const { setBudgetSummary, setLoading } = useStatsStore.getState();
   setLoading(true);
   try {
-    const data = await fetchStatsBudgetSummary(params);
+    const data = await fetchStatsBudgetSummary(categoryId, params);
     setBudgetSummary(data);
   } finally {
     setLoading(false);

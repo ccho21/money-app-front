@@ -11,7 +11,6 @@ import { useUIStore } from '@/stores/useUIStore';
 import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
 
 import { CategoryType } from '@/modules/category/types';
-import { TransactionGroupItemDTO } from '@/modules/transaction/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
@@ -24,7 +23,7 @@ export default function StatsBudgetDetailPage() {
   const { id: categoryId } = useParams();
   const router = useRouter();
 
-  const { groupBy, transactionType, date } = useFilterStore((s) => s.query);
+  const { groupBy, transactionType } = useFilterStore((s) => s.query);
   const { getDateRangeKey, setQuery } = useFilterStore();
   const [startDate, endDate] = getDateRangeKey().split('_');
 

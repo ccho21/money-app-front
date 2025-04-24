@@ -25,7 +25,7 @@ export default function StatsCategoryDetailPage() {
   const router = useRouter();
   const { id: categoryId } = useParams();
 
-  const { groupBy, transactionType, date } = useFilterStore((s) => s.query);
+  const { groupBy, transactionType } = useFilterStore((s) => s.query);
   const { getDateRangeKey, setQuery } = useFilterStore();
   const [startDate, endDate] = getDateRangeKey().split('_');
 

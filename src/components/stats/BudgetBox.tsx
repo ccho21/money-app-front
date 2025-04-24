@@ -1,13 +1,13 @@
 'use client';
 
 import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
-import Progress from '@/components/ui/check/Progress';
-import { BudgetSummaryResponseDTO } from '@/features/budget/types';
+// import Progress from '@/components/ui/check/Progress';
+import { BudgetGroupItemDTO } from '@/modules/budget/types';
 
 import { ChartBar } from 'lucide-react';
 
 interface Props {
-  item: BudgetSummaryResponseDTO;
+  item: BudgetGroupItemDTO;
   handleClick?: () => void;
 }
 
@@ -28,7 +28,7 @@ export default function BudgetBox({ item, handleClick }: Props) {
 
         {/* 우측 9/12: Progress bar + rate */}
         <div className='col-span-9'>
-          <Progress
+          {/* <Progress
             value={item.rate}
             startDate={item.rangeStart}
             endDate={item.rangeEnd}
@@ -41,7 +41,7 @@ export default function BudgetBox({ item, handleClick }: Props) {
             <span className='text-muted'>
               <CurrencyDisplay amount={item.totalBudget - item.totalExpense} />
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

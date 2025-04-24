@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 import { useAccountStore } from '@/modules/account/store';
 import { useBudgetStore } from '@/modules/budget/store';
@@ -12,7 +12,7 @@ import { fetchAccountSummary } from '@/modules/account/hooks';
 import type { DateFilterParams } from '@/common/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-import BudgetBox from '@/components/stats/BudgetBox';
+// import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import Panel from '@/components/ui/check/Panel';
@@ -21,7 +21,7 @@ import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
 
 export default function SummaryPage() {
-  const router = useRouter();
+  // const router = useRouter();
 
   const { query, setQuery, getDateRangeKey } = useFilterStore();
   const { groupBy } = query;
@@ -124,9 +124,9 @@ export default function SummaryPage() {
     return <EmptyMessage />;
   }
 
-  const handleBudgetClick = () => {
-    router.push('/stats/budget');
-  };
+  // const handleBudgetClick = () => {
+  //   router.push('/stats/budget');
+  // };
 
   return (
     <div className='space-y-4'>
@@ -140,9 +140,9 @@ export default function SummaryPage() {
 
       <Divider />
 
-      <Panel>
+      {/* <Panel>
         <BudgetBox item={budgetSummary} handleClick={handleBudgetClick} />
-      </Panel>
+      </Panel> */}
     </div>
   );
 }

@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import TransactionItem from './TransactionItem';
 import CurrencyDisplay from '../ui/check/CurrencyDisplay';
-import { StatsCategoryPeriodDTO } from '@/modules/stats/types';
 
 interface TransactionGroupProps {
   label: string;

@@ -41,7 +41,7 @@ export const fetchAccountByIdAPI = (id: string) => {
 // Fetch summarized transaction data per account
 export const fetchAccountSummaryAPI = (params: DateFilterParams) => {
   const query = buildQuery(params);
-  return get<AccountTransactionSummaryDTO[]>(`/accounts/summary?${query}`);
+  return get<AccountTransactionSummaryDTO>(`/accounts/summary?${query}`);
 };
 
 export const fetchAccountsDashboardAPI = (): Promise<AccountDashboardDTO> => {

@@ -18,7 +18,7 @@ export default function EditBudgetCategoryPage() {
     const [startDate, endDate] = getDateRangeKey().split('_');
     resetForm();
     loadForm(String(categoryId), { startDate, endDate, groupBy: 'monthly' });
-  }, [categoryId]);
+  }, [categoryId, getDateRangeKey, loadForm, resetForm]);
 
   if (!categoryId) {
     return (

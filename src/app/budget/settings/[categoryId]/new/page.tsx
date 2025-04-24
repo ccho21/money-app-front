@@ -21,7 +21,7 @@ export default function NewBudgetCategoryPage() {
     setField('categoryId', String(categoryId));
     setField('startDate', startDate);
     setField('endDate', endDate);
-  }, [categoryId]);
+  }, [categoryId, getDateRangeKey, resetForm, setField]);
 
   if (!categoryId) {
     return (

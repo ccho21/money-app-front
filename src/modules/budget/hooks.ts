@@ -84,7 +84,7 @@ export const updateBudgetCategory = async (
 /**
  * ✅ [POST] /budgets/by-category/:categoryId (grouped view)
  */
-export const fetchBudgetCategoriesByCategoryId = async (
+export const fetchGroupedBudgetCategory = async (
   categoryId: string,
   filter: DateFilterParams
 ): Promise<void> => {

@@ -61,7 +61,7 @@ export default function CalendarPage() {
       endDate,
     };
     fetchTransactionCalendar(params);
-  }, [date, setCalendar]);
+  }, [date, getDateRangeKey, setCalendar]);
 
   // ✅ tile 렌더링 구성
   const calendarTileMap = useMemo(() => {

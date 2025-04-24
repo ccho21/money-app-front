@@ -16,8 +16,8 @@ export interface BaseGroupItemDTO {
 }
 
 export interface BaseListSummaryResponseDTO<T> {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   groupBy: 'daily' | 'weekly' | 'monthly' | 'yearly';
   type?: 'income' | 'expense';
   summary?: T;

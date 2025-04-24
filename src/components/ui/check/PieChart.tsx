@@ -25,7 +25,8 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
     outerRadius,
     rate,
     index,
-  }: any) => {
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
     const lineRadius = outerRadius + 15;
     const labelRadius = outerRadius + 35;
 

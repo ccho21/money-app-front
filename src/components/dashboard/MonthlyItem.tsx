@@ -111,15 +111,15 @@ export default function MonthlyItem({
               >
                 <span className='text-xs text-muted'>{rangeLabel}</span>
                 <div className='flex gap-2 text-sm text-right font-medium'>
-                  {week.incomeTotal > 0 && (
+                  {week.groupIncome > 0 && (
                     <span className='text-info'>
-                      <CurrencyDisplay amount={week.incomeTotal ?? 0} />
+                      <CurrencyDisplay amount={week.groupIncome ?? 0} />
                     </span>
                   )}
-                  {week.expenseTotal > 0 && (
+                  {week.groupExpense > 0 && (
                     <span className='text-error'>
                       {' '}
-                      <CurrencyDisplay amount={week.expenseTotal ?? 0} />
+                      <CurrencyDisplay amount={week.groupExpense ?? 0} />
                     </span>
                   )}
                 </div>

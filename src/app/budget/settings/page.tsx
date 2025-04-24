@@ -7,17 +7,18 @@ import DateNavigator from '@/components/ui/check/DateNavigator';
 import Panel from '@/components/ui/check/Panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useBudgetList } from '@/modules/budget/hooks';
 import type { BudgetCategoryItemDTO } from '@/modules/budget/types';
 import type { DateFilterParams } from '@/common/types';
 import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
+import { useBudgetStore } from '@/modules/budget/store';
+import { fetchBudgetsByCategory } from '@/modules/budget/hooks';
 
 export default function BudgetSettingsPage() {
   const router = useRouter();
   const { query, getDateRangeKey } = useFilterStore();
   const { groupBy } = query;
 
-  const { budgets, fetchBudgets, loading, error } = useBudgetList();
+  const { budgets, isLoading, error } = useBudgetStore();
 
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
@@ -26,7 +27,7 @@ export default function BudgetSettingsPage() {
       startDate,
       endDate,
     };
-    fetchBudgets(params);
+    fetchBudgetsByCategory(params);
   }, [getDateRangeKey, groupBy]);
 
   const handleClick = (categoryId: string, isNew: boolean) => {
@@ -37,7 +38,7 @@ export default function BudgetSettingsPage() {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
   }
 
@@ -45,7 +46,7 @@ export default function BudgetSettingsPage() {
     return <p className='text-center mt-10 text-error'>{error}</p>;
   }
 
-  if (!budgets.length) {
+  if (!budgets) {
     return (
       <p className='text-center mt-10 text-muted'>예산 데이터가 없습니다</p>
     );
@@ -55,7 +56,7 @@ export default function BudgetSettingsPage() {
     <div>
       <DateNavigator withTransactionType={true} />
       <Panel>
-        {budgets.map((item: BudgetCategoryItemDTO) => (
+        {budgets.items.map((item: BudgetCategoryItemDTO) => (
           <CategoryListItem
             key={item.categoryId}
             name={item.categoryName}
