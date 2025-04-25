@@ -7,12 +7,9 @@ import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated
 import toast from 'react-hot-toast';
 import { signin } from '@/modules/auth/hooks';
 import { API_BASE_URL } from '@/common/api';
-
 export default function SigninPage() {
   const router = useRouter();
-  const {
-    state: { error },
-  } = useUserStore();
+  const { error } = useUserStore();
 
   const [email, setEmail] = useState('seeduser@example.com');
   const [password, setPassword] = useState('secure123');

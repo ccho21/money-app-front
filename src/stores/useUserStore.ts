@@ -4,71 +4,44 @@ import { User } from '@/modules/auth/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface UserStoreState {
-  state: {
-    user: User | null;
-    isLoading: boolean;
-    error: string | null;
-  };
-  actions: {
-    setUser: (user: User | null) => void;
-    setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;
-    clear: () => void;
-    clearError: () => void;
-  };
+interface UserStore {
+  user: User | null;
+  isLoading: boolean;
+  error: string | null;
+
+  setUser: (user: User | null) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  clear: () => void;
+  clearError: () => void;
 }
 
-export const useUserStore = create<UserStoreState>()(
+export const useUserStore = create<UserStore>()(
   devtools(
     (set) => ({
-      state: {
-        user: null,
-        isLoading: false,
-        error: null,
-      },
-      actions: {
-        setUser: (user) =>
-          set(
-            (s) => ({ state: { ...s.state, user } }),
-            false,
-            'user/setUser'
-          ),
+      user: null,
+      isLoading: false,
+      error: null,
 
-        setLoading: (loading) =>
-          set(
-            (s) => ({ state: { ...s.state, isLoading: loading } }),
-            false,
-            loading ? 'user/loading:start' : 'user/loading:done'
-          ),
+      setUser: (user) => set({ user }, false, 'user/setUser'),
 
-        setError: (error) =>
-          set(
-            (s) => ({ state: { ...s.state, error } }),
-            false,
-            'user/setError'
-          ),
+      setLoading: (isLoading) =>
+        set(
+          { isLoading },
+          false,
+          isLoading ? 'user/loading:start' : 'user/loading:done'
+        ),
 
-        clear: () =>
-          set(
-            () => ({
-              state: {
-                user: null,
-                isLoading: false,
-                error: null,
-              },
-            }),
-            false,
-            'user/clearAll'
-          ),
+      setError: (error) => set({ error }, false, 'user/setError'),
 
-        clearError: () =>
-          set(
-            (s) => ({ state: { ...s.state, error: null } }),
-            false,
-            'user/clearError'
-          ),
-      },
+      clear: () =>
+        set(
+          { user: null, isLoading: false, error: null },
+          false,
+          'user/clearAll'
+        ),
+
+      clearError: () => set(() => ({ error: null }), false, 'user/clearError'),
     }),
     { name: 'useUserStore' }
   )

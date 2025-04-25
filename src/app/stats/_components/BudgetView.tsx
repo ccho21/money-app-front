@@ -57,9 +57,8 @@ export default function BudgetView({
             rate={item.rate}
             budget={item.budget}
             remaining={item.remaining}
-            spent={item.spent}
+            amount={item.spent}
             label={item.label}
-            color={item.color}
             rangeStart={item.rangeStart}
             rangeEnd={item.rangeEnd}
             hasBudget={item.hasBudget}

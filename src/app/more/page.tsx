@@ -20,6 +20,12 @@ import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
 import { usePanelStore } from '@/stores/usePanelStore';
 import OptionSelectorModal from '@/components/ui/check/OptionSelectorModal';
 import SlideInPanelRenderer from '@/app/more/_components/SlideInPanelRenderer';
+import { LogOut } from 'lucide-react';
+import { signout } from '@/modules/auth/hooks';
+
+const handleSignout = async () => {
+  await signout(); // Zustand 상태 초기화 등 포함
+};
 
 const Section = ({
   title,
@@ -41,7 +47,7 @@ const SettingItem = ({
   onClick,
 }: {
   icon: React.ReactNode;
-  title: string;
+  title: React.ReactNode; // ✅ 수정
   subtitle?: string;
   onClick?: () => void;
 }) => (
@@ -52,7 +58,8 @@ const SettingItem = ({
     <div className='flex items-center gap-3'>
       {icon}
       <div className='text-left'>
-        <p className='text-sm font-medium text-foreground'>{title}</p>
+        <p className='text-sm font-medium text-foreground'>{title}</p>{' '}
+        {/* ✅ 그대로 */}
         {subtitle && (
           <p className='text-xs text-muted truncate w-[220px]'>{subtitle}</p>
         )}
@@ -203,6 +210,12 @@ export default function MorePage() {
           title='Backup / Reset'
           subtitle='Export / Import / Reset'
           onClick={() => openPanel('backupReset')}
+        />
+        <SettingItem
+          icon={<LogOut className='text-error' size={18} />}
+          title={<span className='text-error'>Sign Out</span>}
+          subtitle='Logout from your account'
+          onClick={handleSignout}
         />
       </Section>
 

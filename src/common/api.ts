@@ -1,7 +1,9 @@
-// export const API_BASE_URL =
-//   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+import { useUserStore } from '@/stores/useUserStore';
 
-export const API_BASE_URL = '/api';
+export const API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? '/api' // ✅ vercel.json 프록시용
+    : 'http://localhost:8080/api'; // ✅ 로컬 백엔드 직접 요청
 
 // ⛳ 에러 응답 핸들링
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -22,11 +24,9 @@ async function tryRefreshToken(): Promise<boolean> {
   return res.ok;
 }
 
-// 🚪 로그인 페이지 이동
-function redirectToSignin() {
-  if (typeof window !== 'undefined') {
-    // window.location.href = "/signin";
-  }
+function logoutAndRedirect() {
+  const { clear } = useUserStore.getState();
+  clear();
 }
 
 // 🌐 공통 fetch 함수
@@ -58,7 +58,7 @@ export async function api<T>(
     }
 
     if (res.status === 401) {
-      redirectToSignin();
+      logoutAndRedirect();
       return Promise.reject('Unauthorized');
     }
   }

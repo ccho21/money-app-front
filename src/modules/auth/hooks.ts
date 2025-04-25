@@ -1,109 +1,64 @@
-// 📄 src/features/auth/services/authService.ts
-
-import { API_BASE_URL, get } from '@/common/api';
 import { useUserStore } from '@/stores/useUserStore';
-import { User } from './types';
+import { signinAPI, signupAPI, fetchUserAPI, signoutAPI } from './api';
 
-export const signin = async (
-  email: string,
-  password: string
-): Promise<boolean> => {
-  const {
-    actions: { setUser, setLoading, setError },
-  } = useUserStore.getState();
+export const signin = async (email: string, password: string) => {
+  const { setUser, setLoading, setError } = useUserStore.getState();
 
   setLoading(true);
   setError(null);
-
   try {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const res = await fetch(`${API_BASE_URL}/auth/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password, timezone }),
-    });
-
-    if (!res.ok) throw new Error('로그인 실패');
-
-    const data: User = await res.json();
-    setUser(data);
+    const user = await signinAPI({ email, password });
+    setUser(user);
     return true;
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : '로그인 실패';
-    setError(msg);
+  } catch {
+    setError('로그인 실패');
     return false;
   } finally {
     setLoading(false);
   }
 };
 
-export const signup = async (
-  email: string,
-  password: string
-): Promise<boolean> => {
-  const {
-    actions: { setUser, setLoading, setError },
-  } = useUserStore.getState();
+export const signup = async (email: string, password: string) => {
+  const { setUser, setLoading, setError } = useUserStore.getState();
 
   setLoading(true);
   setError(null);
-
   try {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const res = await fetch(`${API_BASE_URL}/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, timezone }),
-    });
-
-    if (!res.ok) throw new Error('회원가입 실패');
-
-    const data: { user: User } = await res.json();
-    setUser(data.user);
+    const user = await signupAPI({ email, password });
+    setUser(user);
     return true;
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : '회원가입 실패';
-    setError(msg);
+  } catch {
+    setError('회원가입 실패');
     return false;
   } finally {
     setLoading(false);
   }
 };
 
-export const fetchUser = async (): Promise<void> => {
-  const {
-    actions: { setUser, setLoading, setError },
-  } = useUserStore.getState();
+export const fetchUser = async () => {
+  const { setUser, setLoading, setError } = useUserStore.getState();
 
   setLoading(true);
-  setError(null);
-
   try {
-    const data = await get<User>('/auth/me');
-    setUser(data);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : '사용자 복원 실패';
-    setUser(null); // 세션 만료 시 null 처리
-    setError(msg);
+    const user = await fetchUserAPI();
+    setUser(user);
+  } catch {
+    setUser(null);
+    setError('세션 복원 실패');
   } finally {
     setLoading(false);
   }
 };
 
-export const signout = async (): Promise<void> => {
-  const {
-    actions: { setUser },
-  } = useUserStore.getState();
-
+export const signout = async () => {
+  const { setUser } = useUserStore.getState();
   try {
-    await fetch(`${API_BASE_URL}/auth/signout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+    await signoutAPI();
   } catch (err) {
-    console.error('❌ signout error:', err);
+    console.error('❌ Signout error:', err);
   } finally {
     setUser(null);
   }
+
+  return { fetchUser, signout };
 };

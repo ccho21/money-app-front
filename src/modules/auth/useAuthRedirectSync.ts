@@ -6,9 +6,7 @@ import { useUserStore } from '@/stores/useUserStore';
 import { fetchUser } from './hooks';
 
 export default function useAuthRedirectSync() {
-  const {
-    state: { user },
-  } = useUserStore();
+  const { user } = useUserStore();
 
   const pathname = usePathname();
   const router = useRouter();

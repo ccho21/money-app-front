@@ -3,12 +3,11 @@ import Progress from '@/components/ui/check/Progress';
 
 interface CategoryListItemData {
   name: string;
-  amount?: number;
   rate?: number; // % 사용률 (있으면 프로그레스 바 표시)
   label?: string; // % 사용률 (있으면 프로그레스 바 표시)
   budget?: number; // 예산
   remaining: number; // 예산
-  spent: number; // 예산
+  amount: number; // 예산
   rangeStart?: string;
   rangeEnd?: string;
   color?: string;
@@ -23,7 +22,7 @@ export function BudgetListItem({
   name,
   rate,
   remaining,
-  spent,
+  amount,
   budget,
   label,
   rangeStart,
@@ -53,7 +52,7 @@ export function BudgetListItem({
               />
               <div className='flex justify-between text-xs text-muted mb-1'>
                 <span className='text-primary'>
-                  <CurrencyDisplay amount={spent ?? 0} />
+                  <CurrencyDisplay amount={amount ?? 0} />
                 </span>
                 {/* <span>{item.rate}%</span> */}
                 <span className='text-muted'>
@@ -72,7 +71,7 @@ export function BudgetListItem({
                   </span>
                 </div>
                 <span>
-                  <CurrencyDisplay amount={spent ?? 0} />
+                  <CurrencyDisplay amount={amount ?? 0} />
                 </span>
               </div>
             </div>

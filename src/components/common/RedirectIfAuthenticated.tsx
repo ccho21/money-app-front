@@ -10,9 +10,7 @@ interface Props {
 
 export default function RedirectIfAuthenticated({ children }: Props) {
   const router = useRouter();
-  const {
-    state: { user },
-  } = useUserStore();
+  const { user } = useUserStore();
 
   useEffect(() => {
     if (user) {
