@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/modules/stats/store';
@@ -26,19 +26,17 @@ export default function StatsCategoryPage() {
   const { query, getDateRangeKey } = useFilterStore();
   const { groupBy, transactionType, date } = query;
 
-  const params: DateFilterParams = useMemo(() => {
+  useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
-    return {
+    const params: DateFilterParams = {
       startDate,
       endDate,
       groupBy,
       type: transactionType as CategoryType,
     };
-  }, [getDateRangeKey, groupBy, transactionType]);
 
-  useEffect(() => {
     fetchCategoryStats(params);
-  }, [params, date]);
+  }, [date, getDateRangeKey, groupBy, transactionType]);
 
   return (
     <StatsView

@@ -33,7 +33,12 @@ export default function BudgetView({
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
             <p className='text-md font-semibold text-foreground mt-0.5'>
-              <CurrencyDisplay amount={budgetGroup?.summary?.budget ?? 0} />
+              <CurrencyDisplay
+                amount={
+                  (budgetGroup.summary?.budget ?? 0) -
+                  (budgetGroup.summary?.amount ?? 0)
+                }
+              />
             </p>
           </div>
 
@@ -56,8 +61,7 @@ export default function BudgetView({
             name={item.categoryName}
             rate={item.rate}
             budget={item.budget}
-            remaining={item.remaining}
-            amount={item.spent}
+            amount={item.amount}
             label={item.label}
             rangeStart={item.rangeStart}
             rangeEnd={item.rangeEnd}

@@ -4,7 +4,7 @@ import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryType } from '../category/types';
 import { TransactionGroupItemDTO } from '../transaction/types';
 
-export type SortKey = 'note' | 'count';
+export type SortKey = 'note' | 'count' | 'amount';
 export type SortDirection = 'asc' | 'desc';
 
 //
@@ -23,15 +23,13 @@ export interface StatsBudgetGroupItemDTO extends BaseGroupItemDTO {
   categoryId: string;
   categoryName: string;
   categoryType: CategoryType;
-  icon: string;
-  color: string;
-  spent: number;
-  income: number;
-  budget: number;
-  remaining: number;
   rate: number;
+  amount: number;
   hasBudget: boolean;
   budgetId?: string;
+  budget: number;
+  color: string;
+  income: number;
 }
 
 export interface StatsCategoryGroupItemDTO extends BaseGroupItemDTO {
@@ -50,26 +48,27 @@ export interface StatsNoteGroupItemDTO {
   note: string;
   type: CategoryType;
   count: number;
+  amount: number;
   totalIncome: number;
   totalExpense: number;
-  data: StatsNoteGroupPeriodDTO[];
+  items: StatsNoteGroupPeriodDTO[];
 }
 
 // Period DTOs
-export interface StatsBudgetPeriodDTO extends BaseGroupItemDTO {
-  income: number;
-  expense: number;
-  budget: number;
-  remaining: number;
-  isOver: boolean;
-  isCurrent: boolean;
-}
+// export interface StatsBudgetPeriodDTO extends BaseGroupItemDTO {
+//   income: number;
+//   expense: number;
+//   budget: number;
+//   remaining: number;
+//   isOver: boolean;
+//   isCurrent: boolean;
+// }
 
-export interface StatsCategoryPeriodDTO extends BaseGroupItemDTO {
-  income: number;
-  expense: number;
-  isCurrent: boolean;
-}
+// export interface StatsCategoryPeriodDTO extends BaseGroupItemDTO {
+//   income: number;
+//   expense: number;
+//   isCurrent: boolean;
+// }
 
 export interface StatsNoteGroupPeriodDTO extends BaseGroupItemDTO {
   income: number;
@@ -88,7 +87,7 @@ export interface StatsBudgetDetailDTO {
   totalBudget: number;
   totalRemaining: number;
   isOver: boolean;
-  data: StatsBudgetPeriodDTO[];
+  items: TransactionGroupItemDTO[];
 }
 
 export interface StatsCategoryDetailDTO {
@@ -106,7 +105,7 @@ export interface StatsNoteDetailDTO {
   note: string;
   totalIncome: number;
   totalExpense: number;
-  data: StatsNotePeriodDTO[];
+  items: TransactionGroupItemDTO[];
 }
 
 export interface StatsNotePeriodDTO extends BaseGroupItemDTO {

@@ -13,7 +13,7 @@ import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-// import TransactionGroup from '@/components/transaction/TransactionGroup';
+import TransactionGroup from '@/components/transaction/TransactionGroup';
 import Panel from '@/components/ui/check/Panel';
 import ComposedChart from '@/components/ui/check/ComposedChart';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
@@ -125,20 +125,20 @@ export default function StatsBudgetDetailPage() {
       )}
 
       {/* 거래 리스트 */}
-      {budgetDetail?.data?.length ? (
+      {budgetDetail?.items.length ? (
         <Panel>
           <div className='space-y-4'>
-            {/* {budgetDetail.data.map((group, i) => (
+            {budgetDetail.items.map((group, i) => (
               <TransactionGroup
                 key={group.label + i}
                 label={group.label}
                 rangeStart={group.rangeStart}
                 rangeEnd={group.rangeEnd}
-                groupIncome={group.income}
-                groupExpense={group.expense}
+                groupIncome={group.groupIncome}
+                groupExpense={group.groupExpense}
                 group={group}
               />
-            ))} */}
+            ))}
           </div>
         </Panel>
       ) : (

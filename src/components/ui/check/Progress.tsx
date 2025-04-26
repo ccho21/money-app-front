@@ -44,11 +44,11 @@ export default function Progress({
     <div className='relative w-full h-8'>
       {isTodayInRange(startDate, endDate) && (
         <>
-          {/* 기준 마커 + 말풍선 */}
+          {/* 오늘 날짜 말풍선 */}
           <div
             className='absolute flex flex-col items-center text-xs z-10'
             style={{
-              left: `${todayRate.toFixed(1)}%`,
+              left: `${todayRate}%`,
               top: '-100%',
               transform: 'translateX(-50%)',
             }}
@@ -62,23 +62,27 @@ export default function Progress({
             />
           </div>
 
-          {/* 기준 마커 선 */}
+          {/* 기준 선 */}
           <div
             className='absolute top-0 bottom-0 w-[1px] bg-muted/20 z-0'
             style={{
-              left: `${todayRate.toFixed(1)}%`,
+              left: `${todayRate}%`,
               transform: 'translateX(-50%)',
             }}
           />
         </>
       )}
 
-      {/* 프로그레스 바 */}
-      <div className='w-full h-8 rounded-md overflow-hidden bg-border'>
+      {/* 프로그레스 배경 바 */}
+      <div className='w-full h-8 rounded-md overflow-hidden bg-border relative'>
+        {/* 채워진 막대 */}
         <div
-          className='h-full transition-all duration-300 ease-out bg-primary flex items-center justify-end pr-2 text-white text-xs font-semibold'
-          style={{ width: `${value.toFixed(1)}%` }}
-        >
+          className='h-full bg-primary transition-all duration-300 ease-out'
+          style={{ width: `${value}%` }}
+        />
+
+        {/* 퍼센트 텍스트 (항상 우측 상단 고정) */}
+        <div className='absolute right-2 top-1/2 -translate-y-1/2 text-xs text-foreground font-semibold z-10'>
           {value.toFixed(1)}%
         </div>
       </div>

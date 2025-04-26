@@ -3,28 +3,21 @@ import Progress from '@/components/ui/check/Progress';
 
 interface CategoryListItemData {
   name: string;
-  rate?: number; // % 사용률 (있으면 프로그레스 바 표시)
-  label?: string; // % 사용률 (있으면 프로그레스 바 표시)
-  budget?: number; // 예산
-  remaining: number; // 예산
+  rate: number; // % 사용률 (있으면 프로그레스 바 표시)
+  label: string; // % 사용률 (있으면 프로그레스 바 표시)
+  budget: number; // 예산
   amount: number; // 예산
-  rangeStart?: string;
-  rangeEnd?: string;
-  color?: string;
+  rangeStart: string;
+  rangeEnd: string;
   hasBudget: boolean;
-  balancePayable?: number;
-  outstandingBalance?: number;
-  isMatched?: boolean;
-  showProgress?: boolean;
 }
 
 export function BudgetListItem({
   name,
   rate,
-  remaining,
-  amount,
-  budget,
   label,
+  budget,
+  amount,
   rangeStart,
   rangeEnd,
   hasBudget,
@@ -56,7 +49,7 @@ export function BudgetListItem({
                 </span>
                 {/* <span>{item.rate}%</span> */}
                 <span className='text-muted'>
-                  <CurrencyDisplay amount={remaining ?? 0} />
+                  <CurrencyDisplay amount={(budget ?? 0) - (amount ?? 0)} />
                 </span>
               </div>
             </div>

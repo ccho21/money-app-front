@@ -47,10 +47,7 @@ export default function StatsNotePage() {
 
   return (
     <NoteView
-      transactionType={transactionType as CategoryType}
-      data={noteGroup?.items ?? []}
-      totalIncome={noteGroup?.totalIncome ?? 0}
-      totalExpense={noteGroup?.totalExpense ?? 0}
+      items={noteGroup?.items ?? []}
       isLoading={isLoading}
       onRowClick={handleRowClick}
     />

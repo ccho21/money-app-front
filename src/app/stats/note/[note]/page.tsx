@@ -11,7 +11,7 @@ import { useUIStore } from '@/stores/useUIStore';
 import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-// import TransactionGroup from '@/components/transaction/TransactionGroup';
+import TransactionGroup from '@/components/transaction/TransactionGroup';
 
 import { fetchNoteDetail, fetchNoteSummary } from '@/modules/stats/hooks';
 import Panel from '@/components/ui/check/Panel';
@@ -126,19 +126,20 @@ export default function StatsNoteDetailPage() {
       )}
 
       {/* 거래 리스트 */}
-      {noteDetail?.data?.length ? (
+      {noteDetail?.items.length ? (
         <Panel>
           <div className='space-y-4'>
-            {/* {noteDetail.data.map((group, i) => (
+            {noteDetail.items.map((group, i) => (
               <TransactionGroup
                 key={group.label + i}
                 label={group.label}
                 rangeStart={group.rangeStart}
                 rangeEnd={group.rangeEnd}
-                groupIncome={group.income}
-                groupExpense={group.expense}
+                groupIncome={group.groupIncome}
+                groupExpense={group.groupExpense}
+                group={group}
               />
-            ))} */}
+            ))}
           </div>
         </Panel>
       ) : (
