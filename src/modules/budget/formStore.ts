@@ -104,6 +104,7 @@ export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
       try {
         const data = await fetchGroupedBudgetCategoryAPI(categoryId, params);
         const firstPeriod = data.budgets[0];
+        console.log('### first period', firstPeriod);
         if (!firstPeriod) {
           throw new Error('No budget data found for this category');
         }

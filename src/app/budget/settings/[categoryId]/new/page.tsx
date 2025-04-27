@@ -12,16 +12,26 @@ export default function NewBudgetCategoryPage() {
   const getDateRangeKey = useFilterStore((s) => s.getDateRangeKey);
   const resetForm = useBudgetFormStore((s) => s.resetForm);
   const setField = useBudgetFormStore((s) => s.setField);
+  const storeState = useBudgetFormStore((s) => s.form);
 
   useEffect(() => {
     if (!categoryId) return;
 
-    const [startDate, endDate] = getDateRangeKey().split('_');
+    const [defaultStartDate, defaultEndDate] = getDateRangeKey().split('_');
+
     resetForm();
     setField('categoryId', String(categoryId));
-    setField('startDate', startDate);
-    setField('endDate', endDate);
-  }, [categoryId, getDateRangeKey, resetForm, setField]);
+
+    setField('startDate', storeState.startDate || defaultStartDate);
+    setField('endDate', storeState.endDate || defaultEndDate);
+  }, [
+    categoryId,
+    getDateRangeKey,
+    resetForm,
+    setField,
+    storeState.startDate,
+    storeState.endDate,
+  ]);
 
   if (!categoryId) {
     return (

@@ -63,6 +63,7 @@ export default function BudgetSettingsPage() {
             amount={item.amount}
             color={item.color}
             onClick={() => handleClick(item.categoryId, item.amount === 0)}
+            showProgress={false}
           />
         ))}
       </Panel>

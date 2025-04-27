@@ -3,54 +3,60 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import DateNavigator from '@/components/ui/check/DateNavigator';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();
   const { categoryId } = useParams();
   const {
-    query: { groupBy },
+    query: { groupBy, date },
     setQuery,
     getDateRangeKey,
   } = useFilterStore();
 
   const { budgetGroup, isLoading } = useBudgetStore();
-
   const resetForm = useBudgetFormStore((s) => s.resetForm);
+  const setField = useBudgetFormStore((s) => s.setField);
   const [, setSelectedKey] = useState<string | null>(null);
   const dateRangeKey = getDateRangeKey();
 
   useEffect(() => {
-    if (groupBy !== 'yearly') {
-      setQuery({ groupBy: 'yearly' });
-    }
-
     const run = async () => {
       if (!categoryId) return;
 
       const [startDate, endDate] = dateRangeKey.split('_');
+      resetForm();
+
       await fetchGroupedBudgetCategory(String(categoryId), {
         startDate,
         endDate,
         groupBy: 'monthly',
       });
-      resetForm();
       setSelectedKey(null);
     };
 
     run();
-  }, [categoryId, dateRangeKey, groupBy, resetForm, setQuery]);
+  }, [categoryId, dateRangeKey, groupBy, resetForm, setQuery, date]);
 
   const handleSelect = (item: BudgetCategoryPeriodItemDTO) => {
-    const path = item.categoryId
+    setField('startDate', item.rangeStart);
+    setField('endDate', item.rangeEnd);
+    setField('type', item.type);
+    setField('amount', item.amount);
+    setField('categoryId', String(categoryId));
+
+    console.log('### FROM LOIST', item);
+    const isEdit = !!item.categoryId;
+    const path = isEdit
       ? `/budget/settings/${categoryId}/edit`
       : `/budget/settings/${categoryId}/new`;
+
     router.push(path);
   };
 
@@ -59,31 +65,43 @@ export default function ListBudgetCategoryPage() {
   }
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
+    return (
+      <div className='flex flex-col items-center justify-center mt-20'>
+        <p className='text-muted'>예산 데이터를 불러오는 중입니다...</p>
+      </div>
+    );
   }
 
-  if (!budgetGroup) {
-    return <EmptyMessage />;
+  if (!budgetGroup || budgetGroup.budgets.length === 0) {
+    return (
+      <div className='flex flex-col items-center justify-center mt-20'>
+        <EmptyMessage />
+      </div>
+    );
   }
 
   return (
-    <div>
-      <DateNavigator withTransactionType={true} />
-      <div className='divide-y'>
-        {budgetGroup.budgets.map((item) => (
-          <div
-            key={item.rangeStart}
-            className='p-4 cursor-pointer'
-            onClick={() => handleSelect(item)}
-          >
-            <div className='flex justify-between'>
-              <div>{item.label}</div>
-              <div className='font-semibold'>
-                {item.amount.toLocaleString()}원
+    <div className='min-h-screen flex flex-col h-full'>
+      <div className='p-4'>
+        <h2 className='text-lg font-semibold mb-4'>이 카테고리의 예산 기록</h2>
+        <div className='grid grid-cols-1 gap-4'>
+          {budgetGroup.budgets.map((item) => (
+            <div
+              key={item.rangeStart}
+              className='p-4 rounded-2xl shadow border hover:shadow-lg cursor-pointer transition'
+              onClick={() => handleSelect(item)}
+            >
+              <div className='flex justify-between items-center mb-2'>
+                <div className='text-base font-medium'>{item.label}</div>
+                <div className='text-right font-bold text-primary text-lg'>
+                  <CurrencyDisplay amount={item.amount}></CurrencyDisplay>
+                </div>
               </div>
+              {/* 향후 확장용: 사용률, 잔여금액 등 */}
+              {/* <div className="text-sm text-muted">남은 금액: {item.remaining}</div> */}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

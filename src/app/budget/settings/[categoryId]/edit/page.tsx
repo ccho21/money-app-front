@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 
 import { useBudgetFormStore } from '@/modules/budget/formStore';
@@ -12,13 +12,24 @@ export default function EditBudgetCategoryPage() {
   const getDateRangeKey = useFilterStore((s) => s.getDateRangeKey);
   const loadForm = useBudgetFormStore((s) => s.loadForm);
   const resetForm = useBudgetFormStore((s) => s.resetForm);
+  const storeState = useBudgetFormStore((s) => s.form);
+
+  // 🧹 useMemo로 초기 기본 날짜를 고정
+  const [defaultStartDate, defaultEndDate] = useMemo(() => {
+    const rangeKey = getDateRangeKey();
+    return rangeKey.split('_');
+  }, [getDateRangeKey]);
 
   useEffect(() => {
     if (!categoryId) return;
-    const [startDate, endDate] = getDateRangeKey().split('_');
+
     resetForm();
-    loadForm(String(categoryId), { startDate, endDate, groupBy: 'monthly' });
-  }, [categoryId, getDateRangeKey, loadForm, resetForm]);
+    loadForm(String(categoryId), {
+      startDate: storeState.startDate || defaultStartDate,
+      endDate: storeState.endDate || defaultEndDate,
+      groupBy: 'monthly',
+    });
+  }, [categoryId, loadForm, resetForm, defaultStartDate, defaultEndDate]);
 
   if (!categoryId) {
     return (
