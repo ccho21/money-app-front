@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'next/navigation';
 
 import { useBudgetFormStore } from '@/modules/budget/formStore';
@@ -14,7 +14,8 @@ export default function EditBudgetCategoryPage() {
   const resetForm = useBudgetFormStore((s) => s.resetForm);
   const storeState = useBudgetFormStore((s) => s.form);
 
-  // 🧹 useMemo로 초기 기본 날짜를 고정
+  const initialized = useRef(false); // ✅ 최초 실행 여부를 기억하는 ref
+
   const [defaultStartDate, defaultEndDate] = useMemo(() => {
     const rangeKey = getDateRangeKey();
     return rangeKey.split('_');
@@ -22,6 +23,7 @@ export default function EditBudgetCategoryPage() {
 
   useEffect(() => {
     if (!categoryId) return;
+    if (initialized.current) return; // ✅ 이미 초기화했으면 재실행 막기
 
     resetForm();
     loadForm(String(categoryId), {
@@ -29,7 +31,17 @@ export default function EditBudgetCategoryPage() {
       endDate: storeState.endDate || defaultEndDate,
       groupBy: 'monthly',
     });
-  }, [categoryId, loadForm, resetForm, defaultStartDate, defaultEndDate]);
+
+    initialized.current = true; // ✅ 딱 1번만 실행하도록 플래그 세팅
+  }, [
+    categoryId,
+    loadForm,
+    resetForm,
+    defaultStartDate,
+    defaultEndDate,
+    storeState.startDate,
+    storeState.endDate,
+  ]);
 
   if (!categoryId) {
     return (

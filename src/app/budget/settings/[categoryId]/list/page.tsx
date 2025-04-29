@@ -51,7 +51,6 @@ export default function ListBudgetCategoryPage() {
     setField('amount', item.amount);
     setField('categoryId', String(categoryId));
 
-    console.log('### FROM LOIST', item);
     const isEdit = !!item.categoryId;
     const path = isEdit
       ? `/budget/settings/${categoryId}/edit`
