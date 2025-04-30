@@ -30,7 +30,7 @@ export default function MonthlyPage() {
     }))
   );
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { query, setQuery, getDateRangeKey, isInitialized } = useFilterStore();
   const { groupBy, date } = query;
 
   // ✅ groupBy를 'yearly'로 고정
@@ -42,6 +42,8 @@ export default function MonthlyPage() {
 
   // ✅ monthly summary fetch
   useEffect(() => {
+    if (!isInitialized) return;
+
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       groupBy: 'monthly',

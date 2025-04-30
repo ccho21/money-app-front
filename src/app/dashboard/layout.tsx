@@ -6,60 +6,30 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
-
+import DateNavigator from '@/components/ui/check/DateNavigator';
 import { Plus } from 'lucide-react';
-import { parseLocalDate, formatDate } from '@/lib/date.util';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
-import type { GroupBy } from '@/common/types';
 import { Button } from '@/components/ui/check/Button';
-import DateNavigator from '@/components/ui/check/DateNavigator';
-
-const validRanges: GroupBy[] = ['daily', 'weekly', 'monthly', 'yearly'];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const { query, setQuery } = useFilterStore();
-  const { date, groupBy } = query;
+  const { query, initializeFromParams, getQueryString } = useFilterStore();
+  // const { date, groupBy } = query;
 
   const hasInitialized = useRef(false);
   const currentTab = pathname.split('/')[2] || 'daily';
 
-  const dateParam = searchParams.get('date');
-  const groupByParam = searchParams.get('groupBy');
-
-  // ✅ 최초 진입 시 쿼리 파라미터 → 상태로 반영
+  // ✅ URL 쿼리 → Zustand 상태로 초기화
   useEffect(() => {
-    if (hasInitialized.current) return;
-
-    const patch: Partial<typeof query> = {};
-
-    if (dateParam) {
-      try {
-        const parsed = parseLocalDate(dateParam);
-        if (formatDate(parsed) !== formatDate(date)) {
-          patch.date = parsed;
-        }
-      } catch (err) {
-        console.warn('Invalid date param', err);
-      }
+    if (!hasInitialized.current) {
+      initializeFromParams(searchParams);
+      hasInitialized.current = true;
     }
-
-    if (groupByParam && validRanges.includes(groupByParam as GroupBy)) {
-      if (groupBy !== groupByParam) {
-        patch.groupBy = groupByParam as GroupBy;
-      }
-    }
-
-    if (Object.keys(patch).length > 0) {
-      setQuery(patch);
-    }
-
-    hasInitialized.current = true;
-  }, [dateParam, groupByParam, setQuery, date, groupBy]);
+  }, [initializeFromParams, searchParams]);
 
   // ✅ 네비게이션 상단 타이틀 세팅
   useEffect(() => {
@@ -75,8 +45,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   ];
 
   const handleTabChange = (key: string) => {
-    const currentDate = formatDate(date);
-    router.push(`/dashboard/${key}?date=${currentDate}&groupBy=${groupBy}`);
+    const newQuery = getQueryString();
+    router.push(`/dashboard/${key}${newQuery}`);
   };
 
   return (

@@ -83,6 +83,24 @@ export default function StatsBudgetDetailPage() {
     }));
   }, [budgetSummary, transactionType]);
 
+  const summaryData = useMemo(() => {
+    if (!budgetSummary || !budgetSummary.items.length) {
+      return { budgetAmount: 0, expense: 0, income: 0, ramaining: 0 };
+    }
+
+    const current = budgetSummary.items.find((item) => item.isCurrent);
+    if (!current) {
+      return { budgetAmount: 0, expense: 0, income: 0, ramaining: 0 };
+    }
+    const budgetAmount = current.budgetAmount ?? 0;
+    return {
+      budgetAmount: budgetAmount,
+      income: current.income,
+      expense: current.expense,
+      ramaining: budgetAmount - current.expense,
+    };
+  }, [budgetSummary]);
+
   if (isLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
   }
@@ -96,19 +114,19 @@ export default function StatsBudgetDetailPage() {
             items={[
               {
                 label: 'Budget',
-                value: budgetSummary.summary?.budgetAmount ?? 0,
+                value: summaryData.budgetAmount,
                 color: 'text-primary',
                 prefix: '$',
               },
               {
                 label: 'Exp.',
-                value: budgetSummary.summary?.expense ?? 0,
+                value: summaryData.expense,
                 color: 'text-error',
                 prefix: '$',
               },
               {
                 label: 'Remaining',
-                value: budgetSummary.summary?.remaining ?? 0,
+                value: summaryData.ramaining,
                 color: budgetSummary.summary?.isOver
                   ? 'text-error'
                   : 'text-foreground',

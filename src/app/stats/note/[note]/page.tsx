@@ -84,6 +84,22 @@ export default function StatsNoteDetailPage() {
     }));
   }, [noteSummary, transactionType]);
 
+  const summaryData = useMemo(() => {
+    if (!noteSummary || !noteSummary.items.length) {
+      return { income: 0, expense: 0, total: 0 };
+    }
+
+    const current = noteSummary.items.find((item) => item.isCurrent);
+    if (!current) {
+      return { income: 0, expense: 0, total: 0 };
+    }
+    return {
+      income: current.income,
+      expense: current.expense,
+      total: current.income - current.expense,
+    };
+  }, [noteSummary]);
+
   const handleDateClick = (startDate: string) => {
     setQuery({ date: startOfDay(parseISO(startDate)) });
   };
@@ -101,14 +117,20 @@ export default function StatsNoteDetailPage() {
             items={[
               {
                 label: 'Income',
-                value: noteSummary.totalIncome ?? 0,
+                value: summaryData.income,
                 color: 'text-success',
                 prefix: '$',
               },
               {
                 label: 'Expense',
-                value: noteSummary.totalExpense ?? 0,
+                value: summaryData.expense,
                 color: 'text-error',
+                prefix: '$',
+              },
+              {
+                label: 'Total',
+                value: summaryData.total,
+                color: 'text-foreground',
                 prefix: '$',
               },
             ]}

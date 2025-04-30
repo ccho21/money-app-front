@@ -16,7 +16,7 @@ import { useShallow } from 'zustand/shallow';
 export default function DailyPage() {
   const router = useRouter();
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { query, setQuery, getDateRangeKey, isInitialized } = useFilterStore();
   const { groupBy, date } = query;
 
   const { summary, isLoading, setSelectedTransaction } = useTransactionStore(
@@ -34,6 +34,8 @@ export default function DailyPage() {
   }, [groupBy, setQuery]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     const [startDate, endDate] = getDateRangeKey().split('_');
 
     const params: DateFilterParams = {

@@ -23,7 +23,7 @@ import { fetchBudgetSummary } from '@/modules/budget/hooks';
 export default function SummaryPage() {
   const router = useRouter();
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { query, setQuery, getDateRangeKey, isInitialized } = useFilterStore();
   const { groupBy, date } = query;
 
   const {
@@ -56,17 +56,16 @@ export default function SummaryPage() {
     }
   }, [groupBy, setQuery]);
 
-  // ✅ 필터 기준 params
-
   useEffect(() => {
+    if (!isInitialized) return;
+
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       startDate,
       endDate,
       groupBy: 'monthly',
     };
-    fetchAccountSummary(params);
-    fetchBudgetSummary(params);
+    Promise.all([fetchAccountSummary(params), fetchBudgetSummary(params)]);
   }, [date, getDateRangeKey]);
 
   const [incomeTotal, expenseTotal] = useMemo(() => {

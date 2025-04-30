@@ -12,24 +12,13 @@ import type { CategoryType } from '@/modules/category/types';
 import BudgetView from '../components/BudgetView';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
+import { DateFilterParams } from '@/common/types';
 
 export default function BudgetPage() {
   const router = useRouter();
 
   const { query, getDateRangeKey, isInitialized } = useFilterStore();
-  const { transactionType, groupBy } = query;
-
-  const [startDate, endDate] = getDateRangeKey().split('_');
-
-  const params = useMemo(
-    () => ({
-      startDate,
-      endDate,
-      groupBy,
-      type: transactionType as CategoryType,
-    }),
-    [startDate, endDate, groupBy, transactionType]
-  );
+  const { groupBy, transactionType, date } = query;
 
   const { budgetGroup, isLoading } = useStatsStore(
     useShallow((s) => ({
@@ -41,8 +30,16 @@ export default function BudgetPage() {
   useEffect(() => {
     if (!isInitialized) return;
 
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    const params: DateFilterParams = {
+      startDate,
+      endDate,
+      groupBy,
+      type: transactionType as CategoryType,
+    };
+
     fetchBudgetStats(params);
-  }, [params]);
+  }, [date, groupBy, transactionType, getDateRangeKey, isInitialized]);
 
   const handleClick = useCallback(
     (categoryId: string, hasBudget: boolean) => {

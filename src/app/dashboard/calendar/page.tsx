@@ -35,7 +35,7 @@ export default function CalendarPage() {
       }))
     );
 
-  const { query, setQuery, getDateRangeKey } = useFilterStore();
+  const { query, setQuery, getDateRangeKey, isInitialized } = useFilterStore();
   const { date, groupBy } = query;
 
   const [selectedDetail, setSelectedDetail] = useState<{
@@ -53,6 +53,8 @@ export default function CalendarPage() {
 
   // ✅ calendar 데이터 fetch
   useEffect(() => {
+    if (!isInitialized) return;
+
     const [startDate, endDate] = getDateRangeKey().split('_');
 
     const params: DateFilterParams = {

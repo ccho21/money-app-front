@@ -17,19 +17,7 @@ export default function StatsNotePage() {
   const router = useRouter();
   const { query, getDateRangeKey, isInitialized } = useFilterStore();
 
-  const { groupBy, transactionType } = query;
-
-  const [startDate, endDate] = getDateRangeKey().split('_');
-
-  const params: DateFilterParams = useMemo(
-    () => ({
-      startDate,
-      endDate,
-      groupBy,
-      type: transactionType as CategoryType,
-    }),
-    [startDate, endDate, groupBy, transactionType]
-  );
+  const { groupBy, transactionType, date } = query;
 
   const { noteGroup, isLoading } = useStatsStore(
     useShallow((s) => ({
@@ -41,8 +29,16 @@ export default function StatsNotePage() {
   useEffect(() => {
     if (!isInitialized) return;
 
+    const [startDate, endDate] = getDateRangeKey().split('_');
+    const params: DateFilterParams = {
+      startDate,
+      endDate,
+      groupBy,
+      type: transactionType as CategoryType,
+    };
+
     fetchNoteStats(params);
-  }, [params]);
+  }, [date, groupBy, transactionType, getDateRangeKey, isInitialized]);
 
   const handleRowClick = (note: string) => {
     router.push(`/stats/note/${encodeURIComponent(note || '_')}`);

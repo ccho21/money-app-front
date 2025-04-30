@@ -24,7 +24,11 @@ function TabMenuBase({
 }: TabMenuProps) {
   const handleClick = useCallback(
     (key: string) => () => {
-      if (key !== active) onChange(key);
+      if (key !== active) {
+        requestAnimationFrame(() => {
+          onChange(key); // ⏱ 디바운싱 효과
+        });
+      }
     },
     [onChange, active]
   );
