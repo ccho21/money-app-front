@@ -9,14 +9,14 @@ import { fetchBudgetStats } from '@/modules/stats/hooks';
 
 import type { CategoryType } from '@/modules/category/types';
 
-import BudgetView from '../_components/BudgetView';
+import BudgetView from '../components/BudgetView';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 
 export default function BudgetPage() {
   const router = useRouter();
 
-  const { query, getDateRangeKey } = useFilterStore();
+  const { query, getDateRangeKey, isInitialized } = useFilterStore();
   const { transactionType, groupBy } = query;
 
   const [startDate, endDate] = getDateRangeKey().split('_');
@@ -39,6 +39,8 @@ export default function BudgetPage() {
   );
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     fetchBudgetStats(params);
   }, [params]);
 

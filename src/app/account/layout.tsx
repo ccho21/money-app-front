@@ -10,6 +10,7 @@ import { useUIStore } from '@/stores/useUIStore';
 export default function AccountLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { reset } = useAccountFormStore();
+  const prevPath = useUIStore((s) => s.previousPath) || '/account/new';
 
   useEffect(() => {
     useUIStore.getState().setTopNav({
@@ -17,7 +18,7 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
       onBack: () => router.back(),
       onAdd: () => {
         reset();
-        router.push('/account/new');
+        router.push(prevPath);
       },
     });
 

@@ -37,22 +37,31 @@ export default function StatsBudgetDetailPage() {
     [startDate, endDate, groupBy, transactionType]
   );
 
-  const { budgetSummary, budgetDetail, isLoading } = useStatsStore(
-    useShallow((s) => ({
-      budgetSummary: s.budgetSummary,
-      budgetDetail: s.budgetDetail,
-      isLoading: s.isLoading,
-    }))
-  );
+  const { budgetSummary, budgetDetail, isLoading, setBudgetDetail } =
+    useStatsStore(
+      useShallow((s) => ({
+        budgetSummary: s.budgetSummary,
+        budgetDetail: s.budgetDetail,
+        isLoading: s.isLoading,
+        setBudgetDetail: s.setBudgetDetail,
+      }))
+    );
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
 
   useEffect(() => {
-    if (!categoryId) return;
+    (async () => {
+      if (!categoryId) return;
 
-    fetchBudgetSummary(String(categoryId), params);
-    fetchBudgetDetail(String(categoryId), { ...params, groupBy: 'daily' });
+      const data = await fetchBudgetSummary(String(categoryId), params);
+      const exists = data.items.find((d) => d.isCurrent);
+      if (exists?.income || exists?.expense) {
+        fetchBudgetDetail(String(categoryId), { ...params, groupBy: 'daily' });
+      } else {
+        setBudgetDetail(null);
+      }
+    })();
   }, [categoryId, params]);
 
   useEffect(() => {

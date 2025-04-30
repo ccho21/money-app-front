@@ -105,6 +105,7 @@ export const fetchCategorySummary = async (
   try {
     const data = await fetchStatsCategorySummary(categoryId, params);
     setCategorySummary(data);
+    return data;
   } finally {
     setLoading(false);
   }
@@ -120,6 +121,7 @@ export const fetchBudgetSummary = async (
   try {
     const data = await fetchStatsBudgetSummary(categoryId, params);
     setBudgetSummary(data);
+    return data;
   } finally {
     setLoading(false);
   }

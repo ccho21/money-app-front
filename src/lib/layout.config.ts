@@ -1,8 +1,6 @@
 import { LayoutOptions } from '@/stores/useUIStore';
 
 export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
-  console.log('### PATH NAME', pathname);
-
   if (matchPath(pathname, '/stats/category/[categoryId]')) {
     return {
       hideTopNav: false,

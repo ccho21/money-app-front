@@ -3,7 +3,7 @@
 import { useEffect, useCallback } from 'react';
 import { useAccountStore } from '@/modules/account/store';
 import SummaryBox from '@/components/stats/SummaryBox';
-import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
+import { CategoryListItem } from '@/app/stats/components/CategoryListItem';
 import { useRouter } from 'next/navigation';
 import { AccountDashboardItemDTO } from '@/modules/account/types';
 import Panel from '@/components/ui/check/Panel';

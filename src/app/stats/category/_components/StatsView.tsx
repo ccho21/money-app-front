@@ -1,10 +1,8 @@
-'use client';
-
 import { useMemo } from 'react';
 
 import Panel from '@/components/ui/check/Panel';
 import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import { CategoryListItem } from './CategoryListItem';
+import { CategoryListItem } from '../../components/CategoryListItem';
 import CategoryPieChart from '@/components/ui/check/PieChart';
 import { StatsCategoryGroupItemDTO } from '@/modules/stats/types';
 

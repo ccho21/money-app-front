@@ -10,12 +10,13 @@ import { fetchNoteStats } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 import type { DateFilterParams } from '@/common/types';
 
-import NoteView from '../_components/NoteView';
+import NoteView from '../components/NoteView';
 import { useShallow } from 'zustand/shallow';
 
 export default function StatsNotePage() {
   const router = useRouter();
-  const { query, getDateRangeKey } = useFilterStore();
+  const { query, getDateRangeKey, isInitialized } = useFilterStore();
+
   const { groupBy, transactionType } = query;
 
   const [startDate, endDate] = getDateRangeKey().split('_');
@@ -38,6 +39,8 @@ export default function StatsNotePage() {
   );
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     fetchNoteStats(params);
   }, [params]);
 

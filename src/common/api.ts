@@ -2,7 +2,7 @@ import { useUserStore } from '@/stores/useUserStore';
 
 export const API_BASE_URL =
   process.env.NODE_ENV === 'production'
-    ? '/api' // ✅ vercel.json 프록시용
+    ? 'http://localhost:8080/api' // ✅ vercel.json 프록시용
     : 'http://localhost:8080/api'; // ✅ 로컬 백엔드 직접 요청
 
 // ⛳ 에러 응답 핸들링
@@ -34,6 +34,8 @@ export async function api<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
+
+
   let res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
@@ -72,6 +74,8 @@ export function get<T>(path: string): Promise<T> {
 }
 
 export function post<Res, Req>(path: string, data: Req): Promise<Res> {
+  console.log('## API BASE_URL', API_BASE_URL);
+
   return api<Res>(path, {
     method: 'POST',
     body: JSON.stringify(data),

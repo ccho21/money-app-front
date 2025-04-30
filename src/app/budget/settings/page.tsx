@@ -9,7 +9,7 @@ import Panel from '@/components/ui/check/Panel';
 import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryItemDTO } from '@/modules/budget/types';
 import type { DateFilterParams } from '@/common/types';
-import { CategoryListItem } from '@/app/stats/_components/CategoryListItem';
+import { CategoryListItem } from '@/app/stats/components/CategoryListItem';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks';
 

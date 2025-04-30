@@ -31,12 +31,13 @@ export default function StatsHeader() {
     setShowModal(false);
   };
 
-  const handleTabChange = (segment: '/stats/category' | '/stats/budget') => {
-    const search = window.location.search;
-    const newPath = `${segment}${search}`;
-    router.replace(newPath);
+  const handleTabChange = (segment: string) => {
+    const targetURL = `${segment}${window.location.search}`;
+    const currentURL = `${window.location.pathname}${window.location.search}`;
+    if (targetURL === currentURL) return; // ✅ 동일하면 무시
+    router.replace(targetURL);
   };
-
+  
   return (
     <div className='p-2'>
       <div className='flex justify-between items-center rounded-md bg-surface py-1 px-2'>

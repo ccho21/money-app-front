@@ -46,9 +46,9 @@ type StatsStore = {
     data: BaseListSummaryResponseDTO<StatsNoteGroupItemDTO>
   ) => void;
 
-  setCategoryDetail: (data: StatsCategoryDetailDTO) => void;
-  setBudgetDetail: (data: StatsBudgetDetailDTO) => void;
-  setNoteDetail: (data: StatsNoteDetailDTO) => void;
+  setCategoryDetail: (data: StatsCategoryDetailDTO | null) => void;
+  setBudgetDetail: (data: StatsBudgetDetailDTO | null) => void;
+  setNoteDetail: (data: StatsNoteDetailDTO | null) => void;
 
   setCategorySummary: (data: StatsCategorySummaryDTO) => void;
   setBudgetSummary: (data: StatsBudgetSummaryDTO) => void;

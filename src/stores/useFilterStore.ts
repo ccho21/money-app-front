@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-
 import { TransactionType } from '@/modules/transaction/types';
 import { GroupBy } from '@/common/types';
-import { formatDate, getDateRangeKey } from '@/lib/date.util';
+import { formatDate, getDateRangeKey, parseLocalDate } from '@/lib/date.util';
 
 interface FilterQuery {
   date: Date;
@@ -13,8 +12,10 @@ interface FilterQuery {
 
 interface FilterStore {
   query: FilterQuery;
+  isInitialized: boolean;
   setQuery: (partial: Partial<FilterQuery>) => void;
   resetQuery: () => void;
+  initializeFromParams: (params: URLSearchParams) => void;
   getQueryString: (withTransactionType?: boolean) => string;
   getDateRangeKey: (amount?: number) => string;
 }
@@ -29,6 +30,7 @@ export const useFilterStore = create<FilterStore>()(
   devtools(
     (set, get) => ({
       query: defaultQuery,
+      isInitialized: false,
 
       setQuery: (partial) =>
         set(
@@ -40,7 +42,36 @@ export const useFilterStore = create<FilterStore>()(
         ),
 
       resetQuery: () =>
-        set({ query: defaultQuery }, false, 'filter/resetQuery'),
+        set({ query: defaultQuery, isInitialized: false }, false, 'filter/resetQuery'),
+
+      initializeFromParams: (params) => {
+        const patch: Partial<FilterQuery> = {};
+        const dateParam = params.get('date');
+        const groupByParam = params.get('groupBy');
+        const typeParam = params.get('type');
+
+        if (dateParam) {
+          try {
+            const parsed = parseLocalDate(dateParam);
+            patch.date = parsed;
+          } catch (err) {
+            console.warn('Invalid dateParam', err);
+          }
+        }
+
+        if (groupByParam && ['daily', 'weekly', 'monthly', 'yearly'].includes(groupByParam)) {
+          patch.groupBy = groupByParam as GroupBy;
+        }
+
+        if (typeParam && ['expense', 'income'].includes(typeParam)) {
+          patch.transactionType = typeParam as TransactionType;
+        }
+
+        set({
+          query: { ...get().query, ...patch },
+          isInitialized: true,
+        });
+      },
 
       getQueryString: (withTransactionType = false) => {
         const { date, groupBy, transactionType } = get().query;

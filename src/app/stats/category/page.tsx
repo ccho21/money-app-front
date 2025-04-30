@@ -2,16 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
 import { useStatsStore } from '@/modules/stats/store';
-import { useFilterStore } from '@/stores/useFilterStore';
 import { fetchCategoryStats } from '@/modules/stats/hooks';
-
 import { CategoryType } from '@/modules/category/types';
 import { DateFilterParams } from '@/common/types';
-
-import StatsView from '../_components/StatsView';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/shallow';
+import StatsView from './_components/StatsView';
 
 export default function StatsCategoryPage() {
   const router = useRouter();
@@ -23,10 +20,12 @@ export default function StatsCategoryPage() {
     }))
   );
 
-  const { query, getDateRangeKey } = useFilterStore();
+  const { query, getDateRangeKey, isInitialized } = useFilterStore();
   const { groupBy, transactionType, date } = query;
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     const [startDate, endDate] = getDateRangeKey().split('_');
     const params: DateFilterParams = {
       startDate,
@@ -36,7 +35,7 @@ export default function StatsCategoryPage() {
     };
 
     fetchCategoryStats(params);
-  }, [date, getDateRangeKey, groupBy, transactionType]);
+  }, [date, groupBy, transactionType, getDateRangeKey, isInitialized]);
 
   return (
     <StatsView

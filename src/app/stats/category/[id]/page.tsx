@@ -39,13 +39,15 @@ export default function StatsCategoryDetailPage() {
     [startDate, endDate, groupBy, transactionType]
   );
 
-  const { categoryDetail, categorySummary, isLoading } = useStatsStore(
-    useShallow((s) => ({
-      categoryDetail: s.categoryDetail,
-      categorySummary: s.categorySummary,
-      isLoading: s.isLoading,
-    }))
-  );
+  const { categoryDetail, categorySummary, isLoading, setCategoryDetail } =
+    useStatsStore(
+      useShallow((s) => ({
+        categoryDetail: s.categoryDetail,
+        categorySummary: s.categorySummary,
+        isLoading: s.isLoading,
+        setCategoryDetail: s.setCategoryDetail,
+      }))
+    );
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
@@ -53,8 +55,22 @@ export default function StatsCategoryDetailPage() {
   // Fetch detail + summary
   useEffect(() => {
     if (!categoryId) return;
-    fetchCategorySummary(String(categoryId), params);
-    fetchCategoryDetail(String(categoryId), { ...params, groupBy: 'daily' });
+
+    (async () => {
+      const data = await fetchCategorySummary(String(categoryId), params);
+
+      const exists = data.items.find(
+        (d) => d.isCurrent && (d.income > 0 || d.expense > 0)
+      );
+      if (exists) {
+        fetchCategoryDetail(String(categoryId), {
+          ...params,
+          groupBy: 'daily',
+        });
+      } else {
+        setCategoryDetail(null);
+      }
+    })();
   }, [categoryId, params]);
 
   // Set top nav title
@@ -77,6 +93,22 @@ export default function StatsCategoryDetailPage() {
     }));
   }, [categorySummary, transactionType]);
 
+  const summaryData = useMemo(() => {
+    if (!categorySummary || !categorySummary.items.length) {
+      return { income: 0, expense: 0, total: 0 };
+    }
+
+    const current = categorySummary.items.find((item) => item.isCurrent);
+    if (!current) {
+      return { income: 0, expense: 0, total: 0 };
+    }
+    return {
+      income: current.income,
+      expense: current.expense,
+      total: current.income - current.expense,
+    };
+  }, [categorySummary]);
+
   const handleDateClick = (startDate: string) => {
     setQuery({ date: startOfDay(parseISO(startDate)) });
   };
@@ -88,29 +120,25 @@ export default function StatsCategoryDetailPage() {
   return (
     <div className='space-y-4'>
       {/* Summary section */}
-      {categoryDetail && (
+      {categorySummary && (
         <Panel>
           <SummaryBox
             items={[
               {
                 label: 'Income',
-                value: categoryDetail.totalIncome,
-                color:
-                  categoryDetail.totalIncome > 0
-                    ? 'text-primary'
-                    : 'text-muted',
+                value: summaryData.income,
+                color: summaryData.income > 0 ? 'text-primary' : 'text-muted',
                 prefix: '$',
               },
               {
                 label: 'Exp.',
-                value: categoryDetail.totalExpense,
-                color:
-                  categoryDetail.totalExpense > 0 ? 'text-error' : 'text-muted',
+                value: summaryData.expense,
+                color: summaryData.expense > 0 ? 'text-error' : 'text-muted',
                 prefix: '$',
               },
               {
                 label: 'Total',
-                value: categoryDetail.totalIncome - categoryDetail.totalExpense,
+                value: summaryData.income - summaryData.expense,
                 color: 'text-foreground',
                 prefix: '$',
               },
