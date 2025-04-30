@@ -25,19 +25,20 @@ export default function StatsHeader() {
   const { groupBy } = query;
 
   const handleRangeSelect = (newRange: GroupBy) => {
+    if (query.groupBy === newRange) return;
+
     setQuery({ groupBy: newRange });
-    const syncedURL = getQueryString(true); // ✅ type 포함
+    const syncedURL = getQueryString(true);
     router.replace(syncedURL);
     setShowModal(false);
   };
 
   const handleTabChange = (segment: string) => {
-    const targetURL = `${segment}${window.location.search}`;
-    const currentURL = `${window.location.pathname}${window.location.search}`;
-    if (targetURL === currentURL) return; // ✅ 동일하면 무시
-    router.replace(targetURL);
+    const currentPath = window.location.pathname;
+    if (currentPath === segment) return;
+    router.replace(segment); // ✅ search query 제거
   };
-  
+
   return (
     <div className='p-2'>
       <div className='flex justify-between items-center rounded-md bg-surface py-1 px-2'>

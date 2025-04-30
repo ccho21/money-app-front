@@ -42,7 +42,11 @@ export const useFilterStore = create<FilterStore>()(
         ),
 
       resetQuery: () =>
-        set({ query: defaultQuery, isInitialized: false }, false, 'filter/resetQuery'),
+        set(
+          { query: defaultQuery, isInitialized: false },
+          false,
+          'filter/resetQuery'
+        ),
 
       initializeFromParams: (params) => {
         const patch: Partial<FilterQuery> = {};
@@ -59,7 +63,10 @@ export const useFilterStore = create<FilterStore>()(
           }
         }
 
-        if (groupByParam && ['daily', 'weekly', 'monthly', 'yearly'].includes(groupByParam)) {
+        if (
+          groupByParam &&
+          ['daily', 'weekly', 'monthly', 'yearly'].includes(groupByParam)
+        ) {
           patch.groupBy = groupByParam as GroupBy;
         }
 

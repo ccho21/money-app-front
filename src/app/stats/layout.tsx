@@ -12,6 +12,7 @@ import StatsHeader from './components/StatsHeader';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { getDefaultLayoutOptions } from '@/lib/layout.config';
+import { TransactionType } from '@/modules/transaction/types';
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -32,7 +33,7 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
       initializeFromParams(searchParams);
       hasInitialized.current = true;
     }
-  }, [searchParams]);
+  }, [initializeFromParams, searchParams]);
 
   const tabs = [
     { key: 'expense', label: 'Expense' },
@@ -40,7 +41,9 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
   ];
 
   const handleTabChange = (key: string) => {
-    useFilterStore.getState().setQuery({ transactionType: key as any });
+    useFilterStore
+      .getState()
+      .setQuery({ transactionType: key as TransactionType });
     const newQuery = getQueryString(true);
     history.replaceState(null, '', newQuery); // router.replace도 가능
   };
@@ -51,7 +54,11 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
     if (prevPath.current === pathname) return;
     prevPath.current = pathname;
     setLayoutOptions(getDefaultLayoutOptions(pathname));
-  }, [pathname]);
+
+    return () => {
+      resetLayoutOptions(); // optional
+    };
+  }, [pathname, resetLayoutOptions, setLayoutOptions]);
 
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
