@@ -1,9 +1,9 @@
 'use client';
 
-import Selector from '@/components/ui/check/Selector';
-import { Button } from '@/components/ui/check/Button';
-import { Input } from '@/components/ui/check/Input';
-import { Textarea } from '@/components/ui/check/Textarea';
+import Selector from '@/components/ui/selector/Selector';
+import { Button } from '@/components/ui/button/Button';
+import { Input } from '@/components/ui/input/Input';
+import { Textarea } from '@/components/ui/textarea/Textarea';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { AccountType } from '@/modules/account/types';
 import Switch from '@/components/ui/switch/Switch';

@@ -8,8 +8,8 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();

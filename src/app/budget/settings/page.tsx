@@ -3,13 +3,13 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import DateNavigator from '@/components/ui/check/DateNavigator';
-import Panel from '@/components/ui/check/Panel';
+import DateNavigator from '@/components/common/DateNavigator';
+import Panel from '@/components/ui/panel/Panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryItemDTO } from '@/modules/budget/types';
 import type { DateFilterParams } from '@/common/types';
-import { CategoryListItem } from '@/app/stats/components/CategoryListItem';
+import { CategoryListItem } from '@/components/category/CategoryListItem';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks';
 

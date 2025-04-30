@@ -2,7 +2,7 @@
 
 import { useState, useEffect, forwardRef } from 'react';
 import ReactDatePicker from 'react-datepicker';
-import { Input } from '@/components/ui/check/Input';
+import { Input } from '@/components/ui/input/Input';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {

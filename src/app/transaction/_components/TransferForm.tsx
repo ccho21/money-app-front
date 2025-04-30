@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { startOfDay } from 'date-fns';
-import { Button } from '@/components/ui/check/Button';
-import Divider from '@/components/ui/check/Divider';
-import { Textarea } from '@/components/ui/check/Textarea';
-import { Input } from '@/components/ui/check/Input';
-import DatePicker from '@/components/ui/check/DatePicker';
-import Selector from '@/components/ui/check/Selector';
+import { Button } from '@/components/ui/button/Button';
+import Divider from '@/components/ui/divider/Divider';
+import { Textarea } from '@/components/ui/textarea/Textarea';
+import { Input } from '@/components/ui/input/Input';
+import DatePicker from '@/components/ui/date-picker/DatePicker';
+import Selector from '@/components/ui/selector/Selector';
 import { deleteTransaction, submitTransfer } from '@/modules/transaction/hooks';
 import { useAccountStore } from '@/modules/account/store';
 import { useTransactionFormStore } from '@/modules/transaction/formStore';

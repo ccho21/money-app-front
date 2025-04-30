@@ -1,5 +1,5 @@
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
-import Progress from '@/components/ui/check/Progress';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
+import Progress from '@/components/ui/progress/Progress';
 import { cn } from '@/lib/utils';
 
 interface CategoryListItemData {

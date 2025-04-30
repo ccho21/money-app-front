@@ -16,9 +16,9 @@ import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
-import StatComposedChart from '@/components/ui/check/ComposedChart';
-import Panel from '@/components/ui/check/Panel';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import StatComposedChart from '@/components/common/ComposedChart';
+import Panel from '@/components/ui/panel/Panel';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 
 export default function StatsCategoryDetailPage() {

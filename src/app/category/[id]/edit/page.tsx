@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { fillCategoryForm, updateCategory } from '@/modules/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
-import { CategoryForm } from '@app/category/_components/CategoryForm';
+import { CategoryForm } from '@/app/category/components/CategoryForm';
 
 export default function EditCategoryPage() {
   const router = useRouter();

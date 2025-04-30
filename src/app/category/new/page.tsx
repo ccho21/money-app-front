@@ -2,7 +2,7 @@
 
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { useRouter } from 'next/navigation';
-import { CategoryForm } from '../_components/CategoryForm';
+import { CategoryForm } from '../components/CategoryForm';
 import { createCategory } from '@/modules/category/hooks';
 
 export default function AddCategoryPage() {

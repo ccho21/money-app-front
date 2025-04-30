@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import Panel from '@/components/ui/check/Panel';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import { CategoryListItem } from '../../components/CategoryListItem';
-import CategoryPieChart from '@/components/ui/check/PieChart';
+import Panel from '@/components/ui/panel/Panel';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import { CategoryListItem } from '../../../../components/category/CategoryListItem';
+import CategoryPieChart from '@/components/common/PieChart';
 import { StatsCategoryGroupItemDTO } from '@/modules/stats/types';
 
 interface CategoryChartData {

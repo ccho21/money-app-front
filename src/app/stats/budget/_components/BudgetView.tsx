@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/components/ui/check/Button';
-import Panel from '@/components/ui/check/Panel';
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import { Button } from '@/components/ui/button/Button';
+import Panel from '@/components/ui/panel/Panel';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 
 import type { CategoryType } from '@/modules/category/types';
 import type { BaseListSummaryResponseDTO } from '@/common/types';

@@ -9,8 +9,8 @@ import { fetchBudgetStats } from '@/modules/stats/hooks';
 
 import type { CategoryType } from '@/modules/category/types';
 
-import BudgetView from '../components/BudgetView';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import BudgetView from './_components/BudgetView';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/common/types';
 

@@ -10,7 +10,7 @@ import { fetchTransactionSummary } from '@/modules/transaction/hooks';
 import type { DateFilterParams } from '@/common/types';
 import type { TransactionDetailDTO } from '@/modules/transaction/types';
 
-import DailyView from '@/app/dashboard/_components/DailyView';
+import DailyView from '@/app/dashboard/components/DailyView';
 import { useShallow } from 'zustand/shallow';
 
 export default function DailyPage() {

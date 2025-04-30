@@ -3,8 +3,8 @@ import {
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
 import SummaryBox from '@/components/stats/SummaryBox';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import Panel from '@/components/ui/check/Panel';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import Panel from '@/components/ui/panel/Panel';
 import TransactionGroup from '../../../components/transaction/TransactionGroup';
 import { SummaryItem } from '@/common/types';
 interface DailyViewProps {

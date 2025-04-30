@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { BudgetCategoryForm } from '@/app/budget/_components/BudgetCategoryForm';
+import { BudgetCategoryForm } from '@/app/budget/components/BudgetCategoryForm';
 
 export default function NewBudgetCategoryPage() {
   const { categoryId } = useParams();

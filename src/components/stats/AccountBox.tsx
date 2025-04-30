@@ -1,6 +1,6 @@
 'use client';
 
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 import { AccountTransactionItemDTO } from '@/modules/account/types';
 
 import { Wallet } from 'lucide-react';
@@ -23,9 +23,7 @@ export default function AccountBox({ accounts }: AccountBoxProps) {
             key={acc.accountId}
             className='flex justify-between mb-1 text-foreground'
           >
-            <span className='text-muted'>
-              Exp. ({acc.accountName})
-            </span>
+            <span className='text-muted'>Exp. ({acc.accountName})</span>
             <CurrencyDisplay amount={acc.totalExpense ?? 0} />
           </div>
         ))}

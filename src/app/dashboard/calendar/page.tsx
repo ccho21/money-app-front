@@ -15,10 +15,10 @@ import type {
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
 
-import CalendarWithTransactions from '../_components/CalendarWithTransactions';
-import TransactionDetailView from '../_components/TransactionDetailView';
-import Panel from '@/components/ui/check/Panel';
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import CalendarWithTransactions from '../components/CalendarWithTransactions';
+import TransactionDetailView from '../components/TransactionDetailView';
+import Panel from '@/components/ui/panel/Panel';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 import { DateFilterParams } from '@/common/types';
 import { useShallow } from 'zustand/shallow';
 

@@ -14,9 +14,9 @@ import type { DateFilterParams } from '@/common/types';
 import SummaryBox from '@/components/stats/SummaryBox';
 import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import Panel from '@/components/ui/check/Panel';
-import Divider from '@/components/ui/check/Divider';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import Panel from '@/components/ui/panel/Panel';
+import Divider from '@/components/ui/divider/Divider';
 import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
 

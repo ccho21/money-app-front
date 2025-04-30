@@ -1,8 +1,8 @@
 'use client';
 
 import SummaryBox from '@/components/stats/SummaryBox';
-import Panel from '@/components/ui/check/Panel';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import Panel from '@/components/ui/panel/Panel';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 
 import {
   TransactionGroupSummaryDTO,

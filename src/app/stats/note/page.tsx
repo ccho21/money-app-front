@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/modules/stats/store';
@@ -10,7 +10,7 @@ import { fetchNoteStats } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 import type { DateFilterParams } from '@/common/types';
 
-import NoteView from '../components/NoteView';
+import NoteView from './_components/NoteView';
 import { useShallow } from 'zustand/shallow';
 
 export default function StatsNotePage() {

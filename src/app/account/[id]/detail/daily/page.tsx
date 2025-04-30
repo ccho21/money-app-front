@@ -8,7 +8,7 @@ import { useTransactionStore } from '@/modules/transaction/store';
 
 import { useShallow } from 'zustand/shallow';
 import { TransactionDetailDTO } from '@/modules/transaction/types';
-import DailyView from '@/app/dashboard/_components/DailyView';
+import DailyView from '@/app/dashboard/components/DailyView';
 import { useAccountDetailSummary } from '@/modules/account/hooks';
 
 export default function AccountDailyPage() {

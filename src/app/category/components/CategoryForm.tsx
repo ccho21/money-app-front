@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/check/Button';
-import { Input } from '@/components/ui/check/Input';
-import Selector from '@/components/ui/check/Selector';
+import { Button } from '@/components/ui/button/Button';
+import { Input } from '@/components/ui/input/Input';
+import Selector from '@/components/ui/selector/Selector';
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';

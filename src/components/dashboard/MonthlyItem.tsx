@@ -7,7 +7,7 @@ import { format, startOfMonth, endOfMonth, parse, isValid } from 'date-fns';
 import { TransactionGroupItemDTO } from '@/modules/transaction/types';
 
 import { useFilterStore } from '@/stores/useFilterStore';
-import CurrencyDisplay from '../ui/check/CurrencyDisplay';
+import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 
 interface MonthlyItemProps {
   date: string;

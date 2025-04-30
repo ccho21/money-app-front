@@ -14,9 +14,9 @@ import SummaryBox from '@/components/stats/SummaryBox';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
 
 import { fetchNoteDetail, fetchNoteSummary } from '@/modules/stats/hooks';
-import Panel from '@/components/ui/check/Panel';
-import ComposedChart from '@/components/ui/check/ComposedChart';
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
+import Panel from '@/components/ui/panel/Panel';
+import ComposedChart from '@/components/common/ComposedChart';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 
 export default function StatsNoteDetailPage() {

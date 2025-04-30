@@ -1,7 +1,7 @@
 'use client';
 
 import { Pencil, X } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface SelectorProps<T> {
   label: string;
@@ -12,6 +12,8 @@ interface SelectorProps<T> {
   getOptionValue: (option: T) => string;
   getOptionIcon?: (option: T) => React.ReactNode;
   onEdit?: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function Selector<T>({
@@ -23,28 +25,33 @@ export default function Selector<T>({
   getOptionValue,
   getOptionIcon,
   onEdit,
+  className,
+  ...props
 }: SelectorProps<T>) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const closeOnOutsideClick = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', closeOnOutsideClick);
-    return () => document.removeEventListener('mousedown', closeOnOutsideClick);
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
+    if (!ref.current?.contains(e.target as Node)) {
+      setOpen(false);
+    }
   }, []);
 
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [handleOutsideClick]);
+
   return (
-    <div className='grid grid-cols-12 items-center gap-2' ref={ref}>
-      {/* Label */}
+    <div
+      ref={ref}
+      className={`grid grid-cols-12 items-center gap-2 ${className ?? ''}`}
+      {...props}
+    >
       <label className='col-span-2 text-xs font-medium text-muted'>
         {label}
       </label>
 
-      {/* Input */}
       <div className='col-span-10'>
         <input
           readOnly
@@ -54,21 +61,20 @@ export default function Selector<T>({
         />
       </div>
 
-      {/* Bottom Sheet */}
       {open && (
         <div
           className='fixed left-0 right-0 bottom-0 z-40 min-h-[40vh] border-t shadow-md'
           style={{
             backgroundColor: 'var(--color-surface)',
             borderColor: 'var(--color-border)',
-            paddingBottom: '10vh', // safe area
+            paddingBottom: '10vh',
           }}
         >
           {/* Header */}
           <div
             className='flex justify-between items-center px-4 py-3 text-sm font-medium border-b'
             style={{
-              backgroundColor: 'var(--color-border)', // ✅ 더 뚜렷한 헤더 구분
+              backgroundColor: 'var(--color-border)',
               borderColor: 'var(--color-border)',
               color: 'var(--color-text)',
             }}
@@ -89,8 +95,7 @@ export default function Selector<T>({
           {/* Options */}
           <div className='flex flex-col gap-1 px-4 py-4'>
             {options.map((item, idx) => {
-              const isSelected = getOptionValue(item) === value;
-
+              const selected = getOptionValue(item) === value;
               return (
                 <button
                   key={idx}
@@ -98,20 +103,11 @@ export default function Selector<T>({
                     onChange(getOptionValue(item));
                     setOpen(false);
                   }}
-                  className='flex items-center justify-start gap-2 px-4 py-2 text-sm border transition-colors'
-                  style={{
-                    borderColor: isSelected
-                      ? 'var(--color-primary)'
-                      : 'var(--color-border)',
-                    backgroundColor: isSelected
-                      ? 'var(--color-surface)'
-                      : 'transparent',
-                    fontWeight: isSelected ? 600 : 400,
-                    borderRadius: '2px', // ✅ 거의 직각
-                    color: isSelected
-                      ? 'var(--color-text)'
-                      : 'var(--color-muted)',
-                  }}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm border transition-colors ${
+                    selected
+                      ? 'border-primary font-semibold text-foreground bg-surface'
+                      : 'border-border text-muted'
+                  } rounded-sm`}
                 >
                   {getOptionIcon?.(item)}
                   {getOptionLabel(item)}

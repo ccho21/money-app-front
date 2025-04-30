@@ -1,11 +1,7 @@
-interface EmptyMessageProps {
-  message?: string
-}
+'use client';
 
-export default function EmptyMessage({ message = "No data available." }: EmptyMessageProps) {
+export default function EmptyMessage() {
   return (
-    <div className="text-center text-sm text-gray-400 py-8">
-      {message}
-    </div>
-  )
+    <p className='text-sm text-muted text-center py-20'>📭 No data available</p>
+  );
 }

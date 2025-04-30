@@ -8,8 +8,8 @@ import {
   StatsNoteGroupItemDTO,
 } from '@/modules/stats/types';
 
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 
 interface NoteViewProps {
   items: StatsNoteGroupItemDTO[];

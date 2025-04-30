@@ -1,9 +1,9 @@
 'use client';
 
-import EmptyMessage from '@/components/ui/check/EmptyMessage';
-import PanelContent from '@/components/ui/check/PanelContent';
-import PanelHeader from '@/components/ui/check/PanelHeader';
-import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import PanelContent from '@/components/ui/panel/PanelContent';
+import PanelHeader from '@/components/ui/panel/PanelHeader';
+import BottomSheetPanel from '@/components/common/BottomSheetPanel';
 import {
   TransactionDetailDTO,
   TransactionGroupItemDTO,
@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import TransactionItem from '@/components/transaction/TransactionItem';
 
-import CurrencyDisplay from '@/components/ui/check/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 
 interface Props {
   open: boolean;

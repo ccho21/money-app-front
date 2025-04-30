@@ -1,22 +1,43 @@
-import { clsx } from 'clsx'
+'use client';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
-}
+import { forwardRef, InputHTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
 
-export default function Input({ label, error, ...props }: InputProps) {
-  return (
-    <div className="space-y-1">
-      {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
-      <input
-        {...props}
-        className={clsx(
-          'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
-          error && 'border-red-500'
+type Props = {
+  label?: string;
+  error?: string;
+  description?: string;
+} & InputHTMLAttributes<HTMLInputElement>;
+
+export const Input = forwardRef<HTMLInputElement, Props>(
+  ({ label, error, description, className, ...props }, ref) => {
+    return (
+      <div className='grid grid-cols-12 items-center gap-2'>
+        {label && (
+          <label className='col-span-2 text-xs text-muted font-medium px-1'>
+            {label}
+          </label>
         )}
-      />
-      {error && <p className="text-sm text-red-500">{error}</p>}
-    </div>
-  )
-}
+        <div className={label ? 'col-span-10' : 'col-span-12'}>
+          <input
+            ref={ref}
+            className={cn(
+              'w-full border-0 border-b border-border text-sm py-2 px-1 bg-transparent',
+              'focus:outline-none focus:ring-0 focus:border-foreground',
+              'placeholder:text-muted',
+              error && 'border-b-error',
+              className
+            )}
+            {...props}
+          />
+          {description && (
+            <p className='text-xs text-muted px-1 mt-1'>{description}</p>
+          )}
+          {error && <p className='text-xs text-error px-1 mt-1'>{error}</p>}
+        </div>
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';

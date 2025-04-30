@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
-import DateNavigator from '@/components/ui/check/DateNavigator';
+import DateNavigator from '@/components/common/DateNavigator';
 import StatsHeader from './components/StatsHeader';
 
 import { useFilterStore } from '@/stores/useFilterStore';

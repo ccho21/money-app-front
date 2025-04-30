@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
-import { Input } from '@/components/ui/check/Input';
-import { Button } from '@/components/ui/check/Button';
+import { Input } from '@/components/ui/input/Input';
+import { Button } from '@/components/ui/button/Button';
 import { toast } from 'react-hot-toast';
 
 export const BudgetCategoryForm = () => {

@@ -1,3 +1,5 @@
 export default function Divider() {
-  return <div className="h-px w-full bg-gray-200" />
-}
+    return (
+      <div className="w-full border-t border-border my-2" />
+    );
+  }

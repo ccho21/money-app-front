@@ -13,7 +13,7 @@ import {
   DotProps,
 } from 'recharts';
 
-import CurrencyDisplay from './CurrencyDisplay';
+import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 
 interface Props {
   data: {

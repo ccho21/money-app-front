@@ -4,7 +4,7 @@
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import BottomSheetPanel from '@/components/ui/check/BottomSheetPanel';
+import BottomSheetPanel from '@/components/common/BottomSheetPanel';
 import { useFilterStore } from '@/stores/useFilterStore';
 
 import { RANGE_OPTIONS, GroupBy } from '@/common/types';

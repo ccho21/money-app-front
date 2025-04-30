@@ -10,8 +10,8 @@ import {
 
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
-import DateNavigator from '@/components/ui/check/DateNavigator';
-import { Button } from '@/components/ui/check/Button';
+import DateNavigator from '@/components/common/DateNavigator';
+import { Button } from '@/components/ui/button/Button';
 
 import { Plus } from 'lucide-react';
 import { parseLocalDate, formatDate } from '@/lib/date.util';

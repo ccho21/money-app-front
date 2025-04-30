@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useUserSettingStore } from '@/stores/useUserSettingStore';
 import { useOptionModalStore, SettingKey } from '@/stores/useOptionModalStore';
 import { usePanelStore } from '@/stores/usePanelStore';
-import OptionSelectorModal from '@/components/ui/check/OptionSelectorModal';
+import OptionSelectorModal from '@/components/common/OptionSelectorModal';
 import SlideInPanelRenderer from '@/app/more/_components/SlideInPanelRenderer';
 import { LogOut } from 'lucide-react';
 import { signout } from '@/modules/auth/hooks';
