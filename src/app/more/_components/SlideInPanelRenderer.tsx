@@ -47,7 +47,7 @@ export default function SlideInPanelRenderer() {
         return <AccountGroupPanel />;
       default:
         return (
-          <div className='p-4 text-sm text-muted-foreground text-center'>
+          <div className='p-component text-sm text-muted-foreground text-center'>
             준비 중인 패널입니다.
           </div>
         );
@@ -61,7 +61,7 @@ export default function SlideInPanelRenderer() {
     >
       <div
         className={clsx(
-          'w-full max-w-md rounded-t-2xl bg-surface text-foreground transition-all duration-300 p-4 shadow-xl'
+          'w-full max-w-md rounded-t-2xl bg-surface text-foreground transition-all duration-300 p-component shadow-xl'
         )}
         onClick={(e) => e.stopPropagation()}
       >

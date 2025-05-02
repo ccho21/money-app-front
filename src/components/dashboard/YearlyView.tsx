@@ -1,4 +1,4 @@
-'use client';
+// 📄 src/app/dashboard/components/YearlyView.tsx
 
 import SummaryBox from '@/components/stats/SummaryBox';
 import Panel from '@/components/ui/panel/Panel';
@@ -23,7 +23,9 @@ export default function YearlyView({
 }: YearlyViewProps) {
   if (isLoading) {
     return (
-      <p className='text-center mt-10 text-muted-foreground'>불러오는 중...</p>
+      <p className='text-center mt-section text-muted-foreground'>
+        불러오는 중...
+      </p>
     );
   }
 

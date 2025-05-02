@@ -1,3 +1,4 @@
+// src/app/budget/layout.tsx
 'use client';
 
 import BottomTabBar from '@/components/common/BottomTabBar';

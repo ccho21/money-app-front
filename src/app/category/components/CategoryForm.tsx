@@ -1,3 +1,4 @@
+// src/app/category/components/CategoryForm.tsx
 'use client';
 
 import { Button } from '@/components/ui/button/Button';
@@ -35,7 +36,7 @@ export const CategoryForm = ({
   };
 
   return (
-    <div className='space-y-4 px-4 pt-4 text-foreground'>
+    <div className='space-y-component px-component pt-component text-foreground'>
       <Input
         label='카테고리 이름'
         placeholder='예: 식비, 월급'
@@ -52,9 +53,9 @@ export const CategoryForm = ({
         getOptionValue={(o) => o.value}
       />
 
-      {error && <p className='text-error text-sm'>{error}</p>}
+      {error && <p className='text-label text-error'>{error}</p>}
 
-      <div className='pt-4'>
+      <div className='pt-component'>
         <Button className='w-full' onClick={handleSubmit}>
           {isEdit ? <Pencil /> : <Plus />}
         </Button>

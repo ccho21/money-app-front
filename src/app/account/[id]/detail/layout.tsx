@@ -1,6 +1,7 @@
+// src/app/account/[id]/detail/layout.tsx
 'use client';
 
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useCallback } from 'react';
 import {
   useParams,
   usePathname,
@@ -42,39 +43,39 @@ export default function AccountDetailDashboardLayout({
   const { date, groupBy } = query;
 
   const { reset } = useAccountFormStore();
-
   const hasInitialized = useRef(false);
 
+  // URL → Zustand 초기화
   useEffect(() => {
+    if (hasInitialized.current) return;
+
     const partialQuery: Partial<typeof query> = {};
-    let parsedDate: Date | null = null;
 
-    if (!hasInitialized.current) {
-      if (dateParam) {
-        try {
-          parsedDate = parseLocalDate(dateParam);
-          if (formatDate(parsedDate) !== formatDate(date)) {
-            partialQuery.date = parsedDate;
-          }
-        } catch (err) {
-          console.log('❌ Invalid dateParam', err);
+    if (dateParam) {
+      try {
+        const parsedDate = parseLocalDate(dateParam);
+        if (formatDate(parsedDate) !== formatDate(date)) {
+          partialQuery.date = parsedDate;
         }
+      } catch (err) {
+        console.warn('❌ Invalid dateParam', err);
       }
-
-      if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
-        if (groupBy !== rangeParam) {
-          partialQuery.groupBy = rangeParam as GroupBy;
-        }
-      }
-
-      if (Object.keys(partialQuery).length > 0) {
-        setQuery(partialQuery);
-      }
-
-      hasInitialized.current = true;
     }
-  }, [dateParam, rangeParam, date, groupBy, current, setQuery]);
 
+    if (rangeParam && validRanges.includes(rangeParam as GroupBy)) {
+      if (groupBy !== rangeParam) {
+        partialQuery.groupBy = rangeParam as GroupBy;
+      }
+    }
+
+    if (Object.keys(partialQuery).length > 0) {
+      setQuery(partialQuery);
+    }
+
+    hasInitialized.current = true;
+  }, [dateParam, rangeParam, date, groupBy, setQuery]);
+
+  // TopNav 구성
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'Accounts.',
@@ -97,34 +98,32 @@ export default function AccountDetailDashboardLayout({
     { key: 'yearly', label: 'Yearly' },
   ];
 
+  const handleTabChange = useCallback(
+    (key: string) => {
+      const currentDate = formatDate(date);
+      const rangeParam = `groupBy=${groupBy}`;
+      router.replace(
+        `/account/${accountId}/detail/${key}?date=${currentDate}&${rangeParam}`
+      );
+    },
+    [router, accountId, date, groupBy]
+  );
+
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full bg-surface text-foreground'>
+    <div className='min-h-screen pb-tabbar flex flex-col h-full bg-surface text-foreground'>
       <div>
         <DateNavigator />
         <TabMenu
           tabs={tabs}
           active={current}
           variant='underline'
-          onChange={(key) => {
-            const currentDate = formatDate(date);
-            const rangeParam = `groupBy=${groupBy}`;
-            router.replace(
-              `/account/${accountId}/detail/${key}?date=${currentDate}&${rangeParam}`
-            );
-          }}
+          onChange={handleTabChange}
         />
       </div>
 
       <div className='flex-1 overflow-y-auto'>{children}</div>
 
       <BottomTabBar />
-      <Button
-        variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-primary text-onPrimary rounded-full shadow-md z-50 flex justify-center items-center'
-        onClick={() => router.push('/transaction/new')}
-      >
-        <Plus className='w-4 h-4' />
-      </Button>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+// src/app/stats/category/[id]/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -20,6 +21,7 @@ import StatComposedChart from '@/components/common/ComposedChart';
 import Panel from '@/components/ui/panel/Panel';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function StatsCategoryDetailPage() {
   const router = useRouter();
@@ -114,7 +116,7 @@ export default function StatsCategoryDetailPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   return (
@@ -128,19 +130,16 @@ export default function StatsCategoryDetailPage() {
                 label: 'Income',
                 value: summaryData.income,
                 color: summaryData.income > 0 ? 'text-primary' : 'text-muted',
-                prefix: '$',
               },
               {
                 label: 'Exp.',
                 value: summaryData.expense,
                 color: summaryData.expense > 0 ? 'text-error' : 'text-muted',
-                prefix: '$',
               },
               {
                 label: 'Total',
                 value: summaryData.income - summaryData.expense,
                 color: 'text-foreground',
-                prefix: '$',
               },
             ]}
           />
@@ -149,14 +148,14 @@ export default function StatsCategoryDetailPage() {
 
       {/* Chart */}
       {chartData.length > 0 && (
-        <div className='w-full h-40'>
+        <div>
           <StatComposedChart data={chartData} onSelect={handleDateClick} />
         </div>
       )}
 
       {/* Transaction breakdown */}
       {categoryDetail?.items?.length ? (
-        <div className='space-y-4'>
+        <div>
           {categoryDetail.items.map((group, i) => (
             <TransactionGroup
               key={group.label + i}

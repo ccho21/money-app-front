@@ -1,5 +1,4 @@
-'use client';
-
+// 📄 src/app/dashboard/components/MonthlyView.tsx
 import SummaryBox from '@/components/stats/SummaryBox';
 import Panel from '@/components/ui/panel/Panel';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
@@ -33,7 +32,11 @@ export default function MonthlyView({
   onToggle,
 }: MonthlyViewProps) {
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted text-sm'>Loading...</p>;
+    return (
+      <p className='text-center mt-section text-muted text-label'>
+        Loading...
+      </p>
+    );
   }
 
   if (!data || !data.items.length) {
@@ -43,12 +46,12 @@ export default function MonthlyView({
   return (
     <>
       {/* Summary box */}
-      <Panel className='p-3 border border-border bg-surface rounded mb-2'>
+      <Panel className='p-element border border-border bg-surface rounded-default mb-compact'>
         <SummaryBox items={summaryItems} />
       </Panel>
 
       {/* Monthly accordion list */}
-      <Panel className='divide-y divide-border bg-surface rounded shadow-sm'>
+      <Panel className='divide-y divide-border bg-surface rounded-default shadow-sm'>
         {data.items.map((summary, index) => (
           <MonthlyItem
             key={summary.label}

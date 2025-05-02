@@ -19,6 +19,8 @@ import Panel from '@/components/ui/panel/Panel';
 import Divider from '@/components/ui/divider/Divider';
 import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
+import BudgetCard from '@/components/common/BudgetCard';
+import { ChartBar } from 'lucide-react';
 
 export default function SummaryPage() {
   const router = useRouter();
@@ -135,7 +137,18 @@ export default function SummaryPage() {
       <Divider />
 
       <Panel>
-        <BudgetBox item={budgetSummary} handleClick={handleBudgetClick} />
+        <BudgetCard
+          name={'Budget'}
+          budget={budgetSummary.totalBudget}
+          spent={budgetSummary.totalSpent}
+          rate={budgetSummary.rate}
+          label={budgetSummary.label}
+          startDate={budgetSummary.rangeStart}
+          endDate={budgetSummary.rangeEnd}
+          hasBudget={true}
+          onClick={handleBudgetClick}
+          variant='summary'
+        />
       </Panel>
     </div>
   );

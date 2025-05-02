@@ -1,3 +1,4 @@
+// src/app/transaction/new
 'use client';
 
 import { useEffect } from 'react';
@@ -19,7 +20,6 @@ export default function TransactionNewPage() {
   const init = useTransactionFormStore((s) => s.init);
   const setField = useTransactionFormStore((s) => s.setField);
 
-  // ✅ 최초 진입 시 init() + 날짜 파라미터 설정
   useEffect(() => {
     init();
 
@@ -33,17 +33,19 @@ export default function TransactionNewPage() {
     })();
   }, [dateParam, init, setField]);
 
-  // ✅ 로딩 상태 처리
   if (!type) {
-    return <p className='text-center text-muted py-10'>Loading...</p>;
+    return (
+      <p className="text-label text-muted text-center py-section">
+        Loading...
+      </p>
+    );
   }
 
-  // ✅ 폼 전환 시 완전 리마운트 보장
   return (
     <>
-      {type === 'income' && <IncomeForm key='income' mode='new' />}
-      {type === 'expense' && <ExpenseForm key='expense' mode='new' />}
-      {type === 'transfer' && <TransferForm key='transfer' mode='new' />}
+      {type === 'income' && <IncomeForm key="income" mode="new" />}
+      {type === 'expense' && <ExpenseForm key="expense" mode="new" />}
+      {type === 'transfer' && <TransferForm key="transfer" mode="new" />}
     </>
   );
 }

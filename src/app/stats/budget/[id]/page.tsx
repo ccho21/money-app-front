@@ -1,3 +1,4 @@
+// src/app/stats/budget/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -17,6 +18,8 @@ import TransactionGroup from '@/components/transaction/TransactionGroup';
 import Panel from '@/components/ui/panel/Panel';
 import ComposedChart from '@/components/common/ComposedChart';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
+
 import { useShallow } from 'zustand/shallow';
 
 export default function StatsBudgetDetailPage() {
@@ -37,33 +40,43 @@ export default function StatsBudgetDetailPage() {
     [startDate, endDate, groupBy, transactionType]
   );
 
-  const { budgetSummary, budgetDetail, isLoading, setBudgetDetail } =
-    useStatsStore(
-      useShallow((s) => ({
-        budgetSummary: s.budgetSummary,
-        budgetDetail: s.budgetDetail,
-        isLoading: s.isLoading,
-        setBudgetDetail: s.setBudgetDetail,
-      }))
-    );
+  const {
+    budgetSummary,
+    budgetDetail,
+    isLoading,
+    setBudgetDetail,
+  } = useStatsStore(
+    useShallow((s) => ({
+      budgetSummary: s.budgetSummary,
+      budgetDetail: s.budgetDetail,
+      isLoading: s.isLoading,
+      setBudgetDetail: s.setBudgetDetail,
+    }))
+  );
 
   const setTopNav = useUIStore((s) => s.setTopNav);
   const resetTopNav = useUIStore((s) => s.resetTopNav);
 
+  // fetch summary & detail
   useEffect(() => {
     (async () => {
       if (!categoryId) return;
 
       const data = await fetchBudgetSummary(String(categoryId), params);
       const exists = data.items.find((d) => d.isCurrent);
+
       if (exists?.income || exists?.expense) {
-        fetchBudgetDetail(String(categoryId), { ...params, groupBy: 'daily' });
+        fetchBudgetDetail(String(categoryId), {
+          ...params,
+          groupBy: 'daily',
+        });
       } else {
         setBudgetDetail(null);
       }
     })();
   }, [categoryId, params]);
 
+  // top nav
   useEffect(() => {
     setTopNav({
       title: 'Budget',
@@ -85,29 +98,30 @@ export default function StatsBudgetDetailPage() {
 
   const summaryData = useMemo(() => {
     if (!budgetSummary || !budgetSummary.items.length) {
-      return { budgetAmount: 0, expense: 0, income: 0, ramaining: 0 };
+      return { budgetAmount: 0, expense: 0, income: 0, remaining: 0 };
     }
 
     const current = budgetSummary.items.find((item) => item.isCurrent);
     if (!current) {
-      return { budgetAmount: 0, expense: 0, income: 0, ramaining: 0 };
+      return { budgetAmount: 0, expense: 0, income: 0, remaining: 0 };
     }
+
     const budgetAmount = current.budgetAmount ?? 0;
     return {
-      budgetAmount: budgetAmount,
+      budgetAmount,
       income: current.income,
       expense: current.expense,
-      ramaining: budgetAmount - current.expense,
+      remaining: budgetAmount - current.expense,
     };
   }, [budgetSummary]);
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   return (
     <div className='space-y-4'>
-      {/* 요약 정보 */}
+      {/* Summary Section */}
       {budgetSummary && (
         <Panel>
           <SummaryBox
@@ -116,42 +130,39 @@ export default function StatsBudgetDetailPage() {
                 label: 'Budget',
                 value: summaryData.budgetAmount,
                 color: 'text-primary',
-                prefix: '$',
               },
               {
                 label: 'Exp.',
                 value: summaryData.expense,
                 color: 'text-error',
-                prefix: '$',
               },
               {
                 label: 'Remaining',
-                value: summaryData.ramaining,
+                value: summaryData.remaining,
                 color: budgetSummary.summary?.isOver
                   ? 'text-error'
                   : 'text-foreground',
-                prefix: '$',
               },
             ]}
           />
         </Panel>
       )}
 
-      {/* 바 차트 */}
+      {/* Chart Section */}
       {chartData.length > 0 && (
         <Panel>
           <div className='w-full h-36'>
             <ComposedChart
               data={chartData}
-              onSelect={(startDate) => {
-                setQuery({ date: startOfDay(parseISO(startDate)) });
-              }}
+              onSelect={(startDate) =>
+                setQuery({ date: startOfDay(parseISO(startDate)) })
+              }
             />
           </div>
         </Panel>
       )}
 
-      {/* 거래 리스트 */}
+      {/* Transaction List Section */}
       {budgetDetail?.items.length ? (
         <Panel>
           <div className='space-y-4'>

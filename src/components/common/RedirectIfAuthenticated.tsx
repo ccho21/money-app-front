@@ -1,3 +1,4 @@
+// src/components/common/RedirectIfAuthenticated.tsx
 'use client';
 
 import { useEffect } from 'react';

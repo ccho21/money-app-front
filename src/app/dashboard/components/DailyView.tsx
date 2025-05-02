@@ -1,3 +1,5 @@
+// src/app/dashboard/components/DailyView.tsx
+
 import {
   TransactionDetailDTO,
   TransactionGroupSummaryDTO,
@@ -7,6 +9,7 @@ import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import Panel from '@/components/ui/panel/Panel';
 import TransactionGroup from '../../../components/transaction/TransactionGroup';
 import { SummaryItem } from '@/common/types';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 interface DailyViewProps {
   isLoading: boolean;
   data?: TransactionGroupSummaryDTO | null;
@@ -26,7 +29,7 @@ export default function DailyView({
   onHeaderClick,
 }: DailyViewProps) {
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   if (!data) {

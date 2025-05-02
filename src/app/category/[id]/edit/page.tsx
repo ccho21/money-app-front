@@ -1,3 +1,4 @@
+// src/app/category/[id]/edit/page.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -6,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { fillCategoryForm, updateCategory } from '@/modules/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { CategoryForm } from '@/app/category/components/CategoryForm';
+import { toast } from 'react-hot-toast';
 
 export default function EditCategoryPage() {
   const router = useRouter();
@@ -15,7 +17,7 @@ export default function EditCategoryPage() {
   const { getUpdateFormData, reset } = useCategoryFormStore();
 
   useEffect(() => {
-    fillCategoryForm(id);
+    if (id) fillCategoryForm(id);
   }, [id]);
 
   const handleSubmit = async () => {
@@ -27,13 +29,15 @@ export default function EditCategoryPage() {
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Failed to update category';
-      alert(message);
+      toast.error(message);
     }
   };
 
   return (
-    <div className='pt-4'>
-      <h2 className='text-md font-semibold px-4 pb-2'>Edit Category</h2>
+    <div className='pt-component'>
+      <h2 className='text-heading font-semibold px-component pb-tight'>
+        Edit Category
+      </h2>
       <CategoryForm onSubmit={handleSubmit} isEdit />
     </div>
   );

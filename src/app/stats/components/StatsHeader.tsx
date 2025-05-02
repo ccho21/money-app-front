@@ -40,7 +40,7 @@ export default function StatsHeader() {
   };
 
   return (
-    <div className='p-2'>
+    <div className='p-compact'>
       <div className='flex justify-between items-center rounded-md bg-surface py-1 px-2'>
         <div className='flex gap-2'>
           {tabs.map((tab) => {
@@ -77,7 +77,7 @@ export default function StatsHeader() {
 
       {/* 하단 모달: 기간 옵션 선택 */}
       <BottomSheetPanel isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className='text-sm p-2 space-y-1 pb-[10vh]'>
+        <div className='text-sm p-compact space-y-1 pb-[10vh]'>
           {RANGE_OPTIONS.map((option) => {
             const isSelected = option === groupBy;
 

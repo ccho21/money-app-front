@@ -21,6 +21,7 @@ import Panel from '@/components/ui/panel/Panel';
 import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 import { DateFilterParams } from '@/common/types';
 import { useShallow } from 'zustand/shallow';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function CalendarPage() {
   const { calendar, summary, isLoading, setCalendar, setSummary, setLoading } =
@@ -74,16 +75,22 @@ export default function CalendarPage() {
 
       map.set(
         item.date,
-        <div className='text-[10px]'>
+        <div className='text-right'>
           {item.income > 0 && (
-            <div className='text-primary'>
-              +<CurrencyDisplay amount={item.income} />
-            </div>
+            <CurrencyDisplay
+              amount={item.income}
+              type='income'
+              iconSize='xxs'
+              className='text-[9px]'
+            />
           )}
           {item.expense > 0 && (
-            <div className='text-error'>
-              -<CurrencyDisplay amount={item.expense} />
-            </div>
+            <CurrencyDisplay
+              amount={item.expense}
+              type='expense'
+              iconSize='xxs'
+              className='text-[9px]'
+            />
           )}
         </div>
       );
@@ -138,7 +145,7 @@ export default function CalendarPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   return (

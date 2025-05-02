@@ -43,6 +43,4 @@ export type SummaryItem = {
   label: string;
   value: number;
   color?: string; // 커스텀 텍스트 색상
-  prefix?: string;
-  suffix?: string;
 };

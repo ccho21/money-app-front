@@ -1,3 +1,5 @@
+// src/components/dashboard/MonthlyItem.tsx
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -61,39 +63,36 @@ export default function MonthlyItem({
   };
 
   return (
-    <div className='px-4 border-b border-border transition-colors'>
+    <div className='px-component border-b border-border transition-colors'>
       {/* 아코디언 헤더 */}
       <button
         onClick={onToggle}
-        className='w-full flex justify-between items-center py-3'
+        className='w-full flex justify-between items-center py-element'
       >
         {/* 좌측: 월 정보 */}
         <div className='text-left'>
-          <div className='text-md font-semibold text-foreground'>{label}</div>
-          <div className='text-xs text-muted'>
+          <div className='text-body font-semibold text-foreground'>{label}</div>
+          <div className='text-caption text-muted'>
             {start} ~ {end}
           </div>
         </div>
 
         {/* 우측: 수입 / 지출 / 합계 */}
-        <div className='text-right space-y-1'>
-          <div className='flex justify-end gap-2 text-sm font-medium'>
-            <span className='text-info'>
-              <CurrencyDisplay amount={income ?? 0} />
-            </span>
-            <span className='text-error'>
-              <CurrencyDisplay amount={expense ?? 0} />
-            </span>
+        <div className='text-right space-y-tight'>
+          <div className='flex justify-end gap-element'>
+            <CurrencyDisplay amount={income ?? 0} type='income' />
+            <CurrencyDisplay amount={expense ?? 0} type='expense' />
           </div>
-          <div className='text-xs text-muted'>
-            Total <CurrencyDisplay amount={total ?? 0} />
+          <div className='text-caption'>
+            Total{' '}
+            <CurrencyDisplay className='' amount={total ?? 0} type='total' />
           </div>
         </div>
       </button>
 
       {/* 아코디언 내용 */}
       {open && weeklyData?.length > 0 && (
-        <div className='pl-2 pb-3 space-y-2 text-sm text-muted'>
+        <div className='pl-2 pb-element space-y-2 text-label text-muted'>
           {weeklyData.map((week, idx) => {
             const rangeLabel =
               week.rangeStart && week.rangeEnd
@@ -101,28 +100,27 @@ export default function MonthlyItem({
                     week.rangeEnd,
                     'MM-dd'
                   )}`
-                : '기간 정보 없음';
+                : 'No date available';
 
             return (
               <div
                 key={idx}
                 onClick={(e) => handleClick(e, week)}
-                className='flex justify-between items-center pb-1 hover:bg-muted/10 dark:hover:bg-zinc-800 rounded-sm cursor-pointer transition'
+                className='flex justify-between items-center pb-tight hover:bg-muted/10 dark:hover:bg-zinc-800 rounded-input cursor-pointer transition'
               >
-                <span className='text-xs text-muted'>{rangeLabel}</span>
-                <div className='flex gap-2 text-sm text-right font-medium'>
-                  {week.groupIncome > 0 && (
-                    <span className='text-info'>
-                      <CurrencyDisplay amount={week.groupIncome ?? 0} />
-                    </span>
-                  )}
-                  {week.groupExpense > 0 && (
-                    <span className='text-error'>
-                      {' '}
-                      <CurrencyDisplay amount={week.groupExpense ?? 0} />
-                    </span>
-                  )}
-                </div>
+                <span className='text-caption text-muted'>{rangeLabel}</span>
+                {week.groupIncome > 0 && (
+                  <CurrencyDisplay
+                    amount={week.groupIncome ?? 0}
+                    type='income'
+                  />
+                )}
+                {week.groupExpense > 0 && (
+                  <CurrencyDisplay
+                    amount={week.groupExpense ?? 0}
+                    type='expense'
+                  />
+                )}
               </div>
             );
           })}

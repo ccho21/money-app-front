@@ -1,3 +1,5 @@
+// src/components/ui/input/Input.tsx
+
 'use client';
 
 import { forwardRef, InputHTMLAttributes } from 'react';
@@ -14,7 +16,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
     return (
       <div className='grid grid-cols-12 items-center gap-2'>
         {label && (
-          <label className='col-span-2 text-xs text-muted font-medium px-1'>
+          <label className='col-span-2 text-caption text-muted font-medium px-1'>
             {label}
           </label>
         )}
@@ -22,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           <input
             ref={ref}
             className={cn(
-              'w-full border-0 border-b border-border text-sm py-2 px-1 bg-transparent',
+              'w-full border-0 border-b border-border text-body py-2 px-1 bg-transparent',
               'focus:outline-none focus:ring-0 focus:border-foreground',
               'placeholder:text-muted',
               error && 'border-b-error',
@@ -31,9 +33,15 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             {...props}
           />
           {description && (
-            <p className='text-xs text-muted px-1 mt-1'>{description}</p>
+            <p className='text-caption text-muted px-1 mt-tight'>
+              {description}
+            </p>
           )}
-          {error && <p className='text-xs text-error px-1 mt-1'>{error}</p>}
+          {error && (
+            <p className='text-caption text-error px-1 mt-tight'>
+              {error}
+            </p>
+          )}
         </div>
       </div>
     );

@@ -1,3 +1,4 @@
+// src/app/stats/budget/_components/BudgetView.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -26,13 +27,13 @@ export default function BudgetView({
 
   return (
     <>
-      <Panel className='p-3 mb-1'>
+      <Panel className='p-element mb-tight'>
         <div className='grid grid-cols-12 items-center'>
           <div className='col-span-6'>
-            <p className='text-xs text-muted'>
+            <p className='text-caption text-muted'>
               Remaining ({transactionType === 'expense' ? 'Expense' : 'Income'})
             </p>
-            <p className='text-md font-semibold text-foreground mt-0.5'>
+            <p className='text-body font-semibold text-foreground mt-tight'>
               <CurrencyDisplay
                 amount={
                   (budgetGroup.summary?.budget ?? 0) -
@@ -44,7 +45,7 @@ export default function BudgetView({
 
           <div className='col-span-6 flex justify-end'>
             <Button
-              className='text-xs px-2 py-1 h-auto rounded-sm border border-border text-muted'
+              className='text-caption px-compact py-tight h-auto rounded-input border border-border text-muted'
               variant='outline'
               onClick={() => router.push('/budget/settings')}
             >

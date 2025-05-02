@@ -1,12 +1,15 @@
+// src/app/account/[id]/detail/daily/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useTransactionStore } from '@/modules/transaction/store';
-
 import { useShallow } from 'zustand/shallow';
+
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import DailyView from '@/app/dashboard/components/DailyView';
 import { useAccountDetailSummary } from '@/modules/account/hooks';
@@ -35,8 +38,8 @@ export default function AccountDailyPage() {
   );
 
   useEffect(() => {
-    if (groupBy !== 'monthly') {
-      setQuery({ groupBy: 'monthly' });
+    if (groupBy !== 'daily') {
+      setQuery({ groupBy: 'daily' });
     }
   }, [groupBy, setQuery]);
 
@@ -49,32 +52,36 @@ export default function AccountDailyPage() {
     router.push(`/transaction/new?date=${date}`);
   };
 
-  const items = [
-    {
-      label: 'Income',
-      value: summary?.totalIncome ?? 0,
-      color: (summary?.totalIncome ?? 0) > 0 ? 'text-info' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Exp.',
-      value: summary?.totalExpense ?? 0,
-      color: (summary?.totalExpense ?? 0) > 0 ? 'text-error' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Total',
-      value: (summary?.totalIncome ?? 0) - (summary?.totalExpense ?? 0),
-      color: 'text-foreground',
-      prefix: '$',
-    },
-  ];
+  const summaryItems = useMemo(() => {
+    const income = summary?.totalIncome ?? 0;
+    const expense = summary?.totalExpense ?? 0;
+    return [
+      {
+        label: 'Income',
+        value: income,
+        color: income > 0 ? 'text-info' : 'text-muted',
+        prefix: '$',
+      },
+      {
+        label: 'Exp.',
+        value: expense,
+        color: expense > 0 ? 'text-error' : 'text-muted',
+        prefix: '$',
+      },
+      {
+        label: 'Total',
+        value: income - expense,
+        color: 'text-foreground',
+        prefix: '$',
+      },
+    ];
+  }, [summary]);
 
   return (
     <DailyView
       isLoading={isLoading}
       data={summary}
-      summaryItems={items}
+      summaryItems={summaryItems}
       onTransactionClick={handleTransactionClick}
       onHeaderClick={handleHeaderClick}
     />

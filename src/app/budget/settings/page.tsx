@@ -1,3 +1,4 @@
+// src/app/budget/settings/page.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -12,6 +13,8 @@ import type { DateFilterParams } from '@/common/types';
 import { CategoryListItem } from '@/components/category/CategoryListItem';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function BudgetSettingsPage() {
   const router = useRouter();
@@ -39,22 +42,16 @@ export default function BudgetSettingsPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>불러오는 중...</p>;
-  }
-
-  if (error) {
-    return <p className='text-center mt-10 text-error'>{error}</p>;
+    return <LoadingMessage />;
   }
 
   if (!budgets) {
-    return (
-      <p className='text-center mt-10 text-muted'>예산 데이터가 없습니다</p>
-    );
+    return <EmptyMessage />;
   }
 
   return (
-    <div>
-      <DateNavigator withTransactionType={true} />
+    <div className='bg-surface text-foreground min-h-screen'>
+      <DateNavigator withTransactionType />
       <Panel>
         {budgets.items.map((item: BudgetCategoryItemDTO) => (
           <CategoryListItem

@@ -1,3 +1,5 @@
+// src/app/more/page.tsx
+
 'use client';
 
 import {
@@ -22,52 +24,12 @@ import OptionSelectorModal from '@/components/common/OptionSelectorModal';
 import SlideInPanelRenderer from '@/app/more/_components/SlideInPanelRenderer';
 import { LogOut } from 'lucide-react';
 import { signout } from '@/modules/auth/hooks';
+import Panel from '@/components/ui/panel/Panel';
+import SettingItem from '@/components/ui/setting-item/SettingItem';
 
 const handleSignout = async () => {
   await signout(); // Zustand 상태 초기화 등 포함
 };
-
-const Section = ({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) => (
-  <div className='mt-4'>
-    <h3 className='text-xs text-muted font-semibold mb-2 px-4'>{title}</h3>
-    <div className='space-y-[1px]'>{children}</div>
-  </div>
-);
-
-const SettingItem = ({
-  icon,
-  title,
-  subtitle,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  title: React.ReactNode; // ✅ 수정
-  subtitle?: string;
-  onClick?: () => void;
-}) => (
-  <button
-    onClick={onClick}
-    className='flex items-center justify-between w-full px-4 py-3 bg-surface border-b border-border transition hover:bg-muted/10'
-  >
-    <div className='flex items-center gap-3'>
-      {icon}
-      <div className='text-left'>
-        <p className='text-sm font-medium text-foreground'>{title}</p>{' '}
-        {/* ✅ 그대로 */}
-        {subtitle && (
-          <p className='text-xs text-muted truncate w-[220px]'>{subtitle}</p>
-        )}
-      </div>
-    </div>
-    <ChevronRight size={16} className='text-muted' />
-  </button>
-);
 
 export default function MorePage() {
   const router = useRouter();
@@ -124,7 +86,7 @@ export default function MorePage() {
   return (
     <div className='bg-surface text-foreground min-h-screen py-3 pb-[10vh]'>
       {/* Transaction Settings */}
-      <Section title='Transaction'>
+      <Panel title='Transaction'>
         <SettingItem
           icon={<CalendarDays size={18} />}
           title='Monthly Start Date'
@@ -153,10 +115,10 @@ export default function MorePage() {
           subtitle={startScreen === 'daily' ? 'Daily View' : 'Calendar View'}
           onClick={() => openModal('startScreen')}
         />
-      </Section>
+      </Panel>
 
       {/* Category & Account Settings */}
-      <Section title='Category & Accounts'>
+      <Panel title='Category & Accounts'>
         <SettingItem
           icon={<Wallet size={18} />}
           title='Income Category'
@@ -183,10 +145,10 @@ export default function MorePage() {
           title='Budget Setting'
           onClick={() => router.push('/budget/settings')}
         />
-      </Section>
+      </Panel>
 
       {/* General Settings */}
-      <Section title='General'>
+      <Panel title='General'>
         <SettingItem
           icon={<DollarSign size={18} />}
           title='Main Currency'
@@ -217,7 +179,7 @@ export default function MorePage() {
           subtitle='Logout from your account'
           onClick={handleSignout}
         />
-      </Section>
+      </Panel>
 
       {/* Panels & Modals */}
       <SlideInPanelRenderer />

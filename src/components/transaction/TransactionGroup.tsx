@@ -1,4 +1,3 @@
-// 📄 src/components/common/TransactionGroup.tsx
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -7,13 +6,10 @@ import {
   TransactionGroupItemDTO,
 } from '@/modules/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
-import {
-  CalendarDaysIcon,
-  ArrowDownToLine,
-  ArrowUpFromLine,
-} from 'lucide-react';
+import { CalendarDaysIcon } from 'lucide-react';
 import TransactionItem from './TransactionItem';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
+import Badge from '../ui/badge/Badge';
 
 interface TransactionGroupProps {
   label: string;
@@ -45,7 +41,7 @@ export default function TransactionGroup({
   const { day, weekday } = getDayAndWeekdayFromUTC(label);
 
   return (
-    <div className={cn('bg-surface', className)}>
+    <div className={cn('bg-surface rounded-card', className)}>
       {showDateHeader && (
         <div
           role='button'
@@ -55,55 +51,51 @@ export default function TransactionGroup({
             if (e.key === 'Enter') onHeaderClick?.();
           }}
           className={cn(
-            'w-full px-3 py-3 border-b transition-colors duration-150',
-            'border-border dark:border-zinc-700',
+            'w-full border-b border-border transition-colors duration-150',
+            'px-component py-element',
             onHeaderClick && 'hover:bg-muted/5 cursor-pointer'
           )}
         >
           <div className='grid grid-cols-12 items-center'>
-            {/* 좌측 날짜 */}
-            <div className='col-span-8 flex items-center gap-2'>
-              <span className='text-sm font-semibold text-foreground flex items-center gap-1'>
-                {/* 더 작고 플랫한 아이콘 */}
-                <span className='text-sm font-semibold text-foreground flex items-center gap-1'>
-                  {/* ✅ Lucide calendar icon 사용 */}
-                  <CalendarDaysIcon
-                    size={16}
-                    className='text-muted-foreground'
-                  />
-                  <span>{day}</span>
-                </span>
+            <div className='col-span-8 flex items-center gap-tight'>
+              <span className='text-label font-semibold text-foreground flex items-center gap-tight'>
+                <CalendarDaysIcon size={16} className='text-muted-foreground' />
+                <span>{day}</span>
               </span>
 
-              {/* 요일: 라운드 제거, 강조 제거 */}
-              <span className='px-2 py-0.5 text-xs font-medium bg-border text-muted-foreground rounded-md'>
+              <Badge color='gray' size='sm'>
                 {weekday}
-              </span>
+              </Badge>
 
               {showRange && rangeStart && rangeEnd && (
-                <span className='px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground rounded-full'>
+                <span className='px-2 py-0.5 text-caption font-medium bg-muted text-muted-foreground rounded-full'>
                   {rangeStart} ~ {rangeEnd}
                 </span>
               )}
             </div>
 
-            {/* 우측: 수입/지출 요약 */}
-            <div className='col-span-4 flex justify-end items-center gap-2 text-sm font-medium text-right'>
-              <span className='inline-flex items-center px-2 py-0.5 bg-primary/10 text-primary rounded-sm'>
-                <ArrowUpFromLine size={14} className='mr-1' />
-                <CurrencyDisplay amount={groupIncome} />
-              </span>
-              <span className='inline-flex items-center px-2 py-0.5 bg-error/10 text-error rounded-sm'>
-                <ArrowDownToLine size={14} className='mr-1' />
-                <CurrencyDisplay amount={groupExpense} />
-              </span>
+            <div className='col-span-4 flex justify-end items-center gap-tight text-label font-medium text-right'>
+              <Badge color='primary'>
+                <CurrencyDisplay
+                  amount={groupIncome}
+                  type='income'
+                  variant='group'
+                />
+              </Badge>
+
+              <Badge color='error'>
+                <CurrencyDisplay
+                  amount={groupExpense}
+                  type='expense'
+                  variant='group'
+                />
+              </Badge>
             </div>
           </div>
         </div>
       )}
 
-      {/* 거래 리스트 */}
-      <ul className='mt-3 space-y-2'>
+      <ul className='mt-element space-y-tight'>
         {group.transactions.map((tx: TransactionDetailDTO) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}

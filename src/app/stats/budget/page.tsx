@@ -1,3 +1,4 @@
+// src/app/stats/budget/page.tsx
 'use client';
 
 import { useEffect, useMemo, useCallback } from 'react';
@@ -13,6 +14,7 @@ import BudgetView from './_components/BudgetView';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/common/types';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function BudgetPage() {
   const router = useRouter();
@@ -53,7 +55,7 @@ export default function BudgetPage() {
   );
 
   if (isLoading) {
-    return <p className='p-4 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   if (!budgetGroup || budgetGroup.items?.length === 0) {

@@ -1,3 +1,4 @@
+// src/app/category/page.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -8,30 +9,18 @@ import { useCategoryStore } from '@/modules/category/store';
 import { Button } from '@/components/ui/button/Button';
 import { deleteCategory, fetchCategories } from '@/modules/category/hooks';
 
-//
-// Category list and management page
-//
 export default function CategoryPage() {
   const { categories } = useCategoryStore();
   const router = useRouter();
 
-  //
-  // Fetch all categories on mount
-  //
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  //
-  // Navigate to category edit page
-  //
   const handleEdit = (id: string) => {
     router.push(`/category/${id}/edit`);
   };
 
-  //
-  // Confirm and delete a category
-  //
   const handleDelete = async (id: string) => {
     const confirmMsg = 'Are you sure you want to delete this category?';
     if (confirm(confirmMsg)) {
@@ -42,28 +31,25 @@ export default function CategoryPage() {
   const incomeCategories = categories.filter((c) => c.type === 'income');
   const expenseCategories = categories.filter((c) => c.type === 'expense');
 
-  //
-  // Render list block for each category type
-  //
   const renderList = (title: string, items: typeof categories) => (
-    <div className='mb-6'>
-      <h3 className='text-xs font-semibold text-muted px-3 pb-2 tracking-wide'>
+    <div className='mb-component'>
+      <h3 className='text-caption font-semibold text-muted px-element pb-tight tracking-wide'>
         {title}
       </h3>
-      <ul className='divide-y divide-border border-t border-border'>
+      <ul className='divide-y divide-border border-t border-border rounded-default overflow-hidden'>
         {items.map((cat) => (
           <li
             key={cat.id}
-            className='flex items-center justify-between px-3 py-2 bg-surface'
+            className='flex items-center justify-between p-element bg-surface'
           >
-            <div className='flex items-center gap-2 overflow-hidden'>
+            <div className='flex items-center gap-tight overflow-hidden'>
               <button
                 className='text-destructive hover:opacity-80 shrink-0'
                 onClick={() => handleDelete(cat.id)}
               >
                 <MinusCircle size={16} />
               </button>
-              <span className='text-sm text-foreground truncate max-w-[160px]'>
+              <span className='text-label text-foreground truncate max-w-[160px]'>
                 {cat.name}
               </span>
             </div>
@@ -83,7 +69,7 @@ export default function CategoryPage() {
   );
 
   return (
-    <div className='pt-4 pb-[10vh] min-h-screen bg-surface'>
+    <div className='pt-component pb-tabbar min-h-screen bg-surface text-foreground'>
       {renderList('Expense Categories', expenseCategories)}
       {renderList('Income Categories', incomeCategories)}
     </div>

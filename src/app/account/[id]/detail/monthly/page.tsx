@@ -1,3 +1,4 @@
+// src/app/account/[id]/detail/monthly/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -8,11 +9,11 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/shallow';
 
 import { fetchTransactionSummaryWeekly } from '@/modules/transaction/hooks';
-
-import { TransactionGroupItemDTO } from '@/modules/transaction/types';
-import { DateFilterParams } from '@/common/types';
-import MonthlyView from '@/components/dashboard/MonthlyView';
 import { useAccountDetailSummary } from '@/modules/account/hooks';
+
+import MonthlyView from '@/components/dashboard/MonthlyView';
+import { TransactionGroupItemDTO } from '@/modules/transaction/types';
+import { DateFilterParams, GroupBy } from '@/common/types';
 
 export default function AccountMonthlyPage() {
   const { id: accountId } = useParams();
@@ -31,15 +32,15 @@ export default function AccountMonthlyPage() {
     useShallow((s) => ({
       query: s.query,
       setQuery: s.setQuery,
-      getDateRangeKey: s.getDateRangeKey,
     }))
   );
 
   const { groupBy } = query;
 
   useEffect(() => {
-    if (groupBy !== 'yearly') {
-      setQuery({ groupBy: 'yearly' });
+    const expectedGroupBy: GroupBy = 'yearly'; // ❓ 왜 필요한지 명시
+    if (groupBy !== expectedGroupBy) {
+      setQuery({ groupBy: expectedGroupBy });
     }
   }, [groupBy, setQuery]);
 
@@ -62,11 +63,9 @@ export default function AccountMonthlyPage() {
         };
 
         const weeklyRes = await fetchTransactionSummaryWeekly(params);
-        const weeklyData: TransactionGroupItemDTO[] = weeklyRes?.items ?? [];
-
         setWeeklySummaryByMonth((prev) => ({
           ...prev,
-          [label]: weeklyData,
+          [label]: weeklyRes?.items ?? [],
         }));
       }
     },

@@ -1,3 +1,4 @@
+// src/app/account/new/page.tsx
 'use client';
 
 import { createAccount } from '@/modules/account/hooks';
@@ -6,6 +7,7 @@ import AccountForm from '../_components/AccountForm';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
+import { toast } from 'react-hot-toast';
 
 export default function NewAccountPage() {
   const { getCreateFormData, reset } = useAccountFormStore();
@@ -29,7 +31,9 @@ export default function NewAccountPage() {
       reset();
       router.back();
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to create account');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to create account'
+      );
     }
   };
 

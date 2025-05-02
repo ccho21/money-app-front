@@ -1,3 +1,4 @@
+// src/app/transaction/layout.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -51,7 +52,7 @@ export default function TransactionLayout({
   }, [pathname, type, activeTab]);
 
   return (
-    <div className='min-h-screen flex flex-col h-full'>
+    <div className='min-h-screen flex flex-col h-full bg-surface text-foreground'>
       <TopNav />
       <TabMenu
         tabs={TABS}

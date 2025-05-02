@@ -1,3 +1,4 @@
+// src/app/more/layout.tsx
 'use client';
 
 import { ReactNode, useEffect } from 'react';

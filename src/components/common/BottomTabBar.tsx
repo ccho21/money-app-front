@@ -1,3 +1,5 @@
+// src/components/common/BottomTabBar.tsx
+
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -45,7 +47,7 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface dark:bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
       {baseTabs.map((tab) => {
         const isTodayTab = tab.key === 'daily';
         const tabPath = isTodayTab
@@ -67,7 +69,7 @@ export default function BottomTabBar() {
           <button
             key={tab.key}
             onClick={handleClick}
-            className='flex flex-col items-center text-xs text-muted hover:text-muted/80'
+            className='flex flex-col items-center text-caption text-muted hover:text-muted/80'
           >
             <div className={isActive ? 'text-primary' : ''}>{tab.icon}</div>
             <span className={isActive ? 'text-primary font-semibold' : ''}>

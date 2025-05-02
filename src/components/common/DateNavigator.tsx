@@ -1,3 +1,4 @@
+// src/components/common/DateNavigator.tsx
 'use client';
 
 import { useCallback } from 'react';
@@ -40,12 +41,12 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   );
 
   return (
-    <div className='flex items-center justify-between bg-surface px-5 py-1 text-md font-normal shadow-sm'>
+    <div className='flex items-center justify-between bg-surface px-component py-tight text-body font-normal shadow-sm'>
       {/* 왼쪽 이동 */}
-      <div className='flex items-center gap-3'>
+      <div className='flex items-center gap-element'>
         <button
           onClick={() => handleChange(-1)}
-          className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+          className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
           aria-label='Previous'
         >
           <ChevronLeft className='w-5 h-5' />
@@ -53,15 +54,15 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
       </div>
 
       {/* 중앙 라벨 */}
-      <span className='text-sm font-semibold text-foreground select-none'>
+      <span className='text-label font-semibold text-foreground select-none'>
         {label}
       </span>
 
       {/* 오른쪽 이동 */}
-      <div className='flex items-center gap-3'>
+      <div className='flex items-center gap-element'>
         <button
           onClick={() => handleChange(1)}
-          className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+          className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
           aria-label='Next'
         >
           <ChevronRight className='w-5 h-5' />
@@ -71,5 +72,4 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   );
 }
 
-// const DateNavigator = memo(DateNavigatorBase);
 export default DateNavigatorBase;

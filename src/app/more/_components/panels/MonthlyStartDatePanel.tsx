@@ -15,7 +15,7 @@ export default function MonthlyStartDatePanel() {
   };
 
   return (
-    <div className='p-4 bg-surface text-foreground'>
+    <div className='p-component bg-surface text-foreground'>
       <h2 className='text-md font-semibold text-center mb-6'>
         Monthly Start Date
       </h2>

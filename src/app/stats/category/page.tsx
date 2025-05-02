@@ -1,3 +1,4 @@
+// src/app/stats/category/page.tsx
 'use client';
 
 import { useEffect } from 'react';

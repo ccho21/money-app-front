@@ -1,3 +1,4 @@
+// src/app/budget/settings/[categoryId]/list/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -60,44 +61,48 @@ export default function ListBudgetCategoryPage() {
   };
 
   if (!categoryId) {
-    return <div className='p-4 text-sm text-error'>잘못된 접근입니다</div>;
+    return (
+      <div className='p-component text-label text-error'>잘못된 접근입니다</div>
+    );
   }
 
   if (isLoading) {
     return (
-      <div className='flex flex-col items-center justify-center mt-20'>
-        <p className='text-muted'>예산 데이터를 불러오는 중입니다...</p>
+      <div className='flex flex-col items-center justify-center mt-section'>
+        <p className='text-label text-muted'>
+          예산 데이터를 불러오는 중입니다...
+        </p>
       </div>
     );
   }
 
   if (!budgetGroup || budgetGroup.budgets.length === 0) {
     return (
-      <div className='flex flex-col items-center justify-center mt-20'>
+      <div className='flex flex-col items-center justify-center mt-section'>
         <EmptyMessage />
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen flex flex-col h-full'>
-      <div className='p-4'>
-        <h2 className='text-lg font-semibold mb-4'>이 카테고리의 예산 기록</h2>
-        <div className='grid grid-cols-1 gap-4'>
+    <div className='min-h-screen flex flex-col h-full bg-background text-foreground'>
+      <div className='p-component'>
+        <h2 className='text-heading font-semibold mb-component'>
+          이 카테고리의 예산 기록
+        </h2>
+        <div className='grid grid-cols-1 gap-component'>
           {budgetGroup.budgets.map((item) => (
             <div
               key={item.rangeStart}
-              className='p-4 rounded-2xl shadow border hover:shadow-lg cursor-pointer transition'
+              className='p-component rounded-section shadow-md border hover:shadow-lg cursor-pointer transition'
               onClick={() => handleSelect(item)}
             >
-              <div className='flex justify-between items-center mb-2'>
-                <div className='text-base font-medium'>{item.label}</div>
-                <div className='text-right font-bold text-primary text-lg'>
-                  <CurrencyDisplay amount={item.amount}></CurrencyDisplay>
+              <div className='flex justify-between items-center mb-tight'>
+                <div className='text-label font-medium'>{item.label}</div>
+                <div className='text-body font-bold text-primary text-right'>
+                  <CurrencyDisplay amount={item.amount} />
                 </div>
               </div>
-              {/* 향후 확장용: 사용률, 잔여금액 등 */}
-              {/* <div className="text-sm text-muted">남은 금액: {item.remaining}</div> */}
             </div>
           ))}
         </div>

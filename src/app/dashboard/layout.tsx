@@ -7,7 +7,7 @@ import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import TabMenu from '@/components/common/TabMenu';
 import DateNavigator from '@/components/common/DateNavigator';
-import { Plus } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { Button } from '@/components/ui/button/Button';
@@ -66,11 +66,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       <BottomTabBar />
       <Button
-        variant='solid'
-        className='fixed bottom-[16vh] right-4 w-10 h-10 bg-error text-white rounded-full shadow-md z-50 flex justify-center items-center hover:bg-error/80 dark:hover:bg-error/80'
+        size='sm'
+        className='fixed bottom-[16vh] right-4 w-10 h-10'
         onClick={() => router.push('/transaction/new')}
       >
-        <Plus className='w-4 h-4' />
+        <PlusIcon />
       </Button>
     </div>
   );

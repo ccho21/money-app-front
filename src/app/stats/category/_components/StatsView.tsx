@@ -1,3 +1,4 @@
+// src/app/stats/category/_components/StatsView.tsx
 import { useMemo } from 'react';
 
 import Panel from '@/components/ui/panel/Panel';
@@ -5,6 +6,7 @@ import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { CategoryListItem } from '../../../../components/category/CategoryListItem';
 import CategoryPieChart from '@/components/common/PieChart';
 import { StatsCategoryGroupItemDTO } from '@/modules/stats/types';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 interface CategoryChartData {
   name: string;
@@ -34,7 +36,7 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
   }, [data]);
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   if (data.every((item) => !item.amount)) {
@@ -42,7 +44,7 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
   }
 
   return (
-    <div className=''>
+    <>
       <Panel>
         <CategoryPieChart data={categoryChart} />
       </Panel>
@@ -67,6 +69,6 @@ export default function StatsView({ isLoading, data, onItemClick }: Props) {
           //
         ))}
       </Panel>
-    </div>
+    </>
   );
 }

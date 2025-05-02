@@ -1,3 +1,5 @@
+// src/app/account/_components/AccountForm.tsx
+
 'use client';
 
 import Selector from '@/components/ui/selector/Selector';
@@ -35,8 +37,8 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
   const isCard = type === 'CARD';
 
   return (
-    <div className='min-h-screen px-4 pt-4 pb-10'>
-      <div className='space-y-4'>
+    <div className='min-h-screen px-component pt-component pb-tabbar'>
+      <div className='space-y-component'>
         <Selector
           label='Account Type'
           value={type}
@@ -74,7 +76,7 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
         />
 
         {isCard && (
-          <div className='space-y-4 border-t pt-4'>
+          <div className='space-y-component border-t pt-component'>
             <Input
               label='Settlement Date'
               type='number'
@@ -92,9 +94,7 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
             />
 
             <div className='flex items-center justify-between'>
-              <span className='text-sm text-muted-foreground'>
-                Auto Payment
-              </span>
+              <span className='text-label text-muted'>Auto Payment</span>
               <Switch
                 checked={autoPayment ?? false}
                 onChange={(val) => setField('autoPayment', val)}
@@ -104,8 +104,8 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
         )}
       </div>
 
-      <div className=''>
-        <Button onClick={onSubmit} className='w-full mt-6'>
+      <div>
+        <Button onClick={onSubmit} className='w-full mt-component'>
           {submitText}
         </Button>
       </div>

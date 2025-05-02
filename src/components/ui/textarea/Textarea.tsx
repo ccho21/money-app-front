@@ -1,3 +1,4 @@
+// src/components/ui/textarea/Textarea.tsx
 'use client';
 
 import { forwardRef, TextareaHTMLAttributes } from 'react';
@@ -19,12 +20,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <div
-        className={cn(isLeftLabel ? 'grid grid-cols-12 gap-2' : 'space-y-1')}
+        className={cn(isLeftLabel ? 'grid grid-cols-12 gap-2' : 'space-y-tight')}
       >
         {label && (
           <label
             className={cn(
-              'text-sm font-medium',
+              'text-caption font-medium',
               isLeftLabel
                 ? 'col-span-2 text-muted px-1 pt-1.5'
                 : 'text-foreground'
@@ -39,7 +40,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             ref={ref}
             rows={4}
             className={cn(
-              'w-full border-0 border-b border-border bg-transparent text-sm py-2 px-1 resize-none',
+              'w-full border-0 border-b border-border bg-transparent text-body py-2 px-1 resize-none',
               'focus:outline-none focus:ring-0 focus:border-foreground',
               'placeholder:text-muted',
               error && 'border-b-error',
@@ -48,9 +49,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {...props}
           />
           {description && (
-            <p className='mt-1 text-xs text-muted px-1'>{description}</p>
+            <p className='mt-tight text-caption text-muted px-1'>
+              {description}
+            </p>
           )}
-          {error && <p className='mt-1 text-xs text-error px-1'>{error}</p>}
+          {error && (
+            <p className='mt-tight text-caption text-error px-1'>
+              {error}
+            </p>
+          )}
         </div>
       </div>
     );

@@ -1,4 +1,4 @@
-// 📄 src/components/common/TabMenu.tsx
+// src/components/common/TabMenu.tsx
 'use client';
 
 import { memo, useCallback } from 'react';
@@ -26,7 +26,7 @@ function TabMenuBase({
     (key: string) => () => {
       if (key !== active) {
         requestAnimationFrame(() => {
-          onChange(key); // ⏱ 디바운싱 효과
+          onChange(key);
         });
       }
     },
@@ -36,8 +36,8 @@ function TabMenuBase({
   return (
     <div
       className={cn(
-        'flex border-b border-border text-sm bg-surface',
-        variant === 'pill' && 'justify-around py-2'
+        'flex border-b border-border text-label bg-surface',
+        variant === 'pill' && 'justify-around py-element'
       )}
     >
       {tabs.map((tab) => {
@@ -45,13 +45,13 @@ function TabMenuBase({
 
         const baseStyle = 'transition-all duration-150';
         const pillStyle = cn(
-          'px-4 py-1 rounded-full border',
+          'px-component py-tight rounded-full border',
           isActive
             ? 'text-foreground border-border font-semibold bg-muted/10'
             : 'text-muted border-transparent hover:bg-muted/5'
         );
         const underlineStyle = cn(
-          'flex-1 py-2 text-sm font-medium text-center',
+          'flex-1 py-element text-label font-medium text-center',
           isActive
             ? 'border-b-2 border-primary text-primary'
             : 'text-muted hover:text-foreground'

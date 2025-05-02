@@ -1,3 +1,4 @@
+// src/app/stats/note/_components/NoteView.tsx
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -26,22 +27,20 @@ export default function NoteView({
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const sortedList = useMemo(() => {
-    return [...items].sort(
-      (a: StatsNoteGroupItemDTO, b: StatsNoteGroupItemDTO) => {
-        const aVal = a[sortKey];
-        const bVal = b[sortKey];
+    return [...items].sort((a, b) => {
+      const aVal = a[sortKey];
+      const bVal = b[sortKey];
 
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-        }
-
-        const aStr = (aVal || '').toString().toLowerCase();
-        const bStr = (bVal || '').toString().toLowerCase();
-        return sortDirection === 'asc'
-          ? aStr.localeCompare(bStr)
-          : bStr.localeCompare(aStr);
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
       }
-    );
+
+      const aStr = (aVal || '').toString().toLowerCase();
+      const bStr = (bVal || '').toString().toLowerCase();
+      return sortDirection === 'asc'
+        ? aStr.localeCompare(bStr)
+        : bStr.localeCompare(aStr);
+    });
   }, [items, sortKey, sortDirection]);
 
   const handleSort = (key: SortKey) => {
@@ -58,29 +57,28 @@ export default function NoteView({
     return sortDirection === 'asc' ? '↑' : '↓';
   };
 
-  if (isLoading) return <p className='p-4 text-muted'>Loading...</p>;
+  if (isLoading) return <p className='p-component text-muted'>Loading...</p>;
   if (items.length === 0) return <EmptyMessage />;
 
   return (
-    <div className='p-4 space-y-4 bg-surface rounded-xl'>
-      {/* Table */}
-      <table className='w-full text-sm text-left'>
+    <div className='p-component space-y-4 bg-surface rounded-card'>
+      <table className='w-full text-label text-left'>
         <thead className='text-muted border-b border-border'>
           <tr>
             <th
-              className='py-2 cursor-pointer'
+              className='py-element cursor-pointer'
               onClick={() => handleSort('note')}
             >
               Note {renderSortIcon('note')}
             </th>
             <th
-              className='py-2 text-center cursor-pointer'
+              className='py-element text-center cursor-pointer'
               onClick={() => handleSort('count')}
             >
               Count {renderSortIcon('count')}
             </th>
             <th
-              className='py-2 text-right cursor-pointer'
+              className='py-element text-right cursor-pointer'
               onClick={() => handleSort('amount')}
             >
               Amount {renderSortIcon('amount')}
@@ -94,9 +92,9 @@ export default function NoteView({
               onClick={() => onRowClick(item.note || '')}
               className='border-b border-border hover:bg-muted/5 transition cursor-pointer'
             >
-              <td className='py-2'>{item.note || '-'}</td>
-              <td className='py-2 text-center'>{item.count}</td>
-              <td className='py-2 text-right'>
+              <td className='py-element'>{item.note || '-'}</td>
+              <td className='py-element text-center'>{item.count}</td>
+              <td className='py-element text-right'>
                 <CurrencyDisplay amount={item.amount} />
               </td>
             </tr>

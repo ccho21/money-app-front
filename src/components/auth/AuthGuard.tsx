@@ -18,7 +18,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, isPublic, router]);
 
-  if (!user && !isPublic) return null;
+  if (typeof window !== 'undefined' && !user && !isPublic) {
+    return null; // block render
+  }
 
   return <>{children}</>;
 }

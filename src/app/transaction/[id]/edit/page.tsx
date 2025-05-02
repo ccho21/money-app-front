@@ -1,3 +1,4 @@
+// src/app/transaction/[id]/edit/page.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -26,10 +27,8 @@ export default function TransactionEditPage() {
       if (!transactionId) return;
 
       try {
-        // 📦 Load accounts + categories
         await Promise.all([fetchAccounts(), fetchCategories()]);
 
-        // 🧠 Use cache if already selected
         const cached = useTransactionStore.getState().selectedTransaction;
         const tx =
           cached && cached.id === transactionId
@@ -38,7 +37,6 @@ export default function TransactionEditPage() {
 
         if (!tx) throw new Error();
 
-        // 📝 Map response → preset
         const preset = {
           type: tx.type as 'income' | 'expense' | 'transfer',
           amount: String(tx.amount),
@@ -61,16 +59,21 @@ export default function TransactionEditPage() {
     run();
   }, [transactionId, init, router]);
 
-  // ⏳ Loading
   if (!type) {
     return (
-      <div className='text-center text-muted py-10'>Loading transaction...</div>
+      <div className='text-center text-muted text-label py-section'>
+        Loading transaction...
+      </div>
     );
   }
 
-  // 🧾 Render form
-  if (type === 'income') return <IncomeForm mode='edit' transactionId={String(transactionId)} />;
-  if (type === 'transfer')
+  if (type === 'income') {
+    return <IncomeForm mode='edit' transactionId={String(transactionId)} />;
+  }
+
+  if (type === 'transfer') {
     return <TransferForm mode='edit' transactionId={String(transactionId)} />;
+  }
+
   return <ExpenseForm mode='edit' transactionId={String(transactionId)} />;
 }

@@ -38,20 +38,20 @@ export default function SlideInPanel({
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             {/* Header */}
-            <div className='flex items-center justify-between p-4 border-b border-border'>
+            <div className='flex items-center justify-between p-component border-b border-border'>
               <h2 className='text-md font-semibold text-foreground'>
                 {title ?? 'Settings'}
               </h2>
               <button
                 onClick={onClose}
-                className='p-1 text-muted hover:text-foreground'
+                className='p-tight text-muted hover:text-foreground'
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Content */}
-            <div className='flex-1 overflow-y-auto p-4'>{children}</div>
+            <div className='flex-1 overflow-y-auto p-component'>{children}</div>
           </motion.div>
         </>
       )}

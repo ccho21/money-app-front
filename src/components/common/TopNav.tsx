@@ -1,4 +1,4 @@
-// 📄 src/components/common/TopNav.tsx
+// src/components/common/TopNav.tsx
 'use client';
 
 import { useUIStore } from '@/stores/useUIStore';
@@ -23,13 +23,13 @@ export default function TopNav() {
   const pathName = prevPath?.split('/')[1];
 
   return (
-    <div className='relative flex items-center justify-between px-2 py-2 border-b border-border bg-surface backdrop-blur-sm'>
+    <div className='relative flex items-center justify-between px-compact py-compact border-b border-border bg-surface backdrop-blur-sm'>
       {/* 왼쪽 */}
-      <div className='flex items-center gap-2 min-w-[80px] justify-start'>
+      <div className='flex items-center gap-element min-w-[80px] justify-start'>
         {showSearchButton && (
           <button
             onClick={onSearchClick}
-            className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
             <Search className='w-5 h-5' />
           </button>
@@ -37,7 +37,7 @@ export default function TopNav() {
         {onBack && (
           <button
             onClick={onBack}
-            className='flex items-center gap-1 p-2 rounded-md text-foreground hover:bg-muted/10 transition-colors text-sm'
+            className='flex items-center gap-tight p-compact rounded-input text-foreground hover:bg-muted/10 transition-colors text-label'
           >
             <ChevronLeft className='w-4 h-4' />
             <span className='whitespace-nowrap'>{pathName}</span>
@@ -49,18 +49,18 @@ export default function TopNav() {
       {/* 중앙 타이틀 */}
       {center ? (
         <div className='flex justify-center items-center pointer-events-none'>
-          <h1 className='text-lg font-semibold text-foreground'>{title}</h1>
+          <h1 className='text-heading font-semibold text-foreground'>{title}</h1>
         </div>
       ) : (
-        <h1 className='text-lg font-semibold text-foreground'>{title}</h1>
+        <h1 className='text-heading font-semibold text-foreground'>{title}</h1>
       )}
 
       {/* 오른쪽 */}
-      <div className='flex items-center gap-2 min-w-[80px] justify-end'>
+      <div className='flex items-center gap-element min-w-[80px] justify-end'>
         {showFilterButton && (
           <button
             onClick={onFilterClick}
-            className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
             <Filter className='w-5 h-5' />
           </button>
@@ -68,7 +68,7 @@ export default function TopNav() {
         {onEdit && (
           <button
             onClick={onEdit}
-            className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
             <Pencil className='w-5 h-5' />
           </button>
@@ -76,7 +76,7 @@ export default function TopNav() {
         {onAdd && (
           <button
             onClick={onAdd}
-            className='p-2 rounded-md text-muted hover:bg-muted/10 transition-colors'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
             <Plus className='w-5 h-5' />
           </button>

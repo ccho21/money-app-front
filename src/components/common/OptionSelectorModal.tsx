@@ -1,3 +1,4 @@
+// src/components/common/OptionSelectorModal.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -42,13 +43,13 @@ export default function OptionSelectorModal<T extends string | number>({
       onClick={onClose}
     >
       <div
-        className='w-full max-w-md px-4 pb-6'
+        className='w-full max-w-md px-component pb-element'
         onClick={(e) => e.stopPropagation()}
       >
         {/* 옵션 리스트 박스 */}
-        <div className='bg-surface rounded-xl overflow-hidden'>
-          <div className='text-center py-4 border-b border-border'>
-            <h2 className='text-md font-semibold text-foreground'>{title}</h2>
+        <div className='bg-surface rounded-card overflow-hidden'>
+          <div className='text-center py-element border-b border-border'>
+            <h2 className='text-body font-semibold text-foreground'>{title}</h2>
           </div>
 
           <div className='max-h-[50vh] overflow-y-auto divide-y divide-border'>
@@ -58,7 +59,7 @@ export default function OptionSelectorModal<T extends string | number>({
                 <button
                   key={String(option.value)}
                   className={clsx(
-                    'w-full flex items-center justify-between px-6 py-4 text-md transition',
+                    'w-full flex items-center justify-between px-section py-element text-body transition',
                     isSelected
                       ? 'text-primary font-semibold'
                       : 'text-foreground hover:bg-muted/10'
@@ -77,9 +78,9 @@ export default function OptionSelectorModal<T extends string | number>({
         </div>
 
         {/* 취소 버튼 */}
-        <div className='mt-3 bg-surface rounded-xl overflow-hidden'>
+        <div className='mt-element bg-surface rounded-card overflow-hidden'>
           <button
-            className='w-full text-center py-4 text-md text-muted font-medium hover:bg-muted/10'
+            className='w-full text-center py-element text-body text-muted font-medium hover:bg-muted/10'
             onClick={onClose}
           >
             Cancel

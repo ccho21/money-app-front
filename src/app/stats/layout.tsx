@@ -1,7 +1,9 @@
+// src/app/stats/layout.tsx
+
 'use client';
 
-import { useEffect, useRef, ReactNode } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, ReactNode, useCallback, useMemo } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import TopNav from '@/components/common/TopNav';
 import BottomTabBar from '@/components/common/BottomTabBar';
@@ -15,10 +17,12 @@ import { getDefaultLayoutOptions } from '@/lib/layout.config';
 import { TransactionType } from '@/modules/transaction/types';
 
 export default function StatsLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { query, getQueryString, initializeFromParams } = useFilterStore();
+  const { query, getQueryString, initializeFromParams, isInitialized } =
+    useFilterStore();
   const { hideTopNav, hideDateNav, hideStatsHeader, hideTabMenu } = useUIStore(
     (s) => s.layoutOptions
   );
@@ -26,27 +30,31 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
 
   const setLayoutOptions = useUIStore((s) => s.setLayoutOptions);
   const resetLayoutOptions = useUIStore((s) => s.resetLayoutOptions);
-  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    if (!hasInitialized.current) {
+    if (!isInitialized) {
       initializeFromParams(searchParams);
-      hasInitialized.current = true;
     }
   }, [initializeFromParams, searchParams]);
 
-  const tabs = [
-    { key: 'expense', label: 'Expense' },
-    { key: 'income', label: 'Income' },
-  ];
+  const tabs = useMemo(
+    () => [
+      { key: 'expense', label: 'Expense' },
+      { key: 'income', label: 'Income' },
+    ],
+    []
+  );
 
-  const handleTabChange = (key: string) => {
-    useFilterStore
-      .getState()
-      .setQuery({ transactionType: key as TransactionType });
-    const newQuery = getQueryString(true);
-    history.replaceState(null, '', newQuery); // router.replace도 가능
-  };
+  const handleTabChange = useCallback(
+    (key: string) => {
+      useFilterStore
+        .getState()
+        .setQuery({ transactionType: key as TransactionType });
+      const newQuery = getQueryString(true);
+      router.replace(newQuery); // 더 안전한 방식
+    },
+    [router]
+  );
 
   const prevPath = useRef<string | null>(null);
 

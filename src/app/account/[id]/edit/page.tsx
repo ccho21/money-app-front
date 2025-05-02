@@ -1,3 +1,4 @@
+// src/app/account/[id]/edit/page.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -7,6 +8,7 @@ import { useAccountFormStore } from '@/modules/account/formStore';
 import AccountForm from '../../_components/AccountForm';
 import { useAccountStore } from '@/modules/account/store';
 import { useUIStore } from '@/stores/useUIStore';
+import { toast } from 'react-hot-toast';
 
 export default function AccountEditPage() {
   const { id } = useParams();
@@ -26,7 +28,7 @@ export default function AccountEditPage() {
   }, [router]);
 
   useEffect(() => {
-    const run = async () => {
+    const loadAccount = async () => {
       if (!id) return;
 
       const acc =
@@ -45,12 +47,12 @@ export default function AccountEditPage() {
           autoPayment: acc.autoPayment ?? false,
         });
       } else {
-        alert('Unable to load the account.');
+        toast.error('Unable to load the account.');
         router.push('/account');
       }
     };
 
-    run();
+    loadAccount();
   }, [id, setAllFields, router]);
 
   const handleUpdate = async () => {
@@ -60,9 +62,11 @@ export default function AccountEditPage() {
       reset();
       router.back();
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update account');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to update account'
+      );
     }
   };
 
-  return <AccountForm onSubmit={handleUpdate} submitText='Update' />;
+  return <AccountForm onSubmit={handleUpdate} submitText="Update" />;
 }

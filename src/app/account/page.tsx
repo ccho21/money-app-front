@@ -1,3 +1,4 @@
+// src/app/account/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -5,8 +6,9 @@ import { fetchAccounts } from '@/modules/account/hooks';
 import { useAccountStore } from '@/modules/account/store';
 import { useRouter } from 'next/navigation';
 import { AccountDetailDTO } from '@/modules/account/types';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 
-export default function AccountEditPage() {
+export default function AccountPage() {
   const router = useRouter();
   const { accounts, setSelectedAccount } = useAccountStore();
 
@@ -29,36 +31,30 @@ export default function AccountEditPage() {
   };
 
   return (
-    <div className='bg-surface min-h-screen px-4 py-6 text-foreground'>
-      <div className='space-y-8'>
+    <div className='bg-surface min-h-screen px-component py-component text-foreground'>
+      <div className='space-y-component'>
         {Object.entries(accountGroups).map(([group, list]) => (
           <div key={group}>
             {/* 그룹 타이틀 */}
-            <h2 className='text-xs text-muted font-semibold mb-2 px-1 tracking-wide'>
+            <h2 className='text-caption text-muted font-semibold mb-tight px-tight tracking-wide'>
               {group}
             </h2>
 
-            <div>
-              {list.map((acc) => (
-                <div
-                  key={acc.id}
-                  onClick={() => handleClick(acc)}
-                  className='flex justify-between items-center px-2 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800 transition cursor-pointer border-b border-border'
-                >
-                  {/* 왼쪽: 이름 + 설명 */}
-                  <div className='flex flex-col overflow-hidden'>
-                    <div className='text-sm font-medium text-foreground truncate'>
+            <div className='rounded-default overflow-hidden border border-border divide-y divide-border'>
+              {list.length > 0 ? (
+                list.map((acc) => (
+                  <button
+                    key={acc.id}
+                    onClick={() => handleClick(acc)}
+                    className='w-full text-left px-element py-element hover:bg-muted/10 dark:hover:bg-zinc-800 transition-colors'
+                  >
+                    <div className='text-label font-medium text-foreground truncate'>
                       {acc.name}
                     </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* 빈 그룹 처리 */}
-              {list.length === 0 && (
-                <div className='text-sm text-muted-foreground px-2 py-3 border-b border-border'>
-                  No accounts
-                </div>
+                  </button>
+                ))
+              ) : (
+                <EmptyMessage />
               )}
             </div>
           </div>

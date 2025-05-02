@@ -1,8 +1,8 @@
+// 📄 src/components/common/TransactionItem.tsx
 'use client';
 
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import { cn } from '@/lib/utils';
-import { PlusIcon, MinusIcon } from 'lucide-react';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 
 interface Props {
@@ -29,21 +29,15 @@ export default function TransactionItem({
 
   const renderAmount = () => {
     if (isIncome) {
-      return (
-        <span className='inline-flex items-center text-primary'>
-          <PlusIcon size={13} />
-          <CurrencyDisplay amount={tx.amount} />
-        </span>
-      );
+      return <CurrencyDisplay amount={tx.amount} type='income' />;
     }
 
-    if (isExpense || isTransfer) {
-      return (
-        <span className='inline-flex items-center text-error'>
-          <MinusIcon size={13} />
-          <CurrencyDisplay amount={tx.amount} />
-        </span>
-      );
+    if (isExpense) {
+      return <CurrencyDisplay amount={tx.amount} type='expense' />;
+    }
+
+    if (isTransfer) {
+      return <CurrencyDisplay amount={tx.amount} type='transfer' />;
     }
 
     return null;
@@ -58,34 +52,34 @@ export default function TransactionItem({
     <li
       onClick={handleClick}
       className={cn(
-        'px-3 py-2 cursor-pointer transition-colors hover:bg-muted/10 dark:hover:bg-zinc-800',
+        'px-element py-compact cursor-pointer transition-colors hover:bg-muted/10 dark:hover:bg-zinc-800',
         className
       )}
     >
-      <div className='grid grid-cols-12 gap-1 items-start'>
-        {/* 1. Account (col-span-2) */}
-        <div className='col-span-2 text-xs text-muted font-medium truncate pt-[2px]'>
+      <div className='grid grid-cols-12 gap-tight items-start'>
+        {/* 1. Account */}
+        <div className='col-span-2 text-caption text-muted font-medium truncate pt-[2px]'>
           {tx.account?.name}
         </div>
 
-        {/* 2. Note (bold) or Category (bold/secondary) */}
-        <div className='col-span-7 overflow-hidden'>
+        {/* 2. Note or Category */}
+        <div className='col-span-7'>
           {tx.note ? (
             <>
-              <div className='text-sm font-medium text-foreground truncate'>
+              <div className='text-label font-medium text-foreground truncate'>
                 {tx.note}
               </div>
-              <div className='text-xs text-muted truncate'>{categoryLabel}</div>
+              <div className='text-caption text-muted truncate'>{categoryLabel}</div>
             </>
           ) : (
-            <div className='text-sm font-medium text-foreground truncate'>
+            <div className='text-label font-medium text-foreground truncate'>
               {categoryLabel}
             </div>
           )}
         </div>
 
         {/* 3. Amount */}
-        <div className='col-span-3 flex justify-end items-center text-sm font-medium text-right'>
+        <div className='col-span-3 flex justify-end items-center text-label font-medium text-right'>
           {renderAmount()}
         </div>
       </div>

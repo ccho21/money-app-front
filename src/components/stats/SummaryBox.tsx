@@ -1,8 +1,8 @@
 // 📄 src/components/common/SummaryBox.tsx
-'use client';
 
 import { SummaryItem } from '@/common/types';
 import { cn } from '@/lib/utils';
+import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 
 interface SummaryBoxProps {
   items: SummaryItem[];
@@ -15,7 +15,6 @@ export default function SummaryBox({
   className,
   columns = 3,
 }: SummaryBoxProps) {
-  // ✅ Tailwind 인식 가능한 정적 class 매핑
   const columnClass =
     {
       1: 'grid-cols-1',
@@ -24,12 +23,12 @@ export default function SummaryBox({
       4: 'grid-cols-4',
       5: 'grid-cols-5',
       6: 'grid-cols-6',
-    }[columns] ?? 'grid-cols-3'; // fallback
+    }[columns] ?? 'grid-cols-3';
 
   return (
     <div
       className={cn(
-        'grid gap-2 text-sm font-medium px-3 py-1',
+        'grid gap-element text-label font-medium px-element py-tight',
         columnClass,
         className
       )}
@@ -48,12 +47,8 @@ export default function SummaryBox({
             key={`${item.label}-${index}`}
             className='flex flex-col items-center'
           >
-            <span className='text-xs text-muted'>{item.label}</span>
-            <span className={cn(computedColor)}>
-              {item.prefix ?? ''}
-              {item.value.toLocaleString()}
-              {item.suffix ?? ''}
-            </span>
+            <span className='text-caption text-muted'>{item.label}</span>
+            <CurrencyDisplay className={computedColor} amount={item.value} />
           </div>
         );
       })}

@@ -1,3 +1,5 @@
+// src/app/stats/note/[note]/page.tsx
+
 'use client';
 
 import { useEffect, useMemo } from 'react';
@@ -18,6 +20,7 @@ import Panel from '@/components/ui/panel/Panel';
 import ComposedChart from '@/components/common/ComposedChart';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function StatsNoteDetailPage() {
   const { note } = useParams();
@@ -105,7 +108,7 @@ export default function StatsNoteDetailPage() {
   };
 
   if (isLoading) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   return (
@@ -119,19 +122,16 @@ export default function StatsNoteDetailPage() {
                 label: 'Income',
                 value: summaryData.income,
                 color: 'text-success',
-                prefix: '$',
               },
               {
                 label: 'Expense',
                 value: summaryData.expense,
                 color: 'text-error',
-                prefix: '$',
               },
               {
                 label: 'Total',
                 value: summaryData.total,
                 color: 'text-foreground',
-                prefix: '$',
               },
             ]}
           />

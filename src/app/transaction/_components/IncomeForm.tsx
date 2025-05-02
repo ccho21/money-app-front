@@ -1,3 +1,4 @@
+// src/app/transaction/_components/IncomeForm.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -69,7 +70,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
   };
 
   return (
-    <div className='space-y-5 px-4 pt-5 pb-10'>
+    <div className='space-y-component px-component pt-component pb-section'>
       {/* 🔁 inputOrder 적용 */}
       {inputOrder === 'amount-first' ? (
         <>
@@ -151,7 +152,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
           color='danger'
           variant='outline'
           onClick={handleDelete}
-          className='w-full mt-4'
+          className='w-full mt-component'
         >
           Delete
         </Button>

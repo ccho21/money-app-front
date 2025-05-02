@@ -1,3 +1,5 @@
+// src/app/transaction/_components/TransferForm.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -59,7 +61,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
   };
 
   return (
-    <div className='space-y-5 px-4 pt-5 pb-10'>
+    <div className='space-y-component px-component pt-component pb-section'>
       <Input
         label='Amount'
         placeholder='$ 0'
@@ -118,7 +120,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
           color='danger'
           variant='outline'
           onClick={() => handleDelete(transactionId)}
-          className='w-full mt-4'
+          className='w-full mt-component'
         >
           Delete
         </Button>

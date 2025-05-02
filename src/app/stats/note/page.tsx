@@ -1,3 +1,5 @@
+// src/app/stats/note/page.tsx
+
 'use client';
 
 import { useEffect } from 'react';
@@ -37,7 +39,9 @@ export default function StatsNotePage() {
       type: transactionType as CategoryType,
     };
 
-    fetchNoteStats(params);
+    (async () => {
+      await fetchNoteStats(params);
+    })();
   }, [date, groupBy, transactionType, getDateRangeKey, isInitialized]);
 
   const handleRowClick = (note: string) => {

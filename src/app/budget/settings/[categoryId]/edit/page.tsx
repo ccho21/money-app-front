@@ -1,3 +1,4 @@
+// src/app/budget/settings/[categoryId]/edit/page.tsx
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
@@ -6,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { BudgetCategoryForm } from '@/app/budget/components/BudgetCategoryForm';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 
 export default function EditBudgetCategoryPage() {
   const { categoryId } = useParams();
@@ -14,7 +16,7 @@ export default function EditBudgetCategoryPage() {
   const resetForm = useBudgetFormStore((s) => s.resetForm);
   const storeState = useBudgetFormStore((s) => s.form);
 
-  const initialized = useRef(false); // ✅ 최초 실행 여부를 기억하는 ref
+  const initialized = useRef(false);
 
   const [defaultStartDate, defaultEndDate] = useMemo(() => {
     const rangeKey = getDateRangeKey();
@@ -22,8 +24,7 @@ export default function EditBudgetCategoryPage() {
   }, [getDateRangeKey]);
 
   useEffect(() => {
-    if (!categoryId) return;
-    if (initialized.current) return; // ✅ 이미 초기화했으면 재실행 막기
+    if (!categoryId || initialized.current) return;
 
     resetForm();
     loadForm(String(categoryId), {
@@ -32,7 +33,7 @@ export default function EditBudgetCategoryPage() {
       groupBy: 'monthly',
     });
 
-    initialized.current = true; // ✅ 딱 1번만 실행하도록 플래그 세팅
+    initialized.current = true;
   }, [
     categoryId,
     loadForm,
@@ -45,15 +46,13 @@ export default function EditBudgetCategoryPage() {
 
   if (!categoryId) {
     return (
-      <div className='p-4 text-sm text-error bg-surface text-center'>
-        Category ID is missing.
-      </div>
+      <EmptyMessage />
     );
   }
 
   return (
     <div className='min-h-screen bg-background text-foreground'>
-      <main className='p-4'>
+      <main className='p-component'>
         <BudgetCategoryForm />
       </main>
     </div>

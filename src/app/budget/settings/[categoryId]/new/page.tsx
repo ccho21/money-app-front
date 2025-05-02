@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { BudgetCategoryForm } from '@/app/budget/components/BudgetCategoryForm';
+import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 
 export default function NewBudgetCategoryPage() {
   const { categoryId } = useParams();
@@ -21,7 +22,6 @@ export default function NewBudgetCategoryPage() {
 
     resetForm();
     setField('categoryId', String(categoryId));
-
     setField('startDate', storeState.startDate || defaultStartDate);
     setField('endDate', storeState.endDate || defaultEndDate);
   }, [
@@ -34,16 +34,12 @@ export default function NewBudgetCategoryPage() {
   ]);
 
   if (!categoryId) {
-    return (
-      <div className='p-4 text-sm text-error bg-surface text-center'>
-        Category ID is missing.
-      </div>
-    );
+    return <EmptyMessage />;
   }
 
   return (
     <div className='min-h-screen bg-background text-foreground'>
-      <main className='p-4'>
+      <main className='p-component'>
         <BudgetCategoryForm />
       </main>
     </div>

@@ -1,3 +1,4 @@
+// src/app/signin/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -7,6 +8,7 @@ import RedirectIfAuthenticated from '@/components/common/RedirectIfAuthenticated
 import toast from 'react-hot-toast';
 import { signin } from '@/modules/auth/hooks';
 import { API_BASE_URL } from '@/common/api';
+
 export default function SigninPage() {
   const router = useRouter();
   const { error } = useUserStore();
@@ -30,32 +32,32 @@ export default function SigninPage() {
 
   return (
     <RedirectIfAuthenticated>
-      <div className='flex items-center justify-center min-h-screen bg-background px-4'>
+      <div className="flex items-center justify-center min-h-screen bg-background px-component">
         <form
           onSubmit={handleSignin}
-          className='w-full max-w-md space-y-6 p-8 bg-surface border border-border shadow rounded-xl'
+          className="w-full max-w-md space-y-component p-component bg-surface border border-border shadow rounded-card"
         >
-          <h1 className='text-2xl font-bold text-center text-foreground'>
+          <h1 className="text-heading font-bold text-center text-foreground">
             로그인
           </h1>
 
           {error && (
-            <div className='text-sm text-error text-center'>{error}</div>
+            <div className="text-label text-error text-center">{error}</div>
           )}
 
           {/* 이메일 입력 */}
-          <div className='space-y-2'>
+          <div className="space-y-tight">
             <label
-              htmlFor='email'
-              className='block text-sm font-medium text-foreground'
+              htmlFor="email"
+              className="block text-label font-medium text-foreground"
             >
               이메일
             </label>
             <input
-              id='email'
-              type='email'
-              className='w-full px-4 py-2 border border-border rounded bg-transparent text-foreground placeholder-muted'
-              placeholder='이메일을 입력하세요'
+              id="email"
+              type="email"
+              className="w-full px-component py-element border border-border rounded-default bg-transparent text-foreground placeholder-muted"
+              placeholder="이메일을 입력하세요"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -63,18 +65,18 @@ export default function SigninPage() {
           </div>
 
           {/* 비밀번호 입력 */}
-          <div className='space-y-2'>
+          <div className="space-y-tight">
             <label
-              htmlFor='password'
-              className='block text-sm font-medium text-foreground'
+              htmlFor="password"
+              className="block text-label font-medium text-foreground"
             >
               비밀번호
             </label>
             <input
-              id='password'
-              type='password'
-              className='w-full px-4 py-2 border border-border rounded bg-transparent text-foreground placeholder-muted'
-              placeholder='비밀번호를 입력하세요'
+              id="password"
+              type="password"
+              className="w-full px-component py-element border border-border rounded-default bg-transparent text-foreground placeholder-muted"
+              placeholder="비밀번호를 입력하세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -83,34 +85,34 @@ export default function SigninPage() {
 
           {/* 로그인 버튼 */}
           <button
-            type='submit'
-            className='w-full bg-primary hover:bg-primary/90 text-white py-2 rounded font-semibold transition'
+            type="submit"
+            className="w-full bg-primary hover:bg-primary/90 text-white py-element rounded-default font-semibold transition"
           >
             로그인
           </button>
 
           {/* 구분선 */}
-          <div className='relative my-4'>
-            <div className='absolute inset-0 flex items-center'>
-              <div className='w-full border-t border-border' />
+          <div className="relative my-component">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
             </div>
-            <div className='relative flex justify-center text-sm'>
-              <span className='bg-surface px-2 text-muted'>또는</span>
+            <div className="relative flex justify-center text-label">
+              <span className="bg-surface px-2 text-muted">또는</span>
             </div>
           </div>
 
           {/* Google 로그인 */}
           <button
-            type='button'
+            type="button"
             onClick={handleGoogleSignin}
-            className='w-full flex items-center justify-center gap-3 border border-border py-2 rounded hover:bg-muted/10 transition text-sm font-medium text-foreground'
+            className="w-full flex items-center justify-center gap-3 border border-border py-element rounded-default hover:bg-muted/10 transition text-label font-medium text-foreground"
           >
             Google 계정으로 로그인
           </button>
 
-          <p className='text-sm text-center text-muted'>
+          <p className="text-label text-center text-muted">
             아직 계정이 없으신가요?{' '}
-            <a href='/signup' className='text-primary font-medium'>
+            <a href="/signup" className="text-primary font-medium">
               회원가입
             </a>
           </p>

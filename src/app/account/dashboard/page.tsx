@@ -1,3 +1,4 @@
+// src/app/account/dashboard/page.tsx
 'use client';
 
 import { useEffect, useCallback } from 'react';
@@ -9,6 +10,7 @@ import { AccountDashboardItemDTO } from '@/modules/account/types';
 import Panel from '@/components/ui/panel/Panel';
 import { useUIStore } from '@/stores/useUIStore';
 import { fetchAccountDashboard } from '@/modules/account/hooks';
+import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
 export default function AccountDashboardPage() {
   const router = useRouter();
@@ -73,19 +75,19 @@ export default function AccountDashboardPage() {
   );
 
   if (isLoading || !accountDashboard) {
-    return <p className='text-center mt-10 text-muted'>Loading...</p>;
+    return <LoadingMessage />;
   }
 
   const { CASH, BANK, CARD } = accountDashboard.data;
 
   return (
-    <div className='space-y-4 bg-surface min-h-screen text-foreground'>
+    <div className='space-y-component bg-surface min-h-screen text-foreground'>
       <Panel>
         <SummaryBox items={summaryItems} />
       </Panel>
 
       <Panel>
-        <div className='space-y-6'>
+        <div className='space-y-component'>
           {[
             ['CASH', CASH],
             ['BANK', BANK],
@@ -96,7 +98,7 @@ export default function AccountDashboardPage() {
 
             return (
               <div key={label as string}>
-                <h3 className='text-xs font-semibold text-muted px-3 mb-2 tracking-wide uppercase'>
+                <h3 className='text-caption font-semibold text-muted px-element mb-tight tracking-wide uppercase'>
                   {label === 'CASH' && 'Cash'}
                   {label === 'BANK' && 'Bank Accounts'}
                   {label === 'CARD' && 'Card'}

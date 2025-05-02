@@ -1,3 +1,4 @@
+// src/app/category/layout.tsx
 'use client';
 
 import { ReactNode, useEffect } from 'react';
@@ -19,11 +20,12 @@ export default function CategoryLayout({ children }: { children: ReactNode }) {
     });
 
     return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
+      useUIStore.getState().resetTopNav();
     };
   }, [router]);
+
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col'>
+    <div className='min-h-screen pb-tabbar flex flex-col bg-surface text-foreground'>
       <TopNav />
       <main className='flex-1 overflow-y-auto'>{children}</main>
       <BottomTabBar />

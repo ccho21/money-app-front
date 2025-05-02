@@ -1,3 +1,4 @@
+// src/components/common/BottomSheetPanel.tsx
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -31,7 +32,7 @@ export default function BottomSheetPanel({
 
           {/* ✅ Slide-Up Panel */}
           <motion.div
-            className='fixed bottom-0 left-0 right-0 z-50 bg-surface dark:bg-surface rounded-t-md shadow-md'
+            className='fixed bottom-[10vh] left-0 right-0 z-50 bg-surface dark:bg-surface rounded-input shadow-md flex flex-col max-h-[70vh]'
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -39,20 +40,20 @@ export default function BottomSheetPanel({
             onClick={(e) => e.stopPropagation()}
           >
             {/* ✅ Header */}
-            <div className='flex items-center justify-between px-4 py-3 border-b border-border'>
-              <h2 className='text-md font-semibold text-text'>
-                {title ?? '설정'}
+            <div className='flex items-center justify-between px-component py-element border-b border-border shrink-0'>
+              <h2 className='text-body font-semibold text-foreground'>
+                {title ?? 'Detail'}
               </h2>
               <button
                 onClick={onClose}
-                className='p-1 text-muted-foreground hover:text-text transition-colors'
+                className='text-muted-foreground hover:text-foreground transition-colors'
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* ✅ Content */}
-            <div className='max-h-[70vh] overflow-y-auto py-3'>{children}</div>
+            {/* ✅ Scrollable Content */}
+            <div className='overflow-y-auto grow'>{children}</div>
           </motion.div>
         </>
       )}

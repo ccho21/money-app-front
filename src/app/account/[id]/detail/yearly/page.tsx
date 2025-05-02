@@ -1,3 +1,4 @@
+// src/app/account/[id]/detail/yearly/page.tsx
 'use client';
 
 import { useEffect, useCallback } from 'react';
@@ -60,11 +61,15 @@ export default function YearlyPage() {
 
   const handleClick = useCallback(
     (dateStr: string) => {
-      const parsed = parse(dateStr, 'yyyy', new Date());
-      const formatted = format(startOfMonth(parsed), 'yyyy-MM-dd');
-      router.push(
-        `/account/${accountId}/detail/monthly?date=${formatted}&groupBy=yearly`
-      );
+      try {
+        const parsed = parse(dateStr, 'yyyy', new Date());
+        const formatted = format(startOfMonth(parsed), 'yyyy-MM-dd');
+        router.push(
+          `/account/${accountId}/detail/monthly?date=${formatted}&groupBy=yearly`
+        );
+      } catch {
+        console.warn('Invalid year format in handleClick:', dateStr);
+      }
     },
     [router, accountId]
   );

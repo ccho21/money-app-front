@@ -1,3 +1,4 @@
+// src/components/common/PieChart.tsx
 'use client';
 
 import React from 'react';
@@ -25,8 +26,7 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
     outerRadius,
     rate,
     index,
-  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any) => {
+  }: any) => {
     const lineRadius = outerRadius + 15;
     const labelRadius = outerRadius + 35;
 
@@ -73,7 +73,7 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
   };
 
   return (
-    <div className='w-full pb-3'>
+    <div className='w-full pb-element'>
       <ResponsiveContainer width='100%' height={height}>
         <PieChart>
           <Pie
@@ -98,9 +98,9 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
         </PieChart>
       </ResponsiveContainer>
 
-      <div className='flex justify-center flex-wrap gap-4 mt-4'>
+      <div className='flex justify-center flex-wrap gap-component mt-component'>
         {data.map((item) => (
-          <div key={item.name} className='flex items-center gap-2 text-sm'>
+          <div key={item.name} className='flex items-center gap-tight text-label'>
             <span
               className='inline-block w-3 h-3 rounded-full'
               style={{ backgroundColor: item.color }}

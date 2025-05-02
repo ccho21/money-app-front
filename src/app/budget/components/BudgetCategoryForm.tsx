@@ -1,3 +1,4 @@
+// src/app/budget/components/BudgetCategoryForm.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -28,7 +29,7 @@ export const BudgetCategoryForm = () => {
   };
 
   return (
-    <div className='space-y-4 bg-surface text-foreground p-4 rounded-md shadow-sm'>
+    <div className='space-y-component bg-surface text-foreground p-component rounded-card shadow-md'>
       <Input
         type='number'
         inputMode='numeric'

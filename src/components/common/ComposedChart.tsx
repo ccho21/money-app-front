@@ -1,3 +1,4 @@
+// src/components/common/ComposedChart.tsx
 'use client';
 
 import {
@@ -12,7 +13,6 @@ import {
   Cell,
   DotProps,
 } from 'recharts';
-
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 
 interface Props {
@@ -28,14 +28,14 @@ interface Props {
   bgColor?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Custom Tooltip
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
 
   const data = payload[0];
   return (
-    <div className='rounded-md border border-border bg-surface px-3 py-2 shadow-sm text-sm'>
-      <div className='text-muted mb-1'>{label}</div>
+    <div className='rounded-input border border-border bg-surface px-element py-element shadow-sm text-label'>
+      <div className='text-muted mb-tight'>{label}</div>
       <div className='text-foreground font-semibold'>
         <CurrencyDisplay amount={data.value} />
       </div>
@@ -52,12 +52,10 @@ export default function StatComposedChart({
   const defaultLineColor = lineColor ?? 'var(--color-primary)';
   const backgroundColor = bgColor ?? 'var(--color-surface)';
   const selectedMonth = data.find((s) => s.isCurrent)?.month;
+
   return (
     <div className='w-full overflow-x-auto scrollbar-hide bg-surface'>
-      <div
-        className='min-w-[600px] h-36 rounded-xl'
-        style={{ backgroundColor }}
-      >
+      <div className='min-w-[600px] h-36 rounded-card' style={{ backgroundColor }}>
         <ResponsiveContainer width='100%' height='100%'>
           <ComposedChart
             data={data}
@@ -94,7 +92,7 @@ export default function StatComposedChart({
                 const isSelected = payload.month === selectedMonth;
                 return (
                   <circle
-                    key={`dot-${payload.month}-${index}`} // ✅ 고유한 key 추가
+                    key={`dot-${payload.month}-${index}`}
                     cx={cx}
                     cy={cy}
                     r={4}
