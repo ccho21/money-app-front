@@ -29,6 +29,7 @@ interface Props {
 }
 
 // Custom Tooltip
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
 
@@ -55,7 +56,10 @@ export default function StatComposedChart({
 
   return (
     <div className='w-full overflow-x-auto scrollbar-hide bg-surface'>
-      <div className='min-w-[600px] h-36 rounded-card' style={{ backgroundColor }}>
+      <div
+        className='min-w-[600px] h-36 rounded-card'
+        style={{ backgroundColor }}
+      >
         <ResponsiveContainer width='100%' height='100%'>
           <ComposedChart
             data={data}
