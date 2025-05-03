@@ -33,7 +33,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   // ✅ 네비게이션 상단 타이틀 세팅
   useEffect(() => {
-    useUIStore.getState().setTopNav({ title: 'Trans.' });
+    useUIStore.getState().setTopNav({
+      title: 'Transactions',
+      showFilterButton: true,
+      showSearchButton: true,
+    });
     return () => useUIStore.getState().resetTopNav();
   }, [router]);
 

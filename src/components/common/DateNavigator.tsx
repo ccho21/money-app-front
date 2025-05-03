@@ -41,7 +41,7 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   );
 
   return (
-    <div className='flex items-center justify-between bg-surface px-component py-tight text-body font-normal shadow-sm'>
+    <div className='flex items-center justify-between px-component py-tight text-body font-normal'>
       {/* 왼쪽 이동 */}
       <div className='flex items-center gap-element'>
         <button

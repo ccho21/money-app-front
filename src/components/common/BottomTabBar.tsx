@@ -10,6 +10,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import Panel from '../ui/panel/Panel';
 
 const baseTabs = [
   {
@@ -47,37 +48,41 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border flex justify-around items-center h-[10vh]'>
-      {baseTabs.map((tab) => {
-        const isTodayTab = tab.key === 'daily';
-        const tabPath = isTodayTab
-          ? `${tab.basePath}?date=${todayDateParam}`
-          : tab.basePath;
+    <nav className='fixed bottom-0 left-0 right-0 z-50 h-[10vh]'>
+      <Panel>
+        <div className='flex justify-around items-center m-component'>
+          {baseTabs.map((tab) => {
+            const isTodayTab = tab.key === 'daily';
+            const tabPath = isTodayTab
+              ? `${tab.basePath}?date=${todayDateParam}`
+              : tab.basePath;
 
-        const isActive = pathname.startsWith(tab.basePath);
+            const isActive = pathname.startsWith(tab.basePath);
 
-        const handleClick = () => {
-          if (pathname.startsWith(tab.basePath)) {
-            const refreshedURL = `${tabPath}&refresh=${Date.now()}`;
-            router.replace(refreshedURL);
-          } else {
-            router.push(tabPath);
-          }
-        };
+            const handleClick = () => {
+              if (pathname.startsWith(tab.basePath)) {
+                const refreshedURL = `${tabPath}&refresh=${Date.now()}`;
+                router.replace(refreshedURL);
+              } else {
+                router.push(tabPath);
+              }
+            };
 
-        return (
-          <button
-            key={tab.key}
-            onClick={handleClick}
-            className='flex flex-col items-center text-caption text-muted hover:text-muted/80'
-          >
-            <div className={isActive ? 'text-primary' : ''}>{tab.icon}</div>
-            <span className={isActive ? 'text-primary font-semibold' : ''}>
-              {isTodayTab ? todayLabel : tab.label}
-            </span>
-          </button>
-        );
-      })}
+            return (
+              <button
+                key={tab.key}
+                onClick={handleClick}
+                className='flex flex-col items-center text-caption text-muted hover:text-muted/80'
+              >
+                <div className={isActive ? 'text-primary' : ''}>{tab.icon}</div>
+                <span className={isActive ? 'text-primary font-semibold' : ''}>
+                  {isTodayTab ? todayLabel : tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </Panel>
     </nav>
   );
 }

@@ -51,8 +51,9 @@ export default function RootLayout({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
+                  className='min-h-screen'
                 >
-                  {children}
+                  <main>{children}</main>
                 </motion.div>
               </AnimatePresence>
             </ThemeProvider>

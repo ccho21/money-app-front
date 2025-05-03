@@ -29,7 +29,7 @@ export default function AccountLayout({ children }: { children: ReactNode }) {
   }, [router, reset]);
 
   return (
-    <div className='min-h-screen flex flex-col h-full bg-surface text-foreground pb-[10vh]'>
+    <div className='min-h-screen flex flex-col h-full text-foreground pb-[10vh]'>
       <TopNav />
       <main className='flex-1 overflow-y-auto'>{children}</main>
       <BottomTabBar />

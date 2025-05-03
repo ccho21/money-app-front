@@ -110,7 +110,7 @@ export default function AccountDetailDashboardLayout({
   );
 
   return (
-    <div className='min-h-screen pb-tabbar flex flex-col h-full bg-surface text-foreground'>
+    <div className='min-h-screen pb-tabbar flex flex-col h-full text-foreground'>
       <div>
         <DateNavigator />
         <TabMenu

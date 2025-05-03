@@ -36,7 +36,7 @@ function TabMenuBase({
   return (
     <div
       className={cn(
-        'flex border-b border-border text-label bg-surface',
+        'flex  text-label',
         variant === 'pill' && 'justify-around py-element'
       )}
     >

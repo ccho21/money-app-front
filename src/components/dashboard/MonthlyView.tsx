@@ -10,6 +10,7 @@ import {
 import { SummaryItem } from '@/common/types';
 
 import MonthlyItem from './MonthlyItem';
+import DateNavigator from '../common/DateNavigator';
 
 interface MonthlyViewProps {
   isLoading: boolean;
@@ -33,9 +34,7 @@ export default function MonthlyView({
 }: MonthlyViewProps) {
   if (isLoading) {
     return (
-      <p className='text-center mt-section text-muted text-label'>
-        Loading...
-      </p>
+      <p className='text-center mt-section text-muted text-label'>Loading...</p>
     );
   }
 
@@ -45,8 +44,11 @@ export default function MonthlyView({
 
   return (
     <>
+      <div className='bg-surface rounded-lg shadow-sm px-component py-element mb-component'>
+        <DateNavigator />
+      </div>
       {/* Summary box */}
-      <Panel className='p-element border border-border bg-surface rounded-default mb-compact'>
+      <Panel className=''>
         <SummaryBox items={summaryItems} />
       </Panel>
 

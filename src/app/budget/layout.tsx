@@ -22,7 +22,7 @@ export default function BudgetLayout({ children }: { children: ReactNode }) {
   return (
     <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
       <TopNav />
-      <main className='flex-1 overflow-y-auto bg-surface'>{children}</main>
+      <main className='flex-1 overflow-y-auto'>{children}</main>
       <BottomTabBar />
     </div>
   );

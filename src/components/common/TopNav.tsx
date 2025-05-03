@@ -23,7 +23,7 @@ export default function TopNav() {
   const pathName = prevPath?.split('/')[1];
 
   return (
-    <div className='relative flex items-center justify-between px-compact py-compact border-b border-border bg-surface backdrop-blur-sm'>
+    <div className='relative flex items-center justify-between px-compact py-compact bg-background backdrop-blur-sm m-tight'>
       {/* 왼쪽 */}
       <div className='flex items-center gap-element min-w-[80px] justify-start'>
         {showSearchButton && (
