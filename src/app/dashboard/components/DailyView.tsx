@@ -5,7 +5,6 @@ import {
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
-import Panel from '@/components/ui/panel/Panel';
 import TransactionGroup from '../../../components/transaction/TransactionGroup';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 interface DailyViewProps {
@@ -34,25 +33,23 @@ export default function DailyView({
 
   return (
     <>
-      <Panel>
-        {data.items.map((group) => (
-          <TransactionGroup
-            key={group.label}
-            label={group.label}
-            rangeStart={group.rangeStart}
-            rangeEnd={group.rangeEnd}
-            groupIncome={group.groupIncome}
-            groupExpense={group.groupExpense}
-            onTransactionClick={(tx: TransactionDetailDTO) => {
-              onTransactionClick?.(tx);
-            }}
-            onHeaderClick={() => {
-              onHeaderClick?.(group.label);
-            }}
-            group={group}
-          />
-        ))}
-      </Panel>
+      {data.items.map((group) => (
+        <TransactionGroup
+          key={group.label}
+          label={group.label}
+          rangeStart={group.rangeStart}
+          rangeEnd={group.rangeEnd}
+          groupIncome={group.groupIncome}
+          groupExpense={group.groupExpense}
+          onTransactionClick={(tx: TransactionDetailDTO) => {
+            onTransactionClick?.(tx);
+          }}
+          onHeaderClick={() => {
+            onHeaderClick?.(group.label);
+          }}
+          group={group}
+        />
+      ))}
     </>
   );
 }

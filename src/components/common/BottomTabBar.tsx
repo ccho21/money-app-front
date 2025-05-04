@@ -1,5 +1,3 @@
-// src/components/common/BottomTabBar.tsx
-
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -11,30 +9,31 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import Panel from '../ui/panel/Panel';
+import { cn } from '@/lib/utils';
 
 const baseTabs = [
   {
     key: 'daily',
     label: 'Today',
-    icon: <BookText className='w-5 h-5' />,
+    icon: BookText,
     basePath: '/dashboard/daily',
   },
   {
     key: 'stats',
     label: 'Stats',
-    icon: <ChartColumnBigIcon className='w-5 h-5' />,
+    icon: ChartColumnBigIcon,
     basePath: '/stats/category',
   },
   {
     key: 'accounts',
     label: 'Accounts',
-    icon: <Wallet className='w-5 h-5' />,
+    icon: Wallet,
     basePath: '/account/dashboard',
   },
   {
     key: 'more',
     label: 'More',
-    icon: <MoreHorizontal className='w-5 h-5' />,
+    icon: MoreHorizontal,
     basePath: '/more',
   },
 ];
@@ -48,7 +47,7 @@ export default function BottomTabBar() {
   const todayDateParam = format(today, 'yyyy-MM-dd');
 
   return (
-    <nav className='fixed bottom-0 left-0 right-0 z-50 h-[10vh]'>
+    <nav className='fixed bottom-0 left-0 right-0 z-50 h-[10vh] bg-card border-t border-border'>
       <Panel>
         <div className='flex justify-around items-center m-component'>
           {baseTabs.map((tab) => {
@@ -60,7 +59,7 @@ export default function BottomTabBar() {
             const isActive = pathname.startsWith(tab.basePath);
 
             const handleClick = () => {
-              if (pathname.startsWith(tab.basePath)) {
+              if (isActive) {
                 const refreshedURL = `${tabPath}&refresh=${Date.now()}`;
                 router.replace(refreshedURL);
               } else {
@@ -68,16 +67,19 @@ export default function BottomTabBar() {
               }
             };
 
+            const Icon = tab.icon;
+
             return (
               <button
                 key={tab.key}
                 onClick={handleClick}
-                className='flex flex-col items-center text-caption text-muted hover:text-muted/80'
+                className={cn(
+                  'flex flex-col items-center gap-tight text-caption text-muted transition-colors',
+                  isActive && 'text-primary font-semibold'
+                )}
               >
-                <div className={isActive ? 'text-primary' : ''}>{tab.icon}</div>
-                <span className={isActive ? 'text-primary font-semibold' : ''}>
-                  {isTodayTab ? todayLabel : tab.label}
-                </span>
+                <Icon className={cn('w-5 h-5', isActive && 'text-primary')} />
+                <span>{isTodayTab ? todayLabel : tab.label}</span>
               </button>
             );
           })}

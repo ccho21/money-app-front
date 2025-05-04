@@ -1,4 +1,3 @@
-// src/components/common/TabMenu.tsx
 'use client';
 
 import { memo, useCallback } from 'react';
@@ -36,25 +35,27 @@ function TabMenuBase({
   return (
     <div
       className={cn(
-        'flex  text-label',
+        'flex text-label',
         variant === 'pill' && 'justify-around py-element'
       )}
     >
       {tabs.map((tab) => {
         const isActive = active === tab.key;
 
-        const baseStyle = 'transition-all duration-150';
+        const baseStyle = 'transition-colors duration-150';
+
         const pillStyle = cn(
-          'px-component py-tight rounded-full border',
+          'px-component py-tight rounded-full border text-sm',
           isActive
-            ? 'text-foreground border-border font-semibold bg-muted/10'
-            : 'text-muted border-transparent hover:bg-muted/5'
+            ? 'bg-muted/10 text-foreground border-border/60 font-medium'
+            : 'text-muted-foreground border-transparent hover:bg-muted/5 hover:text-foreground/80'
         );
+
         const underlineStyle = cn(
-          'flex-1 py-element text-label font-medium text-center',
+          'flex-1 py-element text-sm text-center tracking-tight',
           isActive
-            ? 'border-b-2 border-primary text-primary'
-            : 'text-muted hover:text-foreground'
+            ? 'border-b-2 border-primary text-primary font-medium'
+            : 'text-muted-foreground hover:text-foreground/80'
         );
 
         return (

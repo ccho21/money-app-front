@@ -1,5 +1,4 @@
 // 📄 src/app/dashboard/components/MonthlyView.tsx
-import SummaryBox from '@/components/stats/SummaryBox';
 import Panel from '@/components/ui/panel/Panel';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 
@@ -10,7 +9,6 @@ import {
 import { SummaryItem } from '@/common/types';
 
 import MonthlyItem from './MonthlyItem';
-import DateNavigator from '../common/DateNavigator';
 
 interface MonthlyViewProps {
   isLoading: boolean;
@@ -27,7 +25,6 @@ interface MonthlyViewProps {
 export default function MonthlyView({
   isLoading,
   data,
-  summaryItems,
   openIndex,
   weeklySummaryByMonth,
   onToggle,
@@ -44,14 +41,6 @@ export default function MonthlyView({
 
   return (
     <>
-      <div className='bg-surface rounded-lg shadow-sm px-component py-element mb-component'>
-        <DateNavigator />
-      </div>
-      {/* Summary box */}
-      <Panel className=''>
-        <SummaryBox items={summaryItems} />
-      </Panel>
-
       {/* Monthly accordion list */}
       <Panel className='divide-y divide-border bg-surface rounded-default shadow-sm'>
         {data.items.map((summary, index) => (

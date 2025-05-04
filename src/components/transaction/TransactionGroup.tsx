@@ -33,8 +33,8 @@ export default function TransactionGroup({
   groupIncome,
   groupExpense,
   group,
-  onTransactionClick,
   onHeaderClick,
+  onTransactionClick,
   showDateHeader = true,
   showRange = false,
   className,
@@ -101,11 +101,11 @@ export default function TransactionGroup({
         </div>
       )}
 
-      <ul className='space-y-2 px-4 pb-4'>
-        {group.transactions.map((tx: TransactionDetailDTO) => (
+      <div className='flex flex-col gap-element'>
+        {group.transactions.map((tx) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}
-      </ul>
+      </div>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button, buttonVariants } from './button';
+import { Button, buttonVariants } from '../button';
 import { cn } from '@/lib/utils';
 
 const addMonths = (input: Date, months: number) => {

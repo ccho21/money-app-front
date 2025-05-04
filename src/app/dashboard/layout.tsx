@@ -13,6 +13,7 @@ import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import SummaryBox from '@/components/stats/SummaryBox';
 import { useSummaryBoxItems } from '../hooks/useSummaryBoxItems';
+import MonthNavigator from '@/components/common/MonthNavigator';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -53,16 +54,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const summaryItems = useSummaryBoxItems(tabKey);
 
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full px-component'>
+    <div className='min-h-screen pb-[10vh] flex flex-col h-full px-compact'>
       <TopNav />
-      <SummaryBox items={summaryItems} />
-      {/* <DateNavigator /> */}
       <TabMenu
         tabs={tabs}
         active={tabKey}
         onChange={handleTabChange}
         variant='underline'
       />
+
+      <SummaryBox items={summaryItems} />
+      {/* <DateNavigator /> */}
+      <div className='text-right py-3'>
+        {/* <h2 className='px-3 text-lg'>April 3, 2025</h2> */}
+        <MonthNavigator />
+      </div>
       <div className='flex-1 overflow-y-auto'>{children}</div>
       <BottomTabBar />
       <Button

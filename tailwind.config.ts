@@ -1,5 +1,3 @@
-// 📄 tailwind.config.ts (의미 기반 디자인 시스템 확장)
-
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -10,42 +8,52 @@ const config: Config = {
       colors: {
         primary: {
           DEFAULT: 'var(--color-primary)',
-          foreground: 'var(--color-on-primary)',
+          foreground: 'var(--color-primary-foreground)',
+        },
+        secondary: {
+          DEFAULT: 'var(--color-secondary)',
+          foreground: 'var(--color-secondary-foreground)',
         },
         background: 'var(--color-background)',
-        surface: 'var(--color-surface)',
-        foreground: 'var(--color-text)',
+        foreground: 'var(--color-foreground)',
+        card: 'var(--color-card)',
+        border: 'var(--color-border)',
+        input: 'var(--color-input)',
+        ring: 'var(--color-ring)',
 
         muted: {
           DEFAULT: 'var(--color-muted)',
-          foreground: 'var(--color-muted)',
+          foreground: 'var(--color-muted-foreground)',
         },
-        border: 'var(--color-border)',
-
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          foreground: 'var(--color-accent-foreground)',
+        },
+        destructive: 'var(--color-destructive)',
         success: 'var(--color-success)',
         error: 'var(--color-error)',
         warning: 'var(--color-warning)',
         info: 'var(--color-info)',
       },
       fontSize: {
-        heading: 'var(--text-heading)', // ≈ text-lg
-        body: 'var(--text-body)', // ≈ text-base
-        label: 'var(--text-label)', // ≈ text-sm
-        caption: 'var(--text-caption)', // ≈ text-xs
+        heading: 'var(--text-heading)',
+        body: 'var(--text-body)',
+        label: 'var(--text-label)',
+        caption: 'var(--text-caption)',
       },
       spacing: {
-        tight: 'var(--spacing-tight)', // 0.25rem
-        compact: 'var(--spacing-compact)', // 0.5rem
-        element: 'var(--spacing-element)', // 0.75rem
-        component: 'var(--spacing-component)', // 1rem
-        spacious: 'var(--spacing-spacious)', // 1.25rem
-        section: 'var(--spacing-section)', // 5rem
+        tight: 'var(--spacing-tight)',
+        compact: 'var(--spacing-compact)',
+        element: 'var(--spacing-element)',
+        component: 'var(--spacing-component)',
+        spacious: 'var(--spacing-spacious)',
+        section: 'var(--spacing-section)',
       },
       borderRadius: {
-        input: 'var(--radius-input)', // 0.375rem
-        default: 'var(--radius-default)', // 0.5rem
-        card: 'var(--radius-card)', // 0.75rem
-        section: 'var(--radius-section)', // 1rem
+        input: 'var(--radius-input)',
+        DEFAULT: 'var(--radius-default)',
+        card: 'var(--radius-card)',
+        section: 'var(--radius-section)',
       },
     },
   },

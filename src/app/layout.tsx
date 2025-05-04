@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground dark:bg-background dark:text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-foreground dark:bg-background dark:text-foreground`}
       >
         {loading ? (
           <div className='flex justify-center items-center min-h-screen'>

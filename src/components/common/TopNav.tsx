@@ -1,8 +1,8 @@
-// src/components/common/TopNav.tsx
 'use client';
 
 import { useUIStore } from '@/stores/useUIStore';
-import { ChevronLeft, Filter, Pencil, Plus, Search } from 'lucide-react';
+import UIIcon from '@/components/ui/UIIcon';
+import { Button } from '@/components/ui/button';
 
 export default function TopNav() {
   const {
@@ -27,21 +27,24 @@ export default function TopNav() {
       {/* 왼쪽 */}
       <div className='flex items-center gap-element min-w-[80px] justify-start'>
         {showSearchButton && (
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={onSearchClick}
-            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
+            className='text-foreground'
           >
-            <Search className='w-5 h-5' />
-          </button>
+            <UIIcon name='search' />
+          </Button>
         )}
         {onBack && (
-          <button
+          <Button
             onClick={onBack}
-            className='flex items-center gap-tight p-compact rounded-input text-foreground hover:bg-muted/10 transition-colors text-label'
+            variant='ghost'
+            className='flex items-center gap-tight px-compact py-compact text-foreground text-label'
           >
-            <ChevronLeft className='w-4 h-4' />
+            <UIIcon name='chevron-left' className='w-4 h-4' />
             <span className='whitespace-nowrap'>{pathName}</span>
-          </button>
+          </Button>
         )}
         {leftSlot}
       </div>
@@ -49,7 +52,9 @@ export default function TopNav() {
       {/* 중앙 타이틀 */}
       {center ? (
         <div className='flex justify-center items-center pointer-events-none'>
-          <h1 className='text-heading font-semibold text-foreground'>{title}</h1>
+          <h1 className='text-heading font-semibold text-foreground'>
+            {title}
+          </h1>
         </div>
       ) : (
         <h1 className='text-heading font-semibold text-foreground'>{title}</h1>
@@ -58,30 +63,35 @@ export default function TopNav() {
       {/* 오른쪽 */}
       <div className='flex items-center gap-element min-w-[80px] justify-end'>
         {showFilterButton && (
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={onFilterClick}
-            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
+            className='text-foreground'
           >
-            <Filter className='w-5 h-5' />
-          </button>
+            <UIIcon name='filter' />
+          </Button>
         )}
         {onEdit && (
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={onEdit}
-            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
+            className='text-foreground'
           >
-            <Pencil className='w-5 h-5' />
-          </button>
+            <UIIcon name='pencil' />
+          </Button>
         )}
         {onAdd && (
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={onAdd}
-            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
+            className='text-foreground'
           >
-            <Plus className='w-5 h-5' />
-          </button>
+            <UIIcon name='plus' />
+          </Button>
         )}
-
         {rightSlot}
       </div>
     </div>

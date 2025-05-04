@@ -6,7 +6,7 @@ import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 import { TrendingUp, DollarSign, CreditCard } from 'lucide-react';
 
 interface SummaryBoxProps {
-  items: SummaryItem[]; // [0]: Net Total, [1]: Income, [2]: Expense
+  items: SummaryItem[];
   className?: string;
   onClick?: () => void;
 }
@@ -23,35 +23,37 @@ export default function SummaryBox({
   return (
     <div
       className={cn(
-        'rounded-xl shadow bg-white p-5 space-y-3',
+        'rounded-card shadow bg-card p-component space-y-element',
         onClick && 'cursor-pointer hover:bg-muted/5 transition-colors',
         className
       )}
       onClick={onClick}
     >
       {/* 상단 아이콘 + 라벨 */}
-      <div className='flex items-center gap-3'>
-        <div className='bg-success/10 p-2 rounded-md'>
-          <TrendingUp className='w-6 h-6 text-success' />
+      <div className='flex items-center gap-element'>
+        <div className='bg-primary/10 p-compact rounded-input'>
+          <TrendingUp className='w-6 h-6 text-primary' />
         </div>
-        <span className='text-lg font-medium text-foreground'>{net.label}</span>
+        <span className='text-heading font-semibold text-foreground'>
+          {net.label}
+        </span>
       </div>
 
       {/* Net Total 금액 */}
-      <div className='text-3xl font-bold text-foreground'>
+      <div className='text-[1.75rem] font-bold text-foreground'>
         <CurrencyDisplay amount={net.value} />
       </div>
 
-      <div className='border-t my-2' />
+      <div className='border-t border-border my-compact' />
 
       {/* 하단 Income / Expense */}
-      <div className='flex justify-between text-sm'>
-        <div className='flex items-center gap-2 text-success'>
+      <div className='flex justify-between text-label'>
+        <div className='flex items-center gap-tight text-success'>
           <DollarSign className='w-5 h-5' />
           <span>{income.label}</span>
           <CurrencyDisplay amount={income.value} className='ml-1' />
         </div>
-        <div className='flex items-center gap-2 text-error'>
+        <div className='flex items-center gap-tight text-error'>
           <CreditCard className='w-5 h-5' />
           <span>{expense.label}</span>
           <CurrencyDisplay amount={expense.value} className='ml-1' />

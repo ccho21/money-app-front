@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAccountStore } from '@/modules/account/store';
@@ -11,8 +11,6 @@ import { fetchAccountSummary } from '@/modules/account/hooks';
 
 import type { DateFilterParams } from '@/common/types';
 
-import SummaryBox from '@/components/stats/SummaryBox';
-import BudgetBox from '@/components/stats/BudgetBox';
 import AccountBox from '@/components/stats/AccountBox';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import Panel from '@/components/ui/panel/Panel';
@@ -20,7 +18,6 @@ import Divider from '@/components/ui/divider/Divider';
 import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
 import BudgetCard from '@/components/common/BudgetCard';
-import { ChartBar } from 'lucide-react';
 
 export default function SummaryPage() {
   const router = useRouter();
@@ -68,39 +65,7 @@ export default function SummaryPage() {
       groupBy: 'monthly',
     };
     Promise.all([fetchAccountSummary(params), fetchBudgetSummary(params)]);
-  }, [date, getDateRangeKey]);
-
-  const [incomeTotal, expenseTotal] = useMemo(() => {
-    if (!accountSummary?.items?.length) return [0, 0];
-    return [
-      accountSummary.items.reduce((sum, item) => sum + item.totalIncome, 0),
-      accountSummary.items.reduce((sum, item) => sum + item.totalExpense, 0),
-    ];
-  }, [accountSummary]);
-
-  const summaryItems = useMemo(
-    () => [
-      {
-        label: 'Income',
-        value: incomeTotal,
-        color: incomeTotal > 0 ? 'text-info' : 'text-muted',
-        prefix: '$',
-      },
-      {
-        label: 'Exp.',
-        value: expenseTotal,
-        color: expenseTotal > 0 ? 'text-error' : 'text-muted',
-        prefix: '$',
-      },
-      {
-        label: 'Total',
-        value: incomeTotal - expenseTotal,
-        color: 'text-foreground',
-        prefix: '$',
-      },
-    ],
-    [incomeTotal, expenseTotal]
-  );
+  }, [date, getDateRangeKey, isInitialized]);
 
   // ✅ 로딩 / 에러 / 비어있음 처리
   if (isAccountLoading || isBudgetLoading) {
@@ -127,15 +92,9 @@ export default function SummaryPage() {
   return (
     <div className='space-y-4'>
       <Panel>
-        <SummaryBox items={summaryItems} />
-      </Panel>
-
-      <Panel>
         <AccountBox accounts={accountSummary.items} />
       </Panel>
-
       <Divider />
-
       <Panel>
         <BudgetCard
           name={'Budget'}
