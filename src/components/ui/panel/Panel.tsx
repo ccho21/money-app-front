@@ -22,7 +22,7 @@ export default function Panel({
   return (
     <div
       className={cn(
-        'bg-surface text-foreground border-b border-border',
+        'text-foreground',
         rounded && 'rounded-section',
         bordered && 'border border-border',
         shadow && 'shadow-sm',

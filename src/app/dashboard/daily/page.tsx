@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useFilterStore } from '@/stores/useFilterStore';
@@ -45,34 +45,7 @@ export default function DailyPage() {
     };
 
     fetchTransactionSummary(params);
-  }, [getDateRangeKey, date]);
-
-  const totalIncome = summary?.totalIncome ?? 0;
-  const totalExpense = summary?.totalExpense ?? 0;
-
-  const summaryItems = useMemo(
-    () => [
-      {
-        label: 'Income',
-        value: totalIncome,
-        color: totalIncome > 0 ? 'text-info' : 'text-muted',
-        prefix: '$',
-      },
-      {
-        label: 'Exp.',
-        value: totalExpense,
-        color: totalExpense > 0 ? 'text-error' : 'text-muted',
-        prefix: '$',
-      },
-      {
-        label: 'Total',
-        value: totalIncome - totalExpense,
-        color: 'text-foreground',
-        prefix: '$',
-      },
-    ],
-    [totalIncome, totalExpense]
-  );
+  }, [getDateRangeKey, date, isInitialized]);
 
   const handleTransactionClick = (tx: TransactionDetailDTO) => {
     setSelectedTransaction(tx);
@@ -87,7 +60,6 @@ export default function DailyPage() {
     <DailyView
       isLoading={isLoading}
       data={summary}
-      summaryItems={summaryItems}
       onTransactionClick={handleTransactionClick}
       onHeaderClick={handleHeaderClick}
     />

@@ -81,7 +81,7 @@ export default function StatsLayout({ children }: { children: ReactNode }) {
           variant='underline'
         />
       )}
-      <main className='flex-1 overflow-y-auto bg-surface'>{children}</main>
+      <main className='flex-1 overflow-y-auto'>{children}</main>
       <BottomTabBar />
     </div>
   );

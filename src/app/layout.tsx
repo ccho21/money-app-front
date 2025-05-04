@@ -10,7 +10,6 @@ import RouteTracker from '@/providers/RouteTracker';
 import { ThemeProvider } from '../providers/ThemeProvider';
 import useAuthRedirectSync from '@/modules/auth/useAuthRedirectSync';
 
-import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const geistSans = Geist({
@@ -29,12 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const loading = useAuthRedirectSync();
-  const pathname = usePathname();
 
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-surface text-foreground dark:bg-surface dark:text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground dark:bg-background dark:text-foreground`}
       >
         {loading ? (
           <div className='flex justify-center items-center min-h-screen'>

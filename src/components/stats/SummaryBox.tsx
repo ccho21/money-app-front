@@ -3,118 +3,60 @@
 import { SummaryItem } from '@/common/types';
 import { cn } from '@/lib/utils';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
-import { ChevronRightIcon } from 'lucide-react';
+import { TrendingUp, DollarSign, CreditCard } from 'lucide-react';
 
 interface SummaryBoxProps {
-  items: SummaryItem[];
+  items: SummaryItem[]; // [0]: Net Total, [1]: Income, [2]: Expense
   className?: string;
-  columns?: number;
-  variant?: 'flat' | 'toss';
   onClick?: () => void;
 }
 
 export default function SummaryBox({
   items,
   className,
-  columns = 3,
-  variant = 'flat',
   onClick,
 }: SummaryBoxProps) {
-  const columnClass =
-    {
-      1: 'grid-cols-1',
-      2: 'grid-cols-2',
-      3: 'grid-cols-3',
-      4: 'grid-cols-4',
-      5: 'grid-cols-5',
-      6: 'grid-cols-6',
-    }[columns] ?? 'grid-cols-3';
+  if (!items || items.length < 3) return null;
 
-  if (variant === 'toss' && items.length >= 1) {
-    const [main, income, expense] = items;
+  const [net, income, expense] = items;
 
-    const mainColor =
-      main.color ??
-      (main.value > 0
-        ? 'text-success'
-        : main.value === 0
-        ? 'text-muted'
-        : 'text-error');
-
-    const incomeColor = income?.color ?? 'text-success';
-    const expenseColor = expense?.color ?? 'text-error';
-
-    return (
-      <div
-        className={cn(
-          'flex items-center justify-between px-component py-component bg-surface rounded-card shadow-sm',
-          onClick && 'cursor-pointer hover:bg-muted/5 transition-colors',
-          className
-        )}
-        onClick={onClick}
-      >
-        <div className='flex flex-col'>
-          <div className='text-label font-medium text-foreground mb-tight'>
-            {main.label}
-          </div>
-
-          <div className={cn('text-2xl font-bold', mainColor)}>
-            <CurrencyDisplay amount={main.value} />
-          </div>
-
-          {/* Income / Expense Inline 표시 */}
-          <div className='text-caption mt-tight flex gap-4'>
-            {income && (
-              <span className={cn(incomeColor)}>
-                {income.label} <CurrencyDisplay amount={income.value} />
-              </span>
-            )}
-            {expense && (
-              <span className={cn(expenseColor)}>
-                {expense.label} <CurrencyDisplay amount={expense.value} />
-              </span>
-            )}
-          </div>
-        </div>
-
-        <ChevronRightIcon className='h-5 w-5 text-muted' />
-      </div>
-    );
-  }
-
-  // flat variant
   return (
     <div
       className={cn(
-        'grid w-full gap-component px-component py-element bg-surface rounded-card',
-        columnClass,
+        'rounded-xl shadow bg-white p-5 space-y-3',
+        onClick && 'cursor-pointer hover:bg-muted/5 transition-colors',
         className
       )}
+      onClick={onClick}
     >
-      {items.map((item, index) => {
-        const computedColor =
-          item.color ??
-          (item.value > 0
-            ? 'text-success'
-            : item.value === 0
-            ? 'text-muted'
-            : 'text-error');
+      {/* 상단 아이콘 + 라벨 */}
+      <div className='flex items-center gap-3'>
+        <div className='bg-success/10 p-2 rounded-md'>
+          <TrendingUp className='w-6 h-6 text-success' />
+        </div>
+        <span className='text-lg font-medium text-foreground'>{net.label}</span>
+      </div>
 
-        return (
-          <div
-            key={`${item.label}-${index}`}
-            className='flex flex-col items-center text-center'
-          >
-            <CurrencyDisplay
-              amount={item.value}
-              className={cn('text-heading font-bold', computedColor)}
-            />
-            <span className='mt-tight text-caption text-muted'>
-              {item.label}
-            </span>
-          </div>
-        );
-      })}
+      {/* Net Total 금액 */}
+      <div className='text-3xl font-bold text-foreground'>
+        <CurrencyDisplay amount={net.value} />
+      </div>
+
+      <div className='border-t my-2' />
+
+      {/* 하단 Income / Expense */}
+      <div className='flex justify-between text-sm'>
+        <div className='flex items-center gap-2 text-success'>
+          <DollarSign className='w-5 h-5' />
+          <span>{income.label}</span>
+          <CurrencyDisplay amount={income.value} className='ml-1' />
+        </div>
+        <div className='flex items-center gap-2 text-error'>
+          <CreditCard className='w-5 h-5' />
+          <span>{expense.label}</span>
+          <CurrencyDisplay amount={expense.value} className='ml-1' />
+        </div>
+      </div>
     </div>
   );
 }

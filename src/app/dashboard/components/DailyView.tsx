@@ -4,16 +4,13 @@ import {
   TransactionDetailDTO,
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
-import SummaryBox from '@/components/stats/SummaryBox';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import Panel from '@/components/ui/panel/Panel';
 import TransactionGroup from '../../../components/transaction/TransactionGroup';
-import { SummaryItem } from '@/common/types';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 interface DailyViewProps {
   isLoading: boolean;
   data?: TransactionGroupSummaryDTO | null;
-  summaryItems: SummaryItem[];
   onTransactionClick?: (tx: TransactionDetailDTO) => void;
   onHeaderClick?: (date: string) => void;
 }
@@ -24,7 +21,6 @@ interface DailyViewProps {
 export default function DailyView({
   isLoading,
   data,
-  summaryItems,
   onTransactionClick,
   onHeaderClick,
 }: DailyViewProps) {
@@ -38,10 +34,6 @@ export default function DailyView({
 
   return (
     <>
-      <Panel>
-        <SummaryBox items={summaryItems} />
-      </Panel>
-
       <Panel>
         {data.items.map((group) => (
           <TransactionGroup

@@ -1,9 +1,9 @@
-// 📄 src/components/common/TransactionItem.tsx
 'use client';
 
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import { cn } from '@/lib/utils';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
+import SafeDynamicLucideIcon from '../ui/icon/SafeDynamicLucideIcon';
 
 interface Props {
   tx: TransactionDetailDTO;
@@ -27,62 +27,57 @@ export default function TransactionItem({
     onClick?.(tx);
   };
 
-  const renderAmount = () => {
-    if (isIncome) {
-      return <CurrencyDisplay amount={tx.amount} type='income' />;
-    }
-
-    if (isExpense) {
-      return <CurrencyDisplay amount={tx.amount} type='expense' />;
-    }
-
-    if (isTransfer) {
-      return <CurrencyDisplay amount={tx.amount} type='transfer' />;
-    }
-
-    return null;
-  };
+  const renderAmount = () => (
+    <CurrencyDisplay
+      amount={tx.amount}
+      type={tx.type}
+      className={cn(
+        'text-sm font-semibold',
+        isIncome && 'text-green-600',
+        isExpense && 'text-red-500',
+        isTransfer && 'text-muted-foreground'
+      )}
+    />
+  );
 
   const categoryLabel =
     isTransfer && showTransferLabel
       ? 'Transfer'
       : tx.category?.name ?? 'No category';
 
+  const accountLabel = tx.account?.name ?? '';
+
   return (
     <li
       onClick={handleClick}
       className={cn(
-        'px-element py-compact cursor-pointer transition-colors hover:bg-muted/10 dark:hover:bg-zinc-800',
+        'bg-white rounded-xl shadow-sm px-4 py-3 flex items-center justify-between transition-colors cursor-pointer',
         className
       )}
     >
-      <div className='grid grid-cols-12 gap-tight items-start'>
-        {/* 1. Account */}
-        <div className='col-span-2 text-caption text-muted font-medium truncate pt-[2px]'>
-          {tx.account?.name}
+      {/* Left: Icon + Title/Meta */}
+      <div className='flex items-center gap-3'>
+        {/* Icon Circle */}
+        <div className='w-9 h-9 rounded-full bg-muted flex items-center justify-center text-xl'>
+          <SafeDynamicLucideIcon
+            name={'wallet'}
+            className='w-4 h-4 text-muted-foreground'
+          />
         </div>
 
-        {/* 2. Note or Category */}
-        <div className='col-span-7'>
-          {tx.note ? (
-            <>
-              <div className='text-label font-medium text-foreground truncate'>
-                {tx.note}
-              </div>
-              <div className='text-caption text-muted truncate'>{categoryLabel}</div>
-            </>
-          ) : (
-            <div className='text-label font-medium text-foreground truncate'>
-              {categoryLabel}
-            </div>
-          )}
-        </div>
-
-        {/* 3. Amount */}
-        <div className='col-span-3 flex justify-end items-center text-label font-medium text-right'>
-          {renderAmount()}
+        {/* Label Info */}
+        <div className='flex flex-col'>
+          <div className='text-sm font-medium text-foreground truncate'>
+            {tx.note || categoryLabel}
+          </div>
+          <div className='text-xs text-muted-foreground truncate'>
+            {categoryLabel} · {accountLabel}
+          </div>
         </div>
       </div>
+
+      {/* Right: Amount */}
+      <div className='text-right'>{renderAmount()}</div>
     </li>
   );
 }
