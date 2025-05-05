@@ -1,15 +1,13 @@
+// src/components/common/TopNav.tsx
 'use client';
 
 import { useUIStore } from '@/stores/useUIStore';
-import UIIcon from '@/components/ui/UIIcon';
-import { Button } from '@/components/ui/button';
+import { ChevronLeft, Filter, Pencil, Plus, Search } from 'lucide-react';
 
 export default function TopNav() {
   const {
     title,
     center,
-    // leftSlot,
-    // rightSlot,
     onBack,
     onSearchClick,
     onFilterClick,
@@ -27,26 +25,22 @@ export default function TopNav() {
       {/* 왼쪽 */}
       <div className='flex items-center gap-element min-w-[80px] justify-start'>
         {showSearchButton && (
-          <Button
-            variant='ghost'
-            size='icon'
+          <button
             onClick={onSearchClick}
-            className='text-foreground'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
-            <UIIcon name='search' />
-          </Button>
+            <Search className='w-5 h-5' />
+          </button>
         )}
         {onBack && (
-          <Button
+          <button
             onClick={onBack}
-            variant='ghost'
-            className='flex items-center gap-tight px-compact py-compact text-foreground text-label'
+            className='flex items-center gap-tight p-compact rounded-input text-foreground hover:bg-muted/10 transition-colors text-label'
           >
-            <UIIcon name='chevronLeft' className='w-4 h-4' />
+            <ChevronLeft className='w-4 h-4' />
             <span className='whitespace-nowrap'>{pathName}</span>
-          </Button>
+          </button>
         )}
-        {/* {leftSlot} */}
       </div>
 
       {/* 중앙 타이틀 */}
@@ -63,36 +57,29 @@ export default function TopNav() {
       {/* 오른쪽 */}
       <div className='flex items-center gap-element min-w-[80px] justify-end'>
         {showFilterButton && (
-          <Button
-            variant='ghost'
-            size='icon'
+          <button
             onClick={onFilterClick}
-            className='text-foreground'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
-            <UIIcon name='filter' />
-          </Button>
+            <Filter className='w-5 h-5' />
+          </button>
         )}
         {onEdit && (
-          <Button
-            variant='ghost'
-            size='icon'
+          <button
             onClick={onEdit}
-            className='text-foreground'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
-            <UIIcon name='pencil' />
-          </Button>
+            <Pencil className='w-5 h-5' />
+          </button>
         )}
         {onAdd && (
-          <Button
-            variant='ghost'
-            size='icon'
+          <button
             onClick={onAdd}
-            className='text-foreground'
+            className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors'
           >
-            <UIIcon name='plus' />
-          </Button>
+            <Plus className='w-5 h-5' />
+          </button>
         )}
-        {/* {rightSlot} */}
       </div>
     </div>
   );

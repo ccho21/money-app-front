@@ -6,7 +6,6 @@ import {
   TransactionGroupSummaryDTO,
   TransactionGroupItemDTO,
 } from '@/modules/transaction/types';
-import { SummaryItem } from '@/common/types';
 
 import MonthlyItem from './MonthlyItem';
 
@@ -14,7 +13,6 @@ interface MonthlyViewProps {
   isLoading: boolean;
   data?: TransactionGroupSummaryDTO | null;
   openIndex: number | null;
-  summaryItems: SummaryItem[];
   weeklySummaryByMonth: { [key: string]: TransactionGroupItemDTO[] };
   onToggle: (index: number, summary: TransactionGroupItemDTO) => void;
 }

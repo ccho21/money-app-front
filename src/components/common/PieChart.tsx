@@ -26,7 +26,8 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
     outerRadius,
     rate,
     index,
-  }: any) => {
+  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any) => {
     const lineRadius = outerRadius + 15;
     const labelRadius = outerRadius + 35;
 
@@ -100,7 +101,10 @@ export default function CategoryPieChart({ data, height = 320 }: Props) {
 
       <div className='flex justify-center flex-wrap gap-component mt-component'>
         {data.map((item) => (
-          <div key={item.name} className='flex items-center gap-tight text-label'>
+          <div
+            key={item.name}
+            className='flex items-center gap-tight text-label'
+          >
             <span
               className='inline-block w-3 h-3 rounded-full'
               style={{ backgroundColor: item.color }}

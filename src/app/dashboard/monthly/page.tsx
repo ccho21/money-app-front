@@ -16,6 +16,9 @@ import type { DateFilterParams } from '@/common/types';
 
 import { useShallow } from 'zustand/shallow';
 import dynamic from 'next/dynamic';
+import SummaryBox from '@/components/stats/SummaryBox';
+import MonthNavigator from '@/components/common/MonthNavigator';
+import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
 const MonthlyView = dynamic(
   () => import('@/components/dashboard/MonthlyView'),
   {
@@ -57,7 +60,7 @@ export default function MonthlyPage() {
       endDate,
     };
     fetchTransactionSummary(params);
-  }, [getDateRangeKey, date]);
+  }, [getDateRangeKey, date, isInitialized]);
 
   // ✅ 주간 요약 fetch 핸들러
   const handleToggle = useCallback(
@@ -92,39 +95,21 @@ export default function MonthlyPage() {
     },
     [openIndex, weeklySummaryByMonth]
   );
-
-  const totalIncome = summary?.totalIncome ?? 0;
-  const totalExpense = summary?.totalExpense ?? 0;
-
-  const summaryItems = [
-    {
-      label: 'Income',
-      value: totalIncome,
-      color: totalIncome > 0 ? 'text-info' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Exp.',
-      value: totalExpense,
-      color: totalExpense > 0 ? 'text-error' : 'text-muted',
-      prefix: '$',
-    },
-    {
-      label: 'Total',
-      value: totalIncome - totalExpense,
-      color: 'text-foreground',
-      prefix: '$',
-    },
-  ];
+  const summaryItems = useSummaryBoxItems('monthly');
 
   return (
-    <MonthlyView
-      isLoading={isLoading}
-      data={summary}
-      summaryItems={summaryItems}
-      openIndex={openIndex}
-      weeklySummaryByMonth={weeklySummaryByMonth}
-      onToggle={handleToggle}
-    />
+    <>
+      <SummaryBox items={summaryItems} />
+      <div className='text-right py-3'>
+        <MonthNavigator />
+      </div>
+      <MonthlyView
+        isLoading={isLoading}
+        data={summary}
+        openIndex={openIndex}
+        weeklySummaryByMonth={weeklySummaryByMonth}
+        onToggle={handleToggle}
+      />
+    </>
   );
 }

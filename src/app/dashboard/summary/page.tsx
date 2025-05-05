@@ -18,6 +18,8 @@ import Divider from '@/components/ui/divider/Divider';
 import { useShallow } from 'zustand/shallow';
 import { fetchBudgetSummary } from '@/modules/budget/hooks';
 import BudgetCard from '@/components/common/BudgetCard';
+import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
+import SummaryBox from '@/components/stats/SummaryBox';
 
 export default function SummaryPage() {
   const router = useRouter();
@@ -67,6 +69,12 @@ export default function SummaryPage() {
     Promise.all([fetchAccountSummary(params), fetchBudgetSummary(params)]);
   }, [date, getDateRangeKey, isInitialized]);
 
+  const summaryItems = useSummaryBoxItems('summary');
+
+  const handleBudgetClick = () => {
+    router.push('/stats/budget');
+  };
+
   // ✅ 로딩 / 에러 / 비어있음 처리
   if (isAccountLoading || isBudgetLoading) {
     return <p className='text-center mt-10 text-muted'>Loading...</p>;
@@ -83,12 +91,10 @@ export default function SummaryPage() {
     return <EmptyMessage />;
   }
 
-  const handleBudgetClick = () => {
-    router.push('/stats/budget');
-  };
-
   return (
-    <div className='space-y-4'>
+    <>
+      <SummaryBox items={summaryItems} />
+
       <Panel>
         <AccountBox accounts={accountSummary.items} />
       </Panel>
@@ -107,6 +113,6 @@ export default function SummaryPage() {
           variant='summary'
         />
       </Panel>
-    </div>
+    </>
   );
 }

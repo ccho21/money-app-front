@@ -12,6 +12,9 @@ import type { TransactionDetailDTO } from '@/modules/transaction/types';
 
 import { useShallow } from 'zustand/shallow';
 import dynamic from 'next/dynamic';
+import SummaryBox from '@/components/stats/SummaryBox';
+import MonthNavigator from '@/components/common/MonthNavigator';
+import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
 const DailyView = dynamic(
   () => import('@/app/dashboard/components/DailyView'),
   {
@@ -62,12 +65,19 @@ export default function DailyPage() {
     router.push(`/transaction/new?date=${date}`);
   };
 
+  const summaryItems = useSummaryBoxItems('daily');
   return (
-    <DailyView
-      isLoading={isLoading}
-      data={summary}
-      onTransactionClick={handleTransactionClick}
-      onHeaderClick={handleHeaderClick}
-    />
+    <>
+      <SummaryBox items={summaryItems} />
+      <div className='text-right py-3'>
+        <MonthNavigator />
+      </div>
+      <DailyView
+        isLoading={isLoading}
+        data={summary}
+        onTransactionClick={handleTransactionClick}
+        onHeaderClick={handleHeaderClick}
+      />
+    </>
   );
 }

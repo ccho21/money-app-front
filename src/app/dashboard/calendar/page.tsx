@@ -22,6 +22,7 @@ import { DateFilterParams } from '@/common/types';
 import { useShallow } from 'zustand/shallow';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 import dynamic from 'next/dynamic';
+import DateNavigator from '@/components/common/DateNavigator';
 const TransactionDetailView = dynamic(
   () => import('@/app/dashboard/components/TransactionDetailView'),
   {
@@ -154,31 +155,34 @@ export default function CalendarPage() {
   }
 
   return (
-    <Panel>
-      <CalendarWithTransactions
-        date={date}
-        tileContentMap={calendarTileMap}
-        onSelectDate={handleDateClick}
-      />
-
-      {selectedDetail && (
-        <TransactionDetailView
-          open={selectedDetail.open}
-          date={selectedDetail.date}
-          transactionSummary={selectedDetail.summary}
-          onClose={() => setSelectedDetail(null)}
-          onPrev={() =>
-            setSelectedDetail((prev) =>
-              prev ? { ...prev, date: addDays(prev.date, -1) } : null
-            )
-          }
-          onNext={() =>
-            setSelectedDetail((prev) =>
-              prev ? { ...prev, date: addDays(prev.date, 1) } : null
-            )
-          }
+    <>
+      <DateNavigator />
+      <Panel>
+        <CalendarWithTransactions
+          date={date}
+          tileContentMap={calendarTileMap}
+          onSelectDate={handleDateClick}
         />
-      )}
-    </Panel>
+
+        {selectedDetail && (
+          <TransactionDetailView
+            open={selectedDetail.open}
+            date={selectedDetail.date}
+            transactionSummary={selectedDetail.summary}
+            onClose={() => setSelectedDetail(null)}
+            onPrev={() =>
+              setSelectedDetail((prev) =>
+                prev ? { ...prev, date: addDays(prev.date, -1) } : null
+              )
+            }
+            onNext={() =>
+              setSelectedDetail((prev) =>
+                prev ? { ...prev, date: addDays(prev.date, 1) } : null
+              )
+            }
+          />
+        )}
+      </Panel>
+    </>
   );
 }
