@@ -1,30 +1,37 @@
-// src/app/stats/budget/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { parseISO, startOfDay } from 'date-fns';
+import dynamic from 'next/dynamic';
 
 import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useUIStore } from '@/stores/useUIStore';
 
 import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
-
 import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
 import Panel from '@/components/ui/panel/Panel';
-import ComposedChart from '@/components/common/ComposedChart';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
 
+import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 import { useShallow } from 'zustand/shallow';
 
+// 💡 dynamic import
+const ComposedChart = dynamic(
+  () => import('@/components/common/ComposedChart'),
+  {
+    ssr: false,
+    loading: () => <div className='h-36 animate-pulse bg-muted rounded-md' />,
+  }
+);
+
 export default function StatsBudgetDetailPage() {
-  const { id: categoryId } = useParams();
   const router = useRouter();
+  const { id: categoryId } = useParams();
 
   const { groupBy, transactionType } = useFilterStore((s) => s.query);
   const { getDateRangeKey, setQuery } = useFilterStore();
@@ -37,35 +44,32 @@ export default function StatsBudgetDetailPage() {
       type: transactionType as CategoryType,
       groupBy,
     }),
-    [startDate, endDate, groupBy, transactionType]
+    [startDate, endDate, transactionType, groupBy]
   );
 
-  const {
-    budgetSummary,
-    budgetDetail,
-    isLoading,
-    setBudgetDetail,
-  } = useStatsStore(
-    useShallow((s) => ({
-      budgetSummary: s.budgetSummary,
-      budgetDetail: s.budgetDetail,
-      isLoading: s.isLoading,
-      setBudgetDetail: s.setBudgetDetail,
-    }))
-  );
+  const { budgetSummary, budgetDetail, isLoading, setBudgetDetail } =
+    useStatsStore(
+      useShallow((s) => ({
+        budgetSummary: s.budgetSummary,
+        budgetDetail: s.budgetDetail,
+        isLoading: s.isLoading,
+        setBudgetDetail: s.setBudgetDetail,
+      }))
+    );
 
-  const setTopNav = useUIStore((s) => s.setTopNav);
-  const resetTopNav = useUIStore((s) => s.resetTopNav);
+  useTopNavPreset({
+    title: 'Budget',
+    onBack: () => router.back(),
+  });
 
-  // fetch summary & detail
   useEffect(() => {
-    (async () => {
-      if (!categoryId) return;
+    if (!categoryId) return;
 
-      const data = await fetchBudgetSummary(String(categoryId), params);
-      const exists = data.items.find((d) => d.isCurrent);
+    const loadData = async () => {
+      const summary = await fetchBudgetSummary(String(categoryId), params);
+      const current = summary.items.find((item) => item.isCurrent);
 
-      if (exists?.income || exists?.expense) {
+      if (current?.income || current?.expense) {
         fetchBudgetDetail(String(categoryId), {
           ...params,
           groupBy: 'daily',
@@ -73,55 +77,46 @@ export default function StatsBudgetDetailPage() {
       } else {
         setBudgetDetail(null);
       }
-    })();
-  }, [categoryId, params]);
+    };
 
-  // top nav
-  useEffect(() => {
-    setTopNav({
-      title: 'Budget',
-      onBack: () => router.back(),
-    });
-    return () => resetTopNav();
-  }, [setTopNav, resetTopNav, budgetSummary, router]);
+    loadData();
+  }, [categoryId, params, setBudgetDetail]);
+
+  const currentSummary = useMemo(() => {
+    return budgetSummary?.items.find((item) => item.isCurrent) ?? null;
+  }, [budgetSummary]);
 
   const chartData = useMemo(() => {
-    if (!budgetSummary?.items) return [];
-    return budgetSummary.items.map((item) => ({
-      month: item.label,
-      startDate: item.rangeStart,
-      endDate: item.rangeEnd,
-      value: transactionType === 'expense' ? item.expense : item.income,
-      isCurrent: item.isCurrent,
-    }));
+    return (
+      budgetSummary?.items.map((item) => ({
+        month: item.label,
+        startDate: item.rangeStart,
+        endDate: item.rangeEnd,
+        value: transactionType === 'expense' ? item.expense : item.income,
+        isCurrent: item.isCurrent,
+      })) ?? []
+    );
   }, [budgetSummary, transactionType]);
 
   const summaryData = useMemo(() => {
-    if (!budgetSummary || !budgetSummary.items.length) {
-      return { budgetAmount: 0, expense: 0, income: 0, remaining: 0 };
-    }
+    const budgetAmount = currentSummary?.budgetAmount ?? 0;
+    const income = currentSummary?.income ?? 0;
+    const expense = currentSummary?.expense ?? 0;
 
-    const current = budgetSummary.items.find((item) => item.isCurrent);
-    if (!current) {
-      return { budgetAmount: 0, expense: 0, income: 0, remaining: 0 };
-    }
-
-    const budgetAmount = current.budgetAmount ?? 0;
     return {
       budgetAmount,
-      income: current.income,
-      expense: current.expense,
-      remaining: budgetAmount - current.expense,
+      income,
+      expense,
+      remaining: budgetAmount - expense,
+      isOver: budgetSummary?.summary?.isOver ?? false,
     };
-  }, [budgetSummary]);
+  }, [currentSummary, budgetSummary]);
 
-  if (isLoading) {
-    return <LoadingMessage />;
-  }
+  if (isLoading) return <LoadingMessage />;
 
   return (
     <div className='space-y-4'>
-      {/* Summary Section */}
+      {/* Summary */}
       {budgetSummary && (
         <Panel>
           <SummaryBox
@@ -139,16 +134,14 @@ export default function StatsBudgetDetailPage() {
               {
                 label: 'Remaining',
                 value: summaryData.remaining,
-                color: budgetSummary.summary?.isOver
-                  ? 'text-error'
-                  : 'text-foreground',
+                color: summaryData.isOver ? 'text-error' : 'text-foreground',
               },
             ]}
           />
         </Panel>
       )}
 
-      {/* Chart Section */}
+      {/* Chart */}
       {chartData.length > 0 && (
         <Panel>
           <div className='w-full h-36'>
@@ -162,8 +155,8 @@ export default function StatsBudgetDetailPage() {
         </Panel>
       )}
 
-      {/* Transaction List Section */}
-      {budgetDetail?.items.length ? (
+      {/* Breakdown */}
+      {budgetDetail?.items?.length ? (
         <Panel>
           <div className='space-y-4'>
             {budgetDetail.items.map((group, i) => (

@@ -1,7 +1,7 @@
 // src/app/stats/budget/page.tsx
 'use client';
 
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useStatsStore } from '@/modules/stats/store';
@@ -10,11 +10,17 @@ import { fetchBudgetStats } from '@/modules/stats/hooks';
 
 import type { CategoryType } from '@/modules/category/types';
 
-import BudgetView from './_components/BudgetView';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
 import { useShallow } from 'zustand/shallow';
 import { DateFilterParams } from '@/common/types';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
+import dynamic from 'next/dynamic';
+const BudgetView = dynamic(
+  () => import('@/app/stats/budget/_components/BudgetView'),
+  {
+    ssr: false,
+  }
+);
 
 export default function BudgetPage() {
   const router = useRouter();

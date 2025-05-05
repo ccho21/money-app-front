@@ -12,8 +12,14 @@ import { fetchNoteStats } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 import type { DateFilterParams } from '@/common/types';
 
-import NoteView from './_components/NoteView';
 import { useShallow } from 'zustand/shallow';
+import dynamic from 'next/dynamic';
+const NoteView = dynamic(
+  () => import('@/app/stats/note/_components/NoteView'),
+  {
+    ssr: false,
+  }
+);
 
 export default function StatsNotePage() {
   const router = useRouter();

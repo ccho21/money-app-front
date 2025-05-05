@@ -9,8 +9,14 @@ import { CategoryType } from '@/modules/category/types';
 import { DateFilterParams } from '@/common/types';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/shallow';
-import StatsView from './_components/StatsView';
+import dynamic from 'next/dynamic';
 
+const StatsView = dynamic(
+  () => import('@/app/stats/category/_components/StatsView'),
+  {
+    ssr: false,
+  }
+);
 export default function StatsCategoryPage() {
   const router = useRouter();
 

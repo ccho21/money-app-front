@@ -1,31 +1,37 @@
-// src/app/stats/category/[id]/page.tsx
 'use client';
 
 import { useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { parseISO, startOfDay } from 'date-fns';
+import dynamic from 'next/dynamic';
 
 import { useStatsStore } from '@/modules/stats/store';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { useUIStore } from '@/stores/useUIStore';
 
-import {
-  fetchCategoryDetail,
-  fetchCategorySummary,
-} from '@/modules/stats/hooks';
+import { fetchBudgetSummary, fetchBudgetDetail } from '@/modules/stats/hooks';
 import { CategoryType } from '@/modules/category/types';
 
 import SummaryBox from '@/components/stats/SummaryBox';
 import TransactionGroup from '@/components/transaction/TransactionGroup';
-import StatComposedChart from '@/components/common/ComposedChart';
 import Panel from '@/components/ui/panel/Panel';
 import EmptyMessage from '@/components/ui/empty/EmptyMessage';
-import { useShallow } from 'zustand/shallow';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
+import { useShallow } from 'zustand/shallow';
+import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 
-export default function StatsCategoryDetailPage() {
-  const router = useRouter();
+const ComposedChart = dynamic(
+  () => import('@/components/common/ComposedChart'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='h-36 bg-muted/20 animate-pulse rounded-md' />
+    ),
+  }
+);
+
+export default function StatsBudgetDetailPage() {
   const { id: categoryId } = useParams();
+  const router = useRouter();
 
   const { groupBy, transactionType } = useFilterStore((s) => s.query);
   const { getDateRangeKey, setQuery } = useFilterStore();
@@ -35,111 +41,98 @@ export default function StatsCategoryDetailPage() {
     () => ({
       startDate,
       endDate,
-      groupBy,
       type: transactionType as CategoryType,
+      groupBy,
     }),
     [startDate, endDate, groupBy, transactionType]
   );
 
-  const { categoryDetail, categorySummary, isLoading, setCategoryDetail } =
+  const { budgetSummary, budgetDetail, isLoading, setBudgetDetail } =
     useStatsStore(
       useShallow((s) => ({
-        categoryDetail: s.categoryDetail,
-        categorySummary: s.categorySummary,
+        budgetSummary: s.budgetSummary,
+        budgetDetail: s.budgetDetail,
         isLoading: s.isLoading,
-        setCategoryDetail: s.setCategoryDetail,
+        setBudgetDetail: s.setBudgetDetail,
       }))
     );
 
-  const setTopNav = useUIStore((s) => s.setTopNav);
-  const resetTopNav = useUIStore((s) => s.resetTopNav);
+  useTopNavPreset({
+    title: 'Budget',
+    onBack: () => router.back(),
+  });
 
-  // Fetch detail + summary
+  // fetch summary & detail
   useEffect(() => {
     if (!categoryId) return;
 
-    (async () => {
-      const data = await fetchCategorySummary(String(categoryId), params);
+    const fetchData = async () => {
+      const data = await fetchBudgetSummary(String(categoryId), params);
+      const exists = data.items.find((d) => d.isCurrent);
 
-      const exists = data.items.find(
-        (d) => d.isCurrent && (d.income > 0 || d.expense > 0)
-      );
-      if (exists) {
-        fetchCategoryDetail(String(categoryId), {
+      if (exists?.income || exists?.expense) {
+        fetchBudgetDetail(String(categoryId), {
           ...params,
           groupBy: 'daily',
         });
       } else {
-        setCategoryDetail(null);
+        setBudgetDetail(null);
       }
-    })();
-  }, [categoryId, params]);
+    };
 
-  // Set top nav title
-  useEffect(() => {
-    setTopNav({
-      title: 'Category',
-      onBack: () => router.back(),
-    });
-    return () => resetTopNav();
-  }, [setTopNav, resetTopNav, categorySummary, router]);
+    fetchData();
+  }, [categoryId, params, setBudgetDetail]);
 
   const chartData = useMemo(() => {
-    if (!categorySummary || !categorySummary.items.length) return [];
-    return categorySummary.items.map((item) => ({
+    if (!budgetSummary?.items) return [];
+    return budgetSummary.items.map((item) => ({
       month: item.label,
       startDate: item.rangeStart,
       endDate: item.rangeEnd,
       value: transactionType === 'expense' ? item.expense : item.income,
       isCurrent: item.isCurrent,
     }));
-  }, [categorySummary, transactionType]);
+  }, [budgetSummary, transactionType]);
 
   const summaryData = useMemo(() => {
-    if (!categorySummary || !categorySummary.items.length) {
-      return { income: 0, expense: 0, total: 0 };
-    }
+    const current = budgetSummary?.items.find((item) => item.isCurrent);
+    const budgetAmount = current?.budgetAmount ?? 0;
+    const income = current?.income ?? 0;
+    const expense = current?.expense ?? 0;
 
-    const current = categorySummary.items.find((item) => item.isCurrent);
-    if (!current) {
-      return { income: 0, expense: 0, total: 0 };
-    }
     return {
-      income: current.income,
-      expense: current.expense,
-      total: current.income - current.expense,
+      budgetAmount,
+      income,
+      expense,
+      remaining: budgetAmount - expense,
     };
-  }, [categorySummary]);
+  }, [budgetSummary]);
 
-  const handleDateClick = (startDate: string) => {
-    setQuery({ date: startOfDay(parseISO(startDate)) });
-  };
-
-  if (isLoading) {
-    return <LoadingMessage />;
-  }
+  if (isLoading) return <LoadingMessage />;
 
   return (
     <div className='space-y-4'>
-      {/* Summary section */}
-      {categorySummary && (
+      {/* Summary */}
+      {budgetSummary && (
         <Panel>
           <SummaryBox
             items={[
               {
-                label: 'Income',
-                value: summaryData.income,
-                color: summaryData.income > 0 ? 'text-primary' : 'text-muted',
+                label: 'Budget',
+                value: summaryData.budgetAmount,
+                color: 'text-primary',
               },
               {
                 label: 'Exp.',
                 value: summaryData.expense,
-                color: summaryData.expense > 0 ? 'text-error' : 'text-muted',
+                color: 'text-error',
               },
               {
-                label: 'Total',
-                value: summaryData.income - summaryData.expense,
-                color: 'text-foreground',
+                label: 'Remaining',
+                value: summaryData.remaining,
+                color: budgetSummary.summary?.isOver
+                  ? 'text-error'
+                  : 'text-foreground',
               },
             ]}
           />
@@ -148,26 +141,35 @@ export default function StatsCategoryDetailPage() {
 
       {/* Chart */}
       {chartData.length > 0 && (
-        <div>
-          <StatComposedChart data={chartData} onSelect={handleDateClick} />
-        </div>
+        <Panel>
+          <div className='w-full h-36'>
+            <ComposedChart
+              data={chartData}
+              onSelect={(startDate) =>
+                setQuery({ date: startOfDay(parseISO(startDate)) })
+              }
+            />
+          </div>
+        </Panel>
       )}
 
-      {/* Transaction breakdown */}
-      {categoryDetail?.items?.length ? (
-        <div>
-          {categoryDetail.items.map((group, i) => (
-            <TransactionGroup
-              key={group.label + i}
-              label={group.label}
-              rangeStart={group.rangeStart}
-              rangeEnd={group.rangeEnd}
-              groupIncome={group.groupIncome}
-              groupExpense={group.groupExpense}
-              group={group}
-            />
-          ))}
-        </div>
+      {/* Breakdown */}
+      {budgetDetail?.items.length ? (
+        <Panel>
+          <div className='space-y-4'>
+            {budgetDetail.items.map((group, i) => (
+              <TransactionGroup
+                key={group.label + i}
+                label={group.label}
+                rangeStart={group.rangeStart}
+                rangeEnd={group.rangeEnd}
+                groupIncome={group.groupIncome}
+                groupExpense={group.groupExpense}
+                group={group}
+              />
+            ))}
+          </div>
+        </Panel>
       ) : (
         <EmptyMessage />
       )}
