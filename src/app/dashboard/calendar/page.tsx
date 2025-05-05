@@ -16,13 +16,18 @@ import type {
 } from '@/modules/transaction/types';
 
 import CalendarWithTransactions from '../components/CalendarWithTransactions';
-import TransactionDetailView from '../components/TransactionDetailView';
 import Panel from '@/components/ui/panel/Panel';
 import CurrencyDisplay from '@/components/ui/currency/CurrencyDisplay';
 import { DateFilterParams } from '@/common/types';
 import { useShallow } from 'zustand/shallow';
 import LoadingMessage from '@/components/ui/loading-message/LoadingMessage';
-
+import dynamic from 'next/dynamic';
+const TransactionDetailView = dynamic(
+  () => import('@/app/dashboard/components/TransactionDetailView'),
+  {
+    ssr: false,
+  }
+);
 export default function CalendarPage() {
   const { calendar, summary, isLoading, setCalendar, setSummary, setLoading } =
     useTransactionStore(
@@ -64,7 +69,7 @@ export default function CalendarPage() {
       endDate,
     };
     fetchTransactionCalendar(params);
-  }, [date, getDateRangeKey, setCalendar]);
+  }, [date, getDateRangeKey, isInitialized, setCalendar]);
 
   // ✅ tile 렌더링 구성
   const calendarTileMap = useMemo(() => {

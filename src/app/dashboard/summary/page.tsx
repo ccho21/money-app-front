@@ -79,8 +79,6 @@ export default function SummaryPage() {
       </p>
     );
   }
-  console.log('### budgetSummary', budgetSummary);
-  console.log('### accountSummary', accountSummary);
   if (!budgetSummary || !accountSummary) {
     return <EmptyMessage />;
   }

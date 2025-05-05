@@ -1,26 +1,47 @@
-'use client';
+// src/components/ui/UIIcon.tsx
+import {
+  Calendar,
+  Plus,
+  ShoppingCart,
+  Trash,
+  Wallet,
+  Search,
+  ChevronsLeftRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Pencil,
+  Filter,
+  CalendarDays,
+  type LucideProps,
+} from 'lucide-react';
+import clsx from 'clsx';
 
-import dynamic from 'next/dynamic';
-import dynamicIconImports from 'lucide-react/dynamicIconImports';
-import type { LucideProps } from 'lucide-react';
-import { cn } from '@/lib/utils';
+// 안전하게 enum-like 구조로 제한
+const iconMap = {
+  calendar: Calendar,
+  wallet: Wallet,
+  cart: ShoppingCart,
+  plus: Plus,
+  trash: Trash,
+  search: Search,
+  chevrons: ChevronsLeftRight,
+  chevronLeft: ChevronsLeft,
+  chevronRight: ChevronsRight,
+  pencil: Pencil,
+  filter: Filter,
+  calendarDays: CalendarDays,
+} as const;
 
-type IconName = keyof typeof dynamicIconImports;
+type IconName = keyof typeof iconMap;
 
-function normalizeIconName(name: string): IconName {
-  return name.trim().toLowerCase().replace(/\s+/g, '-') as IconName;
+interface UIIconProps extends LucideProps {
+  name: IconName;
+  className?: string;
 }
 
-export default function UIIcon({
-  name,
-  className,
-  ...props
-}: {
-  name: string;
-  className?: string;
-} & LucideProps) {
-  const normalized = normalizeIconName(name);
-  const DynamicIcon = dynamic(dynamicIconImports[normalized], { ssr: false });
+export default function UIIcon({ name, className, ...props }: UIIconProps) {
+  const Icon = iconMap[name];
+  if (!Icon) return null;
 
-  return <DynamicIcon className={cn('w-5 h-5', className)} {...props} />;
+  return <Icon className={clsx('w-5 h-5', className)} {...props} />;
 }

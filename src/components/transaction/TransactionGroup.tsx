@@ -6,7 +6,7 @@ import {
   TransactionGroupItemDTO,
 } from '@/modules/transaction/types';
 import { getDayAndWeekdayFromUTC } from '@/lib/date.util';
-import { CalendarDaysIcon } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import TransactionItem from './TransactionItem';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
 import Badge from '../ui/badge/Badge';
@@ -60,7 +60,7 @@ export default function TransactionGroup({
           )}
         >
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-            <CalendarDaysIcon size={16} className='text-muted-foreground' />
+            <CalendarDays size={16} className='text-muted-foreground' />
 
             <span className='font-medium text-foreground'>
               {isDetailed ? day : label}

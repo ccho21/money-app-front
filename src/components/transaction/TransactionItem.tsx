@@ -3,8 +3,8 @@
 import { TransactionDetailDTO } from '@/modules/transaction/types';
 import { cn } from '@/lib/utils';
 import CurrencyDisplay from '../ui/currency/CurrencyDisplay';
-import SafeDynamicLucideIcon from '../ui/icon/SafeDynamicLucideIcon';
 import { Card, CardContent } from '@/components/ui/card';
+import UIIcon from '../ui/UIIcon';
 
 interface Props {
   tx: TransactionDetailDTO;
@@ -57,10 +57,7 @@ export default function TransactionItem({
         {/* Left: Icon + Label */}
         <div className='flex items-center gap-element min-w-0'>
           <div className='w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0'>
-            <SafeDynamicLucideIcon
-              name='wallet'
-              className='w-4 h-4 text-foreground'
-            />
+            <UIIcon name='wallet'></UIIcon>
           </div>
           <div className='flex flex-col min-w-0'>
             <div className='text-sm font-medium text-foreground truncate'>

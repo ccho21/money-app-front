@@ -10,8 +10,14 @@ import { fetchTransactionSummary } from '@/modules/transaction/hooks';
 import type { DateFilterParams } from '@/common/types';
 import type { TransactionDetailDTO } from '@/modules/transaction/types';
 
-import DailyView from '@/app/dashboard/components/DailyView';
 import { useShallow } from 'zustand/shallow';
+import dynamic from 'next/dynamic';
+const DailyView = dynamic(
+  () => import('@/app/dashboard/components/DailyView'),
+  {
+    ssr: false,
+  }
+);
 
 export default function DailyPage() {
   const router = useRouter();

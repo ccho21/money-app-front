@@ -14,8 +14,14 @@ import {
 import type { TransactionGroupItemDTO } from '@/modules/transaction/types';
 import type { DateFilterParams } from '@/common/types';
 
-import MonthlyView from '@/components/dashboard/MonthlyView';
 import { useShallow } from 'zustand/shallow';
+import dynamic from 'next/dynamic';
+const MonthlyView = dynamic(
+  () => import('@/components/dashboard/MonthlyView'),
+  {
+    ssr: false,
+  }
+);
 
 export default function MonthlyPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);

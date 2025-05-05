@@ -1,8 +1,5 @@
-import {
-  BaseGroupItemDTO,
-  BaseListSummaryResponseDTO,
-} from '../../common/types';
-import { TransactionDetailDTO } from '../transaction/types';
+import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
+// ✅ 여기서 transaction/types 안 가져오게 수정
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';
 export type FinancialType = 'ASSET' | 'LIABILITY';
@@ -54,26 +51,18 @@ export interface BaseAccountRequestDTO {
   autoPayment?: boolean;
 }
 
-export interface AccountCreateRequestDTO extends BaseAccountRequestDTO {
-  type: AccountType;
-  name: string;
-  color?: string;
-  balance: number;
-  description?: string;
-  settlementDate?: number;
-  paymentDate?: number;
-  autoPayment?: boolean;
-}
+export type AccountCreateRequestDTO = BaseAccountRequestDTO;
 
 export type AccountUpdateRequestDTO = Partial<AccountCreateRequestDTO>;
 
+// ✅ TransactionDetailDTO 대신 계좌 기반 정보만 유지
 export interface AccountTransactionItemDTO extends BaseGroupItemDTO {
   accountId: string;
   accountName: string;
   balance: number;
   totalIncome: number;
   totalExpense: number;
-  transactions?: TransactionDetailDTO[];
+  transactions?: unknown[]; // 또는 Omit<TransactionDetailDTO, 'account'>[] 를 직접 선언
 }
 
 export type AccountTransactionSummaryDTO =

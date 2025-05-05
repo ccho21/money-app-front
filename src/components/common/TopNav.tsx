@@ -8,8 +8,8 @@ export default function TopNav() {
   const {
     title,
     center,
-    leftSlot,
-    rightSlot,
+    // leftSlot,
+    // rightSlot,
     onBack,
     onSearchClick,
     onFilterClick,
@@ -42,11 +42,11 @@ export default function TopNav() {
             variant='ghost'
             className='flex items-center gap-tight px-compact py-compact text-foreground text-label'
           >
-            <UIIcon name='chevron-left' className='w-4 h-4' />
+            <UIIcon name='chevronLeft' className='w-4 h-4' />
             <span className='whitespace-nowrap'>{pathName}</span>
           </Button>
         )}
-        {leftSlot}
+        {/* {leftSlot} */}
       </div>
 
       {/* 중앙 타이틀 */}
@@ -92,7 +92,7 @@ export default function TopNav() {
             <UIIcon name='plus' />
           </Button>
         )}
-        {rightSlot}
+        {/* {rightSlot} */}
       </div>
     </div>
   );

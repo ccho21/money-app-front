@@ -7,13 +7,17 @@ import clsx from 'clsx';
 import { usePanelStore } from '@/stores/usePanelStore';
 
 // 패널 컴포넌트 import
-import ThemeSettingPanel from './panels/ThemeSettingPanel';
 import MonthlyStartDatePanel from './panels/MonthlyStartDatePanel';
 import MainCurrencyPanel from './panels/MainCurrencyPanel';
 import SubCurrencyPanel from './panels/SubCurrencyPanel';
 import BackupResetPanel from './panels/BackupResetPanel';
 import AccountGroupPanel from './panels/AccountGroupPanel';
 import SlideInPanel from '../../../components/ui/panel/SlideInPanel';
+import dynamic from 'next/dynamic';
+
+const ThemeSettingPanel = dynamic(() => import('./panels/ThemeSettingPanel'), {
+  ssr: false,
+});
 
 export default function SlideInPanelRenderer() {
   const { currentPanel, closePanel } = usePanelStore();

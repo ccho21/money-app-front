@@ -1,6 +1,27 @@
+// src/lib/layout.config.ts
 import { LayoutOptions } from '@/stores/useUIStore';
 
 export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
+  if (matchPath(pathname, '/dashboard/daily')) {
+    return {
+      hideTopNav: false,
+      hideTabMenu: false,
+      hideDateNav: true,
+      hideMonthNav: false,
+      hideSummaryBox: false,
+    };
+  }
+
+  if (matchPath(pathname, '/dashboard/calendar')) {
+    return {
+      hideTopNav: false,
+      hideTabMenu: false,
+      hideDateNav: false,
+      hideMonthNav: true,
+      hideSummaryBox: true,
+    };
+  }
+
   if (matchPath(pathname, '/stats/category/[categoryId]')) {
     return {
       hideTopNav: false,

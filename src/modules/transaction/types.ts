@@ -1,6 +1,11 @@
 import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/common/types';
 import { CategoryDetailDTO } from '../category/types';
-import { AccountDetailDTO } from '../account/types';
+
+// ✅ 여기서 순환을 피하기 위해 Account 타입은 최소화
+export interface TransactionAccountDTO {
+  id: string;
+  name: string;
+}
 
 export type TransactionType = 'income' | 'expense' | 'transfer';
 
@@ -28,8 +33,10 @@ export interface TransactionDetailDTO {
   createdAt: string;
   note?: string | null;
   description?: string | null;
-  account: AccountDetailDTO;
-  toAccount?: AccountDetailDTO | null;
+
+  // ✅ 순환 참조 피하기 위해 최소 필드만 가진 DTO 사용
+  account: TransactionAccountDTO;
+  toAccount?: TransactionAccountDTO | null;
   category?: CategoryDetailDTO | null;
   dueDate?: string | null;
   paidAt?: string | null;

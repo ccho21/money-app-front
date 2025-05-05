@@ -1,18 +1,19 @@
-import { ReactNode } from 'react';
 import { create } from 'zustand';
 
 export interface LayoutOptions {
   hideTopNav?: boolean;
   hideDateNav?: boolean;
+  hideMonthNav?: boolean;
   hideTabMenu?: boolean;
   hideStatsHeader?: boolean;
+  hideSummaryBox?: boolean;
 }
 
 interface TopNavConfig {
   title: string;
   center?: boolean;
-  leftSlot?: ReactNode;
-  rightSlot?: ReactNode;
+  // leftSlot?: ReactNode;
+  // rightSlot?: ReactNode;
   onBack?: () => void;
   onSearchClick?: () => void;
   onFilterClick?: () => void;
