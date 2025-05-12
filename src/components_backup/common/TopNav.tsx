@@ -1,12 +1,8 @@
 'use client';
 
 import { useUIStore } from '@/stores/useUIStore';
-import { ChevronLeft, Filter, Pencil, Plus, Search } from 'lucide-react';
-import { SidebarTrigger } from '../ui/sidebar';
-import { CustomTrigger } from '../custom-trigger';
+import { Filter, Pencil, Plus, Search } from 'lucide-react';
 import { Button } from '../ui/button';
-import FilterSheet from '@/components/common/FilterSheet';
-import { useState } from 'react';
 
 export default function TopNav() {
   const {
@@ -21,8 +17,6 @@ export default function TopNav() {
     onAdd,
   } = useUIStore((s) => s.topNav);
 
-  const prevPath = useUIStore((s) => s.previousPath);
-  const pathName = prevPath?.split('/')[1];
   return (
     <div className='relative flex items-center justify-between px-component py-element bg-card border-b border-border'>
       {/* 왼쪽 */}

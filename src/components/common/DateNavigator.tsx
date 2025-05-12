@@ -79,7 +79,12 @@ export default function DateNavigator({
   );
 
   return (
-    <div className={cn('flex items-center px-component py-tight bg-background', className)}>
+    <div
+      className={cn(
+        'flex items-end px-component py-tight bg-background',
+        className
+      )}
+    >
       {variant === 'dropdown' && groupBy === 'monthly' ? (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -103,7 +108,11 @@ export default function DateNavigator({
         </Popover>
       ) : (
         <div className='flex items-center justify-between w-full'>
-          <Button variant='ghost' onClick={() => handleChange(-1)} aria-label='Previous'>
+          <Button
+            variant='ghost'
+            onClick={() => handleChange(-1)}
+            aria-label='Previous'
+          >
             <ChevronLeft className='w-5 h-5' />
           </Button>
 
@@ -111,7 +120,11 @@ export default function DateNavigator({
             {label}
           </span>
 
-          <Button variant='ghost' onClick={() => handleChange(1)} aria-label='Next'>
+          <Button
+            variant='ghost'
+            onClick={() => handleChange(1)}
+            aria-label='Next'
+          >
             <ChevronRight className='w-5 h-5' />
           </Button>
         </div>

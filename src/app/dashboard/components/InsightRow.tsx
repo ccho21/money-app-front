@@ -5,7 +5,7 @@ interface InsightRowProps {
   label: string;
   value: string;
   subtext?: string;
-  variant?: 'default' | 'alert' | 'neutral';
+  variant?: 'default' | 'destructive' | 'neutral';
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export function InsightRow({
     <div
       className={cn(
         'flex items-start justify-between rounded-md px-3 py-2 text-sm',
-        variant === 'alert'
+        variant === 'destructive'
           ? 'bg-red-50 text-red-800'
           : 'bg-muted text-muted-foreground',
         className

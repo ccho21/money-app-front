@@ -1,8 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { format } from 'date-fns';
+import { TypographyH4 } from '@/components/ui/typography';
 
 interface RecentTransaction {
   id: string;
@@ -66,11 +67,13 @@ export default function RecentTransactionList({
   className,
 }: RecentTransactionListProps) {
   return (
-    <Card className={cn('w-full', className)}>
-      <CardHeader>
-        <CardTitle>Recent Transactions</CardTitle>
+    <Card
+      className={cn('w-full shadow-none mb-component border-none ', className)}
+    >
+      <CardHeader className='px-compact'>
+        <TypographyH4> Recent transactions</TypographyH4>
       </CardHeader>
-      <CardContent className='space-y-3'>
+      <CardContent className='space-y-3 px-compact'>
         {isLoading && (
           <div className='space-y-2'>
             <Skeleton className='h-6 w-full' />

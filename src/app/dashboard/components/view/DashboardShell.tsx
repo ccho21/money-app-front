@@ -35,20 +35,11 @@ export default function DashboardShell({
 
   return (
     <div className='min-h-screen pb-[10vh]'>
-      <div className='mb-component'>
-        <TopNav />
-      </div>
+      <TopNav />
       <DateNavigator className='justify-end' />
 
       <div className=''>{children}</div>
       <BottomTabBar />
-      {/* <Button
-        size='sm'
-        className='fixed bottom-[10vh] right-4 w-10 h-10'
-        onClick={() => router.push('/transaction/new')}
-      >
-        <Plus />
-      </Button> */}
     </div>
   );
 }

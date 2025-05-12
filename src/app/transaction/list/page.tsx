@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import SummaryBox from '@/components/common/SummaryBox';
 import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
 import DateNavigator from '@/components/common/DateNavigator';
+import { TypographyLarge } from '@/components/ui/typography';
 const TransactionListView = dynamic(
   () => import('@/app/transaction/components/view/TransactionListView'),
   {
@@ -70,8 +71,11 @@ export default function ListPage() {
   return (
     <>
       <div className='mx-compact bg-background'>
+        <div>
+          <TypographyLarge>Date Range</TypographyLarge>
+          <DateNavigator />
+        </div>
         <SummaryBox items={summaryItems} />
-        <DateNavigator />
       </div>
 
       <TransactionListView
