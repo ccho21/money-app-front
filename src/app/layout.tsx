@@ -1,5 +1,6 @@
+// src/app/layout.tsx
 import { Geist, Geist_Mono } from 'next/font/google';
-import ClientShell from '@/components/shell/ClientShell';
+import ClientShell from '@/components_backup/shell/ClientShell';
 import '@/app/globals.css';
 import '@/styles/theme.css';
 
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-foreground dark:bg-background dark:text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiase bg-background text-foreground dark:bg-background dark:text-foreground`}
       >
         <ClientShell>{children}</ClientShell>
       </body>

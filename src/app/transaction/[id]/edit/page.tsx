@@ -7,13 +7,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useTransactionFormStore } from '@/modules/transaction/formStore';
 import { useTransactionStore } from '@/modules/transaction/store';
 
-import IncomeForm from '../../_components/IncomeForm';
-import TransferForm from '../../_components/TransferForm';
-import ExpenseForm from '../../_components/ExpenseForm';
-
 import { fetchAccounts } from '@/modules/account/hooks';
 import { fetchTransactionById } from '@/modules/transaction/hooks';
 import { fetchCategories } from '@/modules/category/hooks';
+import TransferForm from '../../components/forms/TransferForm';
+import ExpenseForm from '../../components/forms/ExpenseForm';
+import IncomeForm from '../../components/forms/IncomeForm';
 
 export default function TransactionEditPage() {
   const { id: transactionId } = useParams();
@@ -52,7 +51,7 @@ export default function TransactionEditPage() {
         init(preset);
       } catch (err) {
         alert('Failed to load transaction. ' + err);
-        router.push('/dashboard/daily');
+        router.push('');
       }
     };
 

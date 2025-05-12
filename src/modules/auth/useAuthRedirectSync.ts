@@ -24,9 +24,10 @@ export default function useAuthRedirectSync() {
         await fetchUser(); // ✅ 서비스 호출 (store 내부에서 상태 변경 처리함)
       } catch (err) {
         console.error('❌ 세션 복원 실패:', err);
-        const isPublic = pathname === '/signin' || pathname === '/signup';
+        const isPublic =
+          pathname === '/auth/signin' || pathname === '/auth/signup';
         if (!isPublic) {
-          router.replace('/signin');
+          router.replace('/auth/signin');
         }
       } finally {
         setLoading(false);

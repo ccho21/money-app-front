@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
   // ✅ access_token이 없으면 signin 페이지로 리디렉트
   if (!accessToken) {
-    const signinUrl = new URL('/signin', request.url);
+    const signinUrl = new URL('/auth/signin', request.url);
     return NextResponse.redirect(signinUrl);
   }
 

@@ -2,9 +2,8 @@
 import { LayoutOptions } from '@/stores/useUIStore';
 
 export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
-  if (matchPath(pathname, '/dashboard/daily')) {
+  if (matchPath(pathname, '')) {
     return {
-      hideTopNav: false,
       hideTabMenu: false,
       hideDateNav: true,
       hideMonthNav: false,
@@ -14,7 +13,6 @@ export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
 
   if (matchPath(pathname, '/dashboard/calendar')) {
     return {
-      hideTopNav: false,
       hideTabMenu: false,
       hideDateNav: false,
       hideMonthNav: true,
@@ -24,7 +22,6 @@ export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
 
   if (matchPath(pathname, '/stats/category/[categoryId]')) {
     return {
-      hideTopNav: false,
       hideDateNav: false,
       hideStatsHeader: true,
       hideTabMenu: true,
@@ -33,7 +30,6 @@ export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
 
   if (matchPath(pathname, '/stats/budget/[categoryId]')) {
     return {
-      hideTopNav: false,
       hideDateNav: false,
       hideStatsHeader: true,
       hideTabMenu: true,
@@ -42,7 +38,6 @@ export const getDefaultLayoutOptions = (pathname: string): LayoutOptions => {
 
   // Default fallback
   return {
-    hideTopNav: true,
     hideDateNav: false,
     hideStatsHeader: false,
     hideTabMenu: false,

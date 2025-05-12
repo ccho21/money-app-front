@@ -1,0 +1,37 @@
+// src/app/account/layout.tsx
+'use client';
+
+import { ReactNode, useEffect } from 'react';
+import BottomTabBar from '@/components_backup/common/BottomNav';
+import TopNav from '@/components_backup/common/TopNav';
+import { useAccountFormStore } from '@/modules/account/formStore';
+import { useRouter } from 'next/navigation';
+import { useUIStore } from '@/stores/useUIStore';
+
+export default function AccountLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const { reset } = useAccountFormStore();
+  const prevPath = useUIStore((s) => s.previousPath) || '/account/new';
+
+  useEffect(() => {
+    useUIStore.getState().setTopNav({
+      title: 'Accounts.',
+      onBack: () => router.back(),
+      onAdd: () => {
+        reset();
+        router.push(prevPath);
+      },
+    });
+
+    return () => {
+      useUIStore.getState().resetTopNav();
+    };
+  }, [router, reset]);
+
+  return (
+    <div className='min-h-screen flex flex-col h-full text-foreground pb-[10vh]'>
+      <TopNav />
+      <main className='flex-1 overflow-y-auto'>{children}</main>
+    </div>
+  );
+}

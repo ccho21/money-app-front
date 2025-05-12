@@ -1,19 +1,35 @@
-// src/components/common/DateNavigator.tsx
 'use client';
 
-import { useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useFilterStore } from '@/stores/useFilterStore';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getDateLabelByRange, getNextDateByRange } from '@/lib/date.util';
+import { useFilterStore } from '@/stores/useFilterStore';
 import { useShallow } from 'zustand/shallow';
+import { startOfWeek, endOfWeek, format } from 'date-fns';
+
+import { getNextDateByRange } from '@/lib/date.util';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components_backup/ui/popover';
+import { Button } from '@/components_backup/ui/button';
+import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { MonthPicker } from '@/components_backup/ui/month-picker/MonthPicker';
+import { cn } from '@/lib/utils';
+
+type Variant = 'dropdown' | 'pager';
 
 interface DateNavigatorProps {
-  withTransactionType?: boolean;
+  variant?: Variant;
+  className?: string;
 }
 
-function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
+export default function DateNavigator({
+  variant = 'pager',
+  className,
+}: DateNavigatorProps) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const { date, groupBy } = useFilterStore(
     useShallow((s) => ({
@@ -25,51 +41,81 @@ function DateNavigatorBase({ withTransactionType }: DateNavigatorProps) {
   const setQuery = useFilterStore((s) => s.setQuery);
   const getQueryString = useFilterStore((s) => s.getQueryString);
 
+  const parsedDate = useMemo(() => {
+    return date ? new Date(date) : new Date();
+  }, [date]);
+
+  const label = useMemo(() => {
+    switch (groupBy) {
+      case 'daily':
+        return format(parsedDate, 'yyyy-MM-dd');
+      case 'weekly': {
+        const start = startOfWeek(parsedDate, { weekStartsOn: 1 });
+        const end = endOfWeek(parsedDate, { weekStartsOn: 1 });
+        return `${format(start, 'yyyy-MM-dd')} ~ ${format(end, 'yyyy-MM-dd')}`;
+      }
+      case 'monthly':
+      default:
+        return format(parsedDate, 'yyyy-MMM');
+    }
+  }, [parsedDate, groupBy]);
+
   const handleChange = useCallback(
     (diff: number) => {
       const newDate = getNextDateByRange(date, diff, groupBy);
       setQuery({ date: newDate });
-
-      const syncedURL = getQueryString(withTransactionType);
-      router.replace(syncedURL);
+      router.replace(getQueryString(true));
     },
-    [date, groupBy, setQuery, getQueryString, router, withTransactionType]
+    [date, groupBy, setQuery, getQueryString, router]
   );
 
-  const label = useFilterStore((s) =>
-    getDateLabelByRange(s.query.date, s.query.groupBy)
+  const handleMonthSelect = useCallback(
+    (selected: Date) => {
+      setQuery({ date: selected });
+      router.replace(getQueryString(true));
+      setOpen(false);
+    },
+    [setQuery, getQueryString, router]
   );
 
   return (
-    <div className='flex items-center justify-between px-component py-tight text-body font-normal'>
-      {/* 왼쪽 이동 */}
-      <div className='flex items-center gap-element'>
-        <button
-          onClick={() => handleChange(-1)}
-          className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
-          aria-label='Previous'
-        >
-          <ChevronLeft className='w-5 h-5' />
-        </button>
-      </div>
+    <div className={cn('flex items-center px-component py-tight bg-background', className)}>
+      {variant === 'dropdown' && groupBy === 'monthly' ? (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant='outline' className='gap-1 px-3 py-1.5'>
+              {label}
+              <ChevronDown className='w-4 h-4' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align='center' className='w-auto p-0'>
+            <MonthPicker
+              selectedMonth={parsedDate}
+              onMonthSelect={handleMonthSelect}
+              onYearBackward={() => handleChange(-12)}
+              onYearForward={() => handleChange(12)}
+              variant={{
+                calendar: { main: 'ghost', selected: 'default' },
+                chevrons: 'outline',
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      ) : (
+        <div className='flex items-center justify-between w-full'>
+          <Button variant='ghost' onClick={() => handleChange(-1)} aria-label='Previous'>
+            <ChevronLeft className='w-5 h-5' />
+          </Button>
 
-      {/* 중앙 라벨 */}
-      <span className='text-label font-semibold text-foreground select-none'>
-        {label}
-      </span>
+          <span className='text-body font-semibold text-foreground select-none'>
+            {label}
+          </span>
 
-      {/* 오른쪽 이동 */}
-      <div className='flex items-center gap-element'>
-        <button
-          onClick={() => handleChange(1)}
-          className='p-compact rounded-input text-muted hover:bg-muted/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
-          aria-label='Next'
-        >
-          <ChevronRight className='w-5 h-5' />
-        </button>
-      </div>
+          <Button variant='ghost' onClick={() => handleChange(1)} aria-label='Next'>
+            <ChevronRight className='w-5 h-5' />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
-
-export default DateNavigatorBase;

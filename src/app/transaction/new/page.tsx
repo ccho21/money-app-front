@@ -6,11 +6,11 @@ import { useTransactionFormStore } from '@/modules/transaction/formStore';
 import { useSearchParams } from 'next/navigation';
 import { parse } from 'date-fns';
 
-import IncomeForm from '../_components/IncomeForm';
-import ExpenseForm from '../_components/ExpenseForm';
-import TransferForm from '../_components/TransferForm';
 import { fetchAccounts } from '@/modules/account/hooks';
 import { fetchCategories } from '@/modules/category/hooks';
+import ExpenseForm from '../components/forms/ExpenseForm';
+import IncomeForm from '../components/forms/IncomeForm';
+import TransferForm from '../components/forms/TransferForm';
 
 export default function TransactionNewPage() {
   const searchParams = useSearchParams();
@@ -35,17 +35,15 @@ export default function TransactionNewPage() {
 
   if (!type) {
     return (
-      <p className="text-label text-muted text-center py-section">
-        Loading...
-      </p>
+      <p className='text-label text-muted text-center py-section'>Loading...</p>
     );
   }
 
   return (
     <>
-      {type === 'income' && <IncomeForm key="income" mode="new" />}
-      {type === 'expense' && <ExpenseForm key="expense" mode="new" />}
-      {type === 'transfer' && <TransferForm key="transfer" mode="new" />}
+      {type === 'income' && <IncomeForm key='income' mode='new' />}
+      {type === 'expense' && <ExpenseForm key='expense' mode='new' />}
+      {type === 'transfer' && <TransferForm key='transfer' mode='new' />}
     </>
   );
 }

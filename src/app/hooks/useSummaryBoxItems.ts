@@ -6,7 +6,7 @@ import { useBudgetStore } from '@/modules/budget/store';
 import { useAccountStore } from '@/modules/account/store';
 import { useShallow } from 'zustand/shallow';
 
-export function useSummaryBoxItems(currentTab: string) {
+export function useSummaryBoxItems(key: string) {
   // ✅ store 상태 shallow하게 가져오기
   const { summary: transactionSummary } = useTransactionStore(
     useShallow((s) => ({ summary: s.summary }))
@@ -22,7 +22,31 @@ export function useSummaryBoxItems(currentTab: string) {
 
   // ✅ 메모이제이션된 summary items 리턴
   return useMemo(() => {
-    switch (currentTab) {
+    switch (key) {
+      case 'dashboard': {
+        const income = transactionSummary?.totalIncome ?? 0;
+        const expense = transactionSummary?.totalExpense ?? 0;
+        return [
+          {
+            label: 'Balance',
+            value: income - expense,
+            color: 'text-foreground',
+            prefix: '$',
+          },
+          {
+            label: 'Income',
+            value: income,
+            color: income > 0 ? 'text-info' : 'text-muted',
+            prefix: '$',
+          },
+          {
+            label: 'Exp.',
+            value: expense,
+            color: expense > 0 ? 'text-error' : 'text-muted',
+            prefix: '$',
+          },
+        ];
+      }
       case 'daily': {
         const income = transactionSummary?.totalIncome ?? 0;
         const expense = transactionSummary?.totalExpense ?? 0;
@@ -129,5 +153,5 @@ export function useSummaryBoxItems(currentTab: string) {
       default:
         return [];
     }
-  }, [currentTab, transactionSummary, budgetSummary, accountSummary]);
+  }, [key, transactionSummary, budgetSummary, accountSummary]);
 }

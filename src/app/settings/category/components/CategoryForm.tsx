@@ -1,0 +1,65 @@
+// src/app/category/components/CategoryForm.tsx
+'use client';
+
+import { Button } from '@/components_backup/ui/button/Button';
+import { Input } from '@/components_backup/ui/input/Input';
+import Selector from '@/components_backup/ui/selector/Selector';
+import { useCategoryFormStore } from '@/modules/category/formStore';
+import { Pencil, Plus } from 'lucide-react';
+import { useState } from 'react';
+
+interface CategoryFormProps {
+  onSubmit: () => void;
+  isEdit?: boolean;
+}
+
+const typeOptions = [
+  { label: '지출', value: 'expense' },
+  { label: '수입', value: 'income' },
+];
+
+export const CategoryForm = ({
+  onSubmit,
+  isEdit = false,
+}: CategoryFormProps) => {
+  const { name, type, setField } = useCategoryFormStore();
+
+  const [error, setError] = useState('');
+
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      setError('카테고리 이름을 입력해주세요.');
+      return;
+    }
+    setError('');
+    onSubmit();
+  };
+
+  return (
+    <div className='space-y-component px-component pt-component text-foreground'>
+      <Input
+        label='카테고리 이름'
+        placeholder='예: 식비, 월급'
+        value={name}
+        onChange={(e) => setField('name', e.target.value)}
+      />
+
+      <Selector
+        label='카테고리 타입'
+        value={type}
+        onChange={(val) => setField('type', val as 'income' | 'expense')}
+        options={typeOptions}
+        getOptionLabel={(o) => o.label}
+        getOptionValue={(o) => o.value}
+      />
+
+      {error && <p className='text-label text-error'>{error}</p>}
+
+      <div className='pt-component'>
+        <Button className='w-full' onClick={handleSubmit}>
+          {isEdit ? <Pencil /> : <Plus />}
+        </Button>
+      </div>
+    </div>
+  );
+};

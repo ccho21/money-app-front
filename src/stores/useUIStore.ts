@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
 export interface LayoutOptions {
-  hideTopNav?: boolean;
   hideDateNav?: boolean;
   hideMonthNav?: boolean;
   hideTabMenu?: boolean;
