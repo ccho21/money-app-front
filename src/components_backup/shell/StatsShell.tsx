@@ -3,16 +3,16 @@
 import { useEffect, useRef, useMemo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import TopNav from '@/components_backup/common/TopNav';
-import TabMenu from '@/components_backup/common/TabMenu';
-import DateNavigator from '@/components/common/DateNavigator';
+import TopNav from '@/components/navigation/TopNav';
+import TabMenu from '@/components/navigation/TabMenu';
+import DateNavigator from '@/components/navigation/DateNavigator';
 import StatsHeader from '@/app/stats/components/StatsHeader';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useUIStore } from '@/stores/useUIStore';
 import { getDefaultLayoutOptions } from '@/lib/layout.config';
 import { TransactionType } from '@/modules/transaction/types';
-import BottomTabBar from '../common/BottomNav';
+import BottomTabBar from '../../components/navigation/BottomNav';
 import { GroupBy } from '@/common/types';
 import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 export default function StatsShell({

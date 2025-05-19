@@ -1,46 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-
+import { ReactNode } from 'react';
 import AuthGuard from '@/components_backup/auth/AuthGuard';
 import RouteTracker from '@/providers/RouteTracker';
 import { ThemeProvider } from '@/providers/ThemeProvider';
-import { useUserStore } from '@/stores/useUserStore';
-import { fetchUser } from '@/modules/auth/hooks';
-import BottomNav from '../common/BottomNav';
+import BottomNav from '@/components/navigation/BottomNav';
+import useAuthRedirectSync from '@/modules/auth/useAuthRedirectSync'; // ✅ 훅 import
 
-export default function ClientShell({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { user } = useUserStore();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user) {
-      setLoading(false);
-      return;
-    }
-
-    const run = async () => {
-      try {
-        await fetchUser();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (err) {
-        const isPublic =
-          pathname === '/auth/signin' || pathname === '/auth/signup';
-        if (!isPublic) router.replace('/signin');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    run();
-  }, [user, pathname, router]);
+export default function ClientShell({ children }: { children: ReactNode }) {
+  const loading = useAuthRedirectSync();
 
   if (loading) {
     return (
@@ -57,7 +25,7 @@ export default function ClientShell({
       <RouteTracker />
       <ThemeProvider>
         <main className='w-full'>{children}</main>
-        <BottomNav></BottomNav>
+        <BottomNav />
       </ThemeProvider>
     </AuthGuard>
   );

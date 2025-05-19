@@ -5,8 +5,8 @@ import {
   TransactionGroupSummaryDTO,
 } from '@/modules/transaction/types';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import TransactionGroup from '../../transaction/components/TransactionGroup';
 import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import TransactionGroup from '@/components_backup/transaction/TransactionGroup';
 interface DailyViewProps {
   isLoading: boolean;
   data?: TransactionGroupSummaryDTO | null;

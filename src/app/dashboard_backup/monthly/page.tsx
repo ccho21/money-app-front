@@ -18,7 +18,7 @@ import { useShallow } from 'zustand/shallow';
 import dynamic from 'next/dynamic';
 import SummaryBox from '@/components/common/SummaryBox';
 import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
-import DateNavigator from '@/components/common/DateNavigator';
+import DateNavigator from '@/components/navigation/DateNavigator';
 import { useRouter } from 'next/navigation';
 const MonthlyView = dynamic(
   () => import('@/components_backup/dashboard/MonthlyView'),

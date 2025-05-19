@@ -121,12 +121,12 @@ export default function MorePage() {
         <SettingItem
           icon={<Wallet size={18} />}
           title='Income Category'
-          onClick={() => router.push('/category')}
+          onClick={() => router.push('/settings/category')}
         />
         <SettingItem
           icon={<Wallet2 size={18} />}
           title='Expense Category'
-          onClick={() => router.push('/category')}
+          onClick={() => router.push('/settings/category')}
         />
         <SettingItem
           icon={<Settings size={18} />}

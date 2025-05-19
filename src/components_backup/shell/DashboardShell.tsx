@@ -9,10 +9,10 @@ import { Button } from '@/components_backup/ui/button/Button';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 import { Plus } from 'lucide-react';
-import BottomTabBar from '@/components_backup/common/BottomNav';
-import TabMenu from '@/components_backup/common/TabMenu';
+import BottomTabBar from '@/components/navigation/BottomNav';
+import TabMenu from '@/components/navigation/TabMenu';
 
-const TopNav = dynamic(() => import('@/components_backup/common/TopNav'), {
+const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
   ssr: false,
 });
 

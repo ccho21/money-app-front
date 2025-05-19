@@ -15,7 +15,7 @@ import { useShallow } from 'zustand/shallow';
 import dynamic from 'next/dynamic';
 import SummaryBox from '@/components/common/SummaryBox';
 import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
-import DateNavigator from '@/components/common/DateNavigator';
+import DateNavigator from '@/components/navigation/DateNavigator';
 const DailyView = dynamic(
   () => import('@/app/dashboard_backup/components/DailyView'),
   {

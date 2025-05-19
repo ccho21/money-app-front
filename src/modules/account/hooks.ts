@@ -14,7 +14,6 @@ import { DateFilterParams, GroupBy } from '@/common/types';
 import { useTransactionStore } from '../transaction/store';
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useEffect } from 'react';
-import { fetchTransactionSummary } from '../transaction/hooks';
 
 // Create a new account
 export const createAccount = async (payload: AccountCreateRequestDTO) => {
@@ -127,11 +126,11 @@ export function useAccountDetailSummary(accountId: string, groupBy: GroupBy) {
   useEffect(() => {
     const [startDate, endDate] = getDateRangeKey().split('_');
 
-    fetchTransactionSummary({
-      groupBy,
-      startDate,
-      endDate,
-    });
+    // fetchTransactionSummary({
+    //   groupBy,
+    //   startDate,
+    //   endDate,
+    // });
   }, [groupBy, accountId, getDateRangeKey]);
 
   return { summary, isLoading };

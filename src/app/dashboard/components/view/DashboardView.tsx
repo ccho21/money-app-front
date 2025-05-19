@@ -1,123 +1,112 @@
-// src/components/dashboard/DashboardView.tsx
-
 'use client';
 
-// import { BudgetProgress } from './BudgetProgress';
-import RecentTransactionList from '../RecentTransactionList';
-import { BudgetOveruseAlert } from '../BudgetOveruseAlert';
-import { SummaryWithCategoryChartCard } from '../SummaryWithCategoryChartCard';
+import { DashboardSummary } from '../DashboardSummary';
 import { InsightSection } from '../InsightSection';
-import { TypographyH4 } from '@/components/ui/typography';
+import { TypographySmall } from '@/components/ui/typography';
+import { useFilterStore } from '@/stores/useFilterStore';
+import { Skeleton } from '@/components/ui/skeleton';
+import { fetchDashboard } from '@/modules/dashboard/hooks';
+import { TransactionGroupQuery } from '@/modules/transaction/types/types';
+import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { useTransactionStore } from '@/modules/transaction/stores/store';
+import { useShallow } from 'zustand/shallow';
+import { DashboardCategoryMonthlyDTO } from '../../types';
+import { fetchTransactionGroups } from '@/modules/transaction/hooks/fetches';
+import Link from 'next/link';
+
+const TransactionListView = dynamic(
+  () => import('@/modules/transaction/components/view/TransactionListView'),
+  {
+    ssr: false,
+  }
+);
+
 export function DashboardView() {
-  // const metricsGroupA = [
-  //   {
-  //     id: 'monthlyIncome',
-  //     title: 'Monthly Income',
-  //     value: '$3,500.00',
-  //     delta: '+5.2%',
-  //     deltaDirection: 'up',
-  //     description: 'Up from last month',
-  //     subtext: 'Includes salary & interest',
-  //   },
-  //   {
-  //     id: 'todayExpense',
-  //     title: 'Today’s Spending',
-  //     value: '$18.00',
-  //     delta: '-12%',
-  //     deltaDirection: 'down',
-  //     description: 'Lower than yesterday',
-  //     subtext: 'Mainly food',
-  //   },
-  //   {
-  //     id: 'expenseToIncomeRatio',
-  //     title: 'Spending-to-Income Ratio',
-  //     value: '62%',
-  //     description: '62% of income spent',
-  //     subtext: 'Keep an eye on spending',
-  //   },
-  // ];
+  const { query, getDateRangeKey, isInitialized } = useFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
+  const { groupBy, date } = query;
 
-  // const metricsGroupB = [
-  //   {
-  //     id: 'budgetUsageRate',
-  //     title: 'Budget Used',
-  //     value: '75%',
-  //     delta: '+10%',
-  //     deltaDirection: 'up',
-  //     description: 'Spending pace this month',
-  //     subtext: '3/4 of budget used',
-  //   },
-  //   {
-  //     id: 'overBudgetCategoryCount',
-  //     title: 'Over-Budget Categories',
-  //     value: '3',
-  //     description: 'Food, Shopping, Transport',
-  //     subtext: 'Over by $120.00 total',
-  //   },
-  //   {
-  //     id: 'accountBalanceTotal',
-  //     title: 'Total Account Balance',
-  //     value: '$2,740.00',
-  //     description: 'Across all accounts',
-  //     subtext: '3 accounts combined',
-  //   },
-  // ];
+  useEffect(() => {
+    if (!isInitialized) return;
 
-  // const metricsGroupC = [
-  //   {
-  //     id: 'dailyAvgExpense',
-  //     title: '평균 하루 지출액',
-  //     value: '₩72,600',
-  //     description: '이번 달 기준',
-  //     subtext: '전월 평균: ₩68,000',
-  //   },
-  //   {
-  //     id: 'topSpendingCategory',
-  //     title: '가장 많은 소비 카테고리',
-  //     value: '식비 ₩480,000',
-  //     description: '식비 지출이 전체의 32%',
-  //     subtext: '주 3회 외식 포함',
-  //   },
-  //   {
-  //     id: 'monthlyExpenseGrowth',
-  //     title: '지출 증가율 (전월 대비)',
-  //     value: '+12.5%',
-  //     delta: '+12.5%',
-  //     deltaDirection: 'up',
-  //     description: '전월 대비 총 지출 증가',
-  //     subtext: '교통비 증가 영향',
-  //   },
-  // ];
+    const params: TransactionGroupQuery = {
+      timeframe: 'monthly',
+      startDate,
+      endDate,
+      limit: 3,
+    };
+
+    (async () => {
+      Promise.all([fetchTransactionGroups(params)]);
+    })();
+  }, [getDateRangeKey, date, isInitialized]);
+
+  const { groupList, isLoading: txLoading } = useTransactionStore(
+    useShallow((s) => ({
+      groupList: s.groupList,
+      isLoading: s.isLoading,
+    }))
+  );
+
+  const { data, isLoading } = fetchDashboard({
+    timeframe: groupBy,
+    startDate,
+    endDate,
+  });
+
+  const mapTrendToDirection = (
+    trend?: 'increase' | 'decrease'
+  ): 'up' | 'down' | undefined => {
+    if (trend === 'increase') return 'up';
+    if (trend === 'decrease') return 'down';
+    return undefined;
+  };
+
+  if (isLoading || !data) return <Skeleton className='h-[300px] w-full' />;
 
   return (
-    <section className='space-y-compact px-compact py-compact'>
-      <div className='mx-compact'>
-        <TypographyH4> Monthly overview</TypographyH4>
-        <InsightSection />
-      </div>
-
-      {/* 💡 예산 관련 인사이트 */}
-      <SummaryWithCategoryChartCard
-        totalExpense='$2,480.00'
-        budgetUsage={{ value: '75%', delta: '+10%', deltaDirection: 'up' }}
-        todayExpense={{
-          value: '$18.00',
-          delta: '-12%',
-          deltaDirection: 'down',
+    <section className='space-y-6 px-4 py-6'>
+      <DashboardSummary
+        totalExpense={`$${(data?.budget?.used ?? 0 / 100).toFixed(2)}`}
+        budgetUsage={{
+          value: `${data.budget.usageRate}%`,
+          delta: data.budget.comparison?.percentChange ?? '',
+          deltaDirection: mapTrendToDirection(data.budget.comparison?.trend),
         }}
-        categoryList={[
-          { name: 'Food', percent: 52, color: '#3b82f6' },
-          { name: 'Transport', percent: 30, color: '#10b981' },
-          { name: 'Shopping', percent: 18, color: '#f59e0b' },
-        ]}
+        monthlySpending={{
+          // ✅ 요기 이름 바꿔야 됨
+          value: `$${(data.monthlySpending.amount / 100).toFixed(2)}`,
+          delta: data.monthlySpending.comparison?.percentChange ?? '',
+          deltaDirection: mapTrendToDirection(
+            data.monthlySpending.comparison?.trend
+          ),
+        }}
+        categoryList={
+          data.categoryMonthly.length > 0
+            ? data.categoryMonthly.map((cat: DashboardCategoryMonthlyDTO) => ({
+                name: cat.name,
+                percent: cat.percent,
+                color: cat.color ?? '#ccc',
+              }))
+            : []
+        }
       />
-      <BudgetOveruseAlert
-        overCount={3}
-        amount='$120.00'
-        message='Food, Shopping, and Transport budgets exceeded.'
-      />
-      {/* 🧾 최근 거래 */}
-      <RecentTransactionList transactions={[]} isLoading={false} />
+
+      <InsightSection insights={data.insights} />
+
+      <div className='space-y-2'>
+        <TypographySmall>Recent Transactions</TypographySmall>
+        <TransactionListView isLoading={txLoading} data={groupList} />
+        <div className='text-right'>
+          <Link
+            href='/transaction/view/list'
+            className='text-xs text-blue-600 font-medium hover:underline'
+          >
+            View all →
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

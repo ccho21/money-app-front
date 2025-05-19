@@ -7,10 +7,10 @@ import dynamic from 'next/dynamic';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
-import BottomTabBar from '@/components_backup/common/BottomNav';
-import DateNavigator from '@/components/common/DateNavigator';
+import BottomTabBar from '@/components/navigation/BottomNav';
+import DateNavigator from '@/components/navigation/DateNavigator';
 
-const TopNav = dynamic(() => import('@/components_backup/common/TopNav'), {
+const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
   ssr: false,
 });
 
@@ -31,13 +31,13 @@ export default function DashboardShell({
 
   useTopNavPreset({
     title: 'Dashboard',
+    onSearch: () => {},
+    onFilter: () => {},
   });
 
   return (
     <div className='min-h-screen pb-[10vh]'>
       <TopNav />
-      <DateNavigator className='justify-end' />
-
       <div className=''>{children}</div>
       <BottomTabBar />
     </div>

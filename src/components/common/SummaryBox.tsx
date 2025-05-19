@@ -1,55 +1,74 @@
-'use client';
-
-import { SummaryItem } from '@/common/types';
+import { TransactionGroupSummary } from '@/modules/transaction/types/types';
 import CurrencyDisplay from '../../components_backup/ui/currency/CurrencyDisplay';
-import { TrendingUp, DollarSign, CreditCard } from 'lucide-react';
-
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 interface SummaryBoxProps {
-  items: SummaryItem[];
-  className?: string;
+  summary: TransactionGroupSummary;
   onClick?: () => void;
+  className?: string;
 }
 
-export default function SummaryBox({ items, onClick }: SummaryBoxProps) {
-  if (!items || items.length < 3) return null;
-
-  const [net, income, expense] = items;
+export default function SummaryBox({
+  summary,
+  onClick,
+  className,
+}: SummaryBoxProps) {
+  const {
+    totalIncome,
+    totalExpense,
+    netBalance,
+    comparison,
+    topSpendingCategory,
+  } = summary;
 
   return (
-    <Card className='p-component gap-0' onClick={onClick}>
-      <CardHeader className='p-0'>
-        <div className='flex items-center'>
-          <div className='bg-primary/10 rounded-input pr-tight'>
-            <TrendingUp className='w-[1.5rem] h-[1.5rem] text-primary' />
-          </div>
-          <CardTitle className='text-heading text-foreground font-semibold'>
-            {net.label}
-          </CardTitle>
-        </div>
-      </CardHeader>
+    <section
+      onClick={onClick}
+      className={cn('px-4 pb-4 mb-4 space-y-2 border-b border-gray-100', className)}
+    >
+      {/* 🟥 Total Spending */}
+      <div className='space-y-1'>
+        <p className='text-xs text-muted-foreground uppercase tracking-wide'>
+          Total Spending
+        </p>
+        <h2 className='text-3xl font-bold tracking-tight text-primary'>
+          <CurrencyDisplay amount={totalExpense} />
+        </h2>
+        {comparison && (
+          <p className='text-xs text-muted-foreground font-medium'>
+            ↑ <CurrencyDisplay amount={comparison.difference} /> ({comparison.percent}%) from last month
+          </p>
+        )}
+      </div>
 
-      <CardContent className='p-0 space-y-element'>
-        <div className='text-[1.75rem] font-bold text-foreground'>
-          <CurrencyDisplay amount={net.value} />
+      {/* 🟢 Income / Net */}
+      <div className='grid grid-cols-2 gap-3 text-sm'>
+        <div>
+          <p className='text-muted-foreground'>Income</p>
+          <p className='text-green-600 font-bold'>
+            <CurrencyDisplay amount={totalIncome} />
+          </p>
         </div>
-
-        <div className='my-compact border-t border-border' />
-
-        <div className='flex justify-between text-label'>
-          <div className='flex items-center gap-tight text-success'>
-            <DollarSign className='w-[1.25rem] h-[1.25rem]' />
-            <span>{income.label}</span>
-            <CurrencyDisplay amount={income.value} className='ml-tight' />
-          </div>
-          <div className='flex items-center gap-tight text-error'>
-            <CreditCard className='w-[1.25rem] h-[1.25rem]' />
-            <span>{expense.label}</span>
-            <CurrencyDisplay amount={expense.value} className='ml-tight' />
-          </div>
+        <div className='text-right'>
+          <p className='text-muted-foreground'>Net Balance</p>
+          <p className='text-gray-900 font-bold'>
+            <CurrencyDisplay amount={netBalance} />
+          </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* 🟡 Top Spending */}
+      {topSpendingCategory && (
+        <div className='flex justify-between text-xs text-muted-foreground pt-1'>
+          <span>
+            Top: {topSpendingCategory.name}{' '}
+            <CurrencyDisplay amount={topSpendingCategory.amount} />
+          </span>
+          <a href='#' className='text-blue-600 hover:underline font-medium'>
+            View summary →
+          </a>
+        </div>
+      )}
+    </section>
   );
 }

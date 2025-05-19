@@ -51,8 +51,8 @@
 
 /* 📌 타일 호버 시 */
 .react-calendar__tile:hover {
-  background-color: var(--color-primary) !important;
-  color: var(--color-on-primary) !important;
+  /* background-color: var(--color-primary) !important; */
+  /* color: var(--color-on-primary) !important; */
 }
 
 /* 🔸 일요일(7번째 칸마다) → 오른쪽 보더 제거 */

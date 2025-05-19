@@ -6,8 +6,8 @@ import { useRouter, usePathname } from 'next/navigation';
 
 import { useTransactionFormStore } from '@/modules/transaction/formStore';
 import { TransactionType } from '@/modules/transaction/types';
-import TopNav from '@/components_backup/common/TopNav';
-import TabMenu from '@/components_backup/common/TabMenu';
+import TopNav from '@/components/navigation/TopNav';
+import TabMenu from '@/components/navigation/TabMenu';
 import { useUIStore } from '@/stores/useUIStore';
 import { Button } from '@/components_backup/ui/button';
 import { ArrowLeft } from 'lucide-react';

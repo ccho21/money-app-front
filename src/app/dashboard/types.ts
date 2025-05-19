@@ -1,19 +1,49 @@
-import { CategoryType } from '@/modules/category/types';
-
 // ✅ 월간 요약용
-export interface DashboardSummaryDTO {
-  income: number;
-  expense: number;
-  balance: number;
-}
+// frontend/modules/dashboard/types.ts
 
-// ✅ 최근 거래용 (경량화된 Transaction DTO)
-export interface DashboardTransactionPreviewDTO {
+export type DashboardInsightDTO = {
   id: string;
-  title: string; // category.name or description fallback
+  message: string;
+  value?: string;
+};
+
+export type DashboardCategoryMonthlyDTO = {
+  categoryId: string;
+  name: string;
+  percent: number;
+  color?: string;
+};
+
+export type DashboardBudgetComparisonDTO = {
+  previousUsageRate: number;
+  difference: number;
+  percentChange: string;
+  trend: 'increase' | 'decrease';
+};
+
+export type DashboardBudgetDTO = {
+  used: number;
+  total: number;
+  usageRate: number;
+  comparison?: DashboardBudgetComparisonDTO;
+};
+
+export type DashboardMonthlyComparisonDTO = {
+  previousAmount: number;
+  difference: number;
+  percentChange: string;
+  trend: 'increase' | 'decrease';
+};
+
+export type DashboardMonthlySpendingDTO = {
   amount: number;
-  type: CategoryType;
-  date: string;
-  accountName: string;
-  categoryName?: string;
-}
+  comparison?: DashboardMonthlyComparisonDTO;
+};
+
+export type DashboardDTO = {
+  balance: number;
+  budget: DashboardBudgetDTO;
+  monthlySpending: DashboardMonthlySpendingDTO;
+  categoryMonthly: DashboardCategoryMonthlyDTO[];
+  insights: DashboardInsightDTO[];
+};

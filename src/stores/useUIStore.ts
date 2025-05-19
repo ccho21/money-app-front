@@ -11,11 +11,9 @@ export interface LayoutOptions {
 export interface TopNavConfig {
   title: string;
   center?: boolean;
-  showSearchButton?: boolean;
-  showFilterButton?: boolean;
   onBack?: () => void;
-  onSearchClick?: () => void;
-  onFilterClick?: () => void;
+  onSearch?: () => void;
+  onFilter?: () => void;
   onEdit?: () => void;
   onAdd?: () => void;
 }
@@ -42,8 +40,8 @@ export const useUIStore = create<UIState>((set) => ({
     title: '',
     center: true,
     onBack: undefined,
-    onSearchClick: undefined,
-    onFilterClick: undefined,
+    onSearch: undefined,
+    onFilter: undefined,
     showSearchButton: false,
     showFilterButton: false,
     onEdit: undefined,
@@ -93,10 +91,8 @@ export const useUIStore = create<UIState>((set) => ({
         title: '',
         center: true,
         onBack: undefined,
-        onSearchClick: undefined,
-        onFilterClick: undefined,
-        showSearchButton: false,
-        showFilterButton: false,
+        onSearch: undefined,
+        onFilter: undefined,
         onEdit: undefined,
         onAdd: undefined,
       },

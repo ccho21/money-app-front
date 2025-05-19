@@ -23,13 +23,9 @@ export const config = {
     // 트랜잭션 등록/수정
     '/transaction/:path*',
 
-    // 달력 및 통계
-    '/calendar/:path*',
-    '/summary/:path*',
-
     // 계좌/카테고리 설정
-    '/accounts/:path*',
-    '/category/:path*',
+    '/settings/accounts/:path*',
+    'settings/category/:path*',
 
     // 기타 로그인 필요 경로들 (추가 가능)
   ],

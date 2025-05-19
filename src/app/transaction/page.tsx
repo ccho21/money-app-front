@@ -2,5 +2,5 @@
 import { redirect } from 'next/navigation';
 
 export default function TransactionPage() {
-  redirect('/transaction/list');
+  redirect('/transaction/view/list');
 }

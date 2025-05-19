@@ -18,7 +18,7 @@ import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import Divider from '@/components_backup/ui/divider/Divider';
 import { useSummaryBoxItems } from '@/app/hooks/useSummaryBoxItems';
 import SummaryBox from '@/components/common/SummaryBox';
-import DateNavigator from '@/components/common/DateNavigator';
+import DateNavigator from '@/components/navigation/DateNavigator';
 import { Card, CardContent } from '@/components_backup/ui/card';
 import BudgetCard from '@/app/transaction/components/BudgetCard';
 

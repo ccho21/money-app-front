@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import DateNavigator from '@/components/common/DateNavigator';
+import DateNavigator from '@/components/navigation/DateNavigator';
 import Panel from '@/components_backup/ui/panel/Panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';

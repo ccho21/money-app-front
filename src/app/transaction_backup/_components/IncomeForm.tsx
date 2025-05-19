@@ -91,7 +91,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
               options={accounts}
               getOptionLabel={(a) => a.name}
               getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
+              onEdit={() => router.push('/settings/account/new')}
             />
           </div>
         </>
@@ -106,7 +106,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
               options={accounts}
               getOptionLabel={(a) => a.name}
               getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
+              onEdit={() => router.push('/settings/account/new')}
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'income')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          onEdit={() => router.push('/category')}
+          onEdit={() => router.push('/settings/category/new')}
         />
       </div>
 

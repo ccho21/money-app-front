@@ -5,17 +5,24 @@ import { useCategoryFormStore } from '@/modules/category/formStore';
 import { useRouter } from 'next/navigation';
 import { CategoryForm } from '../components/CategoryForm';
 import { createCategory } from '@/modules/category/hooks';
+import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 
 export default function AddCategoryPage() {
   const router = useRouter();
   const { getCreateFormData, reset } = useCategoryFormStore();
+
+  useTopNavPreset({
+    title: 'Category New',
+    onAdd: undefined,
+    onBack: () => router.back(),
+  });
 
   const handleSubmit = async () => {
     try {
       const data = getCreateFormData();
       await createCategory(data);
       reset();
-      router.push('/category');
+      router.push('/settings/category');
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Failed to create category';

@@ -4,27 +4,36 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { fillCategoryForm, updateCategory } from '@/modules/category/hooks';
+import { fetchCategoryById, updateCategory } from '@/modules/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { CategoryForm } from '@/app/settings/category/components/CategoryForm';
+import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 
 export default function EditCategoryPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const id = pathname.split('/')[2];
+  const id = pathname.split('/')[3];
 
   const { getUpdateFormData, reset } = useCategoryFormStore();
 
   useEffect(() => {
-    if (id) fillCategoryForm(id);
+    console.log('#', id);
+    if (id) fetchCategoryById(id);
   }, [id]);
+
+  useTopNavPreset({
+    title: 'Category Edit',
+    onAdd: undefined,
+    onBack: () => router.back(),
+  });
 
   const handleSubmit = async () => {
     try {
       const data = getUpdateFormData();
+      console.log('#### DATA, ', data);
       await updateCategory(id, data);
       reset();
-      router.push('/category');
+      router.push('/settings/category');
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Failed to update category';

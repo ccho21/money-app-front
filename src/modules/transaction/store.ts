@@ -3,11 +3,11 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import {
-  TransactionDetailDTO,
   TransactionGroupItemDTO,
   TransactionGroupSummaryDTO,
   TransactionCalendarDTO,
 } from './types';
+import { TransactionDetail } from './types/types';
 
 type TransactionFilters = {
   type?: 'income' | 'expense';
@@ -29,8 +29,8 @@ const defaultFilters: TransactionFilters = {
 };
 
 interface TransactionStore {
-  transactions: TransactionDetailDTO[];
-  selectedTransaction: TransactionDetailDTO | undefined;
+  transactions: TransactionDetail[];
+  selectedTransaction: TransactionDetail | undefined;
   groupItems: TransactionGroupItemDTO[];
   summary: TransactionGroupSummaryDTO | null;
   calendar: TransactionCalendarDTO[];
@@ -39,8 +39,8 @@ interface TransactionStore {
   error: string | null;
   lastUpdatedAt?: number;
 
-  setTransactions: (txs: TransactionDetailDTO[]) => void;
-  setSelectedTransaction: (tx: TransactionDetailDTO) => void;
+  setTransactions: (txs: TransactionDetail[]) => void;
+  setSelectedTransaction: (tx: TransactionDetail) => void;
   setGroupItems: (items: TransactionGroupItemDTO[]) => void;
   setSummary: (summary: TransactionGroupSummaryDTO) => void;
   setCalendar: (items: TransactionCalendarDTO[]) => void;

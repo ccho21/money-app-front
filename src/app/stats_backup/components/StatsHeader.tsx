@@ -14,7 +14,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components_backup/ui/drawer';
-import TabMenu from '@/components_backup/common/TabMenu';
+import TabMenu from '@/components/navigation/TabMenu';
 import { TransactionType } from '@/modules/transaction/types';
 import { useConditionalRender } from '@/hooks/useConditionalRender';
 import { useState } from 'react';

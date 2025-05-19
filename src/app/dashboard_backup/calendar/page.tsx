@@ -21,7 +21,7 @@ import { DateFilterParams } from '@/common/types';
 import { useShallow } from 'zustand/shallow';
 import LoadingMessage from '@/components/ui/custom/loadingMessage';
 import dynamic from 'next/dynamic';
-import DateNavigator from '@/components/common/DateNavigator';
+import DateNavigator from '@/components/navigation/DateNavigator';
 const TransactionDetailView = dynamic(
   () => import('@/app/dashboard/components/TransactionDetailView'),
   {

@@ -1,21 +1,28 @@
 // 파일: src/modules/transaction/api.ts
 
 import { get, post, patch, del } from '@/common/api';
-import { buildQuery } from '@/shared/util/buildQuery';
 import {
   TransactionCreateRequestDTO,
   TransactionUpdateRequestDTO,
   TransactionTransferRequestDTO,
-  TransactionDetailDTO,
   TransactionGroupItemDTO,
-  TransactionGroupSummaryDTO,
-  TransactionCalendarDTO,
 } from './types';
 import type { DateFilterParams } from '@/common/types';
+import { buildTransactionQuery } from './utils/buildTransactionQuery';
+import {
+  TransactionCalendar,
+  TransactionChartBudgetResponse,
+  TransactionChartCategoryResponse,
+  TransactionChartFlowResponse,
+  TransactionDetail,
+  TransactionGroupListResponse,
+  TransactionGroupQuery,
+  TransactionGroupSummary,
+} from './types/types';
 
 // Create new income/expense transaction
 export const createTransactionAPI = (payload: TransactionCreateRequestDTO) => {
-  return post<TransactionDetailDTO, TransactionCreateRequestDTO>(
+  return post<TransactionDetail, TransactionCreateRequestDTO>(
     '/transactions',
     payload
   );
@@ -26,7 +33,7 @@ export const updateTransactionAPI = (
   id: string,
   payload: TransactionUpdateRequestDTO
 ) => {
-  return patch<TransactionDetailDTO, TransactionUpdateRequestDTO>(
+  return patch<TransactionDetail, TransactionUpdateRequestDTO>(
     `/transactions/${id}`,
     payload
   );
@@ -34,7 +41,7 @@ export const updateTransactionAPI = (
 
 // Create transfer transaction
 export const createTransferAPI = (payload: TransactionTransferRequestDTO) => {
-  return post<TransactionDetailDTO, TransactionTransferRequestDTO>(
+  return post<TransactionDetail, TransactionTransferRequestDTO>(
     '/transactions/transfer',
     payload
   );
@@ -45,7 +52,7 @@ export const updateTransferAPI = (
   id: string,
   payload: TransactionTransferRequestDTO
 ) => {
-  return patch<TransactionDetailDTO, TransactionTransferRequestDTO>(
+  return patch<TransactionDetail, TransactionTransferRequestDTO>(
     `/transactions/transfer/${id}`,
     payload
   );
@@ -63,7 +70,7 @@ export const deleteTransferAPI = (id: string) => {
 
 // Get transaction by ID
 export const fetchTransactionByIdAPI = (id: string) => {
-  return get<TransactionDetailDTO>(`/transactions/${id}`);
+  return get<TransactionDetail>(`/transactions/${id}`);
 };
 
 // Get grouped transactions (e.g., by date)
@@ -74,14 +81,44 @@ export const fetchTransactionGroupAPI = (payload: DateFilterParams) => {
   );
 };
 
-// Get calendar view
-export const fetchTransactionCalendarAPI = (params: DateFilterParams) => {
-  const query = buildQuery(params);
-  return get<TransactionCalendarDTO[]>(`/transactions/calendar?${query}`);
+////////////////////////////////////////////////////////////////////////////////////////
+// Get summary
+export const fetchTransactionSummaryAPI = (params: TransactionGroupQuery) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionGroupSummary>(`/transactions/summary?${query}`);
 };
 
-// Get summary
-export const fetchTransactionSummaryAPI = (params: DateFilterParams) => {
-  const query = buildQuery(params);
-  return get<TransactionGroupSummaryDTO>(`/transactions/summary?${query}`);
+// Get calendar view
+export const fetchTransactionCalendarAPI = (params: TransactionGroupQuery) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionCalendar[]>(`/transactions/calendar?${query}`);
+};
+
+// Get grouped transactions (e.g., by date)
+export const fetchTransactionGroupsAPI = (params: TransactionGroupQuery) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionGroupListResponse>(`/transactions/groups?${query}`);
+};
+
+export const fetchTransactionChartFlowAPI = (params: TransactionGroupQuery) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionChartFlowResponse>(
+    `/transactions/charts/flow?${query}`
+  );
+};
+
+export const fetchTransactionChartCategoryAPI = (
+  params: TransactionGroupQuery
+) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionChartCategoryResponse>(
+    `/transactions/charts/category?${query}`
+  );
+};
+
+export const fetchTransactionChartBudgetAPI = (
+  params: TransactionGroupQuery
+) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionChartBudgetResponse>(`/transactions/charts/budget?${query}`);
 };

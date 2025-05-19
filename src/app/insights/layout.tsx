@@ -3,6 +3,8 @@
 import { ReactNode, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/lib/utils';
+import TabMenu from '@/components/navigation/TabMenu';
 
 export default function InsightsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -15,10 +17,25 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
     return 'pattern';
   });
 
+  const tabs = [
+    { key: 'pattern', label: 'Pattern' },
+    { key: 'budget', label: 'Budget' },
+    { key: 'recurring', label: 'Recurring' },
+    { key: 'alerts', label: 'Alerts' },
+  ];
+  const labels: Record<string, string> = {
+    pattern: 'Pattern',
+    budget: 'Budget',
+    recurring: 'Recurring',
+    alerts: 'Alerts',
+  };
+
   const handleTabChange = (value: string) => {
     setTab(value);
     router.push(`/insights${value === 'pattern' ? '' : `/${value}`}`);
   };
+
+  const tabKey = pathname.split('/')[2] ?? 'daily';
 
   return (
     <div className='w-full min-h-screen px-component pb-[10vh] pt-component space-y-component'>
@@ -27,26 +44,9 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
         <h1 className='text-heading font-semibold'>Spending Insights</h1>
       </div>
 
-      {/* Tab Navigation */}
-      <ToggleGroup
-        type='single'
-        value={tab}
-        onValueChange={(value) => value && handleTabChange(value)}
-        className='w-full grid grid-cols-4 gap-1'
-      >
-        <ToggleGroupItem value='pattern' className='w-full justify-center'>
-          📊 Pattern
-        </ToggleGroupItem>
-        <ToggleGroupItem value='budget' className='w-full justify-center'>
-          🎯 Budget
-        </ToggleGroupItem>
-        <ToggleGroupItem value='recurring' className='w-full justify-center'>
-          🔁 Recurring
-        </ToggleGroupItem>
-        <ToggleGroupItem value='alerts' className='w-full justify-center'>
-          ⚠️ Alerts
-        </ToggleGroupItem>
-      </ToggleGroup>
+      {/* Tabs */}
+      <TabMenu tabs={tabs} active={tabKey} onChange={handleTabChange} />
+
 
       {/* Content */}
       <div className='space-y-component'>{children}</div>

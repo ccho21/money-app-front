@@ -66,7 +66,7 @@ export const deleteCategory = async (id: string) => {
 };
 
 // Fetch single category and fill form
-export const fillCategoryForm = async (id: string) => {
+export const fetchCategoryById = async (id: string) => {
   try {
     const data = await fetchCategoryByIdAPI(id);
     useCategoryFormStore.getState().setAllFields(data);

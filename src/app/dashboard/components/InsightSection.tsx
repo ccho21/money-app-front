@@ -3,14 +3,17 @@
 import * as React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { InsightBanner } from './insightBanner';
 import { InsightRow } from './InsightRow';
+import { TypographySmall } from '@/components/ui/typography';
+import { DashboardInsight } from '@/modules/dashboard/types';
 
-export function InsightSection() {
+interface InsightSectionProps {
+  insights: DashboardInsight[];
+}
+
+export function InsightSection({ insights }: InsightSectionProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-    },
+    { loop: true },
     [Autoplay({ delay: 3000, stopOnInteraction: true })]
   );
 
@@ -19,48 +22,37 @@ export function InsightSection() {
 
   React.useEffect(() => {
     if (!emblaApi) return;
-
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     setTotalSlides(emblaApi.scrollSnapList().length);
-    onSelect(); // init
+    onSelect();
     emblaApi.on('select', onSelect);
   }, [emblaApi]);
 
-  const slides = [
-    <InsightBanner
-      key='1'
-      icon={<span className='text-xl'>💰</span>}
-      text="You've saved 32% of your budget this month!"
-      variant='default'
-    />,
-    <InsightRow
-      key='2'
-      icon='📈'
-      label='Spending Growth'
-      value='+12.5%'
-      subtext='Compared to last month'
-      variant='destructive'
-    />,
-    <InsightRow
-      key='3'
-      icon='📉'
-      label='Income Drop'
-      value='-5.4%'
-      subtext='vs last month'
-      variant='neutral'
-    />,
-  ];
+  if (!insights.length) return null;
+
+  const slides = insights.map((insight) => {
+    const isPositive = insight.id.includes('saved') || insight.id.includes('decreased');
+    const variant =
+      insight.id.includes('over') ? 'destructive' :
+      isPositive ? 'positive' :
+      'neutral';
+
+    return (
+      <InsightRow
+        key={insight.id}
+        icon={variant === 'destructive' ? '⚠️' : variant === 'positive' ? '✅' : '📊'}
+        label={insight.message}
+        value={insight.value ?? ''}
+        subtext='This month'
+        variant={variant as any}
+      />
+    );
+  });
 
   return (
     <div className='space-y-3'>
       <div className='flex items-center justify-between'>
-        <h3 className='text-sm font-semibold text-muted-foreground'>
-          Insights
-        </h3>
-
+        <TypographySmall>Insights</TypographySmall>
         {totalSlides > 0 && (
           <span className='text-xs text-muted-foreground'>
             {selectedIndex + 1} / {totalSlides}

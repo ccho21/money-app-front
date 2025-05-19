@@ -21,6 +21,7 @@ import {
   startOfYear,
 } from 'date-fns';
 import { DateRangeOptions, GroupBy } from '@/common/types';
+import { Timeframe } from '@/modules/transaction/types/types';
 
 // ✅ 사용자 브라우저 기준 timezone 자동 감지
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -122,12 +123,12 @@ export const getDateRange = (
 export function getNextDateByRange(
   inputDate: Date,
   diff: number,
-  groupBy: GroupBy
+  timeframe: Timeframe
 ): Date {
   const baseDate = startOfDay(inputDate);
   const dayOfMonth = getDate(baseDate);
 
-  switch (groupBy) {
+  switch (timeframe) {
     case 'yearly': {
       return new Date(getYear(baseDate) + diff, getMonth(baseDate), dayOfMonth);
     }

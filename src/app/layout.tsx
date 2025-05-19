@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import ClientShell from '@/components_backup/shell/ClientShell';
 import '@/app/globals.css';
 import '@/styles/theme.css';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,7 +25,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiase bg-background text-foreground dark:bg-background dark:text-foreground`}
       >
-        <ClientShell>{children}</ClientShell>
+        <QueryProvider>
+          <ClientShell>{children}</ClientShell>
+        </QueryProvider>
       </body>
     </html>
   );

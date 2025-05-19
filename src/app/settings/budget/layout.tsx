@@ -1,8 +1,8 @@
 // src/app/budget/layout.tsx
 'use client';
 
-import BottomTabBar from '@/components_backup/common/BottomNav';
-import TopNav from '@/components_backup/common/TopNav';
+import BottomTabBar from '@/components/navigation/BottomNav';
+import TopNav from '@/components/navigation/TopNav';
 import { useUIStore } from '@/stores/useUIStore';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';

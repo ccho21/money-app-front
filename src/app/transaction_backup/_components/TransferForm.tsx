@@ -82,7 +82,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          onEdit={() => router.push('/account')}
+          onEdit={() => router.push('/settings/account/new')}
         />
       </div>
 
@@ -95,7 +95,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          onEdit={() => router.push('/account')}
+          onEdit={() => router.push('/settings/account/new')}
         />
       </div>
 

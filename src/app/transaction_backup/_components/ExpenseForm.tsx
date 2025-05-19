@@ -22,6 +22,8 @@ import Divider from '@/components_backup/ui/divider/Divider';
 import { Label } from '@/components_backup/ui/label';
 
 import { startOfDay } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
+import { IconName } from '@/lib/iconMap';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -30,6 +32,7 @@ type Props = {
 
 export default function ExpenseForm({ mode, transactionId }: Props) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
   const form = useTransactionFormStore((s) => s.state);
@@ -53,7 +56,14 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, transactionId);
-      router.push('');
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'dashboard',
+      });
+
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'transaction-groups',
+      });
+      router.push('/transaction/view/list');
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }
@@ -92,7 +102,8 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
               options={accounts}
               getOptionLabel={(a) => a.name}
               getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
+              getOptionColor={(a) => a.color || '#e5e7eb'} // 🎯 여기가 핵심!
+              onEdit={() => router.push('/settings/account/new')}
             />
           </div>
         </>
@@ -107,7 +118,8 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
               options={accounts}
               getOptionLabel={(a) => a.name}
               getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
+              getOptionColor={(a) => a.color || '#e5e7eb'} // 🎯 여기가 핵심!
+              onEdit={() => router.push('/settings/account/new')}
             />
           </div>
 
@@ -131,7 +143,9 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'expense')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          onEdit={() => router.push('/category')}
+          getOptionColor={(a) => a.color || '#e5e7eb'} // 🎯 여기가 핵심!
+          getOptionIcon={(item) => (item.icon || 'icon') as IconName} // 🎯 여기가 핵심!
+          onEdit={() => router.push('/settings/category/new')}
         />
       </div>
 

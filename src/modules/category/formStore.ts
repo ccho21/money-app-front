@@ -12,7 +12,7 @@ interface CategoryFormState {
   mode: Mode;
   name: string;
   type: CategoryType;
-  icon: string;
+  icon?: string;
   color?: string;
 }
 
@@ -32,7 +32,7 @@ const initialState: CategoryFormState = {
   mode: 'new',
   name: '',
   type: 'expense',
-  icon: '',
+  icon: undefined,
   color: undefined,
 };
 

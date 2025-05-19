@@ -9,6 +9,7 @@ import { deleteCategory, fetchCategories } from '@/modules/category/hooks';
 
 import { Button } from '@/components_backup/ui/button';
 import { Card, CardContent } from '@/components_backup/ui/card';
+import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 
 export default function CategoryPage() {
   const { categories } = useCategoryStore();
@@ -18,8 +19,14 @@ export default function CategoryPage() {
     fetchCategories();
   }, []);
 
+  useTopNavPreset({
+    title: 'Category',
+    onAdd: undefined,
+    onBack: () => router.push('/settings'),
+  });
+
   const handleEdit = (id: string) => {
-    router.push(`/category/${id}/edit`);
+    router.push(`/settings/category/${id}/edit`);
   };
 
   const handleDelete = async (id: string) => {

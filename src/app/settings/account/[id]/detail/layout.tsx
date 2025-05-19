@@ -9,9 +9,9 @@ import {
   useSearchParams,
 } from 'next/navigation';
 
-import BottomTabBar from '@/components_backup/common/BottomNav';
-import TabMenu from '@/components_backup/common/TabMenu';
-import DateNavigator from '@/components/common/DateNavigator';
+import BottomTabBar from '@/components/navigation/BottomNav';
+import TabMenu from '@/components/navigation/TabMenu';
+import DateNavigator from '@/components/navigation/DateNavigator';
 import { Button } from '@/components_backup/ui/button/Button';
 
 import { Plus } from 'lucide-react';

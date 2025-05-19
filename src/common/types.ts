@@ -1,4 +1,5 @@
 import { CategoryType } from '@/modules/category/types';
+import { Timeframe } from '@/modules/transaction/types/types';
 
 export type GroupBy = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -34,7 +35,7 @@ export interface DateFilterParams {
 }
 
 export interface DateRangeOptions {
-  unit: GroupBy;
+  unit: Timeframe;
   amount?: number; // 기본 단위만큼 더할 값 (기본값은 1)
   customEndDate?: Date; // unit이 'custom'일 경우 종료일 지정
 }

@@ -52,7 +52,7 @@ export function useSummaryBoxItems(key: string) {
         const expense = transactionSummary?.totalExpense ?? 0;
         return [
           {
-            label: 'Total',
+            label: 'Total Expense',
             value: income - expense,
             color: 'text-foreground',
             prefix: '$',

@@ -10,15 +10,12 @@ import {
   deleteTransactionAPI,
   deleteTransferAPI,
   fetchTransactionByIdAPI,
-  fetchTransactionSummaryAPI,
   fetchTransactionGroupAPI,
-  fetchTransactionCalendarAPI,
 } from './api';
 import {
   TransactionCreateRequestDTO,
   TransactionUpdateRequestDTO,
   TransactionTransferRequestDTO,
-  TransactionGroupSummaryDTO,
 } from './types';
 
 import { useTransactionFormStore } from './formStore';
@@ -85,30 +82,6 @@ export const submitTransfer = async (mode: 'new' | 'edit', id?: string) => {
   }
 };
 
-// Fetch summary of grouped transactions
-export const fetchTransactionSummary = async (params: DateFilterParams) => {
-  const { setSummary, setLoading, setError } = useTransactionStore.getState();
-
-  const data = await handleAsync(
-    () => fetchTransactionSummaryAPI(params),
-    setLoading,
-    setError
-  );
-
-  if (data) setSummary(data);
-};
-
-// Fetch calendar view of transactions
-export const fetchTransactionCalendar = async (params: DateFilterParams) => {
-  const { setCalendar, setLoading, setError } = useTransactionStore.getState();
-  const data = await handleAsync(
-    () => fetchTransactionCalendarAPI(params),
-    setLoading,
-    setError
-  );
-
-  if (data) setCalendar(data);
-};
 
 // Fetch grouped transaction data (e.g., by day, week)
 export const fetchGroupedTransactions = async (params: DateFilterParams) => {
@@ -132,20 +105,4 @@ export const deleteTransaction = async (id: string) => {
 // Delete transfer transaction
 export const deleteTransfer = async (id: string) => {
   await deleteTransferAPI(id);
-};
-
-//
-// Fetch weekly grouped summary directly (no state)
-//
-export const fetchTransactionSummaryWeekly = async (
-  params: DateFilterParams
-): Promise<TransactionGroupSummaryDTO> => {
-  try {
-    return await fetchTransactionSummaryAPI(params);
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : 'Failed to fetch summary';
-    console.error('fetchTransactionSummaryWeekly error:', message);
-    throw new Error(message);
-  }
 };

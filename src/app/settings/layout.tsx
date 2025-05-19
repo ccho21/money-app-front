@@ -2,13 +2,13 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
-import TopNav from '@/components_backup/common/TopNav';
+import TopNav from '@/components/navigation/TopNav';
 import { useUIStore } from '@/stores/useUIStore';
 
 export default function MoreLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     useUIStore.getState().setTopNav({
-      title: 'More.',
+      title: 'Settings.',
     });
 
     return () => {
