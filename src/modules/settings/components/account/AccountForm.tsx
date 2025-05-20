@@ -1,17 +1,17 @@
 'use client';
 
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import Selector from '@/components/ui/custom/Selector';
+import { Switch } from '@/components/ui/switch';
+import { ColorPicker } from '@/components/ui/custom/ColorPicker';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { AccountType } from '@/modules/account/types';
 
-import Selector from '@/components_backup/ui/selector/Selector';
-import { Input } from '@/components_backup/ui/input';
-import { Textarea } from '@/components_backup/ui/textarea';
-import { Button } from '@/components_backup/ui/button';
-import Switch from '@/components_backup/ui/switch/Switch';
-import { Label } from '@/components_backup/ui/label';
-import { ColorPicker } from '@/components/ui/custom/ColorPicker';
-
-const GROUP_OPTIONS = [
+const ACCOUNT_TYPE_OPTIONS = [
   { label: 'Cash', value: 'CASH' },
   { label: 'Card', value: 'CARD' },
   { label: 'Bank', value: 'BANK' },
@@ -35,7 +35,36 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
     setField,
   } = useAccountFormStore();
 
+  const [error, setError] = useState('');
+
   const isCard = type === 'CARD';
+
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      setError('Account name is required.');
+      return;
+    }
+
+    if (isNaN(balance)) {
+      setError('Balance must be a valid number.');
+      return;
+    }
+
+    if (isCard) {
+      if (settlementDate && (settlementDate < 1 || settlementDate > 31)) {
+        setError('Settlement Date must be between 1 and 31.');
+        return;
+      }
+
+      if (paymentDate && (paymentDate < 1 || paymentDate > 31)) {
+        setError('Payment Date must be between 1 and 31.');
+        return;
+      }
+    }
+
+    setError('');
+    onSubmit();
+  };
 
   return (
     <div className='space-y-component px-component pt-component pb-section'>
@@ -43,25 +72,28 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
         <Label htmlFor='type'>Account Type</Label>
         <Selector
           label='Account Type'
+          options={ACCOUNT_TYPE_OPTIONS}
           value={type}
-          onChange={(val) => setField('type', val as AccountType)}
           getOptionLabel={(o) => o.label}
           getOptionValue={(o) => o.value}
-          options={GROUP_OPTIONS}
+          onChange={(val) => setField('type', val as AccountType)}
         />
       </div>
 
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='name'>Name</Label>
         <Input
+          id='name'
           value={name}
           onChange={(e) => setField('name', e.target.value)}
+          placeholder='e.g. Main Wallet'
         />
       </div>
 
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='balance'>Balance</Label>
         <Input
+          id='balance'
           type='number'
           value={balance}
           onChange={(e) => setField('balance', Number(e.target.value))}
@@ -71,6 +103,7 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='description'>Description</Label>
         <Textarea
+          id='description'
           value={description ?? ''}
           onChange={(e) => setField('description', e.target.value)}
           rows={1}
@@ -84,12 +117,13 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
           onChange={(val) => setField('color', val)}
         />
       </div>
-      
+
       {isCard && (
         <div className='space-y-component border-t pt-component'>
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='settlementDate'>Settlement Date</Label>
             <Input
+              id='settlementDate'
               type='number'
               value={settlementDate ?? ''}
               onChange={(e) =>
@@ -101,6 +135,7 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='paymentDate'>Payment Date</Label>
             <Input
+              id='paymentDate'
               type='number'
               value={paymentDate ?? ''}
               onChange={(e) => setField('paymentDate', Number(e.target.value))}
@@ -113,13 +148,15 @@ export default function AccountForm({ onSubmit, submitText = 'Save' }: Props) {
             </Label>
             <Switch
               checked={autoPayment ?? false}
-              onChange={(val) => setField('autoPayment', val)}
+              onCheckedChange={(val) => setField('autoPayment', val)}
             />
           </div>
         </div>
       )}
 
-      <Button onClick={onSubmit} className='w-full mt-component'>
+      {error && <p className='text-sm text-destructive pt-tight'>{error}</p>}
+
+      <Button onClick={handleSubmit} className='w-full mt-component'>
         {submitText}
       </Button>
     </div>

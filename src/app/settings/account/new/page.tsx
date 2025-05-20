@@ -3,7 +3,7 @@
 
 import { createAccount } from '@/modules/account/hooks';
 import { useRouter } from 'next/navigation';
-import AccountForm from '../_components/AccountForm';
+import AccountForm from '../../../../modules/settings/components/account/AccountForm';
 import { useAccountFormStore } from '@/modules/account/formStore';
 import { useEffect } from 'react';
 import { useUIStore } from '@/stores/useUIStore';
@@ -29,8 +29,7 @@ export default function NewAccountPage() {
       await createAccount(payload);
       reset();
       router.back();
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   return <AccountForm onSubmit={handleSave} submitText='Add' />;

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { fetchCategoryById, updateCategory } from '@/modules/category/hooks';
 import { useCategoryFormStore } from '@/modules/category/formStore';
-import { CategoryForm } from '@/app/settings/category/components/CategoryForm';
+import { CategoryForm } from '@/modules/settings/components/category/CategoryForm';
 import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 
 export default function EditCategoryPage() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown, Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -73,7 +73,7 @@ export default function Selector<T>({
                     onClick={onEdit}
                     title='Add'
                   >
-                    <Plus className='w-4 h-4 text-muted-foreground' />
+                    <Pencil className='w-4 h-4 text-muted-foreground' />
                   </Button>
                 )}
               </div>
@@ -105,7 +105,10 @@ export default function Selector<T>({
                         style={{ color: `var(${color})` }}
                       />
                     )}
-                    <div className='text-sm truncate'>
+                    <div
+                      className='text-sm truncate'
+                      style={{ color: `var(${color})` }}
+                    >
                       {getOptionLabel(item)}
                     </div>
                   </Button>

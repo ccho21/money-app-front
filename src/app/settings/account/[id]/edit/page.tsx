@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchAccountById, updateAccount } from '@/modules/account/hooks';
 import { useAccountFormStore } from '@/modules/account/formStore';
-import AccountForm from '../../_components/AccountForm';
+import AccountForm from '../../../../../modules/settings/components/account/AccountForm';
 import { useAccountStore } from '@/modules/account/store';
 import { useUIStore } from '@/stores/useUIStore';
 
@@ -59,9 +59,8 @@ export default function AccountEditPage() {
       await updateAccount(id as string, payload);
       reset();
       router.back();
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
-  return <AccountForm onSubmit={handleUpdate} submitText="Update" />;
+  return <AccountForm onSubmit={handleUpdate} submitText='Update' />;
 }

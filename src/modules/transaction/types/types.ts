@@ -26,7 +26,8 @@ export interface TransactionGroupQuery {
 
 export interface TransactionItem {
   id: string;
-  title: string;
+  note?: string;
+  description?: string;
   amount: number;
   payment: string;
   date: string; // ISO8601 string (e.g., '2025-05-01T14:32:00.000Z')
@@ -179,7 +180,7 @@ export interface BudgetUsage {
 }
 
 export interface TransactionChartBudgetResponse {
-  timeframe: Timeframe,
+  timeframe: Timeframe;
   startDate: string; // ISO string: '2025-05-01'
   endDate: string; // ISO string: '2025-05-31'
   totalBudget: number;

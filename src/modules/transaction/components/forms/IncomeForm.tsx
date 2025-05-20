@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAccountStore } from '@/modules/account/store';
 import { useCategoryStore } from '@/modules/category/store';
 import { useTransactionFormStore } from '@/modules/transaction/formStore';
-import { useUserSettingStore } from '@/stores/useUserSettingStore';
+// import { useUserSettingStore } from '@/stores/useUserSettingStore';
 
 import {
   submitTransaction,
@@ -15,12 +15,13 @@ import {
 
 import { Input } from '@/components_backup/ui/input';
 import { Button } from '@/components_backup/ui/button';
-import Selector from '@/components_backup/ui/selector/Selector';
+import Selector from '@/components/ui/custom/Selector';
 import { Textarea } from '@/components_backup/ui/textarea';
-import DatePicker from '@/components_backup/ui/date-picker/DatePicker';
+import DatePicker from '@/components/ui/datePicker';
 
 import { startOfDay } from 'date-fns';
 import { Label } from '@/components_backup/ui/label';
+import { IconName } from '@/lib/iconMap';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -29,7 +30,7 @@ type Props = {
 
 export default function IncomeForm({ mode, transactionId }: Props) {
   const router = useRouter();
-  const inputOrder = useUserSettingStore((s) => s.inputOrder);
+  // const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
   const form = useTransactionFormStore((s) => s.state);
   const setField = useTransactionFormStore((s) => s.setField);
@@ -71,55 +72,29 @@ export default function IncomeForm({ mode, transactionId }: Props) {
   return (
     <div className='space-y-component px-component pt-component pb-section'>
       {/* 🔁 inputOrder 적용 */}
-      {inputOrder === 'amount-first' ? (
-        <>
-          <div className='grid w-full  items-center gap-1.5'>
-            <Label htmlFor='Amount'>Amount</Label>
-            <Input
-              value={amount}
-              onChange={(e) => setField('amount', e.target.value)}
-              type='number'
-            />
-          </div>
 
-          <div className='grid w-full  items-center gap-1.5'>
-            <Label htmlFor='Account'>Account</Label>
-            <Selector
-              label='Account'
-              value={selectedAccount?.name ?? ''}
-              onChange={(val) => setField('accountId', val)}
-              options={accounts}
-              getOptionLabel={(a) => a.name}
-              getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          <div className='grid w-full  items-center gap-1.5'>
-            <Label htmlFor='Account'>Account</Label>
-            <Selector
-              label='Account'
-              value={selectedAccount?.name ?? ''}
-              onChange={(val) => setField('accountId', val)}
-              options={accounts}
-              getOptionLabel={(a) => a.name}
-              getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
-            />
-          </div>
+      <div className='grid w-full items-center gap-1.5'>
+        <Label htmlFor='Account'>Account</Label>
+        <Selector
+          label='Account'
+          value={selectedAccount?.name ?? ''}
+          onChange={(val) => setField('accountId', val)}
+          options={accounts}
+          getOptionLabel={(a) => a.name}
+          getOptionValue={(a) => a.id}
+          getOptionColor={(a) => a.color || '--chart-10'}
+          onEdit={() => router.push('/settings/account/new')}
+        />
+      </div>
 
-          <div className='grid w-full  items-center gap-1.5'>
-            <Label htmlFor='Amount'>Amount</Label>
-            <Input
-              value={amount}
-              onChange={(e) => setField('amount', e.target.value)}
-              type='number'
-            />
-          </div>
-        </>
-      )}
+      <div className='grid w-full  items-center gap-1.5'>
+        <Label htmlFor='Amount'>Amount</Label>
+        <Input
+          value={amount}
+          onChange={(e) => setField('amount', e.target.value)}
+          type='number'
+        />
+      </div>
 
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='Category'>Category</Label>
@@ -130,6 +105,8 @@ export default function IncomeForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'income')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
+          getOptionColor={(a) => a.color || '#e5e7eb'}
+          getOptionIcon={(item) => (item.icon || 'icon') as IconName}
           onEdit={() => router.push('/category')}
         />
       </div>

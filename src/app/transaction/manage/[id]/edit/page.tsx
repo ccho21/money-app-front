@@ -10,9 +10,9 @@ import { useTransactionStore } from '@/modules/transaction/store';
 import { fetchAccounts } from '@/modules/account/hooks';
 import { fetchTransactionById } from '@/modules/transaction/hooks';
 import { fetchCategories } from '@/modules/category/hooks';
-import IncomeForm from '@/app/transaction_backup/_components/IncomeForm';
-import TransferForm from '@/app/transaction_backup/_components/TransferForm';
-import ExpenseForm from '@/app/transaction_backup/_components/ExpenseForm';
+import IncomeForm from '@/modules/transaction/components/forms/IncomeForm';
+import TransferForm from '@/modules/transaction/components/forms/TransferForm';
+import ExpenseForm from '@/modules/transaction/components/forms/ExpenseForm';
 
 export default function TransactionEditPage() {
   const { id: transactionId } = useParams();

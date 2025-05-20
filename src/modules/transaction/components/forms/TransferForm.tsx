@@ -7,8 +7,8 @@ import { startOfDay } from 'date-fns';
 
 import { Input } from '@/components_backup/ui/input';
 import { Button } from '@/components_backup/ui/button';
-import Selector from '@/components_backup/ui/selector/Selector';
-import DatePicker from '@/components_backup/ui/date-picker/DatePicker';
+import Selector from '@/components/ui/custom/Selector';
+import DatePicker from '@/components/ui/datePicker';
 import { Textarea } from '@/components_backup/ui/textarea';
 import { Label } from '@/components_backup/ui/label';
 
@@ -82,7 +82,8 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          onEdit={() => router.push('/account')}
+          getOptionColor={(a) => a.color || '--chart-10'}
+          onEdit={() => router.push('/settings/account')}
         />
       </div>
 
@@ -95,7 +96,8 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          onEdit={() => router.push('/account')}
+          getOptionColor={(a) => a.color || '--chart-10'}
+          onEdit={() => router.push('/settings/account')}
         />
       </div>
 

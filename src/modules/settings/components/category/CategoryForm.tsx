@@ -6,7 +6,7 @@ import { Pencil, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import Selector from '@/components_backup/ui/selector/Selector';
+import Selector from '@/components/ui/custom/Selector';
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { ColorPicker } from '@/components/ui/custom/ColorPicker';
 import { getAutoIconFromName } from '@/lib/iconSuggest';

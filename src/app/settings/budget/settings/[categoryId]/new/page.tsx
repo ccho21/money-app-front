@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import { useFilterStore } from '@/stores/useFilterStore';
-import { BudgetCategoryForm } from '@/app/settings/budget/components/BudgetCategoryForm';
+import { BudgetCategoryForm } from '@/modules/settings/components/budget/BudgetCategoryForm';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 
 export default function NewBudgetCategoryPage() {

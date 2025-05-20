@@ -7,15 +7,15 @@ import clsx from 'clsx';
 import { usePanelStore } from '@/stores/usePanelStore';
 
 // 패널 컴포넌트 import
-import MonthlyStartDatePanel from './panels/MonthlyStartDatePanel';
-import MainCurrencyPanel from './panels/MainCurrencyPanel';
-import SubCurrencyPanel from './panels/SubCurrencyPanel';
-import BackupResetPanel from './panels/BackupResetPanel';
-import AccountGroupPanel from './panels/AccountGroupPanel';
+import MonthlyStartDatePanel from './MonthlyStartDatePanel';
+import MainCurrencyPanel from './MainCurrencyPanel';
+import SubCurrencyPanel from './SubCurrencyPanel';
+import BackupResetPanel from './BackupResetPanel';
+import AccountGroupPanel from './AccountGroupPanel';
 import dynamic from 'next/dynamic';
 import SlideInPanel from '@/components_backup/ui/panel/SlideInPanel';
 
-const ThemeSettingPanel = dynamic(() => import('./panels/ThemeSettingPanel'), {
+const ThemeSettingPanel = dynamic(() => import('./ThemeSettingPanel'), {
   ssr: false,
 });
 

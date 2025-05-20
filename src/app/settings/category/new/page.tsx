@@ -3,7 +3,7 @@
 
 import { useCategoryFormStore } from '@/modules/category/formStore';
 import { useRouter } from 'next/navigation';
-import { CategoryForm } from '../components/CategoryForm';
+import { CategoryForm } from '../../../../modules/settings/components/category/CategoryForm';
 import { createCategory } from '@/modules/category/hooks';
 import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
 

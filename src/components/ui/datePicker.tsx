@@ -36,19 +36,23 @@ export default function DatePicker({ value, onChange }: Props) {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant='outline'
           className={cn(
             'justify-start text-left font-normal',
             !localDate && 'text-muted-foreground'
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {localDate ? format(localDate, 'yyyy-MM-dd (eee)') : <span>Pick a date</span>}
+          <CalendarIcon className='mr-2 h-4 w-4' />
+          {localDate ? (
+            format(localDate, 'yyyy-MM-dd (eee)')
+          ) : (
+            <span>Pick a date</span>
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className='w-auto p-0'>
         <Calendar
-          mode="single"
+          mode='single'
           selected={localDate}
           onSelect={handleChange}
           initialFocus

@@ -6,21 +6,24 @@ import { useRouter } from 'next/navigation';
 import { useAccountStore } from '@/modules/account/store';
 import { useCategoryStore } from '@/modules/category/store';
 import { useTransactionFormStore } from '@/modules/transaction/formStore';
-import { useUserSettingStore } from '@/stores/useUserSettingStore';
+// import { useUserSettingStore } from '@/stores/useUserSettingStore';
 
 import {
   submitTransaction,
   deleteTransaction,
 } from '@/modules/transaction/hooks';
 
-import { Input } from '@/components_backup/ui/input';
-import { Button } from '@/components_backup/ui/button';
-import Selector from '@/components_backup/ui/selector/Selector';
-import { Textarea } from '@/components_backup/ui/textarea';
-import DatePicker from '@/components_backup/ui/date-picker/DatePicker';
-import { Label } from '@/components_backup/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+
+import DatePicker from '@/components/ui/datePicker';
+import Selector from '@/components/ui/custom/Selector';
 
 import { startOfDay } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
+import { IconName } from '@/lib/iconMap';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -29,7 +32,8 @@ type Props = {
 
 export default function ExpenseForm({ mode, transactionId }: Props) {
   const router = useRouter();
-  const inputOrder = useUserSettingStore((s) => s.inputOrder);
+  const queryClient = useQueryClient();
+  // const inputOrder = useUserSettingStore((s) => s.inputOrder);
 
   const form = useTransactionFormStore((s) => s.state);
   const setField = useTransactionFormStore((s) => s.setField);
@@ -52,7 +56,14 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
   const handleSubmit = async () => {
     try {
       await submitTransaction(mode, transactionId);
-      router.push('');
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'dashboard',
+      });
+
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'transaction-groups',
+      });
+      router.push('/transaction/view/list');
     } catch (err) {
       alert(err instanceof Error ? err.message : '저장 실패');
     }
@@ -71,55 +82,28 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
 
   return (
     <div className='space-y-component px-component pt-component pb-section'>
-      {inputOrder === 'amount-first' ? (
-        <>
-          <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='Amount'>Amount</Label>
-            <Input
-              value={amount}
-              onChange={(e) => setField('amount', e.target.value)}
-              type='number'
-            />
-          </div>
+      <div className='grid w-full items-center gap-1.5'>
+        <Label htmlFor='Amount'>Amount</Label>
+        <Input
+          value={amount}
+          onChange={(e) => setField('amount', e.target.value)}
+          type='number'
+        />
+      </div>
 
-          <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='Account'>Account</Label>
-            <Selector
-              label='Account'
-              value={selectedAccount?.name ?? ''}
-              onChange={(val) => setField('accountId', val)}
-              options={accounts}
-              getOptionLabel={(a) => a.name}
-              getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='Account'>Account</Label>
-            <Selector
-              label='Account'
-              value={selectedAccount?.name ?? ''}
-              onChange={(val) => setField('accountId', val)}
-              options={accounts}
-              getOptionLabel={(a) => a.name}
-              getOptionValue={(a) => a.id}
-              onEdit={() => router.push('/account')}
-            />
-          </div>
-
-          <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='Amount'>Amount</Label>
-            <Input
-              value={amount}
-              onChange={(e) => setField('amount', e.target.value)}
-              type='number'
-            />
-          </div>
-        </>
-      )}
+      <div className='grid w-full items-center gap-1.5'>
+        <Label htmlFor='Account'>Account</Label>
+        <Selector
+          label='Account'
+          value={selectedAccount?.name ?? ''}
+          onChange={(val) => setField('accountId', val)}
+          options={accounts}
+          getOptionLabel={(a) => a.name}
+          getOptionValue={(a) => a.id}
+          getOptionColor={(a) => a.color || '--chart-10'}
+          onEdit={() => router.push('/settings/account/new')}
+        />
+      </div>
 
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='Category'>Category</Label>
@@ -130,7 +114,9 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'expense')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          onEdit={() => router.push('/category')}
+          getOptionColor={(a) => a.color || '#e5e7eb'}
+          getOptionIcon={(item) => (item.icon || 'icon') as IconName}
+          onEdit={() => router.push('/settings/category/new')}
         />
       </div>
 

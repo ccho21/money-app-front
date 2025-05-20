@@ -1,23 +1,17 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import UIIcon, { IconName } from '@/components/ui/UIIcon';
 import { format } from 'date-fns';
 import { TransactionItem as TxDTO } from '../types/types';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import { IconName } from '@/lib/iconMap';
+import UIIcon from '@/components/ui/UIIcon';
 
 interface Props {
   tx: TxDTO;
   onClick?: (tx: TxDTO) => void;
   showTransferLabel?: boolean;
   className?: string;
-}
-
-function hexToRgba(hex: string, alpha: number): string {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 export default function TransactionItem({
@@ -37,7 +31,7 @@ export default function TransactionItem({
 
   const iconVar = tx.category?.color ?? '--color-chart-1'; // fallback 지정
   const iconColor = `var(${iconVar})`;
-  const iconBgColor = `color-mix(in srgb, var(${iconVar}) 15%, transparent)`; // 약간의 투명 배경
+  const iconBgColor = `color-mix(in srgb, var(${iconVar}) 5%, transparent)`; // 약간의 투명 배경
 
   const amountClass = isIncome
     ? 'text-green-600'
@@ -69,7 +63,7 @@ export default function TransactionItem({
           <UIIcon
             name={
               (tx.category?.icon as IconName) ||
-              (tx.title === 'Opening Balance' ? 'coins' : 'tag') // fallback
+              (tx.note === 'Opening Balance' ? 'coins' : 'tag') // fallback
             }
             className='w-5 h-5'
             style={{ color: iconColor }}
@@ -78,7 +72,7 @@ export default function TransactionItem({
 
         <div>
           <p className='text-sm font-medium text-gray-900 truncate'>
-            {tx.title || categoryLabel}
+            {tx.note || categoryLabel}
           </p>
           <p className='text-xs text-muted-foreground'>{subtitle}</p>
         </div>
