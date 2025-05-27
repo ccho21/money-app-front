@@ -47,9 +47,12 @@ export default function RecurringExpenseChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top Recurring Expenses</CardTitle>
-        <CardDescription>Fixed monthly charges by amount</CardDescription>
+        <CardTitle className="text-title">Top Recurring Expenses</CardTitle>
+        <CardDescription className="text-caption text-muted-foreground">
+          Fixed monthly charges by amount
+        </CardDescription>
       </CardHeader>
+
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart
@@ -64,30 +67,38 @@ export default function RecurringExpenseChart() {
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value) =>
-                chartConfig[value as keyof typeof chartConfig]?.label ||
-                value.toString()
+                chartConfig[value as keyof typeof chartConfig]?.label || value.toString()
               }
             />
             <XAxis dataKey='amount' type='number' hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar
               dataKey='amount'
               radius={5}
-              fill='hsl(var(--primary))'
-              barSize={14}
-            />
+              // 개별 색상으로 override
+              isAnimationActive={false}
+              label={false}
+            >
+              {recurringChartData.map((entry, index) => (
+                <Bar
+                  key={`bar-${entry.name}`}
+                  dataKey="amount"
+                  fill={`hsl(${entry.fill})`}
+                  radius={5}
+                  barSize={14}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 font-medium leading-none'>
+
+      <CardFooter className='flex-col items-start gap-element text-body'>
+        <div className='flex items-center gap-element font-medium leading-none'>
           Total recurring: {formatCAD(total)} /month
-          <TrendingUp className='h-4 w-4' />
+          <TrendingUp className='icon-sm text-muted-foreground' />
         </div>
-        <div className='leading-none text-muted-foreground'>
+        <div className='leading-none text-caption text-muted-foreground'>
           Review your subscriptions to find potential savings.
         </div>
       </CardFooter>

@@ -1,11 +1,11 @@
 // 파일: src/modules/category/api.ts
 
-import { del, get, patch, post } from '@/common/api';
+import { del, get, patch, post } from '@/modules/shared/common/api';
 import {
   CategoryDetailDTO,
   CategoryCreateRequestDTO,
   CategoryUpdateRequestDTO,
-} from './types';
+} from './types/types';
 
 // Fetch all categories
 export const fetchCategoriesAPI = () => {

@@ -10,7 +10,7 @@ import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import CurrencyDisplay from '@/components_backup/ui/currency/CurrencyDisplay';
+import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();

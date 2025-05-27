@@ -1,78 +1,69 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useMemo } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Pencil, MinusCircle } from 'lucide-react';
 
-import { useCategoryStore } from '@/modules/category/store';
-import { deleteCategory, fetchCategories } from '@/modules/category/hooks';
-
-import { Button } from '@/components_backup/ui/button';
-import { Card, CardContent } from '@/components_backup/ui/card';
-import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
+import { fetchCategories } from '@/modules/category/hooks/queries';
+import { Card, CardContent } from '@/components/ui/card';
+import { TypographySmall } from '@/components/ui/typography';
+import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import UIIcon from '@/components/ui/UIIcon';
+import { IconName } from '@/modules/shared/lib/iconMap';
+import { EditCategoryDrawer } from '@/modules/category/components/EditCategoryDrawer';
+import { AddCategoryDrawer } from '@/modules/category/components/AddCategoryDrawer';
 
 export default function CategoryPage() {
-  const { categories } = useCategoryStore();
   const router = useRouter();
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { data: categories = [] } = fetchCategories();
 
   useTopNavPreset({
     title: 'Category',
-    onAdd: undefined,
-    onBack: () => router.push('/settings'),
+    onAdd: () => setIsAddOpen(true),
+    onBack: () => router.back(),
   });
 
-  const handleEdit = (id: string) => {
-    router.push(`/settings/category/${id}/edit`);
-  };
+  const incomeCategories = useMemo(
+    () => categories.filter((c) => c.type === 'income'),
+    [categories]
+  );
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this category?')) {
-      await deleteCategory(id);
-    }
-  };
-
-  const incomeCategories = categories.filter((c) => c.type === 'income');
-  const expenseCategories = categories.filter((c) => c.type === 'expense');
+  const expenseCategories = useMemo(
+    () => categories.filter((c) => c.type === 'expense'),
+    [categories]
+  );
 
   const renderList = (title: string, items: typeof categories) => (
-    <section className='space-y-element px-component'>
-      <h3 className='text-sm font-semibold text-muted-foreground tracking-wide'>
-        {title}
-      </h3>
-
+    <section className="space-y-3 px-4">
+      <TypographySmall>{title}</TypographySmall>
       {items.map((cat) => (
-        <Card key={cat.id} className='py-compact'>
-          <CardContent>
-            <div className='flex items-center justify-between'>
-              {/* Left: delete + name */}
-              <div className='flex items-center gap-3 overflow-hidden'>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='text-destructive hover:opacity-80'
-                  onClick={() => handleDelete(cat.id)}
-                >
-                  <MinusCircle size={16} />
-                </Button>
-                <span className='font-medium text-sm text-foreground truncate max-w-[180px]'>
-                  {cat.name}
-                </span>
-              </div>
-
-              {/* Right: edit */}
-              <Button
-                variant='ghost'
-                size='icon'
-                className='text-muted-foreground hover:text-primary'
-                onClick={() => handleEdit(cat.id)}
+        <Card
+          key={cat.id}
+          className="rounded-md p-0 shadow-xs border-none hover:shadow-sm transition"
+          onClick={() => setEditingCategoryId(cat.id)}
+        >
+          <CardContent className="p-2 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="rounded-full p-2"
+                style={{
+                  backgroundColor: `color-mix(in srgb, ${cat.color} 10%, transparent)`,
+                }}
               >
-                <Pencil size={16} />
-              </Button>
+                <UIIcon
+                  name={cat.icon as IconName}
+                  style={{ color: cat.color }}
+                  size={12}
+                />
+              </div>
+              <span className="text-sm text-foreground truncate max-w-[180px]">
+                {cat.name}
+              </span>
             </div>
+            <ChevronRight size={16} />
           </CardContent>
         </Card>
       ))}
@@ -80,9 +71,26 @@ export default function CategoryPage() {
   );
 
   return (
-    <main className='min-h-screen bg-background text-foreground pt-component pb-tabbar space-y-component'>
+    <main className="min-h-screen pt-6 pb-[80px] space-y-3 rounded-t-2xl">
+      <div className="space-y-2 px-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-base font-semibold">List</h2>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Tap to edit. Long press to reorder.
+        </p>
+      </div>
+
       {renderList('Expense Categories', expenseCategories)}
       {renderList('Income Categories', incomeCategories)}
+
+      {isAddOpen && <AddCategoryDrawer onClose={() => setIsAddOpen(false)} />}
+      {editingCategoryId && (
+        <EditCategoryDrawer
+          categoryId={editingCategoryId}
+          onClose={() => setEditingCategoryId(null)}
+        />
+      )}
     </main>
   );
 }

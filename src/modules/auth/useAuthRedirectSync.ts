@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '@/stores/useUserStore';
+import { useUserStore } from '@/modules/shared/stores/useUserStore';
 import { fetchUser } from './hooks';
 
 export default function useAuthRedirectSync() {

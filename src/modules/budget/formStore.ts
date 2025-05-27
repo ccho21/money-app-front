@@ -9,7 +9,7 @@ import type {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryUpdateRequestDTO,
 } from './types';
-import type { DateFilterParams } from '@/common/types';
+import type { DateFilterParams } from '@/modules/shared/common/types';
 
 type Mode = 'new' | 'edit';
 

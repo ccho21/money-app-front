@@ -1,5 +1,4 @@
-import { get, post, put } from '@/common/api';
-import { buildQuery } from '@/shared/util/buildQuery';
+import { get, post, put } from '@/modules/shared/common/api';
 import type {
   BudgetCategoryListResponseDTO,
   BudgetCategoryItemDTO,
@@ -8,7 +7,8 @@ import type {
   BudgetGroupItemDTO,
   BudgetSummaryDTO,
 } from './types';
-import type { DateFilterParams } from '@/common/types';
+import type { DateFilterParams } from '@/modules/shared/common/types';
+import { buildQuery } from '../shared/util/buildQuery';
 
 // ✅ [GET] /budgets/by-category → 카테고리별 예산 항목 조회
 export const fetchBudgetByCategoryAPI = (params: DateFilterParams) => {

@@ -1,6 +1,6 @@
 // 📄 src/features/auth/api.ts
 import { SigninDTO, SignupDTO, User } from './types';
-import { get, post } from '@/common/api';
+import { get, post } from '@/modules/shared/common/api';
 
 export const signinAPI = (payload: SigninDTO): Promise<User> => {
   return post<User, SigninDTO>('/auth/signin', payload);

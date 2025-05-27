@@ -1,12 +1,12 @@
 'use client';
 
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Insight } from '@/modules/insights/types/types';
 import { AlertTriangle, PiggyBank } from 'lucide-react';
 
-const summary = [
-  { type: 'over', category: 'Food', amount: 20000 },
-  { type: 'saved', category: 'Transport', amount: 15000 },
-];
+interface BudgetSummaryCardsProps {
+  insights: Insight[];
+}
 
 const formatCAD = (amount: number) =>
   new Intl.NumberFormat('en-CA', {
@@ -15,37 +15,45 @@ const formatCAD = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(amount);
 
-export function BudgetSummaryCards() {
+export function BudgetSummaryCards({ insights }: BudgetSummaryCardsProps) {
   return (
-    <div className='grid gap-3'>
-      {summary.map((item, index) => {
-        const isOver = item.type === 'over';
+    <div className="grid gap-element">
+      {insights.map((insight) => {
+        const isOver = insight.severity === 'warning' || insight.severity === 'critical';
         const icon = isOver ? (
-          <AlertTriangle className='h-4 w-4 text-destructive' />
+          <AlertTriangle className="icon-sm text-destructive" />
         ) : (
-          <PiggyBank className='h-4 w-4 text-primary' />
+          <PiggyBank className="icon-sm text-primary" />
         );
 
-        const title = isOver
-          ? `Over budget in ${item.category}`
-          : `Saved money in ${item.category}`;
+        const context = insight.context ?? {};
+        const categoryName =
+          insight.entityRef?.type ?? insight.entityRef?.id?.slice(0, 6) ?? 'Unknown';
 
-        const description = isOver
-          ? `Exceeded by ${formatCAD(
-              item.amount
-            )}. Consider adjusting your budget.`
-          : `Saved ${formatCAD(item.amount)}. Great job staying on track!`;
+        const percentOver = context.percentOver;
+        const savedAmount = context.saved ?? context.remaining;
+
+        const description =
+          insight.description ||
+          (isOver && typeof percentOver === 'number'
+            ? `You've spent ${percentOver}% over budget in ${categoryName}.`
+            : !isOver && typeof savedAmount === 'number'
+            ? `You saved ${formatCAD(savedAmount)} in ${categoryName}.`
+            : '');
 
         return (
           <Alert
-            key={index}
+            key={insight.id}
             variant={isOver ? 'destructive' : 'default'}
-            className='flex items-start gap-3'
+            className="flex items-start gap-element px-component py-element rounded-lg"
+            role="alert"
           >
             {icon}
-            <div className='space-y-1'>
-              <AlertTitle className='text-sm font-semibold'>{title}</AlertTitle>
-              <AlertDescription className='text-sm text-muted-foreground'>
+            <div className="space-y-tight">
+              <AlertTitle className="text-label font-semibold">
+                {insight.title}
+              </AlertTitle>
+              <AlertDescription className="text-caption text-muted-foreground">
                 {description}
               </AlertDescription>
             </div>

@@ -1,6 +1,6 @@
 // apis/fetchDashboardAPI.ts
 
-import { get } from '@/common/api';
+import { get } from '@/modules/shared/common/api';
 import { TransactionGroupQuery } from '../transaction/types/types';
 import { buildTransactionQuery } from '../transaction/utils/buildTransactionQuery';
 import { DashboardDTO } from './types';

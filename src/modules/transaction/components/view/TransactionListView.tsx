@@ -1,5 +1,3 @@
-// src/app/transaction/components/TransactionListView.tsx
-
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import LoadingMessage from '@/components/ui/custom/loadingMessage';
 import {
@@ -7,6 +5,7 @@ import {
   TransactionItem,
 } from '../../types/types';
 import TransactionGroup from '../TransactionGroup';
+
 interface TransactionListViewProps {
   isLoading: boolean;
   data?: TransactionGroupListResponse | null;
@@ -21,28 +20,24 @@ export default function TransactionListView({
   onItemClick,
 }: TransactionListViewProps) {
   if (isLoading) {
-    return <LoadingMessage />;
+    return <LoadingMessage message='Loading transactions...' />;
   }
 
-  if (!data) {
-    return <EmptyMessage />;
+  if (!data || !data.groups.length) {
+    return <EmptyMessage message='No transactions found for this period.' />;
   }
 
   return (
-    <>
+    <div className='space-y-element'>
       {data.groups.map((group) => (
         <TransactionGroup
           key={group.groupKey}
           label={group.groupKey}
-          onTransactionClick={(tx: TransactionItem) => {
-            onItemClick?.(tx);
-          }}
-          onHeaderClick={() => {
-            onGroupClick?.(group.groupKey);
-          }}
+          onTransactionClick={onItemClick}
+          onHeaderClick={() => onGroupClick?.(group.groupKey)}
           group={group}
         />
       ))}
-    </>
+    </div>
   );
 }

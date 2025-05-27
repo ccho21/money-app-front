@@ -1,4 +1,4 @@
-import { DateFilterParams } from '@/common/types';
+import { DateFilterParams } from '@/modules/shared/common/types';
 import {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryItemDTO,

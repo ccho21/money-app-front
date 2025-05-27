@@ -8,7 +8,6 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-
 import {
   ChartContainer,
   ChartTooltip,
@@ -17,7 +16,6 @@ import {
   ChartLegendContent,
   ChartConfig,
 } from '@/components/ui/chart';
-
 import {
   BarChart,
   Bar,
@@ -26,23 +24,13 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
+import { ChartDataItem } from '@/modules/insights/types/types';
+import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
-const weekdayData = [
-  { day: 'Mon', amount: 180000 },
-  { day: 'Tue', amount: 220000 },
-  { day: 'Wed', amount: 210000 },
-  { day: 'Thu', amount: 250000 },
-  { day: 'Fri', amount: 290000 },
-  { day: 'Sat', amount: 380000 },
-  { day: 'Sun', amount: 340000 },
-];
-
-const timeRangeData = [
-  { range: '00–06', amount: 50000 },
-  { range: '06–12', amount: 120000 },
-  { range: '12–18', amount: 240000 },
-  { range: '18–24', amount: 300000 },
-];
+interface PatternChartsProps {
+  byDay: ChartDataItem;
+  byTime: ChartDataItem;
+}
 
 const config: ChartConfig = {
   amount: {
@@ -51,23 +39,28 @@ const config: ChartConfig = {
   },
 };
 
-export function PatternCharts() {
+export function PatternCharts({ byDay, byTime }: PatternChartsProps) {
+  const weekdayData = convertChartData(byDay.data);
+  const timeRangeData = convertChartData(byTime.data);
+
   return (
-    <div className='grid gap-6'>
+    <div className="grid gap-component">
       {/* Spending by Day of Week */}
       <Card>
         <CardHeader>
-          <CardTitle>Spending by Day</CardTitle>
-          <CardDescription>Based on the past 7 days</CardDescription>
+          <CardTitle className="text-title">Spending by Day</CardTitle>
+          <CardDescription className="text-caption text-muted-foreground">
+            From <CurrencyDisplay amount={byDay.meta?.total || 0} />
+          </CardDescription>
         </CardHeader>
-        <CardContent className='p-0'>
-          <div className='w-full overflow-x-auto'>
-            <ChartContainer config={config} className='w-full min-w-[300px]'>
-              <ResponsiveContainer width='100%' height={220}>
+        <CardContent className="p-0">
+          <div className="w-full overflow-x-auto">
+            <ChartContainer config={config} className="w-full min-w-[300px]">
+              <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={weekdayData}>
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey='day'
+                    dataKey="label"
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
@@ -75,21 +68,22 @@ export function PatternCharts() {
                   <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar
-                    dataKey='amount'
+                    dataKey="amount"
                     radius={[4, 4, 0, 0]}
-                    fill='hsl(var(--primary))'
+                    fill="hsl(var(--primary))"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
           </div>
         </CardContent>
-        <CardFooter className='flex-col items-start gap-2 text-sm'>
-          <div className='flex gap-2 font-medium leading-none'>
-            Higher spending on weekends <TrendingUp className='h-4 w-4' />
+        <CardFooter className="flex-col items-start gap-element text-label">
+          <div className="flex items-center gap-element font-medium">
+            Most spent on {byDay.highlight?.key}
+            <TrendingUp className="w-icon h-icon" />
           </div>
-          <div className='leading-none text-muted-foreground'>
-            Saturday and Sunday account for 53% of your total spending.
+          <div className="text-caption text-muted-foreground">
+            <CurrencyDisplay amount={byDay.highlight?.value || 0} /> on that day
           </div>
         </CardFooter>
       </Card>
@@ -97,17 +91,19 @@ export function PatternCharts() {
       {/* Spending by Time of Day */}
       <Card>
         <CardHeader>
-          <CardTitle>Spending by Time of Day</CardTitle>
-          <CardDescription>Aggregated over the past 7 days</CardDescription>
+          <CardTitle className="text-title">Spending by Time of Day</CardTitle>
+          <CardDescription className="text-caption text-muted-foreground">
+            Total: <CurrencyDisplay amount={byTime.meta?.total || 0} />
+          </CardDescription>
         </CardHeader>
-        <CardContent className='p-0'>
-          <div className='w-full overflow-x-auto'>
-            <ChartContainer config={config} className='w-full min-w-[300px]'>
-              <ResponsiveContainer width='100%' height={220}>
+        <CardContent className="p-0">
+          <div className="w-full overflow-x-auto">
+            <ChartContainer config={config} className="w-full min-w-[300px]">
+              <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={timeRangeData}>
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey='range'
+                    dataKey="label"
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
@@ -115,25 +111,31 @@ export function PatternCharts() {
                   <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar
-                    dataKey='amount'
+                    dataKey="amount"
                     radius={[4, 4, 0, 0]}
-                    fill='hsl(var(--primary))'
+                    fill="hsl(var(--primary))"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
           </div>
         </CardContent>
-        <CardFooter className='flex-col items-start gap-2 text-sm'>
-          <div className='flex gap-2 font-medium leading-none'>
-            Peak spending in the evening
-            <TrendingUp className='h-4 w-4' />
+        <CardFooter className="flex-col items-start gap-element text-label">
+          <div className="flex items-center gap-element font-medium">
+            Peak: {byTime.highlight?.key}
+            <TrendingUp className="w-icon h-icon" />
           </div>
-          <div className='leading-none text-muted-foreground'>
-            The 6 PM – 12 AM range accounts for the majority of daily spending.
+          <div className="text-caption text-muted-foreground">
+            <CurrencyDisplay amount={byTime.highlight?.value || 0} /> in that range
           </div>
         </CardFooter>
       </Card>
     </div>
   );
+}
+
+function convertChartData(
+  data: Record<string, number>
+): { label: string; amount: number }[] {
+  return Object.entries(data).map(([label, amount]) => ({ label, amount }));
 }

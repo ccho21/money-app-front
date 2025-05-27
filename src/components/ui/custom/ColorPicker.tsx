@@ -6,7 +6,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/modules/shared/lib/utils';
 import { Button } from '@/components/ui/button';
 
 interface ColorPickerProps {

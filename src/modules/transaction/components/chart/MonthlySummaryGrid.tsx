@@ -7,7 +7,8 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion';
 import { IconTrendingUp, IconTrendingDown } from '@tabler/icons-react';
-import { PeriodData } from '../../types/types'; // DTO 기준으로 경로 맞춰줘
+import { PeriodData } from '../../types/types';
+import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
 interface Props {
   periods: PeriodData[];
@@ -22,51 +23,63 @@ export function MonthlySummaryGrid({ periods }: Props) {
     }).format(value);
 
   return (
-    <Accordion type="multiple" className="w-full space-y-2">
+    <Accordion type='multiple' className='w-full space-y-element'>
       {periods.map((item, index) => {
         const { period, income, expense, saved, rate } = item;
         const positive = saved >= 0;
 
         return (
           <AccordionItem value={`month-${index}`} key={period}>
-            <AccordionTrigger className="text-sm font-medium py-3 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 ">
-              <div className="w-full flex justify-between items-center">
-                <span className="text-left">{period}</span>
+            <AccordionTrigger className='text-body font-medium py-element px-element rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors'>
+              <div className='w-full flex justify-between items-center'>
+                <span className='text-left'>{period}</span>
               </div>
             </AccordionTrigger>
 
-            <AccordionContent className="bg-white rounded-b-lg px-4 py-3 text-sm space-y-2">
-              <div className="flex justify-between text-muted-foreground">
-                <span>Income</span>
-                <span className="text-gray-900 font-medium">
-                  {formatCAD(income)}
-                </span>
+            <AccordionContent className='bg-card rounded-b-lg px-element py-element space-y-tight text-body'>
+              <div className='flex justify-between text-muted-foreground'>
+                <span className='text-label'>Income</span>
+                <CurrencyDisplay
+                  type='income'
+                  amount={income}
+                ></CurrencyDisplay>
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Expenses</span>
-                <span className="text-red-600 font-medium">
-                  {formatCAD(expense)}
-                </span>
+
+              <div className='flex justify-between text-muted-foreground'>
+                <span className='text-label'>Expenses</span>
+                <CurrencyDisplay
+                  type='expense'
+                  amount={expense}
+                  className='text-destructive'
+                ></CurrencyDisplay>
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>{positive ? 'Saved' : 'Overspent'}</span>
+
+              <div className='flex justify-between text-muted-foreground'>
+                <span className='text-label'>
+                  {positive ? 'Saved' : 'Overspent'}
+                </span>
                 <span
                   className={`font-medium ${
-                    positive ? 'text-green-600' : 'text-destructive'
+                    positive ? 'text-success' : 'text-destructive'
                   }`}
                 >
-                  {formatCAD(Math.abs(saved))}
+                  <CurrencyDisplay
+                    type='total'
+                    amount={Math.abs(saved)}
+                  ></CurrencyDisplay>
                 </span>
               </div>
-              <div className="flex gap-2 items-center font-medium">
+
+              <div className='flex gap-tight items-center font-medium'>
                 {positive ? 'Well done – Budget saved' : 'Budget exceeded'}
                 {positive ? (
-                  <IconTrendingUp className="size-4 text-green-600" />
+                  <IconTrendingUp className='icon-sm text-success' />
                 ) : (
-                  <IconTrendingDown className="size-4 text-destructive" />
+                  <IconTrendingDown className='icon-sm text-destructive' />
                 )}
               </div>
-              <p className="text-muted-foreground text-sm">
+
+              <p className='text-caption text-muted-foreground'>
                 {Math.abs(rate)}% of your income was{' '}
                 {positive ? 'saved' : 'overspent'} this month.
               </p>

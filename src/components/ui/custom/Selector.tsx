@@ -9,11 +9,11 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-} from '@/components_backup/ui/drawer';
-import { Button } from '@/components_backup/ui/button';
-import { cn } from '@/lib/utils';
-import { useConditionalRender } from '@/hooks/useConditionalRender';
-import { IconName } from '@/lib/iconMap';
+} from '@/components/ui/drawer';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/modules/shared/lib/utils';
+import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { IconName } from '@/modules/shared/lib/iconMap';
 import UIIcon from '@/components/ui/UIIcon';
 
 interface SelectorProps<T> {
@@ -42,11 +42,11 @@ export default function Selector<T>({
   className,
 }: SelectorProps<T>) {
   const [open, setOpen] = useState(false);
-  const shouldRender = useConditionalRender(open); // 기본 delay 0
+  const shouldRender = useConditionalRender(open);
 
   return (
     <div
-      className={cn(`app-wrapper ${className}`)}
+      className={cn('', className)}
       {...(open ? { inert: true } : {})}
     >
       <Drawer open={open} onOpenChange={setOpen}>
@@ -54,35 +54,35 @@ export default function Selector<T>({
           <Button
             type='button'
             variant='outline'
-            className='w-full justify-between text-left'
+            className='w-full justify-between text-left text-label'
           >
             <span className='truncate'>{value}</span>
-            <ChevronDown className='w-4 h-4 text-muted-foreground' />
+            <ChevronDown className='icon-sm text-muted-foreground' />
           </Button>
         </DrawerTrigger>
 
         {shouldRender && (
-          <DrawerContent className='pb-5' aria-describedby={undefined}>
-            <DrawerHeader className='border-b border-border py-2'>
+          <DrawerContent className='pb-component' aria-describedby={undefined}>
+            <DrawerHeader className='py-compact'>
               <div className='flex items-center justify-between'>
-                <DrawerTitle className='text-md'>{label}</DrawerTitle>
+                <DrawerTitle className='text-heading'>{label}</DrawerTitle>
                 {onEdit && (
                   <Button
                     type='button'
                     variant='ghost'
                     onClick={onEdit}
                     title='Add'
+                    className='text-muted-foreground'
                   >
-                    <Pencil className='w-4 h-4 text-muted-foreground' />
+                    <Pencil className='icon-sm' />
                   </Button>
                 )}
               </div>
             </DrawerHeader>
 
-            <div className='grid grid-cols-2 gap-3 px-4 py-4'>
+            <div className='grid grid-cols-3 gap-element px-component py-component'>
               {options.map((item, idx) => {
                 const isSelected = getOptionValue(item) === value;
-                const color = getOptionColor?.(item);
 
                 return (
                   <Button
@@ -90,7 +90,7 @@ export default function Selector<T>({
                     type='button'
                     variant={isSelected ? 'default' : 'ghost'}
                     className={cn(
-                      'flex items-center gap-2 rounded-md shadow-sm h-10 px-3 justify-start',
+                      'flex items-center justify-start gap-element rounded-md shadow-sm h-[2.5rem] px-element',
                       isSelected && 'border border-primary'
                     )}
                     onClick={() => {
@@ -101,14 +101,11 @@ export default function Selector<T>({
                     {getOptionIcon && (
                       <UIIcon
                         name={getOptionIcon(item) as IconName}
-                        className='w-5 h-5'
-                        style={{ color: `var(${color})` }}
+                        className='icon-md'
+                        // style={{ color: `var(${getOptionColor?.(item)})` }}
                       />
                     )}
-                    <div
-                      className='text-sm truncate'
-                      style={{ color: `var(${color})` }}
-                    >
+                    <div className='text-label truncate'>
                       {getOptionLabel(item)}
                     </div>
                   </Button>

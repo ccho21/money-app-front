@@ -4,13 +4,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
-import { useTransactionFormStore } from '@/modules/transaction/formStore';
+import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
 import { TransactionType } from '@/modules/transaction/types';
 import TopNav from '@/components/navigation/TopNav';
 import TabMenu from '@/components/navigation/TabMenu';
-import { useUIStore } from '@/stores/useUIStore';
-import { Button } from '@/components_backup/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { useUIStore } from '@/modules/shared/stores/useUIStore';
 
 const TABS = [
   { key: 'income', label: 'Income' },
@@ -54,10 +52,10 @@ export default function TransactionLayout({
   }, [pathname, type, activeTab]);
 
   return (
-    <div className='min-h-screen flex flex-col h-full bg-surface text-foreground'>
+    <div className='layout-shell'>
       <TopNav />
       <TabMenu tabs={TABS} active={activeTab} onChange={handleTabChange} />
-      <div className='flex-1 overflow-y-auto'>{children}</div>
+      <div className='layout-body'>{children}</div>
     </div>
   );
 }

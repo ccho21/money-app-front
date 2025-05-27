@@ -1,6 +1,6 @@
 // src/app/dashboard/layout.tsx
 
-import DashboardShell from './components/view/DashboardShell';
+import DashboardShell from '../../modules/dashboard/components/view/DashboardShell';
 
 export default function DashboardLayout({
   children,

@@ -3,10 +3,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@/stores/useUserStore';
-import RedirectIfAuthenticated from '@/components_backup/common/RedirectIfAuthenticated';
+import { useUserStore } from '@/modules/shared/stores/useUserStore';
+import RedirectIfAuthenticated from '@/modules/auth/RedirectIfAuthenticated';
 import { signin } from '@/modules/auth/hooks';
-import { API_BASE_URL } from '@/common/api';
+import { API_BASE_URL } from '@/modules/shared/common/api';
 
 export default function SigninPage() {
   const router = useRouter();

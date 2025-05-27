@@ -7,9 +7,10 @@ import {
   LucideIcon,
   MinusIcon,
   PlusIcon,
+  Repeat,
 } from 'lucide-react';
-import { useUserSettingStore } from '@/stores/useUserSettingStore';
-import { cn } from '@/lib/utils';
+import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
+import { cn } from '@/modules/shared/lib/utils';
 
 type IconSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
 
@@ -31,6 +32,7 @@ interface CurrencyDisplayProps {
   icon?: LucideIcon;
   variant?: 'default' | 'group';
   iconSize?: IconSize;
+  isRecurring?: boolean;
 }
 
 export default function CurrencyDisplay({
@@ -43,10 +45,10 @@ export default function CurrencyDisplay({
   icon: Icon,
   variant = 'default',
   iconSize = 'sm',
+  isRecurring = false,
 }: CurrencyDisplayProps) {
   const mainCurrency = useUserSettingStore((s) => s.mainCurrency);
-  const subCurrency = useUserSettingStore((s) => s.subCurrency);
-  const currencyCode = (useSubCurrency ? subCurrency : mainCurrency) || 'CAD';
+  const currencyCode = mainCurrency || 'CAD';
 
   const formatted = new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -61,35 +63,44 @@ export default function CurrencyDisplay({
 
   const resolvedIconSize = sizeMap[iconSize];
 
-  const iconNode = Icon ? (
-    <Icon size={resolvedIconSize} />
-  ) : type === 'income' && variant === 'group' ? (
-    <ArrowUpFromLine size={resolvedIconSize} />
-  ) : type === 'expense' && variant === 'group' ? (
-    <ArrowDownToLine size={resolvedIconSize} />
-  ) : type === 'income' && variant === 'default' ? (
-    <PlusIcon size={resolvedIconSize} />
-  ) : type === 'expense' && variant === 'default' ? (
-    <MinusIcon size={resolvedIconSize} />
-  ) : type === 'transfer' ? (
-    <ArrowRightLeft size={resolvedIconSize} />
-  ) : null;
+  const getIconNode = () => {
+    if (Icon) return <Icon size={resolvedIconSize} />;
+    if (type === 'income')
+      return variant === 'group' ? (
+        <ArrowUpFromLine size={resolvedIconSize} />
+      ) : (
+        <PlusIcon size={resolvedIconSize} />
+      );
+    if (type === 'expense')
+      return variant === 'group' ? (
+        <ArrowDownToLine size={resolvedIconSize} />
+      ) : (
+        <MinusIcon size={resolvedIconSize} />
+      );
+    if (type === 'transfer') return <ArrowRightLeft size={resolvedIconSize} />;
+    return null;
+  };
 
-  const colorClass =
-    type === 'income'
-      ? 'text-primary'
-      : type === 'expense'
-      ? 'text-error'
-      : type === 'transfer'
-      ? 'text-muted'
-      : type === 'total'
-      ? 'text-foreground'
-      : '';
+  const iconNode = getIconNode();
+
+  const colorClassMap: Record<
+    NonNullable<CurrencyDisplayProps['type']>,
+    string
+  > = {
+    income: 'text-primary',
+    expense: 'text-foreground',
+    transfer: 'text-muted',
+    total: 'text-foreground',
+  };
+
+  const colorClass = type ? colorClassMap[type] : '';
 
   return (
-    <span className={cn('inline-flex items-center', colorClass, className)}>
-      {iconNode}
-      {formatted}
+    <span
+      className={cn('inline-flex items-center gap-0.5', colorClass, className)}
+    >
+      {iconNode} {formatted}
+      {isRecurring && <Repeat size={12} />}
     </span>
   );
 }

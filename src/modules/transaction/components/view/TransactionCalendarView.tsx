@@ -1,12 +1,10 @@
 'use client';
 
-import { formatDate } from '@/lib/date.util';
-import { useUserSettingStore } from '@/stores/useUserSettingStore';
+import { formatDate } from '@/modules/shared/lib/date.util';
+import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
 import { useShallow } from 'zustand/shallow';
 
 import { DayPicker } from 'react-day-picker';
-// ❌ 기본 CSS 제거
-// import 'react-day-picker/dist/style.css';
 
 interface TransactionCalendarViewProps {
   date: Date;
@@ -33,15 +31,15 @@ export default function TransactionCalendarView({
       showOutsideDays
       classNames={{
         root: 'w-full',
-        months: 'flex flex-col gap-4',
-        month: 'space-y-2',
+        months: 'flex flex-col gap-spacing-component',
+        month: 'space-y-element',
         table: 'w-full border-collapse table-fixed',
         head_row: 'flex',
-        head_cell: 'w-full text-center text-xs text-muted-foreground',
+        head_cell: 'w-full text-center text-body text-muted-foreground',
         row: 'flex',
-        cell: 'w-full text-center relative min-h-[70px]',
-        day: 'w-full h-full  flex flex-col items-center justify-center text-sm font-normal hover:bg-primary/10 rounded-md',
-        day_selected: 'bg-primary text-white',
+        cell: 'w-full text-center relative min-h-[4.375rem]', // 70px → tokenized if needed
+        day: 'w-full h-full flex flex-col items-center justify-center text-label font-normal hover:bg-muted/10 rounded-md',
+        day_selected: 'bg-primary text-primary-foreground',
         day_today: 'border border-primary',
         day_outside: 'text-muted-foreground',
         day_disabled: 'opacity-50 pointer-events-none',
@@ -56,15 +54,16 @@ export default function TransactionCalendarView({
 
           return (
             <button
-              onClick={() => onSelectDate(date)} // ✅ 핵심: 직접 호출
+              onClick={() => onSelectDate(date)}
               type='button'
-              className='w-full h-full relative flex flex-col items-center justify-center rounded-md hover:bg-primary/10 focus:outline-none'
+              aria-pressed={false}
+              className='w-full h-full relative flex flex-col items-center justify-center rounded-md hover:bg-muted/10 focus:outline-none'
             >
-              <span className={isSameMonth ? '' : 'text-muted-foreground'}>
+              <span className={isSameMonth ? 'text-label' : 'text-caption text-muted-foreground'}>
                 {date.getDate()}
               </span>
               {content && (
-                <div className='absolute bottom-1 right-1 text-[10px] leading-none'>
+                <div className='absolute bottom-tight right-tight text-caption leading-none'>
                   {content}
                 </div>
               )}

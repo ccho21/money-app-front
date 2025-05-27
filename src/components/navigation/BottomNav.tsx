@@ -8,6 +8,7 @@ import {
   Wallet,
   Plus,
 } from 'lucide-react';
+import { cn } from '@/modules/shared/lib/utils';
 
 const tabs = [
   {
@@ -47,13 +48,12 @@ export default function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleNavigate = (path: string, isActive: boolean) => {
-    const fullPath = isActive ? `${path}?refresh=${Date.now()}` : path;
-    router.push(fullPath);
+  const handleNavigate = (path: string) => {
+    router.push(path);
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
+    <nav className="fixed bottom-0 left-0 w-full border-t border-border bg-background z-50">
       <div className="relative flex justify-around items-center py-2">
         {tabs.map(({ key, label, icon: Icon, path, isCTA }) => {
           const isActive = pathname.startsWith(path);
@@ -62,8 +62,8 @@ export default function BottomNav() {
             return (
               <button
                 key={key}
-                onClick={() => handleNavigate(path, isActive)}
-                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white rounded-full p-3 shadow-md"
+                onClick={() => handleNavigate(path)}
+                className="absolute -top-6 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full p-3 shadow-md transition-colors"
               >
                 <Icon className="w-6 h-6" />
               </button>
@@ -73,18 +73,20 @@ export default function BottomNav() {
           return (
             <button
               key={key}
-              onClick={() => handleNavigate(path, isActive)}
-              className="text-xs flex flex-col items-center"
+              onClick={() => handleNavigate(path)}
+              className="flex flex-col items-center text-label gap-0.5"
             >
               <Icon
-                className={`w-5 h-5 mb-1 ${
-                  isActive ? 'text-blue-600' : 'text-gray-500'
-                }`}
+                className={cn(
+                  'w-5 h-5',
+                  isActive ? 'text-primary' : 'text-muted-foreground'
+                )}
               />
               <span
-                className={`text-[11px] ${
-                  isActive ? 'text-blue-600 font-semibold' : 'text-gray-500'
-                }`}
+                className={cn(
+                  'text-label',
+                  isActive ? 'text-primary font-normal' : 'text-muted-foreground font-normal'
+                )}
               >
                 {label}
               </span>

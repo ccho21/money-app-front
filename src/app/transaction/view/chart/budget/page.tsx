@@ -1,33 +1,42 @@
-// src/app/transaction/chart/budget/page.tsx
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { BudgetSummaryDonut } from '@/modules/transaction/components/chart/BudgetSummaryDonut';
 import { BudgetUsageStackedBarChart } from '@/modules/transaction/components/chart/BudgetUsageStackedBarChart';
-import { InsightCard } from '@/modules/transaction/components/chart/InsightCard';
 import { useTransactionChartBudget } from '@/modules/transaction/hooks/queries';
-import { useFilterStore } from '@/stores/useFilterStore';
+import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 
 export default function TransactionChartBudgetPage() {
-  const { query, getDateRangeKey } = useFilterStore();
+  const {
+    query: { timeframe },
+    getDateRangeKey,
+  } = useTransactionFilterStore();
+
   const [startDate, endDate] = getDateRangeKey().split('_');
-  const { groupBy, date } = query;
 
   const { data, isLoading, error } = useTransactionChartBudget({
-    timeframe: groupBy,
+    timeframe,
     startDate,
     endDate,
   });
 
   if (isLoading) return <Skeleton />;
-  if (data === undefined) return null;
+  if (error || !data) return null;
 
   return (
-    <main className='w-full px-component pb-[10vh] space-y-component'>
-      <BudgetSummaryDonut data={data} />
-      <InsightCard text='2 categories are over budget' />
+    <main className='w-full pb-[10vh] space-y-component'>
+      <section>
+        <BudgetSummaryDonut data={data} />
+      </section>
 
-      <BudgetUsageStackedBarChart data={data} />
+      {/* Optional Insight Example */}
+      {/* {data.overBudgetCategories?.length > 0 && (
+        <InsightCard text={`${data.overBudgetCategories.length} categories are over budget`} />
+      )} */}
+
+      <section>
+        <BudgetUsageStackedBarChart data={data} />
+      </section>
     </main>
   );
 }

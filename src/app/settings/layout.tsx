@@ -3,7 +3,7 @@
 
 import { ReactNode, useEffect } from 'react';
 import TopNav from '@/components/navigation/TopNav';
-import { useUIStore } from '@/stores/useUIStore';
+import { useUIStore } from '@/modules/shared/stores/useUIStore';
 
 export default function MoreLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function MoreLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className='min-h-screen flex flex-col bg-surface text-foreground'>
+    <div className='min-h-screen flex flex-col bg-muted/20 text-foreground'>
       <TopNav />
       <main className='flex-1 overflow-y-auto'>{children}</main>
     </div>

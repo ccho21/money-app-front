@@ -4,12 +4,8 @@ import { useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
-import { TypographySmall } from '@/components/ui/typography';
-import { Skeleton } from '@/components_backup/ui/skeleton';
+import { format } from 'date-fns';
 import SummaryBox from '@/components/common/SummaryBox';
-import DateNavigator from '@/components/navigation/DateNavigator';
-import SubMenu from '@/components/navigation/SubMenu';
-
 import {
   TransactionItem,
   GroupBy,
@@ -20,6 +16,10 @@ import {
   useTransactionSummaryQuery,
 } from '@/modules/transaction/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
+import SubMenu from '@/components/navigation/SubMenu';
+import DateNavigator from '@/components/navigation/DateNavigator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Separator } from '@/components/ui/separator';
 
 const TransactionListView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionListView'),
@@ -51,6 +51,7 @@ export default function ListPage() {
   const [startDate, endDate] = getDateRangeKey().split('_');
 
   const queryParams: TransactionGroupQuery = {
+    ...query,
     timeframe,
     startDate,
     endDate,
@@ -80,40 +81,44 @@ export default function ListPage() {
   };
 
   const setActiveSubMenu = (key: string) => {
-    setQuery({ groupBy: key as GroupBy });
+    setQuery((prev) => {
+      if (prev.groupBy !== key) {
+        return { groupBy: key as GroupBy };
+      }
+      return {};
+    });
     router.replace(getQueryString());
   };
 
   if (isSummaryError || isGroupsError) {
-    return <div className="text-sm text-destructive">Failed to load transactions.</div>;
+    return (
+      <div className='text-label text-destructive'>
+        Failed to load transactions.
+      </div>
+    );
   }
 
-  if (isLoading) return <Skeleton className="h-40 w-full" />;
+  if (isLoading) return <Skeleton className='h-40 w-full' />;
   if (!summary || !groupList) return null;
 
   return (
-    <>
-      <DateNavigator
-        variant="pager"
-        onNavigate={() => {
-          router.replace(getQueryString());
-        }}
+    <section className='space-y-component bg-background text-foreground'>
+      <SummaryBox
+        summary={summary}
+        onNavigate={() => router.replace(getQueryString())}
       />
+      <Separator className='my-compact' />
 
-      <div className="mx-compact bg-background">
-        <SummaryBox summary={summary} />
-      </div>
-
-      <div className="m-element">
-        <SubMenu
-          active={groupBy}
+      <div className='flex justify-between items-center'>
+        {/* <SubMenu
+          active={groupBy ?? 'date'}
           onChange={setActiveSubMenu}
           tabs={SUBMENU_TABS}
-        />
+        /> */}
       </div>
 
-      <div className="mx-element">
-        <TypographySmall>All Transactions</TypographySmall>
+      <div className='space-y-tight'>
+        {/* <h3 className='text-heading font-bold'>All Transactions</h3> */}
         <TransactionListView
           isLoading={isLoading}
           data={groupList}
@@ -121,6 +126,6 @@ export default function ListPage() {
           onGroupClick={handleHeaderClick}
         />
       </div>
-    </>
+    </section>
   );
 }

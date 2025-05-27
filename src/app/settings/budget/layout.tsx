@@ -3,7 +3,7 @@
 
 import BottomTabBar from '@/components/navigation/BottomNav';
 import TopNav from '@/components/navigation/TopNav';
-import { useUIStore } from '@/stores/useUIStore';
+import { useUIStore } from '@/modules/shared/stores/useUIStore';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 

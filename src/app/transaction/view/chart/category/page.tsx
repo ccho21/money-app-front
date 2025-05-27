@@ -1,27 +1,34 @@
-// src/app/transaction/chart/category/page.tsx
 'use client';
 
-import { TopCategoryBarChart } from '@/modules/transaction/components/chart/TopCategoryBarChart';
 import { useTransactionChartCategory } from '@/modules/transaction/hooks/queries';
 import { TransactionGroupQuery } from '@/modules/transaction/types/types';
-import { useFilterStore } from '@/stores/useFilterStore';
+import EmptyMessage from '@/components/ui/custom/emptyMessage';
+import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import { TopCategoryBarChart } from '@/modules/transaction/components/chart/TopCategoryBarChart';
+import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 
 export default function TransactionChartCategoryPage() {
-  const { query, setQuery, getDateRangeKey, isInitialized } = useFilterStore();
-  const { groupBy, date } = query;
+  const {
+    query: { timeframe },
+    getDateRangeKey,
+  } = useTransactionFilterStore();
 
   const [startDate, endDate] = getDateRangeKey().split('_');
   const params: TransactionGroupQuery = {
-    timeframe: groupBy,
     startDate,
     endDate,
+    timeframe,
   };
 
   const { data, isLoading, error } = useTransactionChartCategory(params);
 
+  if (isLoading) return <LoadingMessage />;
+  if (error) return null;
+  if (!data || !data?.topCategories.length) return <EmptyMessage />;
+
   return (
     <main className='w-full pb-[10vh] space-y-component'>
-      <TopCategoryBarChart />
+      <TopCategoryBarChart data={data} />
     </main>
   );
 }

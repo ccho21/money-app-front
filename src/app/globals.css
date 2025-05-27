@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '../styles/utilities.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -10,19 +11,26 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Text Sizes */
-  --text-heading: 1.125rem;
-  --text-body: 1rem;
-  --text-label: 0.875rem;
-  --text-caption: 0.75rem;
+  /* === Text Scale Tokens (based on --font-scale) === */
+  --font-scale: 1rem;
+  --text-display: calc(var(--font-scale) * 2); /* h1 */
+  --text-title: calc(var(--font-scale) * 1.5); /* h2 */
+  --text-subtitle: calc(var(--font-scale) * 1.25); /* h3 */
+  --text-heading: calc(var(--font-scale) * 1.125); /* h4 */
+  --text-subheading: var(--font-scale); /* h5 / subheading */
 
-  /* Spacing */
-  --spacing-tight: 0.25rem;
-  --spacing-compact: 0.5rem;
-  --spacing-element: 0.75rem;
-  --spacing-component: 1rem;
-  --spacing-spacious: 1.25rem;
-  --spacing-section: 5rem;
+  --text-body: var(--font-scale);
+  --text-label: calc(var(--font-scale) * 0.875); /* ~14px */
+  --text-caption: calc(var(--font-scale) * 0.75); /* ~12px */
+
+  /* === Spacing Tokens (based on --spacing-unit) === */
+  --spacing-unit: 0.25rem;
+  --spacing-tight: var(--spacing-unit); /* 0.25rem */
+  --spacing-compact: calc(var(--spacing-unit) * 2); /* 0.5rem */
+  --spacing-element: calc(var(--spacing-unit) * 3); /* 0.75rem */
+  --spacing-component: calc(var(--spacing-unit) * 4); /* 1rem */
+  --spacing-spacious: calc(var(--spacing-unit) * 5); /* 1.25rem */
+  --spacing-section: calc(var(--spacing-unit) * 20); /* 5rem */
 
   /* Base Colors */
   --color-background: var(--background);
@@ -97,13 +105,37 @@
 
 :root {
   --radius: 0.5rem;
+
+  /* Icon Sizes */
+  --icon-size: 1.125rem;
+
+  /* Text Sizes */
+  --text-display: 2rem; /* h1 – main title */
+  --text-title: 1.5rem; /* h2 – section title */
+  --text-subtitle: 1.25rem; /* h3 – card title */
+  --text-heading: 1.125rem; /* h4 – title */
+  --text-subheading: 1rem; /* small / 구분선 텍스트 */
+
+  --text-body: 1rem;
+  --text-label: 0.875rem;
+  --text-caption: 0.75rem; /* explanation, time, date */
+
+  /* Spacing */
+  --spacing-tight: 0.25rem;
+  --spacing-compact: 0.5rem;
+  --spacing-element: 0.75rem;
+  --spacing-component: 1rem;
+  --spacing-spacious: 1.25rem;
+  --spacing-section: 5rem;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
+  /* --primary: oklch(0.21 0.006 285.885); */
+  --primary: green;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -203,11 +235,29 @@
   --chart-30: oklch(0.619 0.199 144);
 }
 
+/* ✅ @layer base with improved safety */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
+  html {
     @apply bg-background text-foreground;
+  }
+
+  *,
+  ::before,
+  ::after {
+    @apply outline-ring/50;
+  }
+
+  /* Optional: apply border only to standard containers */
+  *:where(:not(img, svg, path, video, iframe)) {
+    @apply border-border;
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  .w-icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
   }
 }

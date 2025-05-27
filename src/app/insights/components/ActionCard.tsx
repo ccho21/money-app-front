@@ -9,51 +9,51 @@ export function ActionCards() {
   const router = useRouter();
 
   return (
-    <div className='grid gap-4'>
-      {/* Budget Alert */}
+    <div className="grid gap-component">
+      {/* 🟥 Budget Alert */}
       <Alert
-        variant='destructive'
-        className='flex justify-between items-center gap-4'
+        variant="destructive"
+        className="flex items-start justify-between gap-element px-component py-element rounded-lg"
       >
-        <div className='flex-1'>
-          <div className='flex items-center gap-2'>
-            <BadgeAlert className='h-4 w-4 text-destructive' />
-            <AlertTitle className='text-sm font-semibold'>
+        <div className="flex-1 space-y-tight">
+          <div className="flex items-center gap-element">
+            <BadgeAlert className="w-icon text-destructive" />
+            <AlertTitle className="text-label font-semibold">
               Some categories exceeded their budget
             </AlertTitle>
           </div>
-          <AlertDescription className='text-sm text-muted-foreground mt-1'>
+          <AlertDescription className="text-caption text-muted-foreground">
             Consider adjusting next month’s budget.
           </AlertDescription>
         </div>
         <Button
-          variant='outline'
-          size='sm'
+          variant="secondary"
+          size="sm"
           onClick={() => router.push('/budget/list')}
         >
           Adjust Budget
         </Button>
       </Alert>
 
-      {/* Recurring Expense Alert */}
+      {/* 🟡 Recurring Expense Alert */}
       <Alert
-        variant='default'
-        className='flex justify-between items-center gap-4'
+        variant="default"
+        className="flex items-start justify-between gap-element px-component py-element rounded-lg"
       >
-        <div className='flex-1'>
-          <div className='flex items-center gap-2'>
-            <CreditCard className='h-4 w-4 text-muted-foreground' />
-            <AlertTitle className='text-sm font-semibold'>
+        <div className="flex-1 space-y-tight">
+          <div className="flex items-center gap-element">
+            <CreditCard className="w-icon text-muted-foreground" />
+            <AlertTitle className="text-label font-semibold">
               Increase in recurring payments
             </AlertTitle>
           </div>
-          <AlertDescription className='text-sm text-muted-foreground mt-1'>
+          <AlertDescription className="text-caption text-muted-foreground">
             Reviewing your fixed expenses can help clarify your budget.
           </AlertDescription>
         </div>
         <Button
-          variant='outline'
-          size='sm'
+          variant="secondary"
+          size="sm"
           onClick={() => router.push('/insights/recurring')}
         >
           Review Recurring

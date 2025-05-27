@@ -1,5 +1,5 @@
-import { BaseGroupItemDTO } from '@/common/types';
-import { CategoryType } from '../category/types';
+import { BaseGroupItemDTO } from '@/modules/shared/common/types';
+import { CategoryType } from '../category/types/types';
 
 export interface BudgetCategoryItemDTO {
   categoryId: string;

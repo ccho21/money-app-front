@@ -1,8 +1,8 @@
 'use client';
 
 import { memo, useCallback } from 'react';
-import { Tabs, TabsList, TabsTrigger } from '@/components_backup/ui/tabs';
-import { cn } from '@/lib/utils';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/modules/shared/lib/utils';
 
 interface Tab {
   key: string;
@@ -28,10 +28,13 @@ function TabMenuBase({ tabs, active, onChange }: TabMenuProps) {
   );
 
   return (
-    <Tabs value={active} onValueChange={handleClick} className='w-full border-b border-b-border'>
+    <Tabs
+      value={active}
+      onValueChange={handleClick}
+      className='w-full border-b border-b-border mb-4'
+    >
       <TabsList
         className={cn(
-          // Toss-style underline tab bar
           'flex items-center w-full',
           'text-sm font-medium bg-transparent p-0 rounded-none'
         )}
@@ -41,11 +44,9 @@ function TabMenuBase({ tabs, active, onChange }: TabMenuProps) {
             key={tab.key}
             value={tab.key}
             className={cn(
-              'border-b-2 border-b-transparent',
-              'rounded-none px-0',
-
-              'data-[state=active]:shadow-none',
-              'data-[state=active]:border-b-blue-600'
+              'border-b-2 border-b-transparent px-0 rounded-none',
+              'data-[state=active]:border-b-primary',
+              'data-[state=active]:shadow-none'
             )}
           >
             {tab.label}

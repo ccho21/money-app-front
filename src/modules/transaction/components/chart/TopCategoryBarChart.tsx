@@ -1,6 +1,5 @@
 'use client';
 
-import { TrendingUp, TrendingDown } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -8,6 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   LabelList,
+  Cell,
 } from 'recharts';
 
 import {
@@ -24,32 +24,23 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from '@/components/ui/chart';
-import { useFilterStore } from '@/stores/useFilterStore';
-import { useTransactionChartCategory } from '../../hooks/queries';
+import { TransactionChartCategoryResponse } from '../../types/types';
 
 const chartConfig = {
   amount: {
     label: 'Spending',
-    color: 'var(--color-chart-1)',
+    color: 'var(--chart-2)',
   },
   label: {
-    color: 'var(--color-background)',
+    color: 'var(--background)',
   },
 } satisfies ChartConfig;
 
-export function TopCategoryBarChart() {
-  const { query, getDateRangeKey } = useFilterStore();
-  const { groupBy } = query;
-  const [startDate, endDate] = getDateRangeKey().split('_');
-  const params = {
-    timeframe: groupBy,
-    startDate,
-    endDate,
-    groupBy: 'category' as const,
-  };
+interface Props {
+  data: TransactionChartCategoryResponse;
+}
 
-  const { data, isLoading, error } = useTransactionChartCategory(params);
-
+export function TopCategoryBarChart({ data }: Props) {
   const formatCAD = (value: number) =>
     new Intl.NumberFormat('en-CA', {
       style: 'currency',
@@ -57,12 +48,10 @@ export function TopCategoryBarChart() {
       maximumFractionDigits: 0,
     }).format(value);
 
-  if (!data || isLoading) return null;
-
   const chartData = data.topCategories.map((cat) => ({
     category: cat.name,
     amount: cat.amount,
-    color: cat.color ?? 'var(--color-chart-1)',
+    color: cat.color ?? 'var(--chart-1)',
   }));
 
   const comparison = data.comparison;
@@ -73,101 +62,90 @@ export function TopCategoryBarChart() {
     : null;
 
   return (
-    <Card className='px-0 shadow-none border-none'>
-      <CardHeader>
-        <CardTitle>Top Spending Categories</CardTitle>
-        <CardDescription>Spending by Category</CardDescription>
+    <Card className='flat-card'>
+      <CardHeader className='px-0'>
+        <CardTitle className='text-body'>Top Spending Categories</CardTitle>
+        <CardDescription className='text-label text-muted-foreground'>
+          Spending by Category
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className='flat-card-content'>
         <ChartContainer config={chartConfig}>
           <BarChart
-            accessibilityLayer
             data={chartData}
             layout='vertical'
-            margin={{ top: 0, right: 50, left: 0, bottom: 0 }}
+            role='img'
+            aria-label='Top spending categories chart'
+            margin={{ top: 0, right: 60, left: 50, bottom: 0 }}
           >
             <CartesianGrid horizontal={false} />
             <YAxis
               dataKey='category'
               type='category'
-              tickLine={false}
-              axisLine={false}
               tick={false}
+              axisLine={false}
               width={0}
             />
             <XAxis dataKey='amount' type='number' hide />
             <ChartTooltip
-              cursor={false}
               content={<ChartTooltipContent indicator='line' />}
+              cursor={false}
             />
-            <Bar
-              dataKey='amount'
-              fill='var(--color-amount)'
-              radius={4}
-              layout='vertical'
-            >
+
+            <Bar dataKey='amount' radius={4} isAnimationActive={false}>
+              {chartData.map((entry, index) => (
+                <Cell key={`bar-cell-${index}`} fill={`var(${entry.color})`} />
+              ))}
               <LabelList
                 dataKey='category'
-                position='insideLeft'
+                position='left'
                 offset={8}
-                className='fill-[--color-label]'
-                fontSize={12}
+                className='text-caption fill-foreground'
               />
               <LabelList
                 dataKey='amount'
                 position='right'
                 offset={8}
-                className='fill-foreground'
-                fontSize={12}
+                className='text-label fill-foreground'
                 formatter={formatCAD}
               />
             </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        {insightText && (
-          <div className='flex gap-2 font-medium leading-none'>
-            {insightText}{' '}
-            {comparison?.trend === 'increase' ? (
-              <TrendingUp className='h-4 w-4 text-red-500' />
-            ) : (
-              <TrendingDown className='h-4 w-4 text-green-600' />
-            )}
-          </div>
-        )}
-        <div className='leading-none text-muted-foreground'>
-          Based on the past month&apos;s spending
-        </div>
 
-        <div className='w-full pt-4 space-y-1'>
-          <h3 className='text-sm font-medium text-gray-800'>Top Categories</h3>
-          <ul className='divide-y divide-gray-200 text-sm'>
-            {data.topCategories.map((cat, idx) => (
-              <li key={cat.categoryId} className='flex justify-between py-2'>
-                <span className='flex items-center gap-2'>
-                  <span
-                    className='w-2.5 h-2.5 rounded-full'
-                    style={{
-                      backgroundColor: cat.color ?? 'var(--color-chart-1)',
-                    }}
-                  ></span>
-                  {cat.name}
-                </span>
-                <span className='font-medium text-gray-900'>
-                  {formatCAD(cat.amount)}
-                </span>
-              </li>
-            ))}
-          </ul>
-          {comparison && (
-            <p className='text-xs text-gray-500 text-right mt-1'>
-              {comparison.name} spending{' '}
-              {comparison.trend === 'increase' ? '↑' : '↓'}
-              {comparison.percentChange} compared to last period
-            </p>
-          )}
-        </div>
+      <CardFooter className='flex-col items-start px-component pb-element space-y-tight text-label'>
+        <ul className='w-full divide-y divide-border'>
+          {data.topCategories.map((cat) => (
+            <li
+              key={cat.categoryId}
+              className='flex justify-between items-center py-tight'
+            >
+              <span className='flex items-center gap-element'>
+                <span
+                  className='w-2.5 h-2.5 rounded-full'
+                  style={{
+                    backgroundColor: cat.color
+                      ? `var(${cat.color})`
+                      : 'var(--chart-1)',
+                  }}
+                />
+                {cat.name}
+              </span>
+              <span className='font-medium text-foreground'>
+                {formatCAD(cat.amount)}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {comparison && (
+          <p className='text-caption text-muted-foreground text-right mt-tight'>
+            {comparison.name} spending{' '}
+            {comparison.trend === 'increase' ? '↑' : '↓'}{' '}
+            {comparison.percentChange} compared to last period
+          </p>
+        )}
       </CardFooter>
     </Card>
   );

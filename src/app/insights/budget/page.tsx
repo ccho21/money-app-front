@@ -1,17 +1,37 @@
 'use client';
 
-// import { ActionCards } from '../components/ActionCard';
+import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilterStore';
 import { BudgetSummaryCards } from '../components/BudgetSummaryCards';
 import { BudgetUsageChart } from '../components/BudgetUsageChart';
+import { useInsightBudget } from '../hooks/hooks';
+import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import EmptyMessage from '@/components/ui/custom/emptyMessage';
 
 export default function InsightsBudgetPage() {
+  const { query, getDateRangeKey } = useInsightFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
+  const params = {
+    startDate,
+    endDate,
+    timeframe: query.timeframe,
+  };
+  const { data, isLoading, error } = useInsightBudget(params);
+
+  if (isLoading) {
+    return <LoadingMessage message="Loading budget insights..." />;
+  }
+
+  if (error || !data) {
+    return <EmptyMessage message="No budget data found." />;
+  }
+
   return (
-    <main className='w-full min-h-screen px-component pb-[10vh] pt-component space-y-component'>
+    <main className="w-full min-h-screen bg-background text-foreground px-component pt-component pb-section space-y-component">
       {/* 📊 예산 사용 현황 차트 */}
-      <BudgetUsageChart />
+      <BudgetUsageChart byCategory={data.byCategory} />
 
       {/* 💡 초과 항목 요약 카드 */}
-      <BudgetSummaryCards />
+      <BudgetSummaryCards insights={data.insights} />
 
       {/* 🛠 예산 조정 CTA */}
       {/* <ActionCards /> */}

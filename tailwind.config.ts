@@ -6,7 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* Base & Role Colors */
+        // ✅ Base & Role Colors
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         card: 'var(--card)',
@@ -15,10 +15,8 @@ const config: Config = {
         'popover-foreground': 'var(--popover-foreground)',
         input: 'var(--input)',
         ring: 'var(--ring)',
+        border: 'oklch(var(--border))',
 
-        borderColor: {
-          DEFAULT: 'oklch(var(--border))',
-        },
         primary: {
           DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',
@@ -39,21 +37,13 @@ const config: Config = {
           DEFAULT: 'var(--destructive)',
         },
 
-        /* Feedback Colors */
-        success: {
-          DEFAULT: 'var(--color-success)',
-        },
-        error: {
-          DEFAULT: 'var(--color-error)',
-        },
-        warning: {
-          DEFAULT: 'var(--color-warning)',
-        },
-        info: {
-          DEFAULT: 'var(--color-info)',
-        },
+        // ✅ Feedback Colors
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        info: 'var(--color-info)',
 
-        /* Chart Colors */
+        // ✅ Chart Colors
         chart: {
           1: 'var(--chart-1)',
           2: 'var(--chart-2)',
@@ -86,22 +76,14 @@ const config: Config = {
           29: 'var(--chart-29)',
           30: 'var(--chart-30)',
         },
-
-        /* Sidebar Group */
-        sidebar: {
-          DEFAULT: 'var(--sidebar)',
-          foreground: 'var(--sidebar-foreground)',
-          primary: 'var(--sidebar-primary)',
-          'primary-foreground': 'var(--sidebar-primary-foreground)',
-          accent: 'var(--sidebar-accent)',
-          'accent-foreground': 'var(--sidebar-accent-foreground)',
-          border: 'var(--sidebar-border)',
-          ring: 'var(--sidebar-ring)',
-        },
       },
 
       fontSize: {
+        display: 'var(--text-display)',
+        title: 'var(--text-title)',
+        subtitle: 'var(--text-subtitle)',
         heading: 'var(--text-heading)',
+        subheading: 'var(--text-subheading)',
         body: 'var(--text-body)',
         label: 'var(--text-label)',
         caption: 'var(--text-caption)',
@@ -114,13 +96,10 @@ const config: Config = {
         component: 'var(--spacing-component)',
         spacious: 'var(--spacing-spacious)',
         section: 'var(--spacing-section)',
+        icon: 'var(--spacing-icon)',
       },
 
       borderRadius: {
-        input: 'var(--radius-input)',
-        DEFAULT: 'var(--radius-default)',
-        card: 'var(--radius-card)',
-        section: 'var(--radius-section)',
         sm: 'var(--radius-sm)',
         md: 'var(--radius-md)',
         lg: 'var(--radius-lg)',

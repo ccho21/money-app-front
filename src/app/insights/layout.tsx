@@ -2,9 +2,9 @@
 
 import { ReactNode, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { cn } from '@/lib/utils';
 import TabMenu from '@/components/navigation/TabMenu';
+import TopNav from '@/components/navigation/TopNav';
+import { useTopNavPreset } from '../../modules/shared/hooks/useTopNavPreset';
 
 export default function InsightsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -15,6 +15,12 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
     if (pathname.includes('/recurring')) return 'recurring';
     if (pathname.includes('/alerts')) return 'alerts';
     return 'pattern';
+  });
+
+  useTopNavPreset({
+    title: 'Spending Insights',
+    onSearch: () => {},
+    onFilter: () => {},
   });
 
   const tabs = [
@@ -35,18 +41,13 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
     router.push(`/insights${value === 'pattern' ? '' : `/${value}`}`);
   };
 
-  const tabKey = pathname.split('/')[2] ?? 'daily';
-
   return (
-    <div className='w-full min-h-screen px-component pb-[10vh] pt-component space-y-component'>
+    <div className='w-full min-h-screen pb-[10vh] space-y-component'>
+      <TopNav />
       {/* Page Title */}
-      <div className='flex items-center justify-between'>
-        <h1 className='text-heading font-semibold'>Spending Insights</h1>
-      </div>
 
       {/* Tabs */}
-      <TabMenu tabs={tabs} active={tabKey} onChange={handleTabChange} />
-
+      <TabMenu tabs={tabs} active={tab} onChange={handleTabChange} />
 
       {/* Content */}
       <div className='space-y-component'>{children}</div>

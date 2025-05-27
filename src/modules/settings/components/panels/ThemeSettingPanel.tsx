@@ -2,7 +2,7 @@
 
 import { CheckCircle, Circle, Moon, Sun, Settings2 } from 'lucide-react';
 import clsx from 'clsx';
-import { useUserSettingStore } from '@/stores/useUserSettingStore';
+import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
 
 type ThemeColor = 'white' | 'red' | 'pink' | 'green' | 'blue' | 'black';
 
@@ -32,16 +32,16 @@ export default function ThemeSettingPanel() {
   }) => (
     <button
       onClick={() => setTheme(value)}
-      className='flex items-center justify-between w-full py-4 px-4 border-b border-border last:border-0'
+      className='flex items-center justify-between w-full py-component px-component border-b border-border last:border-0'
     >
-      <div className='flex items-center gap-3 text-foreground'>
+      <div className='flex items-center gap-element text-foreground'>
         {icon}
-        <span className='text-sm'>{label}</span>
+        <span className='text-label'>{label}</span>
       </div>
       {theme === value ? (
-        <CheckCircle className='text-success w-5 h-5' />
+        <CheckCircle className='icon-md text-success' />
       ) : (
-        <Circle className='text-muted w-5 h-5' />
+        <Circle className='icon-md text-muted' />
       )}
     </button>
   );
@@ -52,13 +52,21 @@ export default function ThemeSettingPanel() {
         <ModeRow
           label='System Mode'
           value='system'
-          icon={<Settings2 size={16} />}
+          icon={<Settings2 className='icon-sm' />}
         />
-        <ModeRow label='Dark Mode' value='dark' icon={<Moon size={16} />} />
-        <ModeRow label='Light Mode' value='light' icon={<Sun size={16} />} />
+        <ModeRow
+          label='Dark Mode'
+          value='dark'
+          icon={<Moon className='icon-sm' />}
+        />
+        <ModeRow
+          label='Light Mode'
+          value='light'
+          icon={<Sun className='icon-sm' />}
+        />
       </div>
 
-      <div className='flex flex-wrap gap-4 px-4 pt-6 pb-4'>
+      <div className='flex flex-wrap gap-element px-component pt-spacious pb-component'>
         {colorOptions.map(({ color, hex }) => {
           const isActive = themeColor === color;
           return (

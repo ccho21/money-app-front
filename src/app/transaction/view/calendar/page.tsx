@@ -4,16 +4,19 @@ import { JSX, useLayoutEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 import dynamic from 'next/dynamic';
 
-import { parseLocalDate } from '@/lib/date.util';
+import { parseLocalDate } from '@/modules/shared/lib/date.util';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { useTransactionCalendarQuery } from '@/modules/transaction/hooks/queries';
 
-import CurrencyDisplay from '@/components_backup/ui/currency/CurrencyDisplay';
 import LoadingMessage from '@/components/ui/custom/loadingMessage';
-import DateNavigator from '@/components/navigation/DateNavigator';
-import TransactionCalendarView from '@/modules/transaction/components/view/TransactionCalendarView';
 import { TransactionCalendar } from '@/modules/transaction/types/types';
+import DateNavigator from '@/components/navigation/DateNavigator';
+import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
+const TransactionCalendarView = dynamic(
+  () => import('@/modules/transaction/components/view/TransactionCalendarView'),
+  { ssr: false }
+);
 const TransactionDetailView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionDetailView'),
   { ssr: false }
@@ -34,10 +37,8 @@ export default function CalendarPage() {
 
   const queryParams = { timeframe, startDate, endDate };
 
-  const {
-    data: calendarData,
-    isLoading: calendarLoading,
-  } = useTransactionCalendarQuery(queryParams);
+  const { data: calendarData, isLoading: calendarLoading } =
+    useTransactionCalendarQuery(queryParams);
 
   const calendarTileMap = useMemo(() => {
     const map = new Map<string, JSX.Element>();
@@ -52,7 +53,7 @@ export default function CalendarPage() {
               amount={item.income}
               type='income'
               iconSize='xxs'
-              className='text-[9px]'
+              className='text-caption'
             />
           )}
           {item.expense > 0 && (
@@ -60,7 +61,7 @@ export default function CalendarPage() {
               amount={item.expense}
               type='expense'
               iconSize='xxs'
-              className='text-[9px]'
+              className='text-caption'
             />
           )}
         </div>

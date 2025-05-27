@@ -1,7 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { LineChart, Line, XAxis, CartesianGrid, LabelList } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  CartesianGrid,
+  LabelList,
+  YAxis,
+} from 'recharts';
 
 import {
   Card,
@@ -19,16 +26,16 @@ import {
 } from '@/components/ui/chart';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { PeriodData } from '../../types/types'; // dto 에 맞게 경로 조정
+import { PeriodData } from '../../types/types';
 
 const chartConfig = {
   income: {
     label: 'Income',
-    color: 'hsl(var(--color-chart-3))',
+    color: 'var(--color-chart-3)',
   },
   expense: {
     label: 'Expense',
-    color: 'hsl(var(--color-chart-4))',
+    color: 'var(--color-chart-4)',
   },
 } satisfies ChartConfig;
 
@@ -50,18 +57,37 @@ export default function TransactionYearChart({ periods }: Props) {
   const maxExpense = Math.max(...periods.map((d) => d.expense));
 
   return (
-    <Card className='@container/card shadow-none'>
-      <CardHeader className='relative'>
-        <CardTitle>Yearly Overview</CardTitle>
-        <CardDescription>
-          <span className='@[540px]/card:block hidden'>
-            Income and Expense trend by month
-          </span>
-          <span className='@[540px]/card:hidden'>Annual summary</span>
-        </CardDescription>
+    <Card className='@container/card flat-card'>
+      <CardHeader className='relative px-0'>
+        <div className='flex items-start justify-between'>
+          <div>
+            <CardTitle className='text-body'>Transaction Flows</CardTitle>
+            <CardDescription className='text-label text-muted-foreground'>
+              Income and Expense trend by month
+            </CardDescription>
+          </div>
+
+          {/* 🔥 Inline Legend */}
+          <div className='flex items-center gap-3'>
+            <div className='flex items-center gap-1 text-caption text-muted-foreground'>
+              <div
+                className='w-3 h-3 rounded-full'
+                style={{ backgroundColor: 'var(--color-chart-3)' }}
+              />
+              Income
+            </div>
+            <div className='flex items-center gap-1 text-caption text-muted-foreground'>
+              <div
+                className='w-3 h-3 rounded-full'
+                style={{ backgroundColor: 'var(--color-chart-1)' }}
+              />
+              Expense
+            </div>
+          </div>
+        </div>
       </CardHeader>
 
-      <CardContent className='px-2 pt-4 sm:px-6 sm:pt-6 overflow-x-auto'>
+      <CardContent className='flat-card-content overflow-x-auto'>
         <div className='min-w-[800px]'>
           <ChartContainer
             config={chartConfig}
@@ -69,15 +95,16 @@ export default function TransactionYearChart({ periods }: Props) {
           >
             <LineChart
               data={periods}
-              margin={{ top: 24, left: 12, right: 12 }}
+              margin={{ top: 15, left: 12, right: 12, bottom: 10 }}
             >
               <CartesianGrid vertical={false} strokeDasharray='3 3' />
               <XAxis
-                dataKey='period' // ✅ 수정됨
+                dataKey='period'
                 tickLine={false}
                 axisLine={false}
                 tickMargin={20}
-                minTickGap={20}
+                minTickGap={0}
+                interval='preserveStartEnd' // ← 이게 핵심
               />
               <ChartTooltip
                 cursor={false}
@@ -105,7 +132,7 @@ export default function TransactionYearChart({ periods }: Props) {
                       ? formatCurrency(value)
                       : ''
                   }
-                  className='fill-foreground text-xs'
+                  className='fill-foreground text-caption'
                 />
               </Line>
               <Line
@@ -119,13 +146,13 @@ export default function TransactionYearChart({ periods }: Props) {
                 <LabelList
                   dataKey='expense'
                   position='bottom'
-                  offset={5}
+                  offset={10}
                   formatter={(value: number) =>
                     showAllLabels || value === maxExpense
                       ? formatCurrency(value)
                       : ''
                   }
-                  className='fill-foreground text-xs'
+                  className='fill-foreground text-caption'
                 />
               </Line>
             </LineChart>
@@ -133,19 +160,19 @@ export default function TransactionYearChart({ periods }: Props) {
         </div>
       </CardContent>
 
-      <CardFooter className='flex items-center justify-between px-4 pt-2'>
-        <span className='text-xs text-primary'>
+      <CardFooter className='flex items-baseline justify-between px-0'>
+        <div className='text-label mr-component'>
           Showing income and expense for each month
-        </span>
-        <div className='flex items-center gap-2'>
+        </div>
+        <div className='text-right shrink-0 text-primary'>
+          <Label htmlFor='label-toggle' className='text-label mb-tight'>
+            Show all labels
+          </Label>
           <Switch
             id='label-toggle'
             checked={showAllLabels}
             onCheckedChange={setShowAllLabels}
           />
-          <Label htmlFor='label-toggle' className='text-xs'>
-            Show all labels
-          </Label>
         </div>
       </CardFooter>
     </Card>

@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 
-import { Input } from '@/components_backup/ui/input';
-import { Button } from '@/components_backup/ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export const BudgetCategoryForm = () => {
   const router = useRouter();
@@ -28,9 +28,13 @@ export const BudgetCategoryForm = () => {
 
   return (
     <div className="space-y-component bg-surface text-foreground p-component rounded-card shadow-sm">
-      <div className="text-label text-muted-foreground text-center font-semibold">
+      <h2
+        className="text-label text-muted-foreground text-center font-semibold"
+        role="heading"
+        aria-level={2}
+      >
         {mode === 'edit' ? 'Edit Budget' : 'Set Budget Amount'}
-      </div>
+      </h2>
 
       <Input
         type="number"
@@ -38,7 +42,7 @@ export const BudgetCategoryForm = () => {
         placeholder="Enter amount"
         value={amount}
         onChange={(e) => setField('amount', Number(e.target.value))}
-        className="text-center font-bold text-body"
+        className="text-center font-semibold text-body"
       />
 
       <Button onClick={handleSubmit} className="w-full">

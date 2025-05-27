@@ -1,22 +1,19 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { formatDate, getDateRangeKey, parseLocalDate } from '@/lib/date.util';
-import { GroupBy, Timeframe, TransactionType } from '../types/types';
-
-interface TransactionFilterQuery {
-  startDate: string;
-  endDate: string;
-  timeframe: Timeframe;
-  groupBy: GroupBy;
-  transactionType?: TransactionType;
-  categoryId?: string;
-  accountId?: string;
-}
+import { formatDate, getDateRangeKey, parseLocalDate } from '@/modules/shared/lib/date.util';
+import {
+  GroupBy,
+  Timeframe,
+  TransactionGroupQuery,
+  TransactionType,
+} from '../types/types';
 
 interface TransactionFilterStore {
-  query: TransactionFilterQuery;
+  query: TransactionGroupQuery;
   isInitialized: boolean;
-  setQuery: (partial: Partial<TransactionFilterQuery>) => void;
+  setQuery: (
+    fn: (prev: TransactionGroupQuery) => Partial<TransactionGroupQuery>
+  ) => void;
   resetQuery: () => void;
   initializeFromParams: (params: URLSearchParams) => void;
   initializeListDefaults: () => void;
@@ -24,7 +21,7 @@ interface TransactionFilterStore {
   getDateRangeKey: (amount?: number) => string;
 }
 
-const defaultQuery: TransactionFilterQuery = {
+const defaultQuery: TransactionGroupQuery = {
   startDate: formatDate(new Date()),
   endDate: formatDate(new Date()),
   timeframe: 'monthly',
@@ -37,15 +34,27 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
       query: defaultQuery,
       isInitialized: false,
 
-      setQuery: (partial) =>
+      setQuery: (fn) => {
         set(
-          (state) => ({
-            query: { ...state.query, ...partial },
-          }),
+          (state) => {
+            const patch = fn(state.query);
+            const hasChange = Object.entries(patch).some(
+              ([key, val]) =>
+                val !== state.query[key as keyof TransactionGroupQuery]
+            );
+
+            return {
+              query: {
+                ...state.query,
+                ...patch,
+                version: hasChange ? Date.now() : state.query.version,
+              },
+            };
+          },
           false,
           'transactionFilter/setQuery'
-        ),
-
+        );
+      },
       resetQuery: () =>
         set(
           { query: defaultQuery, isInitialized: false },
@@ -54,7 +63,7 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
         ),
 
       initializeFromParams: (params) => {
-        const patch: Partial<TransactionFilterQuery> = {};
+        const patch: Partial<TransactionGroupQuery> = {};
         const dateParam = params.get('date');
         const timeframe = params.get('timeframe');
         const groupBy = params.get('groupBy');
@@ -133,12 +142,13 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
           transactionType,
           categoryId,
           accountId,
+          note,
         } = get().query;
         const params = new URLSearchParams();
         params.set('startDate', startDate);
         params.set('endDate', endDate);
         params.set('timeframe', timeframe);
-        params.set('groupBy', groupBy);
+        if (groupBy) params.set('groupBy', groupBy);
         if (transactionType) params.set('type', transactionType);
         if (categoryId) params.set('categoryId', categoryId);
         if (accountId) params.set('accountId', accountId);

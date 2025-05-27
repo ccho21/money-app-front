@@ -1,7 +1,7 @@
 // src/components/ui/UIIcon.tsx
 import { LucideProps } from 'lucide-react';
-import { iconMap, IconName } from '@/lib/iconMap';
-import { cn } from '@/lib/utils';
+import { iconMap, IconName } from '@/modules/shared/lib/iconMap';
+import { cn } from '@/modules/shared/lib/utils';
 interface UIIconProps extends LucideProps {
   name: IconName;
   className?: string;

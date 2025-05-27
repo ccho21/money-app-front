@@ -1,8 +1,13 @@
 'use client';
 
-import { memo, useCallback } from 'react';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { cn } from '@/lib/utils';
+import { memo } from 'react';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu';
+import { cn } from '@/modules/shared/lib/utils';
 
 interface Tab {
   key: string;
@@ -12,42 +17,34 @@ interface Tab {
 interface SubMenuProps {
   active: string;
   onChange: (key: string) => void;
-  tabs: { key: string; label: string }[];
+  tabs: Tab[];
 }
 
 function SubMenuBase({ tabs, active, onChange }: SubMenuProps) {
-  const handleClick = useCallback(
-    (key: string | undefined) => {
-      if (key && key !== active) {
-        onChange(key);
-      }
-    },
-    [active, onChange]
-  );
-
   return (
-    <ToggleGroup
-      type='single'
-      className='flex items-center text-xs text-gray-500'
-      value={active}
-      onValueChange={handleClick as (value: string) => void}
-    >
-      {tabs.map((tab) => (
-        <ToggleGroupItem
-          key={tab.key}
-          value={tab.key}
-          className={cn(
-            'px-4 text-sm h-7',
-            'data-[state=on]:bg-blue-100',
-            'data-[state=on]:text-blue-600',
-            'data-[state=on]:font-semibold',
-            'data-[state=on]:rounded-full'
-          )}
-        >
-          {tab.label}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
+    <NavigationMenu className="w-full">
+      <NavigationMenuList className="flex">
+        {tabs.map((tab) => {
+          const isActive = tab.key === active;
+
+          return (
+            <NavigationMenuItem key={tab.key}>
+              <NavigationMenuLink
+                role="link"
+                onClick={() => onChange(tab.key)}
+                className={cn(
+                  'text-label transition-colors px-2 py-1 rounded-md cursor-pointer',
+                  'text-muted-foreground hover:text-primary hover:bg-accent',
+                  isActive && 'bg-primary/10 text-primary font-semibold'
+                )}
+              >
+                {tab.label}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          );
+        })}
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
 

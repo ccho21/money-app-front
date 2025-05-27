@@ -1,16 +1,17 @@
 // 파일: src/modules/transaction/api.ts
 
-import { get, post, patch, del } from '@/common/api';
+import { get, post, patch, del } from '@/modules/shared/common/api';
 import {
   TransactionCreateRequestDTO,
   TransactionUpdateRequestDTO,
   TransactionTransferRequestDTO,
   TransactionGroupItemDTO,
 } from './types';
-import type { DateFilterParams } from '@/common/types';
+import type { DateFilterParams } from '@/modules/shared/common/types';
 import { buildTransactionQuery } from './utils/buildTransactionQuery';
 import {
   TransactionCalendar,
+  TransactionChartAccountResponse,
   TransactionChartBudgetResponse,
   TransactionChartCategoryResponse,
   TransactionChartFlowResponse,
@@ -102,6 +103,7 @@ export const fetchTransactionGroupsAPI = (params: TransactionGroupQuery) => {
 
 export const fetchTransactionChartFlowAPI = (params: TransactionGroupQuery) => {
   const query = buildTransactionQuery(params);
+  console.log('QQQ QUERY', query);
   return get<TransactionChartFlowResponse>(
     `/transactions/charts/flow?${query}`
   );
@@ -116,9 +118,24 @@ export const fetchTransactionChartCategoryAPI = (
   );
 };
 
+export const fetchTransactionChartAccountAPI = (
+  params: TransactionGroupQuery
+) => {
+  const query = buildTransactionQuery(params);
+  return get<TransactionChartAccountResponse>(
+    `/transactions/charts/account?${query}`
+  );
+};
+
 export const fetchTransactionChartBudgetAPI = (
   params: TransactionGroupQuery
 ) => {
   const query = buildTransactionQuery(params);
-  return get<TransactionChartBudgetResponse>(`/transactions/charts/budget?${query}`);
+  return get<TransactionChartBudgetResponse>(
+    `/transactions/charts/budget?${query}`
+  );
+};
+
+export const useRecommendedKeywordsAPI = () => {
+  return get<string[]>(`/transactions/keyword/recommendations`);
 };

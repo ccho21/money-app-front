@@ -1,11 +1,11 @@
 export default function LoadingMessage({
-  text = 'Loading...',
+  message = 'Loading...',
 }: {
-  text?: string;
+  message?: string;
 }) {
   return (
     <p className="text-center mt-section text-muted text-label">
-      {text}
+      {message}
     </p>
   );
 }

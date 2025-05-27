@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/modules/shared/lib/utils';
 
 export function TypographyH1({
   children,
@@ -136,12 +136,12 @@ export function TypographySmall({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <small
+    <div
       className={cn('text-sm font-medium leading-none', className)}
       {...props}
     >
       {children}
-    </small>
+    </div>
   );
 }
 

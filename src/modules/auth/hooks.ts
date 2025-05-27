@@ -1,4 +1,4 @@
-import { useUserStore } from '@/stores/useUserStore';
+import { useUserStore } from '@/modules/shared/stores/useUserStore';
 import { signinAPI, signupAPI, fetchUserAPI, signoutAPI } from './api';
 
 export const signin = async (email: string, password: string) => {

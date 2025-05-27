@@ -1,25 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Plus } from 'lucide-react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import Selector from '@/components/ui/custom/Selector';
-import { useCategoryFormStore } from '@/modules/category/formStore';
 import { ColorPicker } from '@/components/ui/custom/ColorPicker';
-import { getAutoIconFromName } from '@/lib/iconSuggest';
+import { getAutoIconFromName } from '@/modules/shared/lib/iconSuggest';
+
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import { Separator } from '@/components/ui/separator';
+import { useCategoryFormStore } from '@/modules/category/stores/formStore';
 
 interface CategoryFormProps {
   onSubmit: () => void;
+  onDelete?: () => void;
   isEdit?: boolean;
 }
-
-const typeOptions = [
-  { label: 'Expense', value: 'expense' },
-  { label: 'Income', value: 'income' },
-];
 
 const getChartColorFromName = (name: string, chartCount = 30) => {
   let hash = 0;
@@ -32,24 +38,26 @@ const getChartColorFromName = (name: string, chartCount = 30) => {
 
 export const CategoryForm = ({
   onSubmit,
+  onDelete,
   isEdit = false,
 }: CategoryFormProps) => {
   const { name, type, color, icon, setField } = useCategoryFormStore();
   const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = () => {
     if (!name.trim()) {
       setError('Category name is required.');
       return;
     }
-    // name 으로 근거한 컬러 찾아서. 구현하고 저장하고 하는 로직 여기에?
+
     if (!color) {
       const guessedColor = getChartColorFromName(name);
       setField('color', guessedColor);
     }
 
     if (!icon) {
-      const guessedIcon = getAutoIconFromName(name); // 'cart'
+      const guessedIcon = getAutoIconFromName(name);
       setField('icon', guessedIcon);
     }
 
@@ -59,8 +67,8 @@ export const CategoryForm = ({
 
   return (
     <div className='space-y-component px-component pt-component pb-section text-foreground'>
-      <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='name'>Category Name</Label>
+      <div className='grid w-full items-center gap-element'>
+        <Label htmlFor='name' className='text-label'>Category Name</Label>
         <Input
           id='name'
           value={name}
@@ -69,41 +77,92 @@ export const CategoryForm = ({
         />
       </div>
 
-      <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='type'>Category Type</Label>
-        <Selector
-          label='Category Type'
+      <div className='grid w-full items-center gap-element'>
+        <Label className='text-label'>Category Type</Label>
+        <ToggleGroup.Root
+          type='single'
           value={type}
-          onChange={(val) => setField('type', val as 'income' | 'expense')}
-          options={typeOptions}
-          getOptionLabel={(o) => o.label}
-          getOptionValue={(o) => o.value}
-        />
+          onValueChange={(val) => {
+            if (val) setField('type', val as 'income' | 'expense');
+          }}
+          className='flex gap-element'
+        >
+          <ToggleGroup.Item
+            value='expense'
+            className='px-component py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground transition-colors'
+          >
+            Expense
+          </ToggleGroup.Item>
+          <ToggleGroup.Item
+            value='income'
+            className='px-component py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground transition-colors'
+          >
+            Income
+          </ToggleGroup.Item>
+        </ToggleGroup.Root>
       </div>
 
-      <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='color'>Color</Label>
+      <div className='grid w-full items-center gap-element'>
+        <Label htmlFor='color' className='text-label'>Color</Label>
         <ColorPicker
           value={color ?? ''}
           onChange={(val) => setField('color', val)}
         />
       </div>
 
-      {error && <p className='text-sm text-destructive pt-tight'>{error}</p>}
+      {error && <p className='text-caption text-destructive pt-tight'>{error}</p>}
 
-      <div className='pt-component'>
-        <Button onClick={handleSubmit}>
-          {isEdit ? (
-            <>
-              <Pencil className='w-4 h-4 mr-2' /> Update Category
-            </>
-          ) : (
-            <>
-              <Plus className='w-4 h-4 mr-2' /> Create Category
-            </>
-          )}
+      <Separator className='my-4'></Separator>
+
+      <div className='pt-component space-y-element text-center'>
+        <Button onClick={handleSubmit} className='w-full'>
+          {isEdit ? 'Update' : 'Create'}
         </Button>
+
+        {isEdit && (
+          <Button
+            variant='ghost'
+            className='w-full text-destructive'
+            onClick={() => setOpen(true)}
+          >
+            Delete
+          </Button>
+        )}
       </div>
+
+      {isEdit && (
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent side='bottom'>
+            <SheetHeader>
+              <SheetTitle className='text-title'>Delete this category?</SheetTitle>
+              <SheetDescription className='text-body'>
+                This will permanently remove the category. This action cannot be undone.
+              </SheetDescription>
+            </SheetHeader>
+
+            <div className='px-component pt-component pb-component space-y-element'>
+              <Button
+                variant='destructive'
+                className='w-full'
+                onClick={() => {
+                  onDelete?.();
+                  setOpen(false);
+                }}
+              >
+                <Trash2 className='icon-sm mr-tight' />
+                Confirm Delete
+              </Button>
+              <Button
+                variant='outline'
+                className='w-full'
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
     </div>
   );
 };

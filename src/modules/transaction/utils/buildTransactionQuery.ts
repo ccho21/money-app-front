@@ -1,4 +1,4 @@
-import { TransactionGroupQuery } from "../types/types";
+import { TransactionGroupQuery } from '../types/types';
 
 export function buildTransactionQuery(query: TransactionGroupQuery): string {
   const params = new URLSearchParams();
@@ -15,6 +15,9 @@ export function buildTransactionQuery(query: TransactionGroupQuery): string {
   if (query.cursor) params.append('cursor', query.cursor);
   if (typeof query.limit === 'number')
     params.append('limit', String(query.limit));
-
+  if (query.note?.trim()) {
+    const safeNote = query.note.trim().slice(0, 300); // 300자 제한
+    params.append('note', safeNote);
+  }
   return params.toString(); // → query string for fetch
 }

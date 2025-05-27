@@ -1,0 +1,45 @@
+@layer utilities {
+  .layout-shell {
+    @apply min-h-screen h-full flex flex-col pb-[10vh];
+  }
+
+  .layout-body {
+    @apply flex-1 overflow-y-auto px-component space-y-element mb-element;
+  }
+
+  .flat-card {
+    @apply bg-card border-none shadow-none p-0;
+  }
+
+  .flat-card-content {
+    @apply p-0 space-y-element;
+  }
+
+  .transaction-group {
+    @apply space-y-tight;
+  }
+
+  .transaction-group-header {
+    @apply flex items-center justify-between py-tight rounded-md text-body font-medium text-muted-foreground hover:bg-muted/10 transition-colors cursor-pointer;
+  }
+
+  .transaction-group-list {
+    @apply flex flex-col gap-compact;
+  }
+
+  .range-badge {
+    @apply text-caption bg-muted/20 text-muted-foreground rounded-full px-tight py-[1px];
+  }
+
+  .icon-sm {
+    @apply w-4 h-4;
+  }
+
+  .icon-md {
+    @apply w-5 h-5;
+  }
+
+  .navigator-select-trigger {
+    @apply font-medium text-foreground border-none bg-transparent shadow-none focus:ring-0 focus:outline-none !px-0;
+  }
+}

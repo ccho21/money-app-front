@@ -1,11 +1,13 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/modules/shared/lib/utils';
 import { format } from 'date-fns';
 import { TransactionItem as TxDTO } from '../types/types';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
-import { IconName } from '@/lib/iconMap';
+import { IconName } from '@/modules/shared/lib/iconMap';
 import UIIcon from '@/components/ui/UIIcon';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChevronRight } from 'lucide-react';
 
 interface Props {
   tx: TxDTO;
@@ -29,15 +31,15 @@ export default function TransactionItem({
     onClick?.(tx);
   };
 
-  const iconVar = tx.category?.color ?? '--color-chart-1'; // fallback 지정
+  const iconVar = tx.category?.color ?? '--chart-1';
   const iconColor = `var(${iconVar})`;
-  const iconBgColor = `color-mix(in srgb, var(${iconVar}) 5%, transparent)`; // 약간의 투명 배경
+  const iconBg = `var(${iconVar})`; // 투명도 10%
 
   const amountClass = isIncome
-    ? 'text-green-600'
+    ? 'text-success'
     : isExpense
     ? 'text-foreground'
-    : 'text-gray-500';
+    : 'text-muted-foreground';
 
   const categoryLabel =
     isTransfer && showTransferLabel
@@ -48,53 +50,43 @@ export default function TransactionItem({
   const subtitle = [categoryLabel, accountLabel].filter(Boolean).join(' · ');
 
   return (
-    <li
+    <Card
       onClick={handleClick}
+      data-slot='transaction-item'
       className={cn(
-        'flex items-center justify-between bg-gray-50 px-3 py-3 rounded-xl cursor-pointer',
+        'px-element py-compact shadow-2xs border-none rounded-none',
         className
       )}
     >
-      <div className='flex items-center gap-3'>
-        <div
-          className='p-2 rounded-full'
-          style={{ backgroundColor: iconBgColor }}
-        >
-          <UIIcon
-            name={
-              (tx.category?.icon as IconName) ||
-              (tx.note === 'Opening Balance' ? 'coins' : 'tag') // fallback
-            }
-            className='w-5 h-5'
-            style={{ color: iconColor }}
-          />
+      <CardContent className='p-0 flex items-center justify-between'>
+        <div className='flex items-center gap-element'>
+          <div className='space-y-tight'>
+            <p className='text-body font-medium truncate text-foreground'>
+              {tx.note || categoryLabel}
+            </p>
+            <p className='text-label text-muted-foreground'>{subtitle}</p>
+          </div>
         </div>
 
-        <div>
-          <p className='text-sm font-medium text-gray-900 truncate'>
-            {tx.note || categoryLabel}
-          </p>
-          <p className='text-xs text-muted-foreground'>{subtitle}</p>
+        <div className='flex justify-between items-center'>
+          <div
+            className={cn('text-right space-y-tight text-body', amountClass)}
+          >
+            <CurrencyDisplay
+              isRecurring={tx.recurringId ? true : false}
+              type={isIncome ? 'income' : 'expense'}
+              variant='default'
+              amount={tx.amount}
+            />
+            <div className='text-label text-muted-foreground'>
+              {format(new Date(tx.date), 'hh:mm a')}
+            </div>
+          </div>
+          <div className='ml-3'>
+            <ChevronRight className='text-primary h-5 w-5' />
+          </div>
         </div>
-      </div>
-      <div className={cn('text-sm text-right', amountClass)}>
-        {isIncome ? (
-          <CurrencyDisplay
-            type='income'
-            variant='default'
-            amount={tx.amount}
-          ></CurrencyDisplay>
-        ) : (
-          <CurrencyDisplay
-            type='expense'
-            variant='default'
-            amount={tx.amount}
-          ></CurrencyDisplay>
-        )}
-        <div className='text-xs text-muted-foreground'>
-          {format(new Date(tx.date), 'hh:mm a')}
-        </div>
-      </div>
-    </li>
+      </CardContent>
+    </Card>
   );
 }

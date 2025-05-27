@@ -1,4 +1,5 @@
-import { CategoryDetailDTO, CategoryType } from '@/modules/category/types';
+import { CategoryDetailDTO, CategoryType } from '@/modules/category/types/types';
+import { Insight } from '@/modules/insights/types/types';
 
 export type Timeframe = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom';
 
@@ -22,6 +23,8 @@ export interface TransactionGroupQuery {
   transactionType?: TransactionType;
   cursor?: string;
   limit?: number;
+  note?: string;
+  version?: number; // only for front-end
 }
 
 export interface TransactionItem {
@@ -32,6 +35,7 @@ export interface TransactionItem {
   payment: string;
   date: string; // ISO8601 string (e.g., '2025-05-01T14:32:00.000Z')
   type: TransactionType;
+  recurringId?: string;
   category: {
     name: string;
     icon: string;
@@ -115,14 +119,6 @@ export interface TransactionCalendar {
 
 ////////// CHART //////////////////////////////////////////////////
 
-export interface Insight {
-  id: string;
-  message: string;
-  severity: 'info' | 'warning' | 'positive';
-  category: 'income' | 'expense' | 'transfer' | 'savings' | 'general';
-  priority: number; // lower = higher priority
-}
-
 export interface PeriodData {
   period: string; // e.g., '2025-01'
   income: number;
@@ -189,4 +185,25 @@ export interface TransactionChartBudgetResponse {
   overBudget: boolean;
   overCategoryCount: number;
   breakdown: BudgetUsage[];
+}
+
+export interface AccountChart {
+  accountId: string;
+  name: string;
+  type: 'CASH' | 'BANK' | 'CARD';
+  income: number;
+  expense: number;
+  balance: number;
+  incomePercent: number;
+  expensePercent: number;
+  balancePercent: number;
+  color?: string;
+}
+
+export interface TransactionChartAccountResponse {
+  timeframe: string;
+  startDate: string;
+  endDate: string;
+  accounts: AccountChart[];
+  insights: Insight[];
 }

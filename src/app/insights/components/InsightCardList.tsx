@@ -1,45 +1,68 @@
 'use client';
 
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Utensils, Calendar, ShoppingBag } from 'lucide-react';
+import {
+  Utensils,
+  Calendar,
+  ShoppingBag,
+  AlertTriangle,
+  PiggyBank,
+  Info,
+} from 'lucide-react';
+import { JSX } from 'react';
+import { Insight } from '@/modules/insights/types/types';
 
-const insightItems = [
-  {
-    icon: <Utensils className='h-4 w-4 text-destructive' />,
-    title: 'Dining budget exceeded',
-    description: 'You’ve spent 24% more than your dining budget this month.',
-    variant: 'destructive',
-  },
-  {
-    icon: <Calendar className='h-4 w-4 text-muted-foreground' />,
-    title: 'Weekend spending spike',
-    description: '65% of your spending occurred on Saturday and Sunday.',
-    variant: 'default',
-  },
-  {
-    icon: <ShoppingBag className='h-4 w-4 text-muted-foreground' />,
-    title: 'Late-night shopping habit',
-    description: '30% of shopping transactions happened after 9 PM.',
-    variant: 'default',
-  },
-];
+interface InsightCardListProps {
+  insights: Insight[];
+}
 
-export function InsightCardList() {
+export function InsightCardList({ insights }: InsightCardListProps) {
   return (
-    <div className='grid gap-3'>
-      {insightItems.map((item, index) => (
-        <Alert key={index} variant={item.variant}>
-          {item.icon}
-          <div className='space-y-1'>
-            <AlertTitle className='text-sm font-medium'>
-              {item.title}
+    <div className="grid gap-element">
+      {insights.map((insight) => (
+        <Alert
+          key={insight.id}
+          variant={mapSeverityToVariant(insight.severity)}
+          role="alert"
+          className="flex items-start gap-element px-component py-element"
+        >
+          {renderIcon(insight.icon ?? insight.type, insight.severity)}
+          <div className="space-y-tight">
+            <AlertTitle className="text-label font-medium">
+              {insight.title}
             </AlertTitle>
-            <AlertDescription className='text-sm text-muted-foreground'>
-              {item.description}
+            <AlertDescription className="text-caption text-muted-foreground">
+              {insight.description}
             </AlertDescription>
           </div>
         </Alert>
       ))}
     </div>
+  );
+}
+
+// ✅ Severity to variant mapping
+function mapSeverityToVariant(severity: Insight['severity']): 'default' | 'destructive' {
+  return severity === 'critical' || severity === 'warning' ? 'destructive' : 'default';
+}
+
+// ✅ Icon rendering with semantic sizing
+function renderIcon(iconType: string, severity: Insight['severity']): JSX.Element {
+  const className = severity === 'critical'
+    ? 'icon-sm text-destructive'
+    : 'icon-sm text-muted-foreground';
+
+  const map: Record<string, JSX.Element> = {
+    utensils: <Utensils className={className} />,
+    calendar: <Calendar className={className} />,
+    shopping: <ShoppingBag className={className} />,
+    piggy: <PiggyBank className={className} />,
+    alert: <AlertTriangle className={className} />,
+  };
+
+  return map[iconType] ?? (
+    severity === 'critical'
+      ? <AlertTriangle className={className} />
+      : <Info className={className} />
   );
 }

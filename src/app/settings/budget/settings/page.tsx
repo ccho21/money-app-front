@@ -5,12 +5,12 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import DateNavigator from '@/components/navigation/DateNavigator';
-import Panel from '@/components_backup/ui/panel/Panel';
+import Panel from '@/components/ui/temp/panel';
 
 import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryItemDTO } from '@/modules/budget/types';
-import type { DateFilterParams } from '@/common/types';
-import { CategoryListItem } from '@/components_backup/category/CategoryListItem';
+import type { DateFilterParams } from '@/modules/shared/common/types';
+import { CategoryListItem } from '@/modules/category/components/CategoryListItem';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';

@@ -4,12 +4,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-// import TopNav from '@/components/common/TopNav';
-import { useTopNavPreset } from '@/app/hooks/useTopNavPreset';
-import TopNav from '@/components/navigation/TopNav';
-import TabMenu from '@/components/navigation/TabMenu';
-import FilterSheet from '@/components/common/FilterSheet';
+import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { useTransactionFilterStore } from '../../stores/filterStore';
+import dynamic from 'next/dynamic';
+
+const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
+  ssr: false,
+});
+const TabMenu = dynamic(() => import('@/components/navigation/TabMenu'), {
+  ssr: false,
+});
+const SearchDialog = dynamic(
+  () => import('@/components/ui/custom/SearchDialog'),
+  {
+    ssr: false,
+  }
+);
+const FilterSheet = dynamic(() => import('@/components/common/FilterSheet'), {
+  ssr: false,
+});
 
 export default function TransactionShell({
   children,
@@ -32,8 +45,8 @@ export default function TransactionShell({
   useTopNavPreset({
     title: 'Transactions',
     onAdd: undefined,
-    onSearch: () => setOpen(true),
-    onFilter: () => setOpen(true),
+    onSearch: () => setSearchOpen(true),
+    onFilter: () => setFilterOpen(true),
   });
 
   const tabs = [
@@ -47,17 +60,19 @@ export default function TransactionShell({
     router.push(`/transaction/view/${key}${queryString}`);
   };
 
-  const [open, setOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const tabKey = pathname.split('/')[3] ?? 'list';
 
   return (
-    <div className='min-h-screen pb-[10vh] flex flex-col h-full'>
+    <div className='layout-shell'>
       <TopNav />
       <TabMenu tabs={tabs} active={tabKey} onChange={handleTabChange} />
-      <div className='mb-element space-y-element'>
-        <div className='flex-1 overflow-y-auto'>{children}</div>
-      </div>
-      <FilterSheet open={open} onOpenChange={setOpen} />
+
+      <main className='layout-body'>{children}</main>
+
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <FilterSheet open={filterOpen} onOpenChange={setFilterOpen} />
     </div>
   );
 }

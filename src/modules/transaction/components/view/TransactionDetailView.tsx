@@ -10,9 +10,9 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-} from '@/components_backup/ui/drawer';
-import { Button } from '@/components_backup/ui/button';
-import { useConditionalRender } from '@/hooks/useConditionalRender';
+} from '@/components/ui/drawer';
+import { Button } from '@/components/ui/button';
+import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
 import { TransactionItem } from '../../types/types';
 import { useTransactionStore } from '../../stores/store';
 import TransactionGroup from '../TransactionGroup';
@@ -63,16 +63,18 @@ export default function TransactionDetailView({
   return (
     <Drawer open={open} onOpenChange={(open) => !open && onClose()}>
       {shouldRender && (
-        <DrawerContent className='pb-[10vh]' aria-describedby={undefined}>
-          <DrawerHeader className='text-center font-semibold text-sm pb-2'>
-            <DrawerTitle>{formattedDate}</DrawerTitle>
+        <DrawerContent className='pb-section' aria-describedby={undefined}>
+          <DrawerHeader className='text-center text-label font-semibold pb-compact'>
+            <DrawerTitle role='heading' aria-level={2}>
+              {formattedDate}
+            </DrawerTitle>
           </DrawerHeader>
 
-          <div className='px-4 pt-2 text-sm'>
+          <div className='px-component pt-element text-label'>
             {isLoading ? (
-              <Skeleton className='h-24 w-full' />
+              <Skeleton className='h-[6rem] w-full' />
             ) : error ? (
-              <div className='text-red-500'>데이터를 불러오지 못했습니다.</div>
+              <div className='text-destructive'>데이터를 불러오지 못했습니다.</div>
             ) : group ? (
               <TransactionGroup
                 key={group.groupKey}
@@ -88,7 +90,7 @@ export default function TransactionDetailView({
           <DrawerClose asChild>
             <Button
               variant='ghost'
-              className='absolute top-4 right-4 text-sm'
+              className='absolute top-component right-component text-label'
               onClick={onClose}
             >
               Close

@@ -1,22 +1,42 @@
-// src/app/insights/page.tsx
-
 'use client';
 
+import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import { ActionCards } from './components/ActionCard';
 import { InsightCardList } from './components/InsightCardList';
 import { PatternCharts } from './components/PatternCharts';
+import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilterStore';
+import { fetchInsightPattern } from './hooks/hooks';
 
 export default function InsightsPatternPage() {
+  const { query, getDateRangeKey } = useInsightFilterStore();
+  const [startDate, endDate] = getDateRangeKey().split('_');
+  const params = {
+    startDate,
+    endDate,
+    timeframe: query.timeframe,
+  };
+  const { data, isLoading, error } = fetchInsightPattern(params);
+
+  if (isLoading) {
+    return <LoadingMessage />;
+  }
+
+  if (error || !data) {
+    return <EmptyMessage />;
+  }
+
   return (
-    <main className='w-full min-h-screen px-component pb-[10vh] pt-component space-y-component'>
+    <main className='w-full min-h-screen px-component pt-component pb-[10vh] space-y-component'>
       {/* 💡 인사이트 카드 목록 */}
-      <InsightCardList />
+      <InsightCardList insights={data.insights} />
 
       {/* 📊 요일별 / 시간대별 소비 차트 */}
-      <PatternCharts />
+      <PatternCharts byDay={data.byDay} byTime={data.byTime} />
 
       {/* 🛠 예산 조정 / 고정비 등 행동 유도 카드 */}
       <ActionCards />
     </main>
   );
 }
+``;
