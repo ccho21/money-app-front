@@ -7,7 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useBudgetFormStore } from '@/modules/budget/formStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 import { useBudgetStore } from '@/modules/budget/store';
-import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
+import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks/hooks';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';

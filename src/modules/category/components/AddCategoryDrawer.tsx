@@ -7,7 +7,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { CategoryForm } from '@/modules/settings/components/category/CategoryForm';
+import { CategoryForm } from '@/modules/category/components/CategoryForm';
 import { useCreateCategory } from '@/modules/category/hooks/queries';
 import { useCategoryFormStore } from '../stores/formStore';
 
@@ -48,11 +48,7 @@ export function AddCategoryDrawer({ onClose }: Props) {
           <input autoFocus className='sr-only' />
 
           <DrawerHeader>
-            <DrawerTitle
-              className='text-heading'
-              role='heading'
-              aria-level={2}
-            >
+            <DrawerTitle className='text-heading' role='heading' aria-level={2}>
               Add Category
             </DrawerTitle>
           </DrawerHeader>

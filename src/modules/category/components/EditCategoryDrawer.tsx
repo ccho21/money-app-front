@@ -7,7 +7,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { CategoryForm } from '@/modules/settings/components/category/CategoryForm';
+import { CategoryForm } from '@/modules/category/components/CategoryForm';
 import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
 import {
   fetchCategoryById,
@@ -70,19 +70,15 @@ export function EditCategoryDrawer({ categoryId, onClose }: Props) {
       {shouldRender && (
         <DrawerContent className=''>
           {/* 포커스 안전 */}
-          <input autoFocus className="sr-only" />
+          <input autoFocus className='sr-only' />
 
-          <DrawerHeader className="">
-            <DrawerTitle
-              className="text-heading"
-              role="heading"
-              aria-level={2}
-            >
+          <DrawerHeader className=''>
+            <DrawerTitle className='text-heading' role='heading' aria-level={2}>
               Edit Category
             </DrawerTitle>
           </DrawerHeader>
 
-          <div className="pb-section">
+          <div className='pb-section'>
             <CategoryForm
               onSubmit={handleSubmit}
               onDelete={handleDelete}

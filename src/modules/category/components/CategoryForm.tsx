@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -68,7 +68,9 @@ export const CategoryForm = ({
   return (
     <div className='space-y-component px-component pt-component pb-section text-foreground'>
       <div className='grid w-full items-center gap-element'>
-        <Label htmlFor='name' className='text-label'>Category Name</Label>
+        <Label htmlFor='name' className='text-label'>
+          Category Name
+        </Label>
         <Input
           id='name'
           value={name}
@@ -103,14 +105,18 @@ export const CategoryForm = ({
       </div>
 
       <div className='grid w-full items-center gap-element'>
-        <Label htmlFor='color' className='text-label'>Color</Label>
+        <Label htmlFor='color' className='text-label'>
+          Color
+        </Label>
         <ColorPicker
           value={color ?? ''}
           onChange={(val) => setField('color', val)}
         />
       </div>
 
-      {error && <p className='text-caption text-destructive pt-tight'>{error}</p>}
+      {error && (
+        <p className='text-caption text-destructive pt-tight'>{error}</p>
+      )}
 
       <Separator className='my-4'></Separator>
 
@@ -134,9 +140,12 @@ export const CategoryForm = ({
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side='bottom'>
             <SheetHeader>
-              <SheetTitle className='text-title'>Delete this category?</SheetTitle>
+              <SheetTitle className='text-title'>
+                Delete this category?
+              </SheetTitle>
               <SheetDescription className='text-body'>
-                This will permanently remove the category. This action cannot be undone.
+                This will permanently remove the category. This action cannot be
+                undone.
               </SheetDescription>
             </SheetHeader>
 
