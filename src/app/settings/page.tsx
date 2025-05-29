@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { signout } from '@/modules/auth/hooks';
 import { settingsConfig } from '@/modules/settings/config/settingsConfig';
 
 import { Section } from '@/components/ui/temp/section';
 import SettingItem from '@/modules/settings/components/SettingItem';
-import { PanelType, SettingKey } from '@/modules/settings/types/types';
+import { PanelType } from '@/modules/settings/types/types';
 import { SlideInPanelRenderer } from '@/modules/settings/components/panels/SlideInPanelRenderer';
 import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
 

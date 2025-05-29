@@ -35,7 +35,7 @@ export default function SettingItem({
           <div className='flex items-center gap-component'>
             <UIIcon name={icon} className='w-6 h-6' />
             <div className='text-left'>
-              <p className='text-heading font-medium leading-none text-foreground'>
+              <p className='text-body font-normal leading-none text-foreground'>
                 {title}
               </p>
               {subtitle && (

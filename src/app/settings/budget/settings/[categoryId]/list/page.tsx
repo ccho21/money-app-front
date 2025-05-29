@@ -5,21 +5,21 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 import { useBudgetFormStore } from '@/modules/budget/formStore';
-import { useFilterStore } from '@/stores/useFilterStore';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
 import { useBudgetStore } from '@/modules/budget/store';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 
 export default function ListBudgetCategoryPage() {
   const router = useRouter();
   const { categoryId } = useParams();
   const {
-    query: { groupBy, date },
+    query: { timeframe, startDate, endDate },
     setQuery,
     getDateRangeKey,
-  } = useFilterStore();
+  } = useTransactionFilterStore();
 
   const { budgetGroup, isLoading } = useBudgetStore();
   const resetForm = useBudgetFormStore((s) => s.resetForm);
@@ -30,8 +30,6 @@ export default function ListBudgetCategoryPage() {
   useEffect(() => {
     const run = async () => {
       if (!categoryId) return;
-
-      const [startDate, endDate] = dateRangeKey.split('_');
       resetForm();
 
       await fetchGroupedBudgetCategory(String(categoryId), {

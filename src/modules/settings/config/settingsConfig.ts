@@ -1,6 +1,6 @@
 import { IconName } from '@/modules/shared/lib/iconMap';
 import { signout } from '@/modules/auth/hooks';
-import { PanelType, SettingKey } from '@/modules/settings/types/types';
+import { PanelType } from '@/modules/settings/types/types';
 
 export type SettingSection = 'transaction' | 'category' | 'general';
 
@@ -100,7 +100,7 @@ export const settingsConfig: SettingItemConfig[] = [
     icon: 'piggyBank',
     type: 'link',
     section: 'category',
-    route: '/budget/settings',
+    route: '/settings/budget',
   },
 
   // ──────────────── General ────────────────
