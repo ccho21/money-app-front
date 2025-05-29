@@ -1,20 +1,14 @@
-// src/app/more/layout.tsx
+// src/app/settings/layout.tsx
 'use client';
 
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import TopNav from '@/components/navigation/TopNav';
-import { useUIStore } from '@/modules/shared/stores/useUIStore';
+import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 
-export default function MoreLayout({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    useUIStore.getState().setTopNav({
-      title: 'Settings.',
-    });
-
-    return () => {
-      useUIStore.getState().resetTopNav(); // 💡 페이지 나가면 초기화
-    };
-  }, []);
+export default function SettingsLayout({ children }: { children: ReactNode }) {
+  useTopNavPreset({
+    title: 'Settings',
+  });
 
   return (
     <div className='min-h-screen flex flex-col bg-muted/20 text-foreground'>

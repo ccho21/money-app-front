@@ -1,12 +1,7 @@
 // 파일: src/modules/transaction/api.ts
 
 import { get, post, patch, del } from '@/modules/shared/common/api';
-import {
-  TransactionCreateRequestDTO,
-  TransactionUpdateRequestDTO,
-  TransactionTransferRequestDTO,
-  TransactionGroupItemDTO,
-} from './types';
+
 import type { DateFilterParams } from '@/modules/shared/common/types';
 import { buildTransactionQuery } from './utils/buildTransactionQuery';
 import {
@@ -15,10 +10,14 @@ import {
   TransactionChartBudgetResponse,
   TransactionChartCategoryResponse,
   TransactionChartFlowResponse,
+  TransactionCreateRequestDTO,
   TransactionDetail,
+  TransactionGroupItem,
   TransactionGroupListResponse,
   TransactionGroupQuery,
   TransactionGroupSummary,
+  TransactionTransferRequestDTO,
+  TransactionUpdateRequestDTO,
 } from './types/types';
 
 // Create new income/expense transaction
@@ -76,7 +75,7 @@ export const fetchTransactionByIdAPI = (id: string) => {
 
 // Get grouped transactions (e.g., by date)
 export const fetchTransactionGroupAPI = (payload: DateFilterParams) => {
-  return post<TransactionGroupItemDTO[], DateFilterParams>(
+  return post<TransactionGroupItem[], DateFilterParams>(
     '/transactions/group',
     payload
   );

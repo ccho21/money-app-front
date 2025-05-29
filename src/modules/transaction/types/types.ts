@@ -1,4 +1,7 @@
-import { CategoryDetailDTO, CategoryType } from '@/modules/category/types/types';
+import {
+  CategoryDetailDTO,
+  CategoryType,
+} from '@/modules/category/types/types';
 import { Insight } from '@/modules/insights/types/types';
 
 export type Timeframe = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom';
@@ -206,4 +209,26 @@ export interface TransactionChartAccountResponse {
   endDate: string;
   accounts: AccountChart[];
   insights: Insight[];
+}
+
+// //////
+
+export interface BaseTransactionRequestDTO {
+  type: TransactionType;
+  amount: number;
+  accountId: string;
+  categoryId?: string;
+  date: string;
+  description?: string;
+  note?: string;
+}
+
+export type TransactionCreateRequestDTO = BaseTransactionRequestDTO;
+
+export type TransactionUpdateRequestDTO = Partial<TransactionCreateRequestDTO>;
+
+export interface TransactionTransferRequestDTO
+  extends BaseTransactionRequestDTO {
+  fromAccountId: string;
+  toAccountId: string;
 }

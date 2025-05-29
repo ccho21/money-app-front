@@ -29,12 +29,6 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
     { key: 'recurring', label: 'Recurring' },
     { key: 'alerts', label: 'Alerts' },
   ];
-  const labels: Record<string, string> = {
-    pattern: 'Pattern',
-    budget: 'Budget',
-    recurring: 'Recurring',
-    alerts: 'Alerts',
-  };
 
   const handleTabChange = (value: string) => {
     setTab(value);

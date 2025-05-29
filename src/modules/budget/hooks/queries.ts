@@ -1,12 +1,12 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { DateFilterParams } from '@/modules/shared/common/types';
 import {
   BudgetCategoryCreateRequestDTO,
   BudgetCategoryListResponseDTO,
   BudgetCategoryUpdateRequestDTO,
   BudgetGroupItemDTO,
+  BudgetQuery,
   BudgetSummaryDTO,
 } from '../types';
 import {
@@ -20,7 +20,7 @@ import {
 const normalizeAmount = (amount: string | number): number =>
   typeof amount === 'string' ? Number(amount) : amount;
 
-export const FetchBudgetsByCategory = (params: DateFilterParams) =>
+export const fetchBudgetsByCategory = (params: BudgetQuery) =>
   useQuery<BudgetCategoryListResponseDTO>({
     queryKey: ['budgets-by-category', params],
     queryFn: () => fetchBudgetByCategoryAPI(params),
@@ -28,7 +28,7 @@ export const FetchBudgetsByCategory = (params: DateFilterParams) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const FetchBudgetSummary = (params: DateFilterParams) =>
+export const fetchBudgetSummary = (params: BudgetQuery) =>
   useQuery<BudgetSummaryDTO>({
     queryKey: ['budget-summary', params],
     queryFn: () => fetchBudgetSummaryAPI(params),
@@ -36,9 +36,9 @@ export const FetchBudgetSummary = (params: DateFilterParams) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const FetchGroupedBudgetCategory = (
+export const fetchGroupedBudgetCategory = (
   categoryId: string,
-  filter: DateFilterParams,
+  filter: BudgetQuery,
   enabled = true
 ) =>
   useQuery<BudgetGroupItemDTO>({

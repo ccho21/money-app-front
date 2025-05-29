@@ -1,5 +1,12 @@
 import { BaseGroupItemDTO } from '@/modules/shared/common/types';
 import { CategoryType } from '../category/types/types';
+import { Timeframe } from '../transaction/types/types';
+
+export interface BudgetQuery {
+  startDate: string;
+  endDate: string;
+  timeframe?: Timeframe;
+}
 
 export interface BudgetCategoryItemDTO {
   categoryId: string;
