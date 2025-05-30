@@ -6,9 +6,11 @@ import RouteTracker from '@/modules/shared/providers/RouteTracker';
 import { ThemeProvider } from '@/modules/shared/providers/ThemeProvider';
 import BottomNav from '@/components/navigation/BottomNav';
 import useAuthRedirectSync from '@/modules/auth/useAuthRedirectSync'; // ✅ 훅 import
+import { useBudgetAlert } from '@/modules/shared/hooks/useBudgetAlert';
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   const loading = useAuthRedirectSync();
+  useBudgetAlert();
 
   if (loading) {
     return (

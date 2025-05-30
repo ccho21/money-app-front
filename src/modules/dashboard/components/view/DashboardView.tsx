@@ -41,7 +41,7 @@ export function DashboardView() {
     (async () => {
       Promise.all([fetchTransactionGroups(params)]);
     })();
-  }, [getDateRangeKey, isInitialized]);
+  }, [endDate, getDateRangeKey, isInitialized, startDate]);
 
   const { groupList, isLoading: txLoading } = useTransactionStore(
     useShallow((s) => ({

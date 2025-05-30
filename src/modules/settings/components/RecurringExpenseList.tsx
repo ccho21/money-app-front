@@ -47,8 +47,8 @@ export default function RecurringExpenseChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-title">Top Recurring Expenses</CardTitle>
-        <CardDescription className="text-caption text-muted-foreground">
+        <CardTitle className='text-title'>Top Recurring Expenses</CardTitle>
+        <CardDescription className='text-caption text-muted-foreground'>
           Fixed monthly charges by amount
         </CardDescription>
       </CardHeader>
@@ -67,11 +67,15 @@ export default function RecurringExpenseChart() {
               tickMargin={10}
               axisLine={false}
               tickFormatter={(value) =>
-                chartConfig[value as keyof typeof chartConfig]?.label || value.toString()
+                chartConfig[value as keyof typeof chartConfig]?.label ||
+                value.toString()
               }
             />
             <XAxis dataKey='amount' type='number' hide />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Bar
               dataKey='amount'
               radius={5}
@@ -79,10 +83,10 @@ export default function RecurringExpenseChart() {
               isAnimationActive={false}
               label={false}
             >
-              {recurringChartData.map((entry, index) => (
+              {recurringChartData.map((entry) => (
                 <Bar
                   key={`bar-${entry.name}`}
-                  dataKey="amount"
+                  dataKey='amount'
                   fill={`hsl(${entry.fill})`}
                   radius={5}
                   barSize={14}

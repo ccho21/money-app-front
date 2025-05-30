@@ -1,7 +1,7 @@
 'use client';
 
 // import { ActionCards } from '../components/ActionCard';
-import RecurringExpenseList from '../components/RecurringExpenseList';
+import RecurringExpenseList from '../../../modules/settings/components/RecurringExpenseList';
 
 export default function InsightsRecurringPage() {
   return (

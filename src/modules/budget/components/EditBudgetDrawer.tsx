@@ -29,6 +29,7 @@ export function EditBudgetDrawer({ onClose }: Props) {
 
   useEffect(() => {
     if (selectedBudget) {
+      setMode('edit');
       resetForm();
       setForm({
         categoryId: selectedBudget.categoryId,
@@ -36,9 +37,8 @@ export function EditBudgetDrawer({ onClose }: Props) {
         startDate: selectedBudget.rangeStart,
         endDate: selectedBudget.rangeEnd,
       });
-      setMode('edit');
     }
-  }, [selectedBudget]);
+  }, [resetForm, selectedBudget, setForm, setMode]);
 
   const updateMutation = useUpdateBudgetCategory();
 
@@ -65,13 +65,13 @@ export function EditBudgetDrawer({ onClose }: Props) {
     >
       {shouldRender && (
         <DrawerContent aria-describedby={undefined}>
-          <input autoFocus className="sr-only" />
+          <input autoFocus className='sr-only' />
           <DrawerHeader>
-            <DrawerTitle className="text-heading" role="heading" aria-level={2}>
+            <DrawerTitle className='text-heading' role='heading' aria-level={2}>
               Edit Budget
             </DrawerTitle>
           </DrawerHeader>
-          <div className="pb-section">
+          <div className='pb-section'>
             <BudgetCategoryForm onSubmit={handleSubmit} isEdit />
           </div>
         </DrawerContent>

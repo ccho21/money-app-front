@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,10 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 import { Skeleton } from '@/components/ui/skeleton';
-import type {
-  BudgetCategoryItemDTO,
-  BudgetCategoryPeriodItemDTO,
-} from '@/modules/budget/types/types';
+import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types/types';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks/queries';
 import { AddBudgetDrawer } from '@/modules/budget/components/AddBudgetDrawer';

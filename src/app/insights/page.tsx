@@ -1,12 +1,12 @@
 'use client';
 
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import { ActionCards } from './components/ActionCard';
-import { InsightCardList } from './components/InsightCardList';
-import { PatternCharts } from './components/PatternCharts';
+import { ActionCards } from '../../modules/settings/components/ActionCard';
+import { InsightCardList } from '../../modules/settings/components/InsightCardList';
+import { PatternCharts } from '../../modules/settings/components/PatternCharts';
 import LoadingMessage from '@/components/ui/custom/loadingMessage';
 import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilterStore';
-import { fetchInsightPattern } from './hooks/hooks';
+import { fetchInsightPattern } from '../../modules/insights/hooks/queries';
 
 export default function InsightsPatternPage() {
   const { query, getDateRangeKey } = useInsightFilterStore();
@@ -39,4 +39,3 @@ export default function InsightsPatternPage() {
     </main>
   );
 }
-``;

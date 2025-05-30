@@ -1,7 +1,7 @@
 'use client';
 
 // import { ActionCards } from '../components/ActionCard';
-import { SpendingAlerts } from '../components/SpendingAlerts';
+import { SpendingAlerts } from '../../../modules/settings/components/SpendingAlerts';
 
 export default function InsightsAlertsPage() {
   return (
