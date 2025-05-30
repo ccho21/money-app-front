@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,11 +11,9 @@ import { ChevronRight } from 'lucide-react';
 import DateNavigator from '@/components/navigation/DateNavigator';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { Section } from '@/components/ui/temp/section';
 import { Button } from '@/components/ui/button';
 import { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
-import { useEffect } from 'react';
 
 export default function BudgetSettingsPage() {
   const router = useRouter();
@@ -62,43 +60,39 @@ export default function BudgetSettingsPage() {
   }
 
   return (
-    <main className='layout-shell'>
-      <div className='p-component space-y-component'>
-        <Section title='Budget List'>
-          <div className='text-right'>
-            <DateNavigator variant='dropdown' />
-          </div>
-          <Card className='flat-card'>
-            <CardContent className='flat-card-content divide-y divide-border'>
-              {data.items.map((item: BudgetCategoryItemDTO) => (
-                <Button
-                  variant='ghost'
-                  key={item.categoryId}
-                  onClick={() => handleClick(item)}
-                  className='flex w-full items-center justify-between px-component py-element text-left hover:bg-muted/10 transition-colors'
-                >
-                  <div className='flex items-center gap-element min-w-0'>
-                    <div
-                      className='w-2.5 h-2.5 rounded-full border border-border shrink-0'
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <span className='text-body font-medium truncate'>
-                      {item.categoryName}
-                    </span>
-                  </div>
-                  <div className='flex items-center gap-1'>
-                    <CurrencyDisplay
-                      amount={item.amount}
-                      className='text-body font-semibold'
-                    />
-                    <ChevronRight className='icon-sm text-muted-foreground' />
-                  </div>
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-        </Section>
+    <Section title='Budget List'>
+      <div className='text-right'>
+        <DateNavigator variant='dropdown' />
       </div>
-    </main>
+      <Card className='flat-card'>
+        <CardContent className='flat-card-content divide-y divide-border'>
+          {data.items.map((item: BudgetCategoryItemDTO) => (
+            <Button
+              variant='ghost'
+              key={item.categoryId}
+              onClick={() => handleClick(item)}
+              className='flex w-full items-center justify-between px-component py-element text-left hover:bg-muted/10 transition-colors'
+            >
+              <div className='flex items-center gap-element min-w-0'>
+                <div
+                  className='w-2.5 h-2.5 rounded-full border border-border shrink-0'
+                  style={{ backgroundColor: `var(${item.color})` }}
+                />
+                <span className='text-body font-medium truncate'>
+                  {item.categoryName}
+                </span>
+              </div>
+              <div className='flex items-center gap-1'>
+                <CurrencyDisplay
+                  amount={item.amount}
+                  className='text-body font-semibold'
+                />
+                <ChevronRight className='icon-sm text-muted-foreground' />
+              </div>
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+    </Section>
   );
 }

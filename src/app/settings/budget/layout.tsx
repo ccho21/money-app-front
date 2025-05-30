@@ -2,7 +2,6 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
-import TopNav from '@/components/navigation/TopNav';
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
@@ -12,7 +11,6 @@ export default function BudgetsLayout({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
 
   useTopNavPreset({ title: 'Budget', onBack: () => router.back() });
- 
 
   const { initializeFromParams, getQueryString, isInitialized } =
     useTransactionFilterStore();
@@ -22,15 +20,17 @@ export default function BudgetsLayout({ children }: { children: ReactNode }) {
       initializeFromParams(searchParams);
     }
     router.replace(getQueryString());
-  }, [initializeFromParams, isInitialized, searchParams]);
+  }, [
+    getQueryString,
+    initializeFromParams,
+    isInitialized,
+    router,
+    searchParams,
+  ]);
 
   useTopNavPreset({
     title: 'Budgets',
   });
 
-  return (
-    <div className='layout-shell'>
-      <main className='layout-body'>{children}</main>
-    </div>
-  );
+  return <>{children}</>;
 }

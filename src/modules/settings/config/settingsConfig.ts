@@ -92,7 +92,7 @@ export const settingsConfig: SettingItemConfig[] = [
     icon: 'settings',
     type: 'link',
     section: 'category',
-    route: '/account',
+    route: '/settings/account',
   },
   {
     key: 'budgetSetting',
