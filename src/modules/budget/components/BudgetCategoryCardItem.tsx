@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import type { BudgetCategoryItemDTO } from '@/modules/budget/types';
+import type { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
 
 export function BudgetCategoryCardItem({
   item,

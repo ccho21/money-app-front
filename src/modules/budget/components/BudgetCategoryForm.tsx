@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useBudgetFormStore } from '@/modules/budget/formStore';
+import { useBudgetFormStore } from '../stores/formStore';
 
 interface Props {
   onSubmit: () => void;

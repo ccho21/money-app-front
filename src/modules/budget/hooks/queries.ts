@@ -8,7 +8,7 @@ import {
   BudgetGroupItemDTO,
   BudgetQuery,
   BudgetSummaryDTO,
-} from '../types';
+} from '../types/types';
 import {
   createBudgetCategoryAPI,
   fetchBudgetByCategoryAPI,

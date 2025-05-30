@@ -6,7 +6,7 @@ import {
   BudgetCategoryUpdateRequestDTO,
   BudgetGroupItemDTO,
   BudgetSummaryDTO,
-} from '../types';
+} from '../types/types';
 import {
   createBudgetCategoryAPI,
   fetchBudgetByCategoryAPI,
@@ -14,7 +14,7 @@ import {
   fetchGroupedBudgetCategoryAPI,
   updateBudgetCategoryAPI,
 } from '../api';
-import { useBudgetStore } from '../store';
+import { useBudgetStore } from '../stores/store';
 
 const normalizeAmount = (amount: string | number): number =>
   typeof amount === 'string' ? Number(amount) : amount;

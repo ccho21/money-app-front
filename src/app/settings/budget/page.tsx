@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,6 +13,9 @@ import { fetchBudgetsByCategory } from '@/modules/budget/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { Section } from '@/components/ui/temp/section';
+import { Button } from '@/components/ui/button';
+import { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
+import { useEffect } from 'react';
 
 export default function BudgetSettingsPage() {
   const router = useRouter();
@@ -21,22 +24,20 @@ export default function BudgetSettingsPage() {
     query: { startDate, endDate, timeframe },
   } = useTransactionFilterStore();
 
-  useTopNavPreset({ title: 'Budget', onBack: () => router.back() });
-
   const { data, isLoading, error } = fetchBudgetsByCategory({
     startDate,
     endDate,
     timeframe,
   });
 
-  const handleClick = (categoryId: string) => {
-    router.push(`/settings/budget/${categoryId}/list`);
+  const handleClick = (item: BudgetCategoryItemDTO) => {
+    router.push(`/settings/budget/${item.categoryId}/list`);
   };
 
   if (isLoading) {
     return (
-      <main className='layout-shell'>
-        <div className='p-component space-y-component'>
+      <main className=''>
+        <div className=''>
           <DateNavigator variant='dropdown' />
           <Skeleton className='h-40 w-full' />
         </div>
@@ -46,8 +47,8 @@ export default function BudgetSettingsPage() {
 
   if (error || !data || data.items.length === 0) {
     return (
-      <main className='layout-shell'>
-        <div className='p-component space-y-component'>
+      <main className=''>
+        <div className=''>
           <DateNavigator variant='dropdown' />
           <Alert className='text-center'>
             <AlertTitle>No budgets</AlertTitle>
@@ -69,10 +70,11 @@ export default function BudgetSettingsPage() {
           </div>
           <Card className='flat-card'>
             <CardContent className='flat-card-content divide-y divide-border'>
-              {data.items.map((item) => (
-                <button
+              {data.items.map((item: BudgetCategoryItemDTO) => (
+                <Button
+                  variant='ghost'
                   key={item.categoryId}
-                  onClick={() => handleClick(item.categoryId)}
+                  onClick={() => handleClick(item)}
                   className='flex w-full items-center justify-between px-component py-element text-left hover:bg-muted/10 transition-colors'
                 >
                   <div className='flex items-center gap-element min-w-0'>
@@ -91,7 +93,7 @@ export default function BudgetSettingsPage() {
                     />
                     <ChevronRight className='icon-sm text-muted-foreground' />
                   </div>
-                </button>
+                </Button>
               ))}
             </CardContent>
           </Card>

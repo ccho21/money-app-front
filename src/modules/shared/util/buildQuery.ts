@@ -1,12 +1,11 @@
-import { DateFilterParams } from '../../common/types';
+import { BudgetQuery } from "@/modules/budget/types/types";
 
-export const buildQuery = (params: DateFilterParams): string => {
+export const buildQuery = (params: BudgetQuery): string => {
   const filteredParams: Record<string, string> = {};
 
   if (params.startDate) filteredParams.startDate = params.startDate;
   if (params.endDate) filteredParams.endDate = params.endDate;
-  if (params.groupBy) filteredParams.groupBy = params.groupBy.toString();
-  if (params.type) filteredParams.type = params.type.toString();
+  if (params.timeframe) filteredParams.groupBy = params.timeframe.toString();
 
   return new URLSearchParams(filteredParams).toString();
 };

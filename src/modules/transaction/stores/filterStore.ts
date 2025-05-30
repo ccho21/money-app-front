@@ -145,8 +145,8 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
           note,
         } = get().query;
         const params = new URLSearchParams();
-        params.set('startDate', startDate);
-        params.set('endDate', endDate);
+        // get the start date as standard
+        params.set('date', startDate);
         params.set('timeframe', timeframe);
         if (groupBy) params.set('groupBy', groupBy);
         if (transactionType) params.set('type', transactionType);

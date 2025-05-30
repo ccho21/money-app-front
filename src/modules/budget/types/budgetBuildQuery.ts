@@ -1,4 +1,4 @@
-import { BudgetQuery } from '../types';
+import { BudgetQuery } from './types';
 
 export const buildQuery = (params: BudgetQuery): string => {
   const filteredParams: Record<string, string> = {};

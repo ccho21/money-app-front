@@ -6,35 +6,56 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
+import { useEffect } from 'react';
 import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
-import { useUpdateBudgetCategory } from '@/modules/budget/hooks/queries';
-import { useBudgetFormStore } from '../formStore';
 import { BudgetCategoryForm } from './BudgetCategoryForm';
+import { useUpdateBudgetCategory } from '@/modules/budget/hooks/queries';
+import { useBudgetFormStore } from '../stores/formStore';
+import { useBudgetStore } from '../stores/store';
 
 interface Props {
-  categoryId: string;
   onClose: () => void;
 }
 
-export function EditBudgetDrawer({ categoryId, onClose }: Props) {
-  const shouldRender = useConditionalRender(!!categoryId);
-  const form = useBudgetFormStore((s) => s.form);
+export function EditBudgetDrawer({ onClose }: Props) {
+  const { selectedBudget } = useBudgetStore();
+  const categoryId = selectedBudget?.categoryId ?? '';
+  const shouldRender = useConditionalRender(!!selectedBudget);
+
+  const setForm = useBudgetFormStore((s) => s.setForm);
   const resetForm = useBudgetFormStore((s) => s.resetForm);
-  const updateBudget = useUpdateBudgetCategory();
+  const setMode = useBudgetFormStore((s) => s.setMode);
+  const form = useBudgetFormStore((s) => s.form);
+
+  useEffect(() => {
+    if (selectedBudget) {
+      resetForm();
+      setForm({
+        categoryId: selectedBudget.categoryId,
+        amount: selectedBudget.amount,
+        startDate: selectedBudget.rangeStart,
+        endDate: selectedBudget.rangeEnd,
+      });
+      setMode('edit');
+    }
+  }, [selectedBudget]);
+
+  const updateMutation = useUpdateBudgetCategory();
 
   const handleSubmit = async () => {
-    const { amount, startDate, endDate, type } = form;
-    await updateBudget.mutateAsync({
+    if (!categoryId) return;
+    await updateMutation.mutateAsync({
       id: categoryId,
-      data: { amount, startDate, endDate, type },
+      data: form,
     });
+
     resetForm();
     onClose();
   };
 
   return (
     <Drawer
-      open={!!categoryId}
+      open={!!selectedBudget}
       onOpenChange={(v) => {
         if (!v) {
           resetForm();
@@ -44,13 +65,13 @@ export function EditBudgetDrawer({ categoryId, onClose }: Props) {
     >
       {shouldRender && (
         <DrawerContent aria-describedby={undefined}>
-          <input autoFocus className='sr-only' />
+          <input autoFocus className="sr-only" />
           <DrawerHeader>
-            <DrawerTitle className='text-heading' role='heading' aria-level={2}>
+            <DrawerTitle className="text-heading" role="heading" aria-level={2}>
               Edit Budget
             </DrawerTitle>
           </DrawerHeader>
-          <div className='pb-section'>
+          <div className="pb-section">
             <BudgetCategoryForm onSubmit={handleSubmit} isEdit />
           </div>
         </DrawerContent>

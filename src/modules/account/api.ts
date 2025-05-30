@@ -11,7 +11,7 @@ import {
   // ⚠️ [외부 참조 필요] DateFilterParams는 shared/types 또는 common 모듈에서 가져와야 함
 } from './types/types';
 import type { DateFilterParams } from '@/modules/shared/common/types'; // ✅ 승인 필요
-import { buildQuery } from '../shared/util/buildQuery';
+import { buildQuery } from '../shared/util/buildQuery_old';
 
 // Create a new account
 export const createAccountAPI = (payload: AccountCreateRequestDTO) => {

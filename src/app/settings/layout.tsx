@@ -11,9 +11,9 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div className='min-h-screen flex flex-col bg-muted/20 text-foreground'>
+    <div className='layout-shell'>
       <TopNav />
-      <main className='flex-1 overflow-y-auto'>{children}</main>
+      <main className='layout-body'>{children}</main>
     </div>
   );
 }

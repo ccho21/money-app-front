@@ -6,12 +6,13 @@ import type {
   BudgetCategoryUpdateRequestDTO,
   BudgetGroupItemDTO,
   BudgetSummaryDTO,
-} from './types';
+  BudgetQuery,
+} from './types/types';
 import type { DateFilterParams } from '@/modules/shared/common/types';
-import { buildQuery } from '../shared/util/buildQuery';
+import { buildQuery } from './types/budgetBuildQuery';
 
 // ✅ [GET] /budgets/by-category → 카테고리별 예산 항목 조회
-export const fetchBudgetByCategoryAPI = (params: DateFilterParams) => {
+export const fetchBudgetByCategoryAPI = (params: BudgetQuery) => {
   const query = buildQuery(params);
   return get<BudgetCategoryListResponseDTO>(`/budgets/by-category?${query}`);
 };
@@ -37,14 +38,14 @@ export const updateBudgetCategoryAPI = (
   );
 };
 
-// ✅ [POST] /budgets/by-category/:categoryId → 그룹 예산 조회
+// ✅ [GET] /budgets/by-category/:categoryId → 그룹 예산 조회
 export const fetchGroupedBudgetCategoryAPI = (
   categoryId: string,
-  params: DateFilterParams
+  params: BudgetQuery
 ) => {
-  return post<BudgetGroupItemDTO, DateFilterParams>(
-    `/budgets/by-category/${categoryId}`,
-    params
+  const query = buildQuery(params);
+  return get<BudgetGroupItemDTO>(
+    `/budgets/by-category/${categoryId}?${query}`,
   );
 };
 

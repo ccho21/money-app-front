@@ -8,47 +8,44 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import EmptyMessage from '@/components/ui/custom/emptyMessage';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useBudgetFormStore } from '@/modules/budget/formStore';
-import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types';
+import type {
+  BudgetCategoryItemDTO,
+  BudgetCategoryPeriodItemDTO,
+} from '@/modules/budget/types/types';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks/queries';
 import { AddBudgetDrawer } from '@/modules/budget/components/AddBudgetDrawer';
 import { EditBudgetDrawer } from '@/modules/budget/components/EditBudgetDrawer';
+import { useBudgetFormStore } from '@/modules/budget/stores/formStore';
+import { useBudgetStore } from '@/modules/budget/stores/store';
+import DateNavigator from '@/components/navigation/DateNavigator';
 
 export default function ListBudgetCategoryPage() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [drawerMode, setDrawerMode] = useState<'new' | 'edit' | null>(null);
+  const { setSelectedBudget } = useBudgetStore();
 
   const {
     query: { startDate, endDate, timeframe },
   } = useTransactionFilterStore();
 
   const resetForm = useBudgetFormStore((s) => s.resetForm);
-  const setField = useBudgetFormStore((s) => s.setField);
-
-  useEffect(() => {
-    resetForm();
-  }, [categoryId, resetForm]);
 
   const {
     data: budgetGroup,
     isLoading,
     isError,
-  } = fetchGroupedBudgetCategory(
-    categoryId as string,
-    { startDate, endDate, timeframe },
-    !!categoryId
-  );
-
+  } = fetchGroupedBudgetCategory(String(categoryId), {
+    startDate,
+    endDate,
+    timeframe,
+  });
   const handleSelect = (item: BudgetCategoryPeriodItemDTO) => {
-    setField('startDate', item.rangeStart);
-    setField('endDate', item.rangeEnd);
-    setField('type', item.type);
-    setField('amount', item.amount);
-    setField('categoryId', String(categoryId));
-
-    const isEdit = !!item.categoryId;
-    setDrawerMode(isEdit ? 'edit' : 'new');
+    resetForm();
+    if (budgetGroup) {
+      setSelectedBudget(item); // 상태 저장
+      setDrawerMode(item.isUnconfigured ? 'new' : 'edit');
+    }
   };
 
   if (!categoryId) {
@@ -61,7 +58,7 @@ export default function ListBudgetCategoryPage() {
 
   if (isLoading) {
     return (
-      <div className='p-component space-y-element'>
+      <div className=''>
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} className='h-10 w-full rounded-md' />
         ))}
@@ -89,10 +86,13 @@ export default function ListBudgetCategoryPage() {
 
   return (
     <>
-      <div className='p-component'>
+      <div className=''>
         <h2 className='text-heading font-semibold mb-component'>
           Budget category List
         </h2>
+        <div className='text-right'>
+          <DateNavigator variant='dropdown' />
+        </div>
         <div className='grid grid-cols-1 gap-component'>
           {budgetGroup.budgets.map((item) => (
             <Card
@@ -115,10 +115,7 @@ export default function ListBudgetCategoryPage() {
         <AddBudgetDrawer onClose={() => setDrawerMode(null)} />
       )}
       {drawerMode === 'edit' && categoryId && (
-        <EditBudgetDrawer
-          categoryId={String(categoryId)}
-          onClose={() => setDrawerMode(null)}
-        />
+        <EditBudgetDrawer onClose={() => setDrawerMode(null)} />
       )}
     </>
   );

@@ -2,41 +2,35 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type {
   BudgetCategoryListResponseDTO,
-  BudgetGroupItemDTO,
   BudgetSummaryDTO,
-} from './types';
+  BudgetCategoryPeriodItemDTO,
+} from '../types/types';
 
-type BudgetStoreState = {
+type BudgetState = {
   budgets: BudgetCategoryListResponseDTO | null;
   summary: BudgetSummaryDTO | null;
-  budgetGroup: BudgetGroupItemDTO | null;
-  isLoading: boolean;
-  error: string | null;
+  selectedBudget: BudgetCategoryPeriodItemDTO | null;
 };
 
-type BudgetStoreActions = {
+type BudgetActions = {
   setBudgets: (budgets: BudgetCategoryListResponseDTO) => void;
   setSummary: (summary: BudgetSummaryDTO) => void;
-  setBudgetGroup: (group: BudgetGroupItemDTO) => void;
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
+  setSelectedBudget: (budget: BudgetCategoryPeriodItemDTO) => void;
   deleteBudgetItem: (id: string) => void;
+  reset: () => void;
 };
 
-export const useBudgetStore = create<BudgetStoreState & BudgetStoreActions>()(
+export const useBudgetStore = create<BudgetState & BudgetActions>()(
   devtools((set, get) => ({
     budgets: null,
     summary: null,
-    budgetGroup: null,
-    isLoading: false,
-    error: null,
+    selectedBudget: null,
 
     setBudgets: (budgets) => set({ budgets }, false, 'budget/setBudgets'),
     setSummary: (summary) => set({ summary }, false, 'budget/setSummary'),
-    setBudgetGroup: (group) =>
-      set({ budgetGroup: group }, false, 'budget/setBudgetGroup'),
-    setLoading: (isLoading) => set({ isLoading }, false, 'budget/setLoading'),
-    setError: (error) => set({ error }, false, 'budget/setError'),
+
+    setSelectedBudget: (budget) =>
+      set({ selectedBudget: budget }, false, 'budget/setSelectedBudget'),
 
     deleteBudgetItem: (id) => {
       const current = get().budgets;
@@ -47,5 +41,16 @@ export const useBudgetStore = create<BudgetStoreState & BudgetStoreActions>()(
       };
       set({ budgets: updated }, false, 'budget/deleteBudgetItem');
     },
+
+    reset: () =>
+      set(
+        {
+          budgets: null,
+          summary: null,
+          selectedBudget: null,
+        },
+        false,
+        'budget/resetAll'
+      ),
   }))
 );

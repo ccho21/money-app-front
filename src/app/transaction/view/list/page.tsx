@@ -26,12 +26,6 @@ const TransactionListView = dynamic(
   { ssr: false }
 );
 
-const SUBMENU_TABS = [
-  { key: 'date', label: 'Date' },
-  { key: 'category', label: 'Category' },
-  { key: 'account', label: 'Account' },
-];
-
 export default function ListPage() {
   const router = useRouter();
 
@@ -110,11 +104,6 @@ export default function ListPage() {
       <Separator className='my-compact' />
 
       <div className='flex justify-between items-center'>
-        {/* <SubMenu
-          active={groupBy ?? 'date'}
-          onChange={setActiveSubMenu}
-          tabs={SUBMENU_TABS}
-        /> */}
       </div>
 
       <div className='space-y-tight'>
