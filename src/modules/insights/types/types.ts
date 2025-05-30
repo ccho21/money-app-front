@@ -17,7 +17,7 @@ export interface Insight {
     type: 'budget' | 'category' | 'transaction';
     id: string;
   };
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   actionLabel?: string;
   actionUrl?: string;
 }
@@ -31,7 +31,7 @@ export interface ChartDataItem {
   meta?: {
     total?: number;
     average?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -53,6 +53,13 @@ export interface BudgetInsightResponse {
 }
 
 export interface InsightQuery {
+  timeframe: Timeframe;
+  startDate: string;
+  endDate: string;
+}
+
+export interface GenericInsightResponse {
+  insights: Insight[];
   timeframe: Timeframe;
   startDate: string;
   endDate: string;
