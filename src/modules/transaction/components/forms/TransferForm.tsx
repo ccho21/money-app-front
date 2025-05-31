@@ -102,7 +102,6 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          getOptionColor={(a) => a.color || '--chart-10'}
           getOptionIcon={(a) =>
             a.type === 'CASH'
               ? 'dollarSign'
@@ -124,7 +123,6 @@ export default function TransferForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          getOptionColor={(a) => a.color || '--chart-10'}
           getOptionIcon={(a) =>
             a.type === 'CASH'
               ? 'dollarSign'

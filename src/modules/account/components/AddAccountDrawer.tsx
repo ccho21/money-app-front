@@ -20,7 +20,6 @@ interface Props {
 export function AddAccountDrawer({ open, onClose }: Props) {
   const shouldRender = useConditionalRender(open, 200);
   const { getCreateFormData, reset } = useAccountFormStore();
-
   const createAccount = useCreateAccount();
 
   const handleSave = () => {
@@ -48,16 +47,19 @@ export function AddAccountDrawer({ open, onClose }: Props) {
         }
       }}
     >
-      {shouldRender && (
-        <DrawerContent
-          aria-describedby={undefined}
-          aria-labelledby='add-account-title'
-        >
+      <DrawerContent
+        aria-labelledby='add-account-title'
+        aria-describedby='add-account-description'
+      >
+        <div className='mx-auto w-full max-w-sm'>
           <DrawerHeader className='pb-component'>
             <DrawerTitle id='add-account-title' className='text-heading'>
               Add Account
             </DrawerTitle>
-            <DrawerDescription className='text-caption text-muted-foreground'>
+            <DrawerDescription
+              id='add-account-description'
+              className='text-caption text-muted-foreground'
+            >
               Create a new account for your cash, card, or bank.
             </DrawerDescription>
           </DrawerHeader>
@@ -67,15 +69,18 @@ export function AddAccountDrawer({ open, onClose }: Props) {
             <input autoFocus tabIndex={-1} />
           </div>
 
+          {/* ✅ only AccountForm is conditionally rendered */}
           <div className='pb-section'>
-            <AccountForm
-              onSubmit={handleSave}
-              submitText='Create'
-              isEdit={false}
-            />
+            {shouldRender && (
+              <AccountForm
+                onSubmit={handleSave}
+                submitText='Create'
+                isEdit={false}
+              />
+            )}
           </div>
-        </DrawerContent>
-      )}
+        </div>
+      </DrawerContent>
     </Drawer>
   );
 }

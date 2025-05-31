@@ -16,7 +16,6 @@ import {
   ChartLegendContent,
   ChartConfig,
 } from '@/components/ui/chart';
-
 import {
   ResponsiveContainer,
   BarChart,
@@ -26,71 +25,91 @@ import {
   YAxis,
   LabelList,
 } from 'recharts';
-
 import { AlertTriangle } from 'lucide-react';
 import { ChartDataItem } from '@/modules/insights/types/types';
+import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
 interface BudgetUsageChartProps {
   byCategory: ChartDataItem;
 }
 
 const chartConfig: ChartConfig = {
-  used: { label: 'Used', color: 'hsl(var(--chart-1))' },
+  used: {
+    label: 'Used',
+    color: 'var(--chart-1)',
+  },
 };
 
-const formatCAD = (v: number) =>
-  new Intl.NumberFormat('en-CA', {
-    style: 'currency',
-    currency: 'CAD',
-    maximumFractionDigits: 0,
-  }).format(v);
-
 export function BudgetUsageChart({ byCategory }: BudgetUsageChartProps) {
-  const chartData = convertChartData(byCategory.data, byCategory.meta?.names);
-  const highestName = byCategory.highlight?.key ?? null;
+  const nameMap =
+    (byCategory.meta?.names as Record<string, string> | undefined) ?? undefined;
+
+  const chartData = convertChartData(byCategory.data, nameMap);
+  const highlightId = byCategory.highlight?.key ?? null;
+  const highlightName = highlightId && nameMap?.[highlightId];
+  const highlightValue = byCategory.highlight?.value ?? 0;
+  const total = byCategory.meta?.total ?? 0;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-heading">
-          Budget Usage by Category
-        </CardTitle>
-        <CardDescription className="text-caption text-muted-foreground">
-          Total: {formatCAD(byCategory.meta?.total ?? 0)}
+        <CardTitle className='text-title'>Budget Usage by Category</CardTitle>
+        <CardDescription className='text-caption text-muted-foreground'>
+          Total: <CurrencyDisplay amount={total} />
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="category"
-              axisLine={false}
-              tickLine={false}
-              tickMargin={8} // 약간 조정
-            />
-            <YAxis hide />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar dataKey="used" fill={chartConfig.used.color}>
-              <LabelList
-                dataKey="used"
-                position="top"
-                formatter={(v: number) => formatCAD(v)}
-              />
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+      <CardContent className='p-0'>
+        <div className='w-full overflow-x-auto'>
+          <ChartContainer config={chartConfig} className='min-w-[300px] w-full'>
+            <ResponsiveContainer width='100%' height={240}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 15, right: 12, bottom: 0, left: 12 }}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey='category'
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                />
+                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar
+                  dataKey='used'
+                  fill={chartConfig.used.color}
+                  radius={[4, 4, 0, 0]}
+                >
+                  <LabelList
+                    dataKey='used'
+                    position='top'
+                    style={{ fontSize: 12 }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
 
-      <CardFooter className="text-caption text-muted-foreground flex gap-element items-center">
-        <AlertTriangle className="w-4 h-4 text-destructive" />
-        <span role="note" aria-live="polite">
-          {highestName
-            ? `Highest spender: ${highestName}`
-            : 'No budget overages detected'}
-        </span>
+      <CardFooter className='flex-col items-start gap-element text-label'>
+        {highlightId ? (
+          <>
+            <div className='flex items-center gap-element font-medium'>
+              Highest spender: {highlightName ?? highlightId}
+              <AlertTriangle className='w-icon h-icon text-destructive' />
+            </div>
+            <div className='text-caption text-muted-foreground'>
+              <CurrencyDisplay amount={highlightValue} /> spent in that category
+            </div>
+          </>
+        ) : (
+          <div className='text-muted-foreground text-caption flex items-center gap-1'>
+            <AlertTriangle className='w-4 h-4 text-muted' />
+            <span>No overages detected</span>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );
@@ -99,9 +118,18 @@ export function BudgetUsageChart({ byCategory }: BudgetUsageChartProps) {
 function convertChartData(
   data: Record<string, number>,
   nameMap?: Record<string, string>
-) {
-  return Object.entries(data).map(([categoryId, amount]) => ({
-    category: nameMap?.[categoryId] ?? categoryId.slice(0, 6),
-    used: amount,
-  }));
+): { category: string; used: number }[] {
+  return Object.entries(data).map(([id, value]) => {
+    const readable =
+      nameMap && id in nameMap
+        ? nameMap[id]
+        : /^[a-zA-Z\s]+$/.test(id)
+        ? id
+        : id.slice(0, 6) + '…';
+
+    return {
+      category: readable,
+      used: value,
+    };
+  });
 }

@@ -17,9 +17,9 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import { Separator } from '@/components/ui/separator';
 import { useCategoryFormStore } from '@/modules/category/stores/formStore';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface CategoryFormProps {
   onSubmit: () => void;
@@ -27,7 +27,7 @@ interface CategoryFormProps {
   isEdit?: boolean;
 }
 
-const getChartColorFromName = (name: string, chartCount = 30) => {
+const getResolvedChartColor = (name: string, chartCount = 30) => {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -51,11 +51,13 @@ export const CategoryForm = ({
       return;
     }
 
+    // ✅ 자동 색상 추정 (실제 CSS 변수 형태로 저장)
     if (!color) {
-      const guessedColor = getChartColorFromName(name);
+      const guessedColor = getResolvedChartColor(name);
       setField('color', guessedColor);
     }
 
+    // ✅ 자동 아이콘 추정
     if (!icon) {
       const guessedIcon = getAutoIconFromName(name);
       setField('icon', guessedIcon);
@@ -81,7 +83,7 @@ export const CategoryForm = ({
 
       <div className='grid w-full items-center gap-element'>
         <Label className='text-label'>Category Type</Label>
-        <ToggleGroup.Root
+        <ToggleGroup
           type='single'
           value={type}
           onValueChange={(val) => {
@@ -89,19 +91,19 @@ export const CategoryForm = ({
           }}
           className='flex gap-element'
         >
-          <ToggleGroup.Item
+          <ToggleGroupItem
             value='expense'
             className='px-component py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground transition-colors'
           >
             Expense
-          </ToggleGroup.Item>
-          <ToggleGroup.Item
+          </ToggleGroupItem>
+          <ToggleGroupItem
             value='income'
             className='px-component py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground transition-colors'
           >
             Income
-          </ToggleGroup.Item>
-        </ToggleGroup.Root>
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
       <div className='grid w-full items-center gap-element'>

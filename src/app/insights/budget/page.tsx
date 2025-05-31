@@ -26,7 +26,7 @@ export default function InsightsBudgetPage() {
   }
 
   return (
-    <main className='w-full min-h-screen bg-background text-foreground px-component pt-component pb-section space-y-component'>
+    <>
       {/* 📊 예산 사용 현황 차트 */}
       <BudgetUsageChart byCategory={data.byCategory} />
 
@@ -35,6 +35,6 @@ export default function InsightsBudgetPage() {
 
       {/* 🛠 예산 조정 CTA */}
       {/* <ActionCards /> */}
-    </main>
+    </>
   );
 }

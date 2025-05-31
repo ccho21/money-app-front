@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 
 import { fetchCategories } from '@/modules/category/hooks/queries';
 import { Card, CardContent } from '@/components/ui/card';
-import { TypographySmall } from '@/components/ui/typography';
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import UIIcon from '@/components/ui/UIIcon';
 import { IconName } from '@/modules/shared/lib/iconMap';
@@ -15,7 +14,9 @@ import { AddCategoryDrawer } from '@/modules/category/components/AddCategoryDraw
 
 export default function CategoryPage() {
   const router = useRouter();
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
+    null
+  );
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const { data: categories = [] } = fetchCategories();
@@ -37,29 +38,25 @@ export default function CategoryPage() {
   );
 
   const renderList = (title: string, items: typeof categories) => (
-    <section className="space-y-3 px-4">
-      <TypographySmall>{title}</TypographySmall>
+    <section className='space-y-3'>
+      <h2 className='text-subheading'>{title}</h2>
       {items.map((cat) => (
         <Card
           key={cat.id}
-          className="rounded-md p-0 shadow-xs border-none hover:shadow-sm transition"
+          className='rounded-md p-0 shadow-xs border-none hover:shadow-sm transition'
           onClick={() => setEditingCategoryId(cat.id)}
         >
-          <CardContent className="p-2 flex items-center justify-between">
-            <div className="flex items-center gap-3 min-w-0">
+          <CardContent className='p-2 flex items-center justify-between'>
+            <div className='flex items-center gap-3 min-w-0'>
               <div
-                className="rounded-full p-2"
+                className='rounded-full p-2'
                 style={{
-                  backgroundColor: `color-mix(in srgb, ${cat.color} 10%, transparent)`,
+                  backgroundColor: cat.color
+                    ? `var(${cat.color})`
+                    : `var(--primary)`,
                 }}
-              >
-                <UIIcon
-                  name={cat.icon as IconName}
-                  style={{ color: cat.color }}
-                  size={12}
-                />
-              </div>
-              <span className="text-sm text-foreground truncate max-w-[180px]">
+              ></div>
+              <span className='text-sm text-foreground truncate max-w-[180px]'>
                 {cat.name}
               </span>
             </div>
@@ -71,12 +68,12 @@ export default function CategoryPage() {
   );
 
   return (
-    <main className="min-h-screen pt-6 pb-[80px] space-y-3 rounded-t-2xl">
-      <div className="space-y-2 px-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-base font-semibold">List</h2>
+    <>
+      <div className='space-y-2 '>
+        <div className='flex justify-between items-center'>
+          <h2 className='text-heading font-semibold'>List</h2>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className='text-subheading text-muted-foreground'>
           Tap to edit. Long press to reorder.
         </p>
       </div>
@@ -91,6 +88,6 @@ export default function CategoryPage() {
           onClose={() => setEditingCategoryId(null)}
         />
       )}
-    </main>
+    </>
   );
 }

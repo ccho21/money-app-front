@@ -17,21 +17,10 @@ import {
 
 import { BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { TrendingUp } from 'lucide-react';
+import { ChartDataItem } from '@/modules/insights/types/types';
 
-// Sample Recurring Expense Data
-const recurringChartData = [
-  { name: 'Netflix', amount: 9500, fill: 'var(--chart-1)' },
-  { name: 'SK Internet', amount: 33000, fill: 'var(--chart-2)' },
-  { name: 'YouTube Premium', amount: 10900, fill: 'var(--chart-3)' },
-  { name: 'Watcha', amount: 8900, fill: 'var(--chart-4)' },
-];
-
-const chartConfig: ChartConfig = {
-  amount: { label: 'Recurring Expense' },
-  Netflix: { label: 'Netflix', color: 'hsl(var(--chart-1))' },
-  'SK Internet': { label: 'SK Internet', color: 'hsl(var(--chart-2))' },
-  'YouTube Premium': { label: 'YouTube Premium', color: 'hsl(var(--chart-3))' },
-  Watcha: { label: 'Watcha', color: 'hsl(var(--chart-4))' },
+type Props = {
+  summary: ChartDataItem;
 };
 
 const formatCAD = (amount: number) =>
@@ -41,14 +30,35 @@ const formatCAD = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(amount);
 
-const total = recurringChartData.reduce((sum, item) => sum + item.amount, 0);
+export default function RecurringExpenseChart({ summary }: Props) {
+  const entries = Object.entries(summary.data);
+  const total = summary.meta?.total ?? 0;
 
-export default function RecurringExpenseChart() {
+  // 💡 colorIndex → Tailwind color var 적용
+  const chartData = entries.map(([name, amount], index) => ({
+    name,
+    amount,
+    fill: `var(--chart-${(index % 8) + 1})`, // 최대 8색 반복
+  }));
+
+  const chartConfig: ChartConfig = {
+    amount: { label: 'Recurring Expense' },
+    ...entries.reduce((acc, [name], index) => {
+      acc[name] = {
+        label: name,
+        color: `var(--chart-${(index % 8) + 1})`,
+      };
+      return acc;
+    }, {} as ChartConfig),
+  };
+
+  if (entries.length === 0) return null;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='text-title'>Top Recurring Expenses</CardTitle>
-        <CardDescription className='text-caption text-muted-foreground'>
+        <CardTitle className='text-heading'>Top Recurring Expenses</CardTitle>
+        <CardDescription className='text-subheading text-muted-foreground'>
           Fixed monthly charges by amount
         </CardDescription>
       </CardHeader>
@@ -56,9 +66,9 @@ export default function RecurringExpenseChart() {
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart
-            data={recurringChartData}
+            data={chartData}
             layout='vertical'
-            margin={{ left: 0 }}
+            margin={{ left: 5, right: 5 }}
           >
             <YAxis
               dataKey='name'
@@ -79,15 +89,14 @@ export default function RecurringExpenseChart() {
             <Bar
               dataKey='amount'
               radius={5}
-              // 개별 색상으로 override
               isAnimationActive={false}
               label={false}
             >
-              {recurringChartData.map((entry) => (
+              {chartData.map((entry) => (
                 <Bar
                   key={`bar-${entry.name}`}
                   dataKey='amount'
-                  fill={`hsl(${entry.fill})`}
+                  fill={`${entry.fill})`}
                   radius={5}
                   barSize={14}
                 />

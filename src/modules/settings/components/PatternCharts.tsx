@@ -35,7 +35,7 @@ interface PatternChartsProps {
 const config: ChartConfig = {
   amount: {
     label: 'Spending',
-    color: 'hsl(var(--primary))',
+    color: 'var(--primary)',
   },
 };
 
@@ -62,15 +62,15 @@ export function PatternCharts({ byDay, byTime }: PatternChartsProps) {
                   <XAxis
                     dataKey="label"
                     tickLine={false}
-                    tickMargin={10}
                     axisLine={false}
+                    tickMargin={10}
                   />
                   <ChartTooltip content={<ChartTooltipContent hideLabel />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar
                     dataKey="amount"
                     radius={[4, 4, 0, 0]}
-                    fill="hsl(var(--primary))"
+                    fill="var(--primary)"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -113,7 +113,7 @@ export function PatternCharts({ byDay, byTime }: PatternChartsProps) {
                   <Bar
                     dataKey="amount"
                     radius={[4, 4, 0, 0]}
-                    fill="hsl(var(--primary))"
+                    fill="var(--primary)"
                   />
                 </BarChart>
               </ResponsiveContainer>

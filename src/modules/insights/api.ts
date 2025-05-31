@@ -2,10 +2,11 @@
 
 import { get } from '@/modules/shared/common/api';
 import {
+  AlertInsightResponse,
   BudgetInsightResponse,
-  GenericInsightResponse,
   InsightQuery,
   PatternInsightResponse,
+  RecurringInsightResponse,
 } from './types/types';
 import { buildInsightQuery } from './util/buildInsightQuery';
 
@@ -21,10 +22,10 @@ export const fetchInsightBudgetAPI = (params: InsightQuery) => {
 
 export const fetchInsightRecurringAPI = (params: InsightQuery) => {
   const query = buildInsightQuery(params);
-  return get<GenericInsightResponse>(`/insights/recurring${query}`);
+  return get<RecurringInsightResponse>(`/insights/recurring${query}`);
 };
 
 export const fetchInsightAlertAPI = (params: InsightQuery) => {
   const query = buildInsightQuery(params);
-  return get<GenericInsightResponse>(`/insights/alerts${query}`);
+  return get<AlertInsightResponse>(`/insights/alerts${query}`);
 };

@@ -1,4 +1,7 @@
-import { BaseGroupItemDTO, BaseListSummaryResponseDTO } from '@/modules/shared/common/types';
+import {
+  BaseGroupItemDTO,
+  BaseListSummaryResponseDTO,
+} from '@/modules/shared/common/types';
 // ✅ 여기서 transaction/types 안 가져오게 수정
 
 export type AccountType = 'CASH' | 'BANK' | 'CARD';
@@ -57,7 +60,10 @@ export type AccountCreateRequestDTO = BaseAccountRequestDTO;
 export type AccountUpdateRequestDTO = Partial<AccountCreateRequestDTO>;
 
 // ✅ TransactionDetailDTO 대신 계좌 기반 정보만 유지
-export interface AccountTransactionItemDTO extends BaseGroupItemDTO {
+export interface AccountTransactionItemDTO {
+  label: string;
+  rangeStart: string;
+  rangeEnd: string;
   accountId: string;
   accountName: string;
   balance: number;

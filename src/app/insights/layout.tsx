@@ -36,7 +36,7 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className='w-full min-h-screen pb-[10vh] space-y-component'>
+    <div className='layout-shell'>
       <TopNav />
       {/* Page Title */}
 
@@ -44,7 +44,7 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
       <TabMenu tabs={tabs} active={tab} onChange={handleTabChange} />
 
       {/* Content */}
-      <div className='space-y-component'>{children}</div>
+      <main className='layout-body'>{children}</main>
     </div>
   );
 }

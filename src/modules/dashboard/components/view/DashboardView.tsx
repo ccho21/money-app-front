@@ -87,7 +87,7 @@ export function DashboardView() {
         categoryList={data.categoryMonthly.map((cat) => ({
           name: cat.name,
           percent: cat.percent,
-          color: cat.color ?? 'hsl(var(--chart-1))',
+          color: cat.color ?? 'var(--chart-1)',
         }))}
       />
 

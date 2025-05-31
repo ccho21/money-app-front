@@ -5,6 +5,12 @@ import { Timeframe } from '@/modules/transaction/types/types';
 export type InsightType = 'pattern' | 'budget' | 'recurring' | 'alert';
 export type InsightSeverity = 'info' | 'warning' | 'critical';
 
+export interface InsightQuery {
+  timeframe: Timeframe;
+  startDate: string;
+  endDate: string;
+}
+
 export interface Insight {
   id: string;
   title: string;
@@ -52,15 +58,17 @@ export interface BudgetInsightResponse {
   endDate: string;
 }
 
-export interface InsightQuery {
+export interface RecurringInsightResponse {
+  insights: Insight[];
+  recurringSummary: ChartDataItem;
   timeframe: Timeframe;
-  startDate: string;
-  endDate: string;
+  startDate: string; // e.g. '2025-05-01'
+  endDate: string; // e.g. '2025-05-31'
 }
 
-export interface GenericInsightResponse {
+export interface AlertInsightResponse {
   insights: Insight[];
-  timeframe: Timeframe;
   startDate: string;
   endDate: string;
+  timeframe: string;
 }

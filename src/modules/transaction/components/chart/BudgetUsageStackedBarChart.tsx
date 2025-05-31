@@ -26,26 +26,24 @@ import {
 } from '@/components/ui/chart';
 
 import { AlertTriangle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { TransactionChartBudgetResponse } from '../../types/types';
 
 interface Props {
   data: TransactionChartBudgetResponse;
 }
 
-const chartConfig: ChartConfig = {
-  used: {
-    label: 'Used',
-    color: 'hsl(var(--chart-1))',
-  },
-  over: {
-    label: 'Over',
-    color: 'hsl(var(--destructive))',
-  },
-  remaining: {
-    label: 'Remaining',
-    color: 'hsl(var(--muted))',
-  },
+const CSS_VAR_KEYS = {
+  used: '--chart-1',
+  over: '--destructive',
+  remaining: '--muted',
 };
+
+function resolveCssVar(cssVar: string) {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(cssVar)
+    .trim();
+}
 
 function transformBudgetData(data: TransactionChartBudgetResponse) {
   return data.breakdown.map((item) => {
@@ -64,12 +62,39 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
   const transformedData = transformBudgetData(data);
   const overCount = transformedData.filter((d) => d.overFlag).length;
 
+  const [resolvedColors, setResolvedColors] = useState({
+    used: '#999',
+    over: '#f00',
+    remaining: '#ccc',
+  });
+
+  useEffect(() => {
+    setResolvedColors({
+      used: resolveCssVar(CSS_VAR_KEYS.used),
+      over: resolveCssVar(CSS_VAR_KEYS.over),
+      remaining: resolveCssVar(CSS_VAR_KEYS.remaining),
+    });
+  }, []);
+
+  const chartConfig: ChartConfig = {
+    used: {
+      label: 'Used',
+      color: resolvedColors.used,
+    },
+    over: {
+      label: 'Over',
+      color: resolvedColors.over,
+    },
+    remaining: {
+      label: 'Remaining',
+      color: resolvedColors.remaining,
+    },
+  };
+
   return (
     <Card className="flat-card space-y-component">
       <CardHeader className="px-component">
-        <CardTitle className="text-title">
-          Budget Usage by Category
-        </CardTitle>
+        <CardTitle className="text-title">Budget Usage by Category</CardTitle>
         <CardDescription className="text-caption text-muted-foreground">
           Spending, overages, and remaining budget across all categories.
         </CardDescription>
@@ -96,12 +121,12 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
-            {(['used', 'over', 'remaining'] as const).map((key) => (
+            {Object.entries(chartConfig).map(([key, { color }]) => (
               <Bar
                 key={key}
                 dataKey={key}
                 stackId="a"
-                fill={chartConfig[key].color}
+                fill={color}
                 radius={1}
                 barSize={30}
               >
@@ -111,7 +136,7 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
                     position="left"
                     offset={8}
                     fontSize={12}
-                    className="text-label fill-[--color-label]"
+                    style={{ fill: 'var(--color-label)' }} // ✅ 안정적인 방식
                   />
                 )}
               </Bar>

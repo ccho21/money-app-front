@@ -45,10 +45,7 @@ export default function Selector<T>({
   const shouldRender = useConditionalRender(open);
 
   return (
-    <div
-      className={cn('', className)}
-      {...(open ? { inert: true } : {})}
-    >
+    <div className={cn('', className)} {...(open ? { inert: true } : {})}>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
           <Button
@@ -80,7 +77,7 @@ export default function Selector<T>({
               </div>
             </DrawerHeader>
 
-            <div className='grid grid-cols-3 gap-element px-component py-component'>
+            <div className='grid gap-element px-component py-component'>
               {options.map((item, idx) => {
                 const isSelected = getOptionValue(item) === value;
 
@@ -102,8 +99,15 @@ export default function Selector<T>({
                       <UIIcon
                         name={getOptionIcon(item) as IconName}
                         className='icon-md'
-                        // style={{ color: `var(${getOptionColor?.(item)})` }}
                       />
+                    )}
+                    {getOptionColor && (
+                      <div
+                        className='w-2 h-2 rounded-full'
+                        style={{
+                          backgroundColor: `var(${getOptionColor(item)})`,
+                        }}
+                      ></div>
                     )}
                     <div className='text-label truncate'>
                       {getOptionLabel(item)}

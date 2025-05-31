@@ -2,11 +2,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import {
-  TransactionCreateRequestDTO,
-  TransactionUpdateRequestDTO,
-  TransactionTransferRequestDTO,
-} from '../types';
+import { TransactionCreateRequestDTO, TransactionTransferRequestDTO, TransactionUpdateRequestDTO } from '../types/types';
 
 export type RecurringFormState = {
   enabled: boolean;

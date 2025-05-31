@@ -12,7 +12,7 @@ interface AccountFormState {
   mode: Mode;
   name: string;
   type: AccountType;
-  balance: number;
+  balance: string; // ✅ string으로 변경
   description?: string;
   color?: string;
   settlementDate?: number;
@@ -37,7 +37,7 @@ const initialState: AccountFormState = {
   mode: 'new',
   name: '',
   type: 'CASH',
-  balance: 0,
+  balance: '', // ✅ string 기본값
   description: '',
   color: '',
   settlementDate: undefined,
@@ -51,13 +51,23 @@ export const useAccountFormStore = create<
   devtools((set, get) => ({
     ...initialState,
 
-    setField: (key, value) => set({ [key]: value }),
+    setField: (key, value) =>
+      set((state) => ({
+        ...state,
+        [key]: value,
+      })),
 
     setAllFields: (data) => {
       const safeData = Object.fromEntries(
         Object.entries(data).filter(([key]) => key in initialState)
       );
-      set(safeData as Partial<AccountFormState>);
+
+      set({
+        ...(safeData.balance !== undefined
+          ? { balance: String(safeData.balance) }
+          : {}),
+        ...safeData,
+      } as Partial<AccountFormState>);
     },
 
     setMode: (mode) => set({ mode }),
@@ -67,8 +77,8 @@ export const useAccountFormStore = create<
     validate: () => {
       const { name, balance } = get();
       if (!name.trim()) return 'Account name is required.';
-      if (typeof balance !== 'number' || isNaN(balance))
-        return 'Balance must be a number.';
+      const parsed = Number(balance);
+      if (isNaN(parsed)) return 'Balance must be a valid number.';
       return null;
     },
 
@@ -87,7 +97,7 @@ export const useAccountFormStore = create<
       return {
         name,
         type,
-        balance,
+        balance: Number(balance), // ✅ 변환
         description: description?.trim() || undefined,
         color: color?.trim() || undefined,
         settlementDate,
@@ -109,13 +119,15 @@ export const useAccountFormStore = create<
       } = get();
 
       const dto: AccountUpdateRequestDTO = {};
+
       if (typeof name === 'string' && name.trim()) dto.name = name.trim();
-      if (typeof balance === 'number') dto.balance = balance;
+      if (typeof balance === 'string' && !isNaN(Number(balance))) {
+        dto.balance = Number(balance); // ✅ 변환
+      }
       if (typeof type === 'string') dto.type = type;
       if (typeof description === 'string' && description.trim())
         dto.description = description.trim();
-      if (typeof color === 'string' && color.trim())
-        dto.color = color.trim();
+      if (typeof color === 'string' && color.trim()) dto.color = color.trim();
       if (typeof settlementDate === 'number')
         dto.settlementDate = settlementDate;
       if (typeof paymentDate === 'number') dto.paymentDate = paymentDate;

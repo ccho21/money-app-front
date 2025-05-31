@@ -25,7 +25,7 @@ export function BudgetCategoryForm({
         inputMode='numeric'
         placeholder='Amount'
         value={amount}
-        onChange={(e) => setField('amount', Number(e.target.value))}
+        onChange={(e) => setField('amount', e.target.value)}
         className='text-center font-semibold'
       />
 

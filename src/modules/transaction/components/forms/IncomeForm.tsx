@@ -89,6 +89,16 @@ export default function IncomeForm({ mode, transactionId }: Props) {
 
   return (
     <div className='space-y-component'>
+      {/* Amount */}
+      <div className='grid w-full items-start gap-element'>
+        <Label className='text-label'>Amount</Label>
+        <Input
+          value={amount}
+          onChange={(e) => setField('amount', e.target.value)}
+          type='number'
+        />
+      </div>
+
       {/* Account */}
       <div className='grid w-full items-start gap-element'>
         <Label className='text-label'>Account</Label>
@@ -99,7 +109,6 @@ export default function IncomeForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          getOptionColor={(a) => a.color || '--chart-10'}
           getOptionIcon={(a) =>
             a.type === 'CASH'
               ? 'dollarSign'
@@ -108,16 +117,6 @@ export default function IncomeForm({ mode, transactionId }: Props) {
               : 'piggyBank'
           }
           onEdit={() => router.push('/settings/account')}
-        />
-      </div>
-
-      {/* Amount */}
-      <div className='grid w-full items-start gap-element'>
-        <Label className='text-label'>Amount</Label>
-        <Input
-          value={amount}
-          onChange={(e) => setField('amount', e.target.value)}
-          type='number'
         />
       </div>
 
@@ -131,8 +130,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'income')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          getOptionColor={(a) => a.color || '#e5e7eb'}
-          getOptionIcon={(item) => (item.icon || 'circleHelp') as IconName}
+          getOptionColor={(a) => a.color || '--chart-1'}
           onEdit={() => router.push('/settings/category')}
         />
       </div>

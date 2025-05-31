@@ -5,29 +5,35 @@ import { BudgetCategoryCreateRequestDTO } from '../types/types';
 type Mode = 'new' | 'edit';
 
 type BudgetFormState = {
-  form: BudgetCategoryCreateRequestDTO;
+  form: {
+    categoryId: string;
+    amount: string; // ✅ string으로 변경
+    startDate: string;
+    endDate: string;
+  };
   mode: Mode;
 };
 
 type BudgetFormActions = {
-  setForm: (form: Partial<BudgetCategoryCreateRequestDTO>) => void;
-  setField: <K extends keyof BudgetCategoryCreateRequestDTO>(
+  setForm: (form: Partial<BudgetFormState['form']>) => void;
+  setField: <K extends keyof BudgetFormState['form']>(
     key: K,
-    value: BudgetCategoryCreateRequestDTO[K]
+    value: BudgetFormState['form'][K]
   ) => void;
   setMode: (mode: Mode) => void;
   resetForm: () => void;
+  getCreateFormData: () => BudgetCategoryCreateRequestDTO;
 };
 
-const initialForm: BudgetCategoryCreateRequestDTO = {
+const initialForm: BudgetFormState['form'] = {
   categoryId: '',
-  amount: 0,
+  amount: '', // ✅ string 기본값
   startDate: '',
   endDate: '',
 };
 
 export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     form: initialForm,
     mode: 'new',
 
@@ -36,7 +42,11 @@ export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
         (state) => ({
           form: {
             ...state.form,
-            ...partialForm,
+            ...Object.fromEntries(
+              Object.entries(partialForm).map(([k, v]) =>
+                k === 'amount' ? [k, String(v)] : [k, v]
+              )
+            ),
           },
         }),
         false,
@@ -48,7 +58,7 @@ export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
         (state) => ({
           form: {
             ...state.form,
-            [key]: value,
+            [key]: key === 'amount' ? String(value) : value,
           },
         }),
         false,
@@ -60,5 +70,15 @@ export const useBudgetFormStore = create<BudgetFormState & BudgetFormActions>()(
 
     resetForm: () =>
       set({ form: initialForm }, false, 'budgetForm/resetForm'),
+
+    getCreateFormData: () => {
+      const { form } = get();
+      return {
+        categoryId: form.categoryId,
+        amount: parseFloat(form.amount),
+        startDate: form.startDate,
+        endDate: form.endDate,
+      };
+    },
   }))
 );

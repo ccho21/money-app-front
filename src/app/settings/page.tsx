@@ -21,12 +21,12 @@ export default function SettingsPage() {
   // Section 단위로 묶은 config
   const sections = [
     {
-      title: 'Transaction',
-      items: settingsConfig.filter((i) => i.section === 'transaction'),
+      title: 'Plans',
+      items: settingsConfig.filter((i) => i.section === 'category'),
     },
     {
-      title: 'Category',
-      items: settingsConfig.filter((i) => i.section === 'category'),
+      title: 'Transaction',
+      items: settingsConfig.filter((i) => i.section === 'transaction'),
     },
     {
       title: 'General',

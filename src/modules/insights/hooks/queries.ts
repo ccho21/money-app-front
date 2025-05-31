@@ -7,10 +7,11 @@ import {
   fetchInsightRecurringAPI,
 } from '@/modules/insights/api';
 import {
+  AlertInsightResponse,
   BudgetInsightResponse,
-  GenericInsightResponse,
   InsightQuery,
   PatternInsightResponse,
+  RecurringInsightResponse,
 } from '@/modules/insights/types/types';
 import { useQuery } from '@tanstack/react-query';
 
@@ -33,7 +34,7 @@ export const useInsightBudget = (params: InsightQuery) => {
 };
 
 export const useInsightRecurring = (params: InsightQuery) => {
-  return useQuery<GenericInsightResponse>({
+  return useQuery<RecurringInsightResponse>({
     queryKey: ['insight-recurring', params],
     queryFn: () => fetchInsightRecurringAPI(params),
     enabled: !!params.startDate && !!params.endDate,
@@ -42,7 +43,7 @@ export const useInsightRecurring = (params: InsightQuery) => {
 };
 
 export const useInsightAlerts = (params: InsightQuery) => {
-  return useQuery<GenericInsightResponse>({
+  return useQuery<AlertInsightResponse>({
     queryKey: ['insight-alerts', params],
     queryFn: () => fetchInsightAlertAPI(params),
     enabled: !!params.startDate && !!params.endDate,

@@ -35,7 +35,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
       setAllFields({
         name: data.name,
         type: data.type,
-        balance: data.balance,
+        balance: String(data.balance),
         description: data.description ?? '',
         color: data.color ?? '',
         settlementDate: data.settlementDate ?? undefined,
@@ -73,7 +73,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
       }}
     >
       {shouldRender && (
-        <DrawerContent aria-describedby={undefined}>
+        <DrawerContent className='max-h-screen overflow-y-auto'>
           {/* 포커스 anchor for accessibility */}
           <input autoFocus className='sr-only' />
 

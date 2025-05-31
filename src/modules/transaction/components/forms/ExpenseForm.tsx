@@ -115,7 +115,6 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           options={accounts}
           getOptionLabel={(a) => a.name}
           getOptionValue={(a) => a.id}
-          getOptionColor={(a) => a.color || '--chart-10'}
           getOptionIcon={(a) =>
             a.type === 'CASH'
               ? 'dollarSign'
@@ -139,8 +138,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           options={categories.filter((c) => c.type === 'expense')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          getOptionColor={(a) => a.color || '#e5e7eb'}
-          getOptionIcon={(item) => (item.icon || 'icon') as IconName}
+          getOptionColor={(a) => a.color || '--chart-1'}
           onEdit={() => router.push('/settings/category')}
         />
       </div>

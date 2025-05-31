@@ -32,10 +32,10 @@ import { TransactionChartAccountResponse } from '../../types/types';
 const chartConfig: ChartConfig = {
   amount: {
     label: 'Spending',
-    color: 'hsl(var(--chart-1))',
+    color: 'var(--chart-1)',
   },
   label: {
-    color: 'hsl(var(--background))',
+    color: 'var(--background)',
   },
 };
 

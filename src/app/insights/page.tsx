@@ -27,7 +27,7 @@ export default function InsightsPatternPage() {
   }
 
   return (
-    <main className='w-full min-h-screen px-component pt-component pb-[10vh] space-y-component'>
+    <>
       {/* 💡 인사이트 카드 목록 */}
       <InsightCardList insights={data.insights} />
 
@@ -36,6 +36,6 @@ export default function InsightsPatternPage() {
 
       {/* 🛠 예산 조정 / 고정비 등 행동 유도 카드 */}
       <ActionCards />
-    </main>
+    </>
   );
 }

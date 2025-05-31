@@ -31,12 +31,12 @@ export function BudgetSummaryDonut({ data }: Props) {
     {
       name: 'Used',
       value: Math.min(totalUsed, totalBudget),
-      fill: 'hsl(var(--chart-1))',
+      fill: 'var(--chart-2)',
     },
     {
       name: 'Remaining',
       value: Math.max(totalBudget - totalUsed, 0),
-      fill: 'hsl(var(--muted))',
+      fill: 'var(--muted)',
     },
   ];
 
@@ -52,8 +52,8 @@ export function BudgetSummaryDonut({ data }: Props) {
       <CardContent className="flat-card-content">
         <ChartContainer
           config={{
-            Used: { label: 'Used', color: 'hsl(var(--chart-1))' },
-            Remaining: { label: 'Remaining', color: 'hsl(var(--muted))' },
+            Used: { label: 'Used', color: 'var(--chart-1)' },
+            Remaining: { label: 'Remaining', color: 'var(--muted)' },
           }}
           className="mx-auto"
         >
@@ -63,7 +63,7 @@ export function BudgetSummaryDonut({ data }: Props) {
               data={chartData}
               dataKey="value"
               nameKey="name"
-              innerRadius={60}
+              innerRadius={50}
               strokeWidth={5}
               animationDuration={500}
             >
