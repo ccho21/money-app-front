@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ColorPicker } from '@/components/ui/custom/ColorPicker';
-import { Switch } from '@/components/ui/switch';
 
 import {
   Sheet,
@@ -44,16 +43,8 @@ export default function AccountForm({
   isEdit = false,
   submitText = isEdit ? 'Update' : 'Add',
 }: AccountFormProps) {
-  const {
-    name,
-    type,
-    balance,
-    color,
-    settlementDate,
-    paymentDate,
-    autoPayment,
-    setField,
-  } = useAccountFormStore();
+  const { name, type, balance, color, settlementDate, paymentDate, setField } =
+    useAccountFormStore();
 
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
@@ -75,34 +66,36 @@ export default function AccountForm({
   };
 
   return (
-    <div className="text-foreground">
-      <div className="space-y-component px-component pt-component pb-section overflow-auto">
+    <div className='text-foreground'>
+      <div className='space-y-component px-component pt-component pb-section overflow-auto'>
         {/* 이름 */}
-        <div className="grid w-full items-center gap-element">
-          <Label htmlFor="name" className="text-label">Account Name</Label>
+        <div className='grid w-full items-center gap-element'>
+          <Label htmlFor='name' className='text-label'>
+            Account Name
+          </Label>
           <Input
-            id="name"
+            id='name'
             value={name}
             onChange={(e) => setField('name', e.target.value)}
           />
         </div>
 
         {/* 타입 */}
-        <div className="grid w-full items-center gap-element">
-          <Label className="text-label">Account Type</Label>
+        <div className='grid w-full items-center gap-element'>
+          <Label className='text-label'>Account Type</Label>
           <ToggleGroup
-            type="single"
+            type='single'
             value={type}
             onValueChange={(val) => {
               if (val) setField('type', val as AccountType);
             }}
-            className="flex gap-element"
+            className='flex gap-element'
           >
             {(['BANK', 'CARD', 'CASH'] as AccountType[]).map((t) => (
               <ToggleGroupItem
                 key={t}
                 value={t}
-                className="px-spacing-element py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                className='px-spacing-element py-compact rounded-md border text-label data-[state=on]:bg-primary data-[state=on]:text-primary-foreground'
               >
                 {t.charAt(0) + t.slice(1).toLowerCase()}
               </ToggleGroupItem>
@@ -111,19 +104,23 @@ export default function AccountForm({
         </div>
 
         {/* 잔액 */}
-        <div className="grid w-full items-center gap-element">
-          <Label htmlFor="balance" className="text-label">Balance</Label>
+        <div className='grid w-full items-center gap-element'>
+          <Label htmlFor='balance' className='text-label'>
+            Balance
+          </Label>
           <Input
-            id="balance"
-            type="number"
+            id='balance'
+            type='number'
             value={balance}
             onChange={(e) => setField('balance', e.target.value)}
           />
         </div>
 
         {/* 색상 */}
-        <div className="grid w-full items-center gap-element">
-          <Label htmlFor="color" className="text-label">Color</Label>
+        <div className='grid w-full items-center gap-element'>
+          <Label htmlFor='color' className='text-label'>
+            Color
+          </Label>
           <ColorPicker
             value={color ?? ''}
             onChange={(val) => setField('color', val)}
@@ -132,14 +129,14 @@ export default function AccountForm({
 
         {/* 카드 전용 필드 */}
         {isCard && (
-          <div className="space-y-component border-t pt-component">
-            <div className="grid w-full items-center gap-element">
-              <Label htmlFor="settlementDate" className="text-label">
+          <div className='space-y-component border-t pt-component'>
+            <div className='grid w-full items-center gap-element'>
+              <Label htmlFor='settlementDate' className='text-label'>
                 Settlement Date
               </Label>
               <Input
-                id="settlementDate"
-                type="number"
+                id='settlementDate'
+                type='number'
                 value={settlementDate ?? ''}
                 onChange={(e) =>
                   setField('settlementDate', Number(e.target.value))
@@ -147,13 +144,13 @@ export default function AccountForm({
               />
             </div>
 
-            <div className="grid w-full items-center gap-element">
-              <Label htmlFor="paymentDate" className="text-label">
+            <div className='grid w-full items-center gap-element'>
+              <Label htmlFor='paymentDate' className='text-label'>
                 Payment Date
               </Label>
               <Input
-                id="paymentDate"
-                type="number"
+                id='paymentDate'
+                type='number'
                 value={paymentDate ?? ''}
                 onChange={(e) =>
                   setField('paymentDate', Number(e.target.value))
@@ -161,31 +158,31 @@ export default function AccountForm({
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label className="text-label text-muted">Auto Payment</Label>
+            {/* <div className='flex items-center justify-between'>
+              <Label className='text-label text-muted'>Auto Payment</Label>
               <Switch
                 checked={autoPayment ?? false}
                 onCheckedChange={(val) => setField('autoPayment', val)}
               />
-            </div>
+            </div> */}
           </div>
         )}
 
         {/* 에러 메시지 */}
         {error && (
-          <p className="text-caption text-destructive pt-tight">{error}</p>
+          <p className='text-caption text-destructive pt-tight'>{error}</p>
         )}
 
         {/* 액션 버튼 */}
-        <div className="pt-component space-y-element text-center">
-          <Button onClick={handleSubmit} className="w-full">
+        <div className='pt-component space-y-element text-center'>
+          <Button onClick={handleSubmit} className='w-full'>
             {submitText}
           </Button>
 
           {isEdit && (
             <Button
-              variant="ghost"
-              className="w-full text-destructive"
+              variant='ghost'
+              className='w-full text-destructive'
               onClick={() => setOpen(true)}
             >
               Delete
@@ -197,30 +194,31 @@ export default function AccountForm({
       {/* 삭제 확인 Sheet */}
       {isEdit && (
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent side="bottom">
+          <SheetContent side='bottom'>
             <SheetHeader>
-              <SheetTitle className="text-title">
+              <SheetTitle className='text-title'>
                 Delete this account?
               </SheetTitle>
-              <SheetDescription className="text-caption">
-                This will permanently remove the account. This action cannot be undone.
+              <SheetDescription className='text-caption'>
+                This will permanently remove the account. This action cannot be
+                undone.
               </SheetDescription>
             </SheetHeader>
-            <div className="px-component pt-component pb-component space-y-element">
+            <div className='px-component pt-component pb-component space-y-element'>
               <Button
-                variant="destructive"
-                className="w-full"
+                variant='destructive'
+                className='w-full'
                 onClick={() => {
                   onDelete?.();
                   setOpen(false);
                 }}
               >
-                <Trash2 className="icon-sm mr-element" />
+                <Trash2 className='icon-sm mr-element' />
                 Confirm Delete
               </Button>
               <Button
-                variant="outline"
-                className="w-full"
+                variant='outline'
+                className='w-full'
                 onClick={() => setOpen(false)}
               >
                 Cancel

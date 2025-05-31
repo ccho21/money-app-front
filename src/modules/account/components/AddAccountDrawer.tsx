@@ -40,6 +40,7 @@ export function AddAccountDrawer({ open, onClose }: Props) {
       open={open}
       onOpenChange={(v) => {
         if (!v) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           document.activeElement instanceof HTMLElement &&
             document.activeElement.blur();
           reset();
@@ -47,40 +48,41 @@ export function AddAccountDrawer({ open, onClose }: Props) {
         }
       }}
     >
-      <DrawerContent
-        aria-labelledby='add-account-title'
-        aria-describedby='add-account-description'
-      >
-        <div className='mx-auto w-full max-w-sm'>
-          <DrawerHeader className='pb-component'>
-            <DrawerTitle id='add-account-title' className='text-heading'>
-              Add Account
-            </DrawerTitle>
-            <DrawerDescription
-              id='add-account-description'
-              className='text-caption text-muted-foreground'
-            >
-              Create a new account for your cash, card, or bank.
-            </DrawerDescription>
-          </DrawerHeader>
+      {shouldRender && (
+        <DrawerContent className='data-[vaul-drawer-direction=bottom]:max-h-[95vh]'>
+          <div className='mx-auto w-full max-w-sm overflow-y-auto'>
+            <DrawerHeader className='pb-component'>
+              <DrawerTitle
+                className='text-heading'
+                role='heading'
+                aria-level={2}
+              >
+                Add Account
+              </DrawerTitle>
+              <DrawerDescription
+                id='add-account-description'
+                className='text-caption text-muted-foreground'
+              >
+                Create a new account for your cash, card, or bank.
+              </DrawerDescription>
+            </DrawerHeader>
 
-          {/* Focus anchor for accessibility */}
-          <div className='sr-only'>
-            <input autoFocus tabIndex={-1} />
-          </div>
+            {/* Focus anchor for accessibility */}
+            <div className='sr-only'>
+              <input autoFocus tabIndex={-1} />
+            </div>
 
-          {/* ✅ only AccountForm is conditionally rendered */}
-          <div className='pb-section'>
-            {shouldRender && (
+            {/* ✅ only AccountForm is conditionally rendered */}
+            <div className=''>
               <AccountForm
                 onSubmit={handleSave}
                 submitText='Create'
                 isEdit={false}
               />
-            )}
+            </div>
           </div>
-        </div>
-      </DrawerContent>
+        </DrawerContent>
+      )}
     </Drawer>
   );
 }

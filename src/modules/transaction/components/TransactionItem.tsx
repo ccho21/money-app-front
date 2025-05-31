@@ -4,8 +4,6 @@ import { cn } from '@/modules/shared/lib/utils';
 import { format } from 'date-fns';
 import { TransactionItem as TxDTO } from '../types/types';
 import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
-import { IconName } from '@/modules/shared/lib/iconMap';
-import UIIcon from '@/components/ui/UIIcon';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
 
@@ -23,23 +21,13 @@ export default function TransactionItem({
   className,
 }: Props) {
   const isIncome = tx.type === 'income';
-  const isExpense = tx.type === 'expense';
+  // const isExpense = tx.type === 'expense';
   const isTransfer = tx.type === 'transfer';
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick?.(tx);
   };
-
-  const iconVar = tx.category?.color ?? '--chart-1';
-  const iconColor = `var(${iconVar})`;
-  const iconBg = `var(${iconVar})`; // 투명도 10%
-
-  const amountClass = isIncome
-    ? 'text-success'
-    : isExpense
-    ? 'text-foreground'
-    : 'text-muted-foreground';
 
   const categoryLabel =
     isTransfer && showTransferLabel
@@ -69,9 +57,7 @@ export default function TransactionItem({
         </div>
 
         <div className='flex justify-between items-center'>
-          <div
-            className={cn('text-right space-y-tight text-body', amountClass)}
-          >
+          <div className={cn('text-right space-y-tight text-body')}>
             <CurrencyDisplay
               isRecurring={tx.recurringId ? true : false}
               type={isIncome ? 'income' : 'expense'}

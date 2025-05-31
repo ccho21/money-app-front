@@ -26,6 +26,7 @@ export function AddCategoryDrawer({ onClose }: Props) {
       await createCategory.mutateAsync(data);
       reset();
       onClose();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       alert('Failed to create category');
     }
@@ -36,6 +37,7 @@ export function AddCategoryDrawer({ onClose }: Props) {
       open
       onOpenChange={(v) => {
         if (!v) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           document.activeElement instanceof HTMLElement &&
             document.activeElement.blur();
           reset();

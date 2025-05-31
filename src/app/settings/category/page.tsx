@@ -7,8 +7,6 @@ import { useRouter } from 'next/navigation';
 import { fetchCategories } from '@/modules/category/hooks/queries';
 import { Card, CardContent } from '@/components/ui/card';
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
-import UIIcon from '@/components/ui/UIIcon';
-import { IconName } from '@/modules/shared/lib/iconMap';
 import { EditCategoryDrawer } from '@/modules/category/components/EditCategoryDrawer';
 import { AddCategoryDrawer } from '@/modules/category/components/AddCategoryDrawer';
 

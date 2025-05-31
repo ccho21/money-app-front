@@ -15,13 +15,6 @@ interface Props {
 }
 
 export function MonthlySummaryGrid({ periods }: Props) {
-  const formatCAD = (value: number) =>
-    new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD',
-      minimumFractionDigits: 0,
-    }).format(value);
-
   return (
     <Accordion type='multiple' className='w-full space-y-element'>
       {periods.map((item, index) => {
