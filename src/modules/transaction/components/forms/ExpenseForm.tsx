@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { startOfDay } from 'date-fns';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
-import { fetchAccounts } from '@/modules/account/hooks/queries';
+import { useAccounts } from '@/modules/account/hooks/queries';
 import { fetchCategories } from '@/modules/category/hooks/queries';
 
 import { Input } from '@/components/ui/input';
@@ -15,7 +14,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import DatePicker from '@/components/ui/datePicker';
 import Selector from '@/components/ui/custom/Selector';
-import { IconName } from '@/modules/shared/lib/iconMap';
 import RecurringFormSection from './RecurringFormSection';
 import {
   useDeleteTransactionMutation,
@@ -29,7 +27,6 @@ type Props = {
 
 export default function ExpenseForm({ mode, transactionId }: Props) {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const form = useTransactionFormStore((s) => s.state);
   const setField = useTransactionFormStore((s) => s.setField);
@@ -38,7 +35,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
   const { amount, accountId, categoryId, note, description, date } = form;
   const [dirty, setDirty] = useState(false);
 
-  const { data: accounts = [], isLoading: loadingAccounts } = fetchAccounts();
+  const { data: accounts = [], isLoading: loadingAccounts } = useAccounts();
   const { data: categories = [], isLoading: loadingCategories } =
     fetchCategories();
 
@@ -49,13 +46,12 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
     setDirty(isDirty());
   }, [amount, accountId, categoryId, note, description, date, isDirty]);
 
-  const { mutate: submitTransaction, isPending } = useSubmitTransactionMutation(
+  const { mutate: submitTransaction } = useSubmitTransactionMutation(
     mode,
     transactionId
   );
 
-  const { mutate: deleteTransaction, isPending: deleting } =
-    useDeleteTransactionMutation();
+  const { mutate: deleteTransaction } = useDeleteTransactionMutation();
 
   const handleSubmit = () => {
     submitTransaction(undefined, {

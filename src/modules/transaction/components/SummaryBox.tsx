@@ -1,10 +1,10 @@
 import { TransactionGroupSummary } from '@/modules/transaction/types/types';
 import { cn } from '@/modules/shared/lib/utils';
-import CurrencyDisplay from '../ui/custom/currencyDisplay';
+import CurrencyDisplay from '../../../components/ui/custom/currencyDisplay';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { Separator } from '../ui/separator';
-import DateNavigator from '../navigation/DateNavigator';
+import { Separator } from '../../../components/ui/separator';
+import DateNavigator from '../../../components/navigation/DateNavigator';
 import { ArrowRight } from 'lucide-react';
 
 interface SummaryBoxProps {

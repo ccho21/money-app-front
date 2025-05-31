@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { AddAccountDrawer } from '@/modules/account/components/AddAccountDrawer';
 import { EditAccountDrawer } from '@/modules/account/components/EditAccountDrawer';
 import { AccountDetailDTO } from '@/modules/account/types/types';
-import { fetchAccounts } from '@/modules/account/hooks/queries';
+import { useAccounts } from '@/modules/account/hooks/queries';
 
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,7 +17,7 @@ import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
 
 export default function AccountPage() {
   const router = useRouter();
-  const { data: accounts = [] } = fetchAccounts();
+  const { data: accounts = [] } = useAccounts();
 
   const [editId, setEditId] = useState<string | null>(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -37,7 +37,8 @@ export default function AccountPage() {
   }, [accounts]);
 
   const handleEdit = (acc: AccountDetailDTO) => {
-    setEditId(acc.id);
+    router.push(`/settings/account/${acc.id}`);
+    // setEditId(acc.id);
   };
 
   const renderGroup = (title: string, list: AccountDetailDTO[]) => (

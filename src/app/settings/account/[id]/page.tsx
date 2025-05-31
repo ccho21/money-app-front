@@ -1,89 +1,116 @@
-// // src/app/account/[id]/detail/daily/page.tsx
-// 'use client';
+'use client';
 
-// 'use client';
+import { useLayoutEffect, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
-// import { useEffect, useMemo } from 'react';
-// import { useRouter, useParams } from 'next/navigation';
+import SummaryBox from '@/modules/transaction/components/SummaryBox';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useAccountById } from '@/modules/account/hooks/queries';
+import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
+import {
+  useTransactionGroupsQuery,
+  useTransactionSummaryQuery,
+} from '@/modules/transaction/hooks/queries';
+import type {
+  TransactionItem,
+  TransactionGroupQuery,
+} from '@/modules/transaction/types/types';
 
-// import { useFilterStore } from '@/stores/useFilterStore';
-// import { useTransactionStore } from '@/modules/transaction/store';
-// import { useShallow } from 'zustand/shallow';
+const TransactionListView = dynamic(
+  () => import('@/modules/transaction/components/view/TransactionListView'),
+  { ssr: false }
+);
 
-// import { TransactionDetailDTO } from '@/modules/transaction/types';
-// import DailyView from '@/app/dashboard/components/DailyView';
-// import { useAccountDetailSummary } from '@/modules/account/hooks';
+export default function AccountDailyPage() {
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
+  const accountId = String(id);
 
-// export default function AccountDailyPage() {
-//   const router = useRouter();
-//   const { id: accountId } = useParams();
+  const { data: account } = useAccountById(accountId, !!accountId);
 
-//   const { query, setQuery } = useFilterStore(
-//     useShallow((s) => ({
-//       query: s.query,
-//       setQuery: s.setQuery,
-//     }))
-//   );
+  useTopNavPreset({
+    title: account?.name ?? 'Account',
+    onBack: () => router.back(),
+  });
 
-//   const { groupBy } = query;
-//   const { summary, isLoading } = useAccountDetailSummary(
-//     accountId as string,
-//     'daily'
-//   );
+  const {
+    query,
+    setQuery,
+    getDateRangeKey,
+    getQueryString,
+    initializeListDefaults,
+  } = useTransactionFilterStore();
+  const { timeframe, groupBy } = query;
 
-//   const { setSelectedTransaction } = useTransactionStore(
-//     useShallow((s) => ({
-//       setSelectedTransaction: s.setSelectedTransaction,
-//     }))
-//   );
+  useLayoutEffect(() => {
+    initializeListDefaults();
+  }, [initializeListDefaults]);
 
-//   useEffect(() => {
-//     if (groupBy !== 'daily') {
-//       setQuery({ groupBy: 'daily' });
-//     }
-//   }, [groupBy, setQuery]);
+  useEffect(() => {
+    if (groupBy !== 'date') {
+      setQuery(() => ({ groupBy: 'date' }));
+    }
+  }, [groupBy, setQuery]);
 
-//   const handleTransactionClick = (tx: TransactionDetailDTO) => {
-//     setSelectedTransaction(tx);
-//     router.push(`/transaction/${tx.id}/edit`);
-//   };
+  const [startDate, endDate] = getDateRangeKey().split('_');
+  const queryParams: TransactionGroupQuery = {
+    ...query,
+    accountId,
+    timeframe,
+    groupBy: 'date',
+    startDate,
+    endDate,
+  };
 
-//   const handleHeaderClick = (date: string) => {
-//     router.push(`/transaction/new?date=${date}`);
-//   };
+  const {
+    data: summary,
+    isLoading: isSummaryLoading,
+    isError: isSummaryError,
+  } = useTransactionSummaryQuery(queryParams);
 
-//   const summaryItems = useMemo(() => {
-//     const income = summary?.totalIncome ?? 0;
-//     const expense = summary?.totalExpense ?? 0;
-//     return [
-//       {
-//         label: 'Income',
-//         value: income,
-//         color: income > 0 ? 'text-info' : 'text-muted',
-//         prefix: '$',
-//       },
-//       {
-//         label: 'Exp.',
-//         value: expense,
-//         color: expense > 0 ? 'text-error' : 'text-muted',
-//         prefix: '$',
-//       },
-//       {
-//         label: 'Total',
-//         value: income - expense,
-//         color: 'text-foreground',
-//         prefix: '$',
-//       },
-//     ];
-//   }, [summary]);
+  const {
+    data: groups,
+    isLoading: isGroupsLoading,
+    isError: isGroupsError,
+  } = useTransactionGroupsQuery(queryParams);
 
-//   return (
-//     <DailyView
-//       isLoading={isLoading}
-//       data={summary}
-//       summaryItems={summaryItems}
-//       onTransactionClick={handleTransactionClick}
-//       onHeaderClick={handleHeaderClick}
-//     />
-//   );
-// }
+  const isLoading = isSummaryLoading || isGroupsLoading;
+
+  const handleTransactionClick = (tx: TransactionItem) => {
+    router.push(`/transaction/manage/${tx.id}/edit`);
+  };
+
+  const handleHeaderClick = (date: string) => {
+    router.push(`/transaction/manage/new?date=${date}&accountId=${accountId}`);
+  };
+
+  if (isSummaryError || isGroupsError) {
+    return (
+      <div className='text-label text-destructive'>
+        Failed to load transactions.
+      </div>
+    );
+  }
+
+  if (isLoading) return <Skeleton className='h-40 w-full' />;
+  if (!summary || !groups) return null;
+
+  return (
+    <section className='space-y-component bg-background text-foreground'>
+      <SummaryBox
+        summary={summary}
+        onNavigate={() => router.replace(getQueryString())}
+      />
+      <Separator className='my-compact' />
+      <TransactionListView
+        isLoading={isLoading}
+        data={groups}
+        onItemClick={handleTransactionClick}
+        onGroupClick={handleHeaderClick}
+      />
+    </section>
+  );
+}

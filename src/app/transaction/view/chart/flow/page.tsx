@@ -1,7 +1,6 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { TypographySmall } from '@/components/ui/typography';
 import { InsightList } from '@/modules/transaction/components/chart/InsightList';
 import { MonthlySummaryGrid } from '@/modules/transaction/components/chart/MonthlySummaryGrid';
 
@@ -65,7 +64,9 @@ export default function TransactionChartFlowPage() {
 
       {/* 📦 Summary Section */}
       <section className=''>
-        <h2 className='text-heading font-semibold mb-element'>Monthly Summary</h2>
+        <h2 className='text-heading font-semibold mb-element'>
+          Monthly Summary
+        </h2>
         <MonthlySummaryGrid periods={chartFlow.periods} />
       </section>
     </main>

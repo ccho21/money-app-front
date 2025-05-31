@@ -19,7 +19,7 @@ import {
 } from '../types/types';
 
 // ✅ 1. 전체 계좌 목록
-export const fetchAccounts = () =>
+export const useAccounts = () =>
   useQuery<AccountDetailDTO[]>({
     queryKey: ['accounts'],
     queryFn: fetchAccountsAPI,
@@ -27,7 +27,7 @@ export const fetchAccounts = () =>
   });
 
 // ✅ 2. 단일 계좌 조회
-export const fetchAccountById = (accountId: string, enabled = true) =>
+export const useAccountById = (accountId: string, enabled = true) =>
   useQuery({
     queryKey: ['account', accountId],
     queryFn: () => fetchAccountByIdAPI(accountId),
@@ -36,7 +36,7 @@ export const fetchAccountById = (accountId: string, enabled = true) =>
   });
 
 // ✅ 3. 계좌 요약 정보 (기간 필터)
-export const fetchAccountSummary = (params: DateFilterParams) =>
+export const useAccountSummary = (params: DateFilterParams) =>
   useQuery({
     queryKey: ['account-summary', params],
     queryFn: () => fetchAccountSummaryAPI(params),
@@ -45,7 +45,7 @@ export const fetchAccountSummary = (params: DateFilterParams) =>
   });
 
 // ✅ 4. 계좌 대시보드
-export const fetchAccountDashboard = () =>
+export const useAccountDashboard = () =>
   useQuery({
     queryKey: ['account-dashboard'],
     queryFn: fetchAccountsDashboardAPI,

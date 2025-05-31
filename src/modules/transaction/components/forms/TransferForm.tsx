@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
-import { fetchAccounts } from '@/modules/account/hooks/queries';
+import { useAccounts } from '@/modules/account/hooks/queries';
 import RecurringFormSection from './RecurringFormSection';
 import {
   useDeleteTransferMutation,
@@ -34,7 +34,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
   const { amount, from, to, note, description, date } = form;
   const [dirty, setDirty] = useState(false);
 
-  const { data: accounts = [], isLoading } = fetchAccounts();
+  const { data: accounts = [], isLoading } = useAccounts();
 
   const fromAccount = accounts.find((a) => a.id === from);
   const toAccount = accounts.find((a) => a.id === to);
@@ -43,13 +43,12 @@ export default function TransferForm({ mode, transactionId }: Props) {
     setDirty(isDirty());
   }, [amount, from, to, note, description, date, isDirty]);
 
-  const { mutate: submitTransfer, isPending } = useSubmitTransferMutation(
+  const { mutate: submitTransfer } = useSubmitTransferMutation(
     mode,
     transactionId
   );
 
-  const { mutate: deleteTransfer, isPending: deleting } =
-    useDeleteTransferMutation();
+  const { mutate: deleteTransfer } = useDeleteTransferMutation();
 
   const handleSubmit = () => {
     submitTransfer(undefined, {

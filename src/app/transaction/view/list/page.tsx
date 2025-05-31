@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 import { format } from 'date-fns';
-import SummaryBox from '@/components/common/SummaryBox';
+import SummaryBox from '@/modules/transaction/components/SummaryBox';
 import {
   TransactionItem,
   GroupBy,
@@ -103,8 +103,7 @@ export default function ListPage() {
       />
       <Separator className='my-compact' />
 
-      <div className='flex justify-between items-center'>
-      </div>
+      <div className='flex justify-between items-center'></div>
 
       <div className='space-y-tight'>
         {/* <h3 className='text-heading font-bold'>All Transactions</h3> */}
