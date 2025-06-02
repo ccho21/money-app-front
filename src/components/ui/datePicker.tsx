@@ -14,21 +14,39 @@ import {
 import { cn } from '@/modules/shared/lib/utils';
 
 interface Props {
-  value: Date;
+  isoValue: Date | string;
   onChange: (date: Date) => void;
 }
 
-export default function DatePicker({ value, onChange }: Props) {
-  const [localDate, setLocalDate] = useState<Date>(value);
+export default function DatePicker({ isoValue, onChange }: Props) {
+  const parseToDate = (value: Date | string): Date => {
+    return typeof value === 'string' ? new Date(value) : value;
+  };
+
+  const [localDate, setLocalDate] = useState<Date>(parseToDate(isoValue));
 
   useEffect(() => {
-    setLocalDate(value);
-  }, [value]);
+    const parsed = parseToDate(isoValue);
+    setLocalDate(parsed);
+    console.log('### value', parsed);
+  }, [isoValue]);
 
   const handleChange = (val: Date | undefined) => {
     if (val) {
-      setLocalDate(val);
-      onChange(val);
+      const now = new Date();
+      const dateWithCurrentTime = new Date(
+        val.getFullYear(),
+        val.getMonth(),
+        val.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds(),
+        now.getMilliseconds()
+      );
+
+      console.log('## current date with time', dateWithCurrentTime);
+      setLocalDate(dateWithCurrentTime);
+      onChange(dateWithCurrentTime);
     }
   };
 

@@ -2,7 +2,11 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { TransactionCreateRequestDTO, TransactionTransferRequestDTO, TransactionUpdateRequestDTO } from '../types/types';
+import {
+  TransactionCreateRequestDTO,
+  TransactionTransferRequestDTO,
+  TransactionUpdateRequestDTO,
+} from '../types/types';
 
 export type RecurringFormState = {
   enabled: boolean;
@@ -68,11 +72,14 @@ const defaultState: TransactionFormState = {
   },
 };
 
-function deepEqual(a: any, b: any): boolean {
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};
+
+const deepEqual = <T>(a: T, b: T): boolean => {
   if (a === b) return true;
 
-  if (typeof a !== 'object' || typeof b !== 'object' || a == null || b == null)
-    return false;
+  if (!isObject(a) || !isObject(b)) return false;
 
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
@@ -80,12 +87,16 @@ function deepEqual(a: any, b: any): boolean {
   if (aKeys.length !== bKeys.length) return false;
 
   for (const key of aKeys) {
-    if (!b.hasOwnProperty(key)) return false;
-    if (!deepEqual(a[key], b[key])) return false;
+    if (!(key in b)) return false;
+
+    const aVal = a[key as keyof typeof a];
+    const bVal = b[key as keyof typeof b];
+
+    if (!deepEqual(aVal, bVal)) return false;
   }
 
   return true;
-}
+};
 
 export const useTransactionFormStore = create<TransactionFormStore>()(
   devtools((set, get) => ({

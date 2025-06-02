@@ -37,7 +37,6 @@ interface CurrencyDisplayProps {
 
 export default function CurrencyDisplay({
   amount,
-  useSubCurrency = false,
   locale = 'en-US',
   showSymbolOnly = false,
   className,

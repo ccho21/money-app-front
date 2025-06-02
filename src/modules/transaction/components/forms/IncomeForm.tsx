@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { startOfDay } from 'date-fns';
 
-import { fetchAccounts } from '@/modules/account/hooks/queries';
+import { useAccounts } from '@/modules/account/hooks/queries';
 import { fetchCategories } from '@/modules/category/hooks/queries';
 
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,6 @@ import Selector from '@/components/ui/custom/Selector';
 import { Textarea } from '@/components/ui/textarea';
 import DatePicker from '@/components/ui/datePicker';
 import { Label } from '@/components/ui/label';
-import { IconName } from '@/modules/shared/lib/iconMap';
 import RecurringFormSection from './RecurringFormSection';
 import {
   useDeleteTransactionMutation,
@@ -36,7 +34,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
 
   const [dirty, setDirty] = useState(false);
 
-  const { data: accounts = [], isLoading: loadingAccounts } = fetchAccounts();
+  const { data: accounts = [], isLoading: loadingAccounts } = useAccounts();
   const { data: categories = [], isLoading: loadingCategories } =
     fetchCategories();
 
@@ -47,13 +45,12 @@ export default function IncomeForm({ mode, transactionId }: Props) {
     setDirty(isDirty());
   }, [amount, accountId, categoryId, note, description, date, isDirty]);
 
-  const { mutate: submitTransaction, isPending } = useSubmitTransactionMutation(
+  const { mutate: submitTransaction } = useSubmitTransactionMutation(
     mode,
     transactionId
   );
 
-  const { mutate: deleteTransaction, isPending: deleting } =
-    useDeleteTransactionMutation();
+  const { mutate: deleteTransaction } = useDeleteTransactionMutation();
 
   const handleSubmit = () => {
     submitTransaction(undefined, {
@@ -139,7 +136,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
       <div className='grid w-full items-start gap-element'>
         <Label className='text-label'>Date</Label>
         <DatePicker
-          value={startOfDay(new Date(date))}
+          isoValue={date}
           onChange={(val: Date) => setField('date', val.toISOString())}
         />
       </div>

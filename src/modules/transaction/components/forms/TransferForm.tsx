@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { startOfDay } from 'date-fns';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -137,7 +136,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
       <div className='grid gap-element'>
         <Label htmlFor='date'>Date</Label>
         <DatePicker
-          value={startOfDay(new Date(date))}
+          isoValue={date}
           onChange={(val: Date) => setField('date', val.toISOString())}
         />
       </div>

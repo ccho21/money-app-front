@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { startOfDay } from 'date-fns';
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
 import { useAccounts } from '@/modules/account/hooks/queries';
@@ -145,7 +144,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           Date
         </Label>
         <DatePicker
-          value={startOfDay(new Date(date))}
+          isoValue={date}
           onChange={(val: Date) => setField('date', val.toISOString())}
         />
       </div>

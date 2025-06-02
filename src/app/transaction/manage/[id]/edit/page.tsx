@@ -16,7 +16,11 @@ export default function TransactionEditPage() {
   const init = useTransactionFormStore((s) => s.init);
   const type = useTransactionFormStore((s) => s.state.type);
 
-  const { data: tx, isLoading, isError } = useTransactionByIdQuery(String(transactionId));
+  const {
+    data: tx,
+    isLoading,
+    isError,
+  } = useTransactionByIdQuery(String(transactionId));
 
   useEffect(() => {
     if (!tx) return;
@@ -38,7 +42,7 @@ export default function TransactionEditPage() {
 
   if (isLoading) {
     return (
-      <div className="text-center text-muted text-label py-section">
+      <div className='text-center text-muted text-label py-section'>
         Loading transaction...
       </div>
     );
@@ -52,10 +56,16 @@ export default function TransactionEditPage() {
   const tid = String(transactionId);
 
   return (
-    <div className='p-component pb-section'>
-      {type === 'income' && <IncomeForm key='income' mode="edit" transactionId={tid} />}
-      {type === 'expense' && <ExpenseForm key='expense' mode="edit" transactionId={tid} />}
-      {type === 'transfer' && <TransferForm key='transfer' mode="edit" transactionId={tid} />}
+    <div className='pb-section'>
+      {type === 'income' && (
+        <IncomeForm key='income' mode='edit' transactionId={tid} />
+      )}
+      {type === 'expense' && (
+        <ExpenseForm key='expense' mode='edit' transactionId={tid} />
+      )}
+      {type === 'transfer' && (
+        <TransferForm key='transfer' mode='edit' transactionId={tid} />
+      )}
     </div>
   );
 }

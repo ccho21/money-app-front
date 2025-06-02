@@ -46,17 +46,18 @@ export default function RootLayout({
 // * Alert and Recurring Insights - DONE
 // * 차트 색상 어떻게 할지. - DONE
 // * 카테고리, 어카운트, 색상 어떻게 할지. - DONE
+// transaction form store -> deep equal 고치기 - DONE
+
 // * Budget Account Category 페이지 강화
 // * 미래 트랜잭션 생성 실패 시 (예: accountId가 삭제됨), 예외 처리 정책을 어떻게 둘까? 무시할지, 알림을 줄지?
-// * Notification 
+// * 어카운트 디테일 페이지에서, 트랜즈액션 큐뮬레이트 되는거 보여줘
+// * Notification
 // * LOG (User Activity)
 // * Google Redirect
 // * Recurring transaction soft delete
-  // 🕘 과거 통계, 차트, 인사이트 유지	예전 구독을 기반으로 한 트랜잭션이 이미 저장되어 있음. 삭제하면 인사이트 차트 다 깨짐
-  // 🔍 인사이트 비교/해지 탐지에 필요	"이 구독은 예전엔 있었는데 지금은 없네?" 같은 판단은 soft delete 없으면 불가능
-  // 🔁 재구독 판단 가능	동일 항목 재가입한 경우, 이전 기록 없이 판단 불가
-  // 📉 구독 해지율/경향 분석 가능	soft delete 필드 없으면 해지 시점을 추정할 수 없음
-
-
+// 🕘 과거 통계, 차트, 인사이트 유지	예전 구독을 기반으로 한 트랜잭션이 이미 저장되어 있음. 삭제하면 인사이트 차트 다 깨짐
+// 🔍 인사이트 비교/해지 탐지에 필요	"이 구독은 예전엔 있었는데 지금은 없네?" 같은 판단은 soft delete 없으면 불가능
+// 🔁 재구독 판단 가능	동일 항목 재가입한 경우, 이전 기록 없이 판단 불가
+// 📉 구독 해지율/경향 분석 가능	soft delete 필드 없으면 해지 시점을 추정할 수 없음
 // * 유닛 테스트.
 // * E2E 테스트

@@ -10,7 +10,7 @@ import {
 import { useAccountFormStore } from '@/modules/account/store/formStore';
 import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
 import {
-  fetchAccountById,
+  useAccountById,
   useUpdateAccount,
   useDeleteAccount,
 } from '../hooks/queries';
@@ -26,7 +26,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
   const { setAllFields, getUpdateFormData, reset } = useAccountFormStore();
   const shouldRender = useConditionalRender(open);
 
-  const { data } = fetchAccountById(accountId ?? '', !!accountId);
+  const { data } = useAccountById(accountId ?? '', !!accountId);
   const updateAccount = useUpdateAccount();
   const deleteAccount = useDeleteAccount();
 
@@ -65,6 +65,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
       open={open}
       onOpenChange={(v) => {
         if (!v) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           document.activeElement instanceof HTMLElement &&
             document.activeElement.blur();
           reset();
