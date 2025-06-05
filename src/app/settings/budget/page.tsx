@@ -11,10 +11,15 @@ import { ChevronRight } from 'lucide-react';
 import DateNavigator from '@/components/navigation/DateNavigator';
 import { fetchBudgetsByCategory } from '@/modules/budget/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
-import { Section } from '@/components/ui/temp/section';
+import {
+  Section,
+  SectionSubtitle,
+  SectionTitle,
+} from '@/components/ui/temp/section';
 import { Button } from '@/components/ui/button';
 import { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
 import BudgetProgressBar from '@/modules/budget/components/BudgetProgressBar';
+import { Badge } from '@/components/ui/badge';
 
 export default function BudgetSettingsPage() {
   const router = useRouter();
@@ -35,16 +40,16 @@ export default function BudgetSettingsPage() {
 
   if (isLoading) {
     return (
-      <main>
+      <Section>
         <DateNavigator variant='dropdown' />
         <Skeleton className='h-40 w-full' />
-      </main>
+      </Section>
     );
   }
 
   if (error || !data || data.items.length === 0) {
     return (
-      <main>
+      <Section>
         <DateNavigator variant='dropdown' />
         <Alert className='text-center'>
           <AlertTitle>No budgets</AlertTitle>
@@ -52,89 +57,95 @@ export default function BudgetSettingsPage() {
             Set up budgets to track your expenses.
           </AlertDescription>
         </Alert>
-      </main>
+      </Section>
     );
   }
 
   return (
-    <Section title='Budget List'>
-      <div className='text-right'>
-        <DateNavigator variant='dropdown' />
-      </div>
-      <Card className='flat-card'>
-        <CardContent className='flat-card-content divide-y divide-border'>
+    <>
+      <Section className='border-border'>
+        <div className='flex justify-between items-center'>
+          <SectionTitle>Monthly Spending Plan</SectionTitle>
+          <DateNavigator variant='dropdown' />
+        </div>
+        <SectionSubtitle>
+          Set limits and track your spending by category
+        </SectionSubtitle>
+      </Section>
+      <Section>
+        <div className='space-y-3'>
           {data.items.map((item: BudgetCategoryItemDTO) => {
             const isZero = item.amount === 0;
             return (
-              <Button
-                variant='ghost'
+              <Card
+                className='flat-card shadow-2xs !p-element'
                 key={item.categoryId}
                 onClick={() => handleClick(item)}
-                className='flex flex-col items-start w-full text-left px-component py-element hover:bg-muted/5 transition-colors gap-2'
+                role='button'
+                tabIndex={0}
               >
-                {/* Top Row */}
-                <div className='flex items-center justify-between w-full'>
-                  <div className='flex items-center gap-element min-w-0'>
-                    <div
-                      className='w-2.5 h-2.5 rounded-full border border-border shrink-0'
-                      style={{ backgroundColor: `var(${item.color})` }}
-                    />
-                    <span className='text-body font-medium truncate'>
-                      {item.categoryName}
-                    </span>
-                    <span className='text-label text-muted-foreground capitalize'>
-                      ({item.type})
-                    </span>
-                    {item.isOver && (
-                      <span className='ml-2 px-2 py-0.5 text-xs bg-destructive/10 text-destructive rounded'>
-                        Over Budget
+                <CardContent className='flat-card-content'>
+                  {/* Top Row */}
+                  <div className='flex items-center justify-between w-full'>
+                    <div className='flex items-center gap-3 min-w-0'>
+                      <div
+                        className='w-2.5 h-2.5 rounded-full border border-border shrink-0'
+                        style={{ backgroundColor: `var(${item.color})` }}
+                      />
+                      <span className='text-body font-medium truncate'>
+                        {item.categoryName}
                       </span>
-                    )}
-                  </div>
+                      <span className='text-label text-muted-foreground capitalize'>
+                        ({item.type})
+                      </span>
+                      {item.isOver && (
+                        <Badge variant='destructive'>Over Budget</Badge>
+                      )}
+                    </div>
 
-                  <div className='flex items-center gap-1'>
-                    <CurrencyDisplay
-                      amount={item.amount}
-                      className='text-body font-semibold'
+                    <div className='flex items-center gap-1'>
+                      <CurrencyDisplay
+                        amount={item.amount}
+                        className='text-body font-semibold'
+                      />
+                      <ChevronRight className='icon-sm text-muted-foreground' />
+                    </div>
+                  </div>
+                  {/* Details Row */}
+                  <div className='flex justify-between w-full text-label text-muted-foreground px-1 mt-2'>
+                    <span>
+                      Used:{' '}
+                      <span className='font-medium text-foreground'>
+                        <CurrencyDisplay amount={item.used} />
+                      </span>
+                    </span>
+                    <span>
+                      Remaining:{' '}
+                      <span className='font-medium text-foreground'>
+                        <CurrencyDisplay amount={item.remaining} />
+                      </span>
+                    </span>
+                  </div>
+                  {/* Progress Bar */}
+                  <div className='mt-2 mb-1'>
+                    <BudgetProgressBar
+                      used={item.used}
+                      total={item.amount}
+                      isOver={item.isOver}
                     />
-                    <ChevronRight className='icon-sm text-muted-foreground' />
                   </div>
-                </div>
-
-                {/* Details Row */}
-                <div className='flex justify-between w-full text-label text-muted-foreground px-1'>
-                  <span>
-                    Used:{' '}
-                    <span className='font-medium text-foreground'>
-                      <CurrencyDisplay amount={item.used} />
-                    </span>
-                  </span>
-                  <span>
-                    Remaining:{' '}
-                    <span className='font-medium text-foreground'>
-                      <CurrencyDisplay amount={item.remaining} />
-                    </span>
-                  </span>
-                </div>
-
-                {/* Progress Bar */}
-                <BudgetProgressBar
-                  used={item.used}
-                  total={item.amount}
-                  isOver={item.isOver}
-                />
-
-                {/* No Budget Message */}
-                {isZero && (
-                  <p className='text-xs text-muted-foreground italic mt-1 px-1'>
-                    No budget set for this category.
-                  </p>
-                )}
-              </Button>
+                  {/* No Budget Message */}
+                  {isZero && (
+                    <p className='text-xs text-muted-foreground italic mt-1 px-1'>
+                      No budget set for this category.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
             );
           })}
-        </CardContent>
-      </Card>
-    </Section>
+        </div>
+      </Section>
+    </>
   );
 }

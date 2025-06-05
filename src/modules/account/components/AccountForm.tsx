@@ -67,7 +67,7 @@ export default function AccountForm({
 
   return (
     <div className='text-foreground'>
-      <div className='space-y-component px-component pt-component pb-section overflow-auto'>
+      <div className='space-y-component px-component pt-component'>
         {/* 이름 */}
         <div className='grid w-full items-center gap-element'>
           <Label htmlFor='name' className='text-label'>

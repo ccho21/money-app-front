@@ -11,7 +11,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div className='layout-shell'>
+    <div className='layout-shell bg-muted'>
       <TopNav />
       <main className='layout-body'>{children}</main>
     </div>

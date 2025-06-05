@@ -48,6 +48,8 @@ export default function RootLayout({
 // * 카테고리, 어카운트, 색상 어떻게 할지. - DONE
 // transaction form store -> deep equal 고치기 - DONE
 
+// budget이 셋 되지 않았더라도 그 이전에 설정된 것이 있으면 그걸 따라 가야되는건데, 그게 안보이면 좀 그런데 이부분을 어떻게 구현해야될까?
+
 // * Budget Account Category 페이지 강화
 // * 미래 트랜잭션 생성 실패 시 (예: accountId가 삭제됨), 예외 처리 정책을 어떻게 둘까? 무시할지, 알림을 줄지?
 // * 어카운트 디테일 페이지에서, 트랜즈액션 큐뮬레이트 되는거 보여줘

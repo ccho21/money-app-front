@@ -19,5 +19,7 @@ export function buildTransactionQuery(query: TransactionGroupQuery): string {
     const safeNote = query.note.trim().slice(0, 300); // 300자 제한
     params.append('note', safeNote);
   }
+  if (query.includeBalance)
+    params.append('includeBalance', String(query.includeBalance));
   return params.toString(); // → query string for fetch
 }

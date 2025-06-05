@@ -10,7 +10,7 @@ export default function TopNav() {
   );
 
   return (
-    <div className='flex items-center justify-between px-component py-element bg-background text-foreground'>
+    <div className='flex items-center justify-between px-component py-element text-foreground'>
       {/* 왼쪽: 타이틀 + 뒤로가기 */}
       <div className='flex items-center'>
         {onBack && (

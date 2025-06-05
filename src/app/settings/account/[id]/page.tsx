@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useEffect } from 'react';
+import { useLayoutEffect, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -15,6 +15,7 @@ import type {
 } from '@/modules/transaction/types/types';
 import AccountSummaryBox from '@/modules/account/components/AccountSummaryBox';
 import DateNavigator from '@/components/navigation/DateNavigator';
+import { EditAccountDrawer } from '@/modules/account/components/EditAccountDrawer';
 
 const TransactionListView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionListView'),
@@ -24,6 +25,8 @@ const TransactionListView = dynamic(
 export default function AccountDailyPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const [editId, setEditId] = useState<string | null>(null);
+
   const accountId = String(id);
 
   const { data: account } = useAccountById(accountId, !!accountId);
@@ -31,6 +34,7 @@ export default function AccountDailyPage() {
   useTopNavPreset({
     title: account?.name ? account.name : 'Account',
     onBack: () => router.back(),
+    onEdit: () => setEditId(accountId),
   });
 
   const { query, setQuery, getDateRangeKey, initializeListDefaults } =
@@ -51,10 +55,11 @@ export default function AccountDailyPage() {
   const queryParams: TransactionGroupQuery = {
     ...query,
     accountId,
-    timeframe,
+    timeframe: 'all',
     groupBy: 'date',
     startDate,
     endDate,
+    includeBalance: true,
   };
 
   const {
@@ -89,7 +94,7 @@ export default function AccountDailyPage() {
       <section className='text-foreground'>
         <div className='flex justify-between items-baseline'>
           <div>
-            <h2 className='text-heading font-semibold'>Account Overview</h2>
+            <h2 className='text-heading font-semibold'>Account History</h2>
           </div>
           <DateNavigator variant='dropdown' />
         </div>
@@ -100,12 +105,6 @@ export default function AccountDailyPage() {
       </section>
 
       <section>
-        {/* <div className='flex justify-between items-center'>
-          <div>
-            <h2 className='text-heading font-semibold'>Daily Transactions</h2>
-          </div>
-        </div> */}
-
         <TransactionListView
           isLoading={isLoading}
           data={groups}
@@ -113,6 +112,13 @@ export default function AccountDailyPage() {
           onGroupClick={handleHeaderClick}
         />
       </section>
+      {editId && (
+        <EditAccountDrawer
+          open={!!editId}
+          accountId={editId}
+          onClose={() => setEditId(null)}
+        />
+      )}
     </div>
   );
 }

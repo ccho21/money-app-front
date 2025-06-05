@@ -39,12 +39,12 @@ export default function CurrencyDisplay({
   amount,
   locale = 'en-US',
   showSymbolOnly = false,
-  className,
   type,
   icon: Icon,
   variant = 'default',
   iconSize = 'sm',
   isRecurring = false,
+  className,
 }: CurrencyDisplayProps) {
   const mainCurrency = useUserSettingStore((s) => s.mainCurrency);
   const currencyCode = mainCurrency || 'CAD';

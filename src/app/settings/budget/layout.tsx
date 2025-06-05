@@ -32,5 +32,5 @@ export default function BudgetsLayout({ children }: { children: ReactNode }) {
     title: 'Budgets',
   });
 
-  return <>{children}</>;
+  return <div className=''>{children}</div>;
 }

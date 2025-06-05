@@ -4,7 +4,13 @@ import {
 } from '@/modules/category/types/types';
 import { Insight } from '@/modules/insights/types/types';
 
-export type Timeframe = 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom';
+export type Timeframe =
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'yearly'
+  | 'custom'
+  | 'all';
 
 export type GroupBy =
   | 'date'
@@ -28,6 +34,7 @@ export interface TransactionGroupQuery {
   limit?: number;
   note?: string;
   version?: number; // only for front-end
+  includeBalance?: boolean;
 }
 
 export interface TransactionItem {
@@ -47,6 +54,7 @@ export interface TransactionItem {
   account: {
     name: string;
   };
+  balanceAfter: number;
 }
 
 export interface TransactionGroupItem {

@@ -104,7 +104,7 @@ export default function AccountPage() {
   return (
     <ScrollArea>
       <section>
-        <h2 className='text-heading font-semibold'>Accounts</h2>
+        <h2 className='text-heading font-semibold'>Accounts Overview</h2>
         <p className='text-subheading text-muted-foreground'>
           Tap to edit. Long press to reorder.
         </p>

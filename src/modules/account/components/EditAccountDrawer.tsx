@@ -74,7 +74,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
       }}
     >
       {shouldRender && (
-        <DrawerContent className='max-h-screen overflow-y-auto'>
+        <DrawerContent className=''>
           {/* 포커스 anchor for accessibility */}
           <input autoFocus className='sr-only' />
 
@@ -84,7 +84,7 @@ export function EditAccountDrawer({ open, accountId, onClose }: Props) {
             </DrawerTitle>
           </DrawerHeader>
 
-          <div className='pb-section'>
+          <div className='pb-component overflow-y-auto'>
             <AccountForm
               onSubmit={handleUpdate}
               onDelete={handleDelete}

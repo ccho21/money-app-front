@@ -42,7 +42,7 @@ export default function TransactionItem({
       onClick={handleClick}
       data-slot='transaction-item'
       className={cn(
-        'px-element py-compact shadow-2xs border-none rounded-none',
+        'px-element py-compact shadow-2xs border-none rounded-sm',
         className
       )}
     >
@@ -65,7 +65,18 @@ export default function TransactionItem({
               amount={tx.amount}
             />
             <div className='text-label text-muted-foreground'>
-              {format(new Date(tx.date), 'hh:mm a')}
+              {tx.balanceAfter ? (
+                <div>
+                  <CurrencyDisplay
+                    // type={isIncome ? 'income' : 'expense'}
+                    variant='default'
+                    amount={Math.abs(tx.balanceAfter)}
+                    className='text-body'
+                  />
+                </div>
+              ) : (
+                format(new Date(tx.date), 'hh:mm a')
+              )}
             </div>
           </div>
           <div className='ml-3'>
