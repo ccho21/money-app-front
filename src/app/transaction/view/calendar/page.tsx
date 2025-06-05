@@ -54,6 +54,7 @@ export default function CalendarPage() {
               type='income'
               iconSize='xxs'
               className='text-caption'
+              shortNumber
             />
           )}
           {item.expense > 0 && (
@@ -62,6 +63,7 @@ export default function CalendarPage() {
               type='expense'
               iconSize='xxs'
               className='text-caption'
+              shortNumber
             />
           )}
         </div>

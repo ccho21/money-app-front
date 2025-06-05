@@ -33,6 +33,35 @@ interface CurrencyDisplayProps {
   variant?: 'default' | 'group';
   iconSize?: IconSize;
   isRecurring?: boolean;
+  shortNumber?: boolean; // ✨ 추가
+}
+
+// ✨ 숫자를 1.2K / 3.4M 식으로 축약
+function formatShortCurrency(
+  amount: number,
+  currency: string,
+  locale: string
+): string {
+  const abs = Math.abs(amount);
+  const symbol = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+    .format(0)
+    .replace(/0/g, '')
+    .trim();
+
+  const value =
+    abs >= 1_000_000
+      ? (amount / 1_000_000).toFixed(1) + 'M'
+      : abs >= 1_000
+      ? (amount / 1_000).toFixed(1) + 'K'
+      : amount.toString();
+
+  return `${symbol}${value}`;
 }
 
 export default function CurrencyDisplay({
@@ -45,20 +74,10 @@ export default function CurrencyDisplay({
   iconSize = 'sm',
   isRecurring = false,
   className,
+  shortNumber = false, // ✨ 기본값 false
 }: CurrencyDisplayProps) {
   const mainCurrency = useUserSettingStore((s) => s.mainCurrency);
   const currencyCode = mainCurrency || 'CAD';
-
-  const formatted = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currencyCode,
-    currencyDisplay: 'narrowSymbol',
-  }).format(amount);
-
-  if (showSymbolOnly) {
-    const symbol = formatted.replace(/\d|[.,\s]/g, '').trim();
-    return <span className={className}>{symbol}</span>;
-  }
 
   const resolvedIconSize = sizeMap[iconSize];
 
@@ -93,6 +112,24 @@ export default function CurrencyDisplay({
   };
 
   const colorClass = type ? colorClassMap[type] : '';
+
+  if (showSymbolOnly) {
+    const formatted = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currencyCode,
+      currencyDisplay: 'narrowSymbol',
+    }).format(amount);
+    const symbol = formatted.replace(/\d|[.,\s]/g, '').trim();
+    return <span className={className}>{symbol}</span>;
+  }
+
+  const formatted = shortNumber
+    ? formatShortCurrency(amount, currencyCode, locale)
+    : new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currencyCode,
+        currencyDisplay: 'narrowSymbol',
+      }).format(amount);
 
   return (
     <span
