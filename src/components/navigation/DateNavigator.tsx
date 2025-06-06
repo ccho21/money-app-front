@@ -77,8 +77,6 @@ export default function DateNavigator({
               handleSelect(date);
               setOpen(false);
             }}
-            onYearBackward={() => handleChange(-1)}
-            onYearForward={() => handleChange(1)}
             variant={{
               calendar: { main: 'ghost', selected: 'default' },
               chevrons: 'outline',

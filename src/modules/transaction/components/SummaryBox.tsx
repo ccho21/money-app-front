@@ -72,7 +72,7 @@ export default function SummaryBox({
         {topSpendingCategory && (
           <div className='flex justify-between text-caption text-muted-foreground pt-tight'>
             <span>
-              Top: {topSpendingCategory.name}{' '}
+              Highest Day: {topSpendingCategory.name}{' '}
               <CurrencyDisplay amount={topSpendingCategory.amount} />
             </span>
             <Link
