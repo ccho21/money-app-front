@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { settingsConfig } from '@/modules/settings/config/settingsConfig';
 
-import { Section } from '@/components/ui/temp/section';
+import { Section, SectionTitle } from '@/components/ui/temp/section';
 import SettingItem from '@/modules/settings/components/SettingItem';
 import { PanelType } from '@/modules/settings/types/types';
 import { SlideInPanelRenderer } from '@/modules/settings/components/panels/SlideInPanelRenderer';
@@ -24,10 +24,10 @@ export default function SettingsPage() {
       title: 'Plans',
       items: settingsConfig.filter((i) => i.section === 'category'),
     },
-    {
-      title: 'Transaction',
-      items: settingsConfig.filter((i) => i.section === 'transaction'),
-    },
+    // {
+    //   title: 'Transaction',
+    //   items: settingsConfig.filter((i) => i.section === 'transaction'),
+    // },
     {
       title: 'General',
       items: settingsConfig.filter((i) => i.section === 'general'),
@@ -45,7 +45,8 @@ export default function SettingsPage() {
     <>
       <div className='bg-background text-foreground min-h-screen py-4 pb-[10vh]'>
         {sections.map((section) => (
-          <Section key={section.title} title={section.title}>
+          <Section key={section.title}>
+            <SectionTitle>{section.title}</SectionTitle>
             {section.items.map((item) => (
               <SettingItem
                 key={item.key}

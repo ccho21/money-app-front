@@ -67,7 +67,7 @@ export const settingsConfig: SettingItemConfig[] = [
     icon: 'wallet2',
     type: 'link',
     section: 'category',
-    route: '/settings/category',
+    route: '/category',
   },
   // {
   //   key: 'accountGroup',
@@ -84,7 +84,7 @@ export const settingsConfig: SettingItemConfig[] = [
     icon: 'settings',
     type: 'link',
     section: 'category',
-    route: '/settings/account',
+    route: '/account',
   },
   {
     key: 'budgetSetting',
@@ -92,7 +92,7 @@ export const settingsConfig: SettingItemConfig[] = [
     icon: 'piggyBank',
     type: 'link',
     section: 'category',
-    route: '/settings/budget',
+    route: '/budget',
   },
 
   // ──────────────── General ────────────────

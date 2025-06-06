@@ -5,6 +5,7 @@ import { ReactNode, useEffect } from 'react';
 import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
+import TopNav from '@/components/navigation/TopNav';
 
 export default function BudgetsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -32,5 +33,10 @@ export default function BudgetsLayout({ children }: { children: ReactNode }) {
     title: 'Budgets',
   });
 
-  return <div className=''>{children}</div>;
+  return (
+    <div className='layout-shell bg-muted'>
+      <TopNav />
+      <main className='layout-body'>{children}</main>
+    </div>
+  );
 }
