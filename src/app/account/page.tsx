@@ -37,7 +37,7 @@ export default function AccountPage() {
   }, [accounts]);
 
   const handleEdit = (acc: AccountDetailDTO) => {
-    router.push(`/settings/account/${acc.id}`);
+    router.push(`/account/${acc.id}`);
     // setEditId(acc.id);
   };
 

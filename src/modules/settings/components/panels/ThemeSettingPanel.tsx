@@ -15,7 +15,11 @@ const colorOptions: { color: ThemeColor; hex: string }[] = [
   { color: 'black', hex: '#1f2937' },
 ];
 
-export default function ThemeSettingPanel() {
+interface ThemeSettingPanelProps {
+  onClose: () => void;
+}
+
+export default function ThemeSettingPanel({ onClose }: ThemeSettingPanelProps) {
   const theme = useUserSettingStore((s) => s.theme);
   const themeColor = useUserSettingStore((s) => s.themeColor);
   const setTheme = useUserSettingStore((s) => s.setTheme);
@@ -46,8 +50,13 @@ export default function ThemeSettingPanel() {
     </button>
   );
 
+  const handleSave = () => {
+    onClose(); // 설정은 즉시 저장되므로 닫기만 하면 됨
+  };
+
   return (
     <div className='bg-surface text-foreground'>
+      {/* 테마 모드 선택 */}
       <div className='border-t border-border'>
         <ModeRow
           label='System Mode'
@@ -66,6 +75,7 @@ export default function ThemeSettingPanel() {
         />
       </div>
 
+      {/* 테마 컬러 선택 */}
       <div className='flex flex-wrap gap-element px-component pt-spacious pb-component'>
         {colorOptions.map(({ color, hex }) => {
           const isActive = themeColor === color;
@@ -82,6 +92,16 @@ export default function ThemeSettingPanel() {
             />
           );
         })}
+      </div>
+
+      {/* Save 버튼 */}
+      <div className='px-component pb-component'>
+        <button
+          onClick={handleSave}
+          className='w-full py-component rounded-md bg-primary text-primary-foreground text-label font-semibold hover:opacity-90 transition'
+        >
+          Save
+        </button>
       </div>
     </div>
   );

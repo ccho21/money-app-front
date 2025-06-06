@@ -33,14 +33,14 @@ interface CurrencyDisplayProps {
   variant?: 'default' | 'group';
   iconSize?: IconSize;
   isRecurring?: boolean;
-  shortNumber?: boolean; // ✨ 추가
+  shortNumber?: boolean;
 }
 
-// ✨ 숫자를 1.2K / 3.4M 식으로 축약
 function formatShortCurrency(
   amount: number,
   currency: string,
-  locale: string
+  locale: string,
+  unitPosition: 'front' | 'back'
 ): string {
   const abs = Math.abs(amount);
   const symbol = new Intl.NumberFormat(locale, {
@@ -61,7 +61,7 @@ function formatShortCurrency(
       ? (amount / 1_000).toFixed(1) + 'K'
       : amount.toString();
 
-  return `${symbol}${value}`;
+  return unitPosition === 'front' ? `${symbol}${value}` : `${value}${symbol}`;
 }
 
 export default function CurrencyDisplay({
@@ -74,10 +74,12 @@ export default function CurrencyDisplay({
   iconSize = 'sm',
   isRecurring = false,
   className,
-  shortNumber = false, // ✨ 기본값 false
+  shortNumber = false,
 }: CurrencyDisplayProps) {
   const mainCurrency = useUserSettingStore((s) => s.mainCurrency);
   const currencyCode = mainCurrency || 'CAD';
+  const unitPosition = useUserSettingStore((s) => s.currencyUnitPosition);
+  const decimalPlaces = useUserSettingStore((s) => s.currencyDecimalPlaces);
 
   const resolvedIconSize = sizeMap[iconSize];
 
@@ -123,13 +125,26 @@ export default function CurrencyDisplay({
     return <span className={className}>{symbol}</span>;
   }
 
-  const formatted = shortNumber
-    ? formatShortCurrency(amount, currencyCode, locale)
-    : new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: currencyCode,
-        currencyDisplay: 'narrowSymbol',
-      }).format(amount);
+  const formatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode,
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: decimalPlaces,
+    maximumFractionDigits: decimalPlaces,
+  });
+
+  let formatted = formatter.format(amount);
+
+  // ⚠️ If position is 'back', swap the symbol to the end
+  if (unitPosition === 'back') {
+    const symbol = formatted.replace(/[\d.,\s]/g, '').trim();
+    const numberOnly = formatted.replace(/[^\d.,\-]/g, '').trim();
+    formatted = `${numberOnly}${symbol}`;
+  }
+
+  if (shortNumber) {
+    formatted = formatShortCurrency(amount, currencyCode, locale, unitPosition);
+  }
 
   return (
     <span

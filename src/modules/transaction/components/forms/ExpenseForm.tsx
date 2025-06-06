@@ -117,7 +117,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
               ? 'creditCard'
               : 'piggyBank'
           }
-          onEdit={() => router.push('/settings/account')}
+          onEdit={() => router.push('/account')}
         />
       </div>
 
@@ -134,7 +134,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
           getOptionColor={(a) => a.color || '--chart-1'}
-          onEdit={() => router.push('/settings/category')}
+          onEdit={() => router.push('/category')}
         />
       </div>
 

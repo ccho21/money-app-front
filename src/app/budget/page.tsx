@@ -16,7 +16,6 @@ import {
   SectionSubtitle,
   SectionTitle,
 } from '@/components/ui/temp/section';
-import { Button } from '@/components/ui/button';
 import { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
 import BudgetProgressBar from '@/modules/budget/components/BudgetProgressBar';
 import { Badge } from '@/components/ui/badge';
@@ -35,7 +34,7 @@ export default function BudgetSettingsPage() {
   });
 
   const handleClick = (item: BudgetCategoryItemDTO) => {
-    router.push(`/settings/budget/${item.categoryId}/list`);
+    router.push(`/budget/${item.categoryId}/list`);
   };
 
   if (isLoading) {

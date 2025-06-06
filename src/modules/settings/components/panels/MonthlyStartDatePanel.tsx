@@ -3,12 +3,19 @@
 import { useState } from 'react';
 import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
 
-export default function MonthlyStartDatePanel() {
+interface MonthlyStartDatePanelProps {
+  onClose: () => void;
+}
+
+export default function MonthlyStartDatePanel({
+  onClose,
+}: MonthlyStartDatePanelProps) {
   const { monthlyStartDate, setMonthlyStartDate } = useUserSettingStore();
   const [selected, setSelected] = useState<number>(monthlyStartDate);
 
   const handleSave = () => {
     setMonthlyStartDate(selected);
+    onClose(); // 패널 닫기
   };
 
   return (

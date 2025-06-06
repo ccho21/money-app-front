@@ -24,8 +24,8 @@ export const config = {
     '/transaction/:path*',
 
     // 계좌/카테고리 설정
-    '/settings/accounts/:path*',
-    'settings/category/:path*',
+    'accounts/:path*',
+    'category/:path*',
 
     // 기타 로그인 필요 경로들 (추가 가능)
   ],

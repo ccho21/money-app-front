@@ -107,7 +107,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
               ? 'creditCard'
               : 'piggyBank'
           }
-          onEdit={() => router.push('/settings/account')}
+          onEdit={() => router.push('/account')}
         />
       </div>
 
@@ -128,7 +128,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
               ? 'creditCard'
               : 'piggyBank'
           }
-          onEdit={() => router.push('/settings/account')}
+          onEdit={() => router.push('/account')}
         />
       </div>
 

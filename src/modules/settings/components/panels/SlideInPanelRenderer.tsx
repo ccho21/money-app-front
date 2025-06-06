@@ -19,9 +19,7 @@ const MonthlyStartDatePanel = dynamic(() => import('./MonthlyStartDatePanel'), {
 const MainCurrencyPanel = dynamic(() => import('./MainCurrencyPanel'), {
   ssr: false,
 });
-const SubCurrencyPanel = dynamic(() => import('./SubCurrencyPanel'), {
-  ssr: false,
-});
+
 const BackupResetPanel = dynamic(() => import('./BackupResetPanel'), {
   ssr: false,
 });
@@ -35,15 +33,19 @@ const StartPagePanel = dynamic(() => import('./StartPagePanel'), {
   ssr: false,
 });
 
-const panelMap: Record<Exclude<PanelType, null>, () => JSX.Element> = {
-  themeSetting: () => <ThemeSettingPanel />,
-  monthlyStartDate: () => <MonthlyStartDatePanel />,
-  weeklyStartDay: () => <WeeklyStartDay />,
-  startPage: () => <StartPagePanel />,
-  mainCurrency: () => <MainCurrencyPanel />,
-  subCurrency: () => <SubCurrencyPanel />,
-  backupReset: () => <BackupResetPanel />,
-  accountGroup: () => <AccountGroupPanel />,
+const panelMap: Record<
+  Exclude<PanelType, null>,
+  (props: { onClose: () => void }) => JSX.Element
+> = {
+  themeSetting: ({ onClose }) => <ThemeSettingPanel onClose={onClose} />,
+  monthlyStartDate: ({ onClose }) => (
+    <MonthlyStartDatePanel onClose={onClose} />
+  ),
+  weeklyStartDay: ({ onClose }) => <WeeklyStartDay onClose={onClose} />,
+  startPage: ({ onClose }) => <StartPagePanel onClose={onClose} />,
+  mainCurrency: ({ onClose }) => <MainCurrencyPanel onClose={onClose} />,
+  backupReset: ({ onClose }) => <BackupResetPanel onClose={onClose} />,
+  accountGroup: ({ onClose }) => <AccountGroupPanel onClose={onClose} />,
 };
 
 const panelTitleMap: Record<Exclude<PanelType, null>, string> = {
@@ -52,7 +54,6 @@ const panelTitleMap: Record<Exclude<PanelType, null>, string> = {
   weeklyStartDay: 'Weekly Start Day',
   startPage: 'Start Page',
   mainCurrency: 'Main Currency',
-  subCurrency: 'Sub Currency',
   backupReset: 'Backup & Reset',
   accountGroup: 'Account Group',
 };
@@ -86,12 +87,12 @@ export function SlideInPanelRenderer({
         {isMounted && (
           <div className='mx-auto w-full max-w-md px-4 py-4'>
             <DrawerHeader>
-              <DrawerTitle className='text-base font-semibold'>
+              <DrawerTitle className='text-heading font-semibold text-center'>
                 {title}
               </DrawerTitle>
             </DrawerHeader>
 
-            <div className='pt-2'>{renderPanelContent?.()}</div>
+            <div className='pt-2'>{renderPanelContent?.({ onClose })}</div>
           </div>
         )}
       </DrawerContent>

@@ -2,7 +2,13 @@
 export type WeeklyStartDay = 'sunday' | 'monday';
 export type InputOrder = 'amount-first' | 'account-first';
 export type AppTheme = 'light' | 'dark' | 'system';
-export type AppThemeColor = 'white' | 'red' | 'pink' | 'green' | 'blue' | 'black';
+export type AppThemeColor =
+  | 'white'
+  | 'red'
+  | 'pink'
+  | 'green'
+  | 'blue'
+  | 'black';
 export type CurrencyCode = 'CAD' | 'KRW' | 'USD';
 
 export type StartPage = 'list' | 'calendar';
@@ -29,6 +35,5 @@ export type PanelType =
   | 'themeSetting'
   | 'accountGroup'
   | 'mainCurrency'
-  | 'subCurrency'
   | 'backupReset'
   | null;
