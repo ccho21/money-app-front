@@ -22,7 +22,7 @@ const TransactionListView = dynamic(
   { ssr: false }
 );
 
-export default function AccountDailyPage() {
+export default function AccountDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const [editId, setEditId] = useState<string | null>(null);

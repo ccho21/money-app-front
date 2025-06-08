@@ -4,8 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAccountsAPI,
   fetchAccountByIdAPI,
-  fetchAccountSummaryAPI,
-  fetchAccountsDashboardAPI,
   createAccountAPI,
   updateAccountAPI,
   deleteAccountAPI,
@@ -18,7 +16,6 @@ import {
   AccountDetailDTO,
 } from '../types/types';
 
-// ✅ 1. 전체 계좌 목록
 export const useAccounts = () =>
   useQuery<AccountDetailDTO[]>({
     queryKey: ['accounts'],
@@ -26,7 +23,6 @@ export const useAccounts = () =>
     staleTime: 1000 * 60 * 5,
   });
 
-// ✅ 2. 단일 계좌 조회
 export const useAccountById = (accountId: string, enabled = true) =>
   useQuery({
     queryKey: ['account', accountId],
@@ -35,24 +31,6 @@ export const useAccountById = (accountId: string, enabled = true) =>
     staleTime: 1000 * 60 * 5,
   });
 
-// ✅ 3. 계좌 요약 정보 (기간 필터)
-export const useAccountSummary = (params: DateFilterParams) =>
-  useQuery({
-    queryKey: ['account-summary', params],
-    queryFn: () => fetchAccountSummaryAPI(params),
-    enabled: !!params?.startDate && !!params?.endDate,
-    staleTime: 1000 * 60 * 5,
-  });
-
-// ✅ 4. 계좌 대시보드
-export const useAccountDashboard = () =>
-  useQuery({
-    queryKey: ['account-dashboard'],
-    queryFn: fetchAccountsDashboardAPI,
-    staleTime: 1000 * 60 * 10,
-  });
-
-// ✅ 5. 계좌 생성
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -63,7 +41,6 @@ export const useCreateAccount = () => {
   });
 };
 
-// ✅ 6. 계좌 수정
 export const useUpdateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({

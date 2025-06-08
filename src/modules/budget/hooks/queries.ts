@@ -28,14 +28,6 @@ export const fetchBudgetsByCategory = (params: BudgetQuery) =>
     staleTime: 1000 * 60 * 5,
   });
 
-export const fetchBudgetSummary = (params: BudgetQuery) =>
-  useQuery<BudgetSummaryDTO>({
-    queryKey: ['budget-summary', params],
-    queryFn: () => fetchBudgetSummaryAPI(params),
-    enabled: !!params.startDate && !!params.endDate,
-    staleTime: 1000 * 60 * 5,
-  });
-
 export const fetchGroupedBudgetCategory = (
   categoryId: string,
   filter: BudgetQuery,

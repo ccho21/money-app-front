@@ -21,17 +21,6 @@ export interface AccountDashboardItemDTO {
   autoPayment?: boolean;
 }
 
-export interface AccountDashboardDTO {
-  asset: number;
-  liability: number;
-  total: number;
-  data: {
-    CASH: AccountDashboardItemDTO[];
-    BANK: AccountDashboardItemDTO[];
-    CARD: AccountDashboardItemDTO[];
-  };
-}
-
 export interface AccountDetailDTO {
   id: string;
   name: string;
@@ -71,6 +60,3 @@ export interface AccountTransactionItemDTO {
   totalExpense: number;
   transactions?: unknown[]; // 또는 Omit<TransactionDetailDTO, 'account'>[] 를 직접 선언
 }
-
-export type AccountTransactionSummaryDTO =
-  BaseListSummaryResponseDTO<AccountTransactionItemDTO>;
