@@ -68,7 +68,7 @@ export function EditCategoryDrawer({ categoryId, onClose }: Props) {
       }}
     >
       {shouldRender && (
-        <DrawerContent className=''>
+        <DrawerContent className='' aria-describedby={undefined}>
           {/* 포커스 안전 */}
           <input autoFocus className='sr-only' />
 
