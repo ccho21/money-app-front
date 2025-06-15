@@ -2,7 +2,6 @@
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import DatePicker from '@/components/ui/datePicker';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -21,7 +20,7 @@ import {
   isAfter,
 } from 'date-fns';
 import { useState } from 'react';
-import { Section } from '@/components/ui/temp/section';
+import { Section } from '@/components/ui/layout/section';
 
 function getNextExecutionDate(
   start: Date,
@@ -146,7 +145,7 @@ export default function RecurringFormSection() {
               <div className='grid gap-2'>
                 <Label className='text-label'>End date</Label>
                 <DatePicker
-                  value={recurring.endDate ?? new Date()}
+                  isoValue={recurring.endDate ?? new Date().toISOString()}
                   onChange={(date) => updateRecurring({ endDate: date })}
                 />
               </div>

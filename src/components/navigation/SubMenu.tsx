@@ -7,7 +7,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 
 interface Tab {
   key: string;

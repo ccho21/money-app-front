@@ -7,7 +7,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { useEffect } from 'react';
-import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { BudgetCategoryForm } from './BudgetCategoryForm';
 import { useCreateBudgetCategory } from '@/modules/budget/hooks/queries';
 import { useBudgetFormStore } from '../stores/formStore';
@@ -34,15 +34,15 @@ export function AddBudgetDrawer({ onClose }: Props) {
       setMode('new');
       setForm({
         categoryId: selectedBudget.categoryId,
-        amount: 0,
+        amount: String(0),
         startDate: selectedBudget.rangeStart,
         endDate: selectedBudget.rangeEnd,
       });
     }
-  }, [selectedBudget]);
+  }, [resetForm, selectedBudget, setForm, setMode]);
 
   const handleSubmit = async () => {
-    await createMutation.mutateAsync(form);
+    await createMutation.mutateAsync({ ...form, amount: Number(form.amount) });
     resetForm();
     onClose();
   };
@@ -59,13 +59,13 @@ export function AddBudgetDrawer({ onClose }: Props) {
     >
       {shouldRender && (
         <DrawerContent aria-describedby={undefined}>
-          <input autoFocus className="sr-only" />
+          <input autoFocus className='sr-only' />
           <DrawerHeader>
-            <DrawerTitle className="text-heading" role="heading" aria-level={2}>
+            <DrawerTitle className='text-heading' role='heading' aria-level={2}>
               Add Budget
             </DrawerTitle>
           </DrawerHeader>
-          <div className="pb-section">
+          <div className='pb-section'>
             <BudgetCategoryForm onSubmit={handleSubmit} isEdit={false} />
           </div>
         </DrawerContent>

@@ -1,10 +1,10 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import UIIcon from '@/components/ui/UIIcon';
-import { IconName } from '@/modules/shared/lib/iconMap';
+import UIIcon from '@/components/common/UIIcon';
+import { IconName } from '@/modules/shared/util/icon.utils';
 import { ChevronRight } from 'lucide-react';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 import { ReactNode } from 'react';
 
 interface SettingItemProps {

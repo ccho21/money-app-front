@@ -1,4 +1,4 @@
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 import { AlertTriangle, Info, AlertOctagon, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Insight } from '@/modules/insights/types/types';
@@ -27,7 +27,7 @@ export function InsightRow({
   onActionClick,
   className,
 }: InsightRowProps) {
-  const { id, title, description, severity, context, actionLabel } = insight;
+  const { id, title, description, severity, actionLabel } = insight;
   const SeverityIcon = severityIcons[severity];
 
   return (

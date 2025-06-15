@@ -1,12 +1,12 @@
 'use client';
 
 import { ReactNode } from 'react';
-import AuthGuard from '@/modules/auth/AuthGuard';
-import RouteTracker from '@/modules/shared/providers/RouteTracker';
-import { ThemeProvider } from '@/modules/shared/providers/ThemeProvider';
+import AuthGuard from '@/modules/auth/components/AuthGuard';
+import RouteTracker from '@/providers/RouteTracker';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 import BottomNav from '@/components/navigation/BottomNav';
-import useAuthRedirectSync from '@/modules/auth/useAuthRedirectSync'; // ✅ 훅 import
-import { useBudgetAlert } from '@/modules/shared/hooks/useBudgetAlert';
+import useAuthRedirectSync from '@/modules/auth/hooks/useAuthRedirectSync'; // ✅ 훅 import
+import { useBudgetAlert } from '@/modules/shared/hooks/budgetAlert';
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   const loading = useAuthRedirectSync();

@@ -1,5 +1,5 @@
 import {
-  CategoryDetailDTO,
+  CategoryDetail,
   CategoryType,
 } from '@/modules/category/types/types';
 import { Insight } from '@/modules/insights/types/types';
@@ -46,15 +46,15 @@ export interface TransactionItem {
   date: string; // ISO8601 string (e.g., '2025-05-01T14:32:00.000Z')
   type: TransactionType;
   recurringId?: string;
-  category: {
+  category?: {
     name: string;
     icon: string;
     color: string;
-  };
+  } | null;
   account: {
     name: string;
   };
-  balanceAfter: number;
+  balanceAfter?: number;
 }
 
 export interface TransactionGroupItem {
@@ -117,7 +117,7 @@ export interface TransactionDetail {
   // ✅ 순환 참조 피하기 위해 최소 필드만 가진 DTO 사용
   account: TransactionAccount;
   toAccount?: TransactionAccount | null;
-  category?: CategoryDetailDTO | null;
+  category?: CategoryDetail | null;
   dueDate?: string | null;
   paidAt?: string | null;
 }

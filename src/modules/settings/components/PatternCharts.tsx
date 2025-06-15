@@ -25,7 +25,7 @@ import {
 } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 import { ChartDataItem } from '@/modules/insights/types/types';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 
 interface PatternChartsProps {
   byDay: ChartDataItem;

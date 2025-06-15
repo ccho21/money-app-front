@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { settingsConfig } from '@/modules/settings/config/settingsConfig';
 
-import { Section, SectionTitle } from '@/components/ui/temp/section';
+import { Section, SectionTitle } from '@/components/ui/layout/section';
 import SettingItem from '@/modules/settings/components/SettingItem';
 import { PanelType } from '@/modules/settings/types/types';
 import { SlideInPanelRenderer } from '@/modules/settings/components/panels/SlideInPanelRenderer';

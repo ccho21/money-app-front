@@ -1,7 +1,7 @@
 'use client';
 
 import { Progress } from '@/components/ui/progress';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 
 interface BudgetProgressBarProps {
   used: number;

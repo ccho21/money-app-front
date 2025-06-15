@@ -2,7 +2,6 @@
 
 import { get, post, patch, del } from '@/modules/shared/common/api';
 
-import type { DateFilterParams } from '@/modules/shared/common/types';
 import { buildTransactionQuery } from './utils/buildTransactionQuery';
 import {
   TransactionCalendar,
@@ -12,7 +11,6 @@ import {
   TransactionChartFlowResponse,
   TransactionCreateRequestDTO,
   TransactionDetail,
-  TransactionGroupItem,
   TransactionGroupListResponse,
   TransactionGroupQuery,
   TransactionGroupSummary,
@@ -73,15 +71,6 @@ export const fetchTransactionByIdAPI = (id: string) => {
   return get<TransactionDetail>(`/transactions/${id}`);
 };
 
-// Get grouped transactions (e.g., by date)
-export const fetchTransactionGroupAPI = (payload: DateFilterParams) => {
-  return post<TransactionGroupItem[], DateFilterParams>(
-    '/transactions/group',
-    payload
-  );
-};
-
-////////////////////////////////////////////////////////////////////////////////////////
 // Get summary
 export const fetchTransactionSummaryAPI = (params: TransactionGroupQuery) => {
   const query = buildTransactionQuery(params);
@@ -135,6 +124,6 @@ export const fetchTransactionChartBudgetAPI = (
   );
 };
 
-export const useRecommendedKeywordsAPI = () => {
+export const fetchRecommendedKeywordsAPI = () => {
   return get<string[]>(`/transactions/keyword/recommendations`);
 };

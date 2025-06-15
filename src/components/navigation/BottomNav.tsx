@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { BookText, ChartColumnBig, Settings, Wallet, Plus } from 'lucide-react';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 
 const tabs = [
   {

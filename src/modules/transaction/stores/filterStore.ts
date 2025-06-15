@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { formatDate, getDateRangeKey, parseLocalDate } from '@/modules/shared/lib/date.util';
+import { formatLocalDateString, getDateRangeKey, parseLocalDate } from '@/modules/shared/util/date.util';
 import {
   GroupBy,
   Timeframe,
@@ -22,8 +22,8 @@ interface TransactionFilterStore {
 }
 
 const defaultQuery: TransactionGroupQuery = {
-  startDate: formatDate(new Date()),
-  endDate: formatDate(new Date()),
+  startDate: formatLocalDateString(new Date()),
+  endDate: formatLocalDateString(new Date()),
   timeframe: 'monthly',
   groupBy: 'date',
 };
@@ -136,13 +136,11 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
       getQueryString: () => {
         const {
           startDate,
-          endDate,
           timeframe,
           groupBy,
           transactionType,
           categoryId,
           accountId,
-          note,
         } = get().query;
         const params = new URLSearchParams();
         // get the start date as standard

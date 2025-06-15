@@ -2,7 +2,7 @@
 'use client';
 
 import TopNav from '@/components/navigation/TopNav';
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 

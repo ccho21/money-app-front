@@ -1,6 +1,6 @@
 // ✅ 월간 요약용
 
-import { Insight } from "../insights/types/types";
+import { Insight } from "@/modules/insights/types/types";
 
 // frontend/modules/dashboard/types.ts
 export type DashboardCategoryMonthlyDTO = {

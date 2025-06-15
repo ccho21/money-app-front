@@ -1,12 +1,11 @@
 'use client';
 
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 import TransactionItem from './TransactionItem';
 import {
   TransactionGroupItem,
   TransactionItem as TransactionItemDTO,
 } from '../types/types';
-import { format } from 'date-fns-tz';
 
 interface TransactionGroupProps {
   label: string;

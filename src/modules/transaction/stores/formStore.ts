@@ -52,14 +52,12 @@ type TransactionFormStore = {
   isDirty: () => boolean;
 };
 
-const nowISO = () => new Date().toISOString();
-
 const defaultState: TransactionFormState = {
   type: 'expense',
   amount: '',
   accountId: '',
   categoryId: '',
-  date: nowISO(),
+  date: new Date().toISOString(),
   note: '',
   description: '',
   from: '',

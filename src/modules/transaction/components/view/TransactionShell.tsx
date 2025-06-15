@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useTransactionFilterStore } from '../../stores/filterStore';
 import dynamic from 'next/dynamic';
 
@@ -15,7 +15,7 @@ const TabMenu = dynamic(() => import('@/components/navigation/TabMenu'), {
   ssr: false,
 });
 const SearchDialog = dynamic(
-  () => import('@/components/ui/custom/SearchDialog'),
+  () => import('@/components/common/SearchDialog'),
   {
     ssr: false,
   }

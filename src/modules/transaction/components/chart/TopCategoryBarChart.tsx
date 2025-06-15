@@ -55,11 +55,11 @@ export function TopCategoryBarChart({ data }: Props) {
   }));
 
   const comparison = data.comparison;
-  const insightText = comparison
-    ? `${comparison.name} spending ${
-        comparison.trend === 'increase' ? 'increased' : 'decreased'
-      } by ${comparison.percentChange}`
-    : null;
+  // const insightText = comparison
+  //   ? `${comparison.name} spending ${
+  //       comparison.trend === 'increase' ? 'increased' : 'decreased'
+  //     } by ${comparison.percentChange}`
+  //   : null;
 
   return (
     <Card className='flat-card'>

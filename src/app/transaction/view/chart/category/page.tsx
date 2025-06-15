@@ -2,8 +2,8 @@
 
 import { useTransactionChartCategory } from '@/modules/transaction/hooks/queries';
 import { TransactionGroupQuery } from '@/modules/transaction/types/types';
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import { TopCategoryBarChart } from '@/modules/transaction/components/chart/TopCategoryBarChart';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 

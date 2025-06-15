@@ -1,16 +1,14 @@
 'use client';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchDashboard } from '@/modules/dashboard/hooks/queries';
+import { useDashboard } from '@/modules/dashboard/hooks/queries';
 import { TransactionGroupQuery } from '@/modules/transaction/types/types';
-import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useTransactionStore } from '@/modules/transaction/stores/store';
-import { useShallow } from 'zustand/shallow';
-import { fetchTransactionGroups } from '@/modules/transaction/hooks/fetches';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
+import { useTransactionGroupsQuery } from '@/modules/transaction/hooks/queries';
+import { useMemo } from 'react';
 
 const TransactionListView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionListView'),
@@ -24,34 +22,28 @@ const DashboardSummary = dynamic(() => import('../DashboardSummary'), {
 });
 
 export function DashboardView() {
-  const { query, getDateRangeKey, isInitialized } = useTransactionFilterStore();
-  const [startDate, endDate] = getDateRangeKey().split('_');
+  const { query, getDateRangeKey } = useTransactionFilterStore();
+  const [startDate, endDate] = useMemo(
+    () => getDateRangeKey().split('_'),
+    [getDateRangeKey]
+  );
   const { timeframe } = query;
 
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    const params: TransactionGroupQuery = {
+  const groupQueryParams = useMemo<TransactionGroupQuery>(
+    () => ({
       timeframe: 'monthly',
       startDate,
       endDate,
       limit: 3,
-    };
-
-    (async () => {
-      Promise.all([fetchTransactionGroups(params)]);
-    })();
-  }, [endDate, getDateRangeKey, isInitialized, startDate]);
-
-  const { groupList, isLoading: txLoading } = useTransactionStore(
-    useShallow((s) => ({
-      groupList: s.groupList,
-      isLoading: s.isLoading,
-    }))
+    }),
+    [startDate, endDate]
   );
 
-  const { data, isLoading } = fetchDashboard({
-    timeframe: timeframe,
+  const { data: groupList, isLoading: txLoading } =
+    useTransactionGroupsQuery(groupQueryParams);
+
+  const { data, isLoading } = useDashboard({
+    timeframe,
     startDate,
     endDate,
   });
@@ -65,7 +57,9 @@ export function DashboardView() {
   };
 
   if (isLoading || !data) {
-    return <Skeleton className='h-[300px] w-full' />;
+    return (
+      <Skeleton data-testid='dashboard-loading' className='h-[300px] w-full' />
+    );
   }
 
   return (

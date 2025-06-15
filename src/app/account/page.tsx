@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation';
 
 import { AddAccountDrawer } from '@/modules/account/components/AddAccountDrawer';
 import { EditAccountDrawer } from '@/modules/account/components/EditAccountDrawer';
-import { AccountDetailDTO } from '@/modules/account/types/types';
+import { AccountDetail } from '@/modules/account/types/types';
 import { useAccounts } from '@/modules/account/hooks/queries';
 
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 import { ChevronRight } from 'lucide-react';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 
 export default function AccountPage() {
   const router = useRouter();
@@ -36,12 +36,12 @@ export default function AccountPage() {
     };
   }, [accounts]);
 
-  const handleEdit = (acc: AccountDetailDTO) => {
+  const handleEdit = (acc: AccountDetail) => {
     router.push(`/account/${acc.id}`);
     // setEditId(acc.id);
   };
 
-  const renderGroup = (title: string, list: AccountDetailDTO[]) => (
+  const renderGroup = (title: string, list: AccountDetail[]) => (
     <div className='mt-component'>
       <h3 className='text-subheading text-muted-foreground uppercase tracking-wide'>
         {title}

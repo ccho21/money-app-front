@@ -3,7 +3,7 @@
 import { get } from '@/modules/shared/common/api';
 import { TransactionGroupQuery } from '../transaction/types/types';
 import { buildTransactionQuery } from '../transaction/utils/buildTransactionQuery';
-import { DashboardDTO } from './types';
+import { DashboardDTO } from './types/types';
 
 export const fetchDashboardAPI = (params: TransactionGroupQuery) => {
   const query = buildTransactionQuery(params); // query string 생성

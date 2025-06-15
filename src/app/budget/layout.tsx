@@ -2,7 +2,7 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import TopNav from '@/components/navigation/TopNav';

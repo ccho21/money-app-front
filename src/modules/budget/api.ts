@@ -1,27 +1,25 @@
 import { get, post, put } from '@/modules/shared/common/api';
 import type {
-  BudgetCategoryListResponseDTO,
-  BudgetCategoryItemDTO,
-  BudgetCategoryCreateRequestDTO,
-  BudgetCategoryUpdateRequestDTO,
-  BudgetGroupItemDTO,
-  BudgetSummaryDTO,
+  BudgetCategoryListResponse,
+  BudgetCategoryItem,
+  BudgetCategoryCreateRequest,
+  BudgetCategoryUpdateRequest,
+  BudgetGroupItem,
   BudgetQuery,
 } from './types/types';
-import type { DateFilterParams } from '@/modules/shared/common/types';
 import { buildQuery } from './types/budgetBuildQuery';
 
 // ✅ [GET] /budgets/by-category → 카테고리별 예산 항목 조회
 export const fetchBudgetByCategoryAPI = (params: BudgetQuery) => {
   const query = buildQuery(params);
-  return get<BudgetCategoryListResponseDTO>(`/budgets/by-category?${query}`);
+  return get<BudgetCategoryListResponse>(`/budgets/by-category?${query}`);
 };
 
 // ✅ [POST] /budgets/by-category → 예산 항목 생성
 export const createBudgetCategoryAPI = (
-  payload: BudgetCategoryCreateRequestDTO
+  payload: BudgetCategoryCreateRequest
 ) => {
-  return post<BudgetCategoryItemDTO, BudgetCategoryCreateRequestDTO>(
+  return post<BudgetCategoryItem, BudgetCategoryCreateRequest>(
     '/budgets/by-category',
     payload
   );
@@ -30,9 +28,9 @@ export const createBudgetCategoryAPI = (
 // ✅ [PUT] /budgets/by-category/:id → 예산 항목 수정
 export const updateBudgetCategoryAPI = (
   id: string,
-  payload: BudgetCategoryUpdateRequestDTO
+  payload: BudgetCategoryUpdateRequest
 ) => {
-  return put<BudgetCategoryItemDTO, BudgetCategoryUpdateRequestDTO>(
+  return put<BudgetCategoryItem, BudgetCategoryUpdateRequest>(
     `/budgets/by-category/${id}`,
     payload
   );
@@ -44,13 +42,5 @@ export const fetchGroupedBudgetCategoryAPI = (
   params: BudgetQuery
 ) => {
   const query = buildQuery(params);
-  return get<BudgetGroupItemDTO>(
-    `/budgets/by-category/${categoryId}?${query}`,
-  );
-};
-
-// ✅ [GET] /budgets/summary → 예산 요약
-export const fetchBudgetSummaryAPI = (params: DateFilterParams) => {
-  const query = buildQuery(params);
-  return get<BudgetSummaryDTO>(`/budgets/summary?${query}`);
+  return get<BudgetGroupItem>(`/budgets/by-category/${categoryId}?${query}`);
 };

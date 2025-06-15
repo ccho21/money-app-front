@@ -1,5 +1,5 @@
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import {
   TransactionGroupListResponse,
   TransactionItem,

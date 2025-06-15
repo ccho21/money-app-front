@@ -1,11 +1,11 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/modules/shared/lib/utils';
+import { cn } from '@/modules/shared/util/style.utils';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { format, isThisMonth } from 'date-fns';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 import { Separator } from '@/components/ui/separator';
 
 interface DashboardSummaryData {
@@ -44,6 +44,7 @@ export default function DashboardSummary({
       ? 'This Month’s Spending'
       : `${format(date, 'MMMM yyyy')} Spending`;
 
+      console.log('### WHAT');
   return (
     <>
       <div className='flex flex-col gap-component'>
@@ -146,9 +147,9 @@ export default function DashboardSummary({
               {/* 텍스트 리스트 */}
               <div className='col-span-6'>
                 <ul className='space-y-tight text-label'>
-                  {categoryList.map((item) => (
+                  {categoryList.map((item, i) => (
                     <li
-                      key={item.name}
+                      key={`${item.name}-${i}`}
                       className='flex items-center gap-element'
                     >
                       <span

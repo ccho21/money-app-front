@@ -2,24 +2,24 @@
 
 import { del, get, patch, post } from '@/modules/shared/common/api';
 import {
-  CategoryDetailDTO,
-  CategoryCreateRequestDTO,
-  CategoryUpdateRequestDTO,
+  CategoryDetail,
+  CategoryCreateRequest,
+  CategoryUpdateRequest,
 } from './types/types';
 
 // Fetch all categories
 export const fetchCategoriesAPI = () => {
-  return get<CategoryDetailDTO[]>('/categories');
+  return get<CategoryDetail[]>('/categories');
 };
 
 // Fetch a single category by ID
 export const fetchCategoryByIdAPI = (id: string) => {
-  return get<CategoryDetailDTO>(`/categories/${id}`);
+  return get<CategoryDetail>(`/categories/${id}`);
 };
 
 // Create a new category
-export const createCategoryAPI = (payload: CategoryCreateRequestDTO) => {
-  return post<CategoryDetailDTO, CategoryCreateRequestDTO>(
+export const createCategoryAPI = (payload: CategoryCreateRequest) => {
+  return post<CategoryDetail, CategoryCreateRequest>(
     '/categories',
     payload
   );
@@ -28,9 +28,9 @@ export const createCategoryAPI = (payload: CategoryCreateRequestDTO) => {
 // Update an existing category
 export const updateCategoryAPI = (
   id: string,
-  payload: CategoryUpdateRequestDTO
+  payload: CategoryUpdateRequest
 ) => {
-  return patch<CategoryDetailDTO, CategoryUpdateRequestDTO>(
+  return patch<CategoryDetail, CategoryUpdateRequest>(
     `/categories/${id}`,
     payload
   );

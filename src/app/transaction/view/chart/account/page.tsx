@@ -1,7 +1,7 @@
 'use client';
 
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import { AccountBarChart } from '@/modules/transaction/components/chart/AccountBarChart';
 import { useTransactionChartAccount } from '@/modules/transaction/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';

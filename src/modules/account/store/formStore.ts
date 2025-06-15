@@ -1,5 +1,5 @@
 import {
-  AccountCreateRequestDTO,
+  AccountCreateRequest,
   AccountUpdateRequestDTO,
   AccountType,
 } from '../types/types';
@@ -29,7 +29,7 @@ interface AccountFormActions {
   setMode: (mode: Mode) => void;
   reset: () => void;
   validate: () => string | null;
-  getCreateFormData: () => AccountCreateRequestDTO;
+  getCreateFormData: () => AccountCreateRequest;
   getUpdateFormData: () => AccountUpdateRequestDTO;
 }
 

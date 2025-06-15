@@ -5,7 +5,7 @@ import {
   getDateRangeKey,
   getNextDateByRange,
   parseLocalDate,
-} from '@/modules/shared/lib/date.util';
+} from '@/modules/shared/util/date.util';
 import { Timeframe, TransactionGroupQuery } from '../types/types';
 
 interface UseDateNavigatorOptions {
@@ -61,7 +61,9 @@ export function useDateNavigator({
   const handleChange = useCallback(
     (diff: number) => {
       const newDate = getNextDateByRange(parsedDate, diff, timeframe);
-      const [start, end] = getDateRangeKey(newDate, { unit: timeframe }).split('_');
+      const [start, end] = getDateRangeKey(newDate, { unit: timeframe }).split(
+        '_'
+      );
       updateQueryIfChanged(start, end);
     },
     [parsedDate, timeframe, updateQueryIfChanged]

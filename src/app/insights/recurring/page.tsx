@@ -1,7 +1,7 @@
 'use client';
 
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilterStore';
 import { useInsightRecurring } from '@/modules/insights/hooks/queries';
 import { InsightCardList } from '@/modules/settings/components/InsightCardList';

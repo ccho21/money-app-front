@@ -4,9 +4,9 @@ import { useState, useMemo } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { fetchCategories } from '@/modules/category/hooks/queries';
+import { useCategories } from '@/modules/category/hooks/queries';
 import { Card, CardContent } from '@/components/ui/card';
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { EditCategoryDrawer } from '@/modules/category/components/EditCategoryDrawer';
 import { AddCategoryDrawer } from '@/modules/category/components/AddCategoryDrawer';
 
@@ -17,7 +17,7 @@ export default function CategoryPage() {
   );
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const { data: categories = [] } = fetchCategories();
+  const { data: categories = [] } = useCategories();
 
   useTopNavPreset({
     title: 'Category',

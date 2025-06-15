@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 import { ChevronRight } from 'lucide-react';
 
 import DateNavigator from '@/components/navigation/DateNavigator';
-import { fetchBudgetsByCategory } from '@/modules/budget/hooks/queries';
+import { useBudgetsByCategory } from '@/modules/budget/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import {
   Section,
   SectionSubtitle,
   SectionTitle,
-} from '@/components/ui/temp/section';
-import { BudgetCategoryItemDTO } from '@/modules/budget/types/types';
+} from '@/components/ui/layout/section';
+import { BudgetCategoryItem } from '@/modules/budget/types/types';
 import BudgetProgressBar from '@/modules/budget/components/BudgetProgressBar';
 import { Badge } from '@/components/ui/badge';
 
@@ -27,13 +27,13 @@ export default function BudgetSettingsPage() {
     query: { startDate, endDate, timeframe },
   } = useTransactionFilterStore();
 
-  const { data, isLoading, error } = fetchBudgetsByCategory({
+  const { data, isLoading, error } = useBudgetsByCategory({
     startDate,
     endDate,
     timeframe,
   });
 
-  const handleClick = (item: BudgetCategoryItemDTO) => {
+  const handleClick = (item: BudgetCategoryItem) => {
     router.push(`/budget/${item.categoryId}/list`);
   };
 
@@ -73,7 +73,7 @@ export default function BudgetSettingsPage() {
       </Section>
       <Section>
         <div className='space-y-3'>
-          {data.items.map((item: BudgetCategoryItemDTO) => {
+          {data.items.map((item: BudgetCategoryItem) => {
             const isZero = item.amount === 0;
             return (
               <Card

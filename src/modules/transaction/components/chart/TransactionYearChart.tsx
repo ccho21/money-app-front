@@ -7,7 +7,6 @@ import {
   XAxis,
   CartesianGrid,
   LabelList,
-  YAxis,
 } from 'recharts';
 
 import {

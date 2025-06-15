@@ -1,4 +1,4 @@
-import { useUserStore } from '@/modules/shared/stores/useUserStore';
+import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 
 export const API_BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -25,11 +25,11 @@ async function tryRefreshToken(): Promise<boolean> {
 }
 
 function logoutAndRedirect() {
-  const { clear } = useUserStore.getState();
+  const { clear } = useAuthStore.getState();
   clear();
 }
 
-// 🌐 공통 fetch 함수
+// 🌐
 export async function api<T>(
   path: string,
   options: RequestInit = {}
@@ -68,7 +68,7 @@ export async function api<T>(
   return handleResponse<T>(res);
 }
 
-// ✅ HTTP 메서드 래퍼
+// ✅
 export function get<T>(path: string): Promise<T> {
   return api<T>(path, { method: 'GET' });
 }

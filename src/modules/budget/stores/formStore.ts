@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { BudgetCategoryCreateRequestDTO } from '../types/types';
+import { BudgetCategoryCreateRequest } from '../types/types';
 
 type Mode = 'new' | 'edit';
 
@@ -22,7 +22,7 @@ type BudgetFormActions = {
   ) => void;
   setMode: (mode: Mode) => void;
   resetForm: () => void;
-  getCreateFormData: () => BudgetCategoryCreateRequestDTO;
+  getCreateFormData: () => BudgetCategoryCreateRequest;
 };
 
 const initialForm: BudgetFormState['form'] = {

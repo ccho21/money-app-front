@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAccounts } from '@/modules/account/hooks/queries';
-import { fetchCategories } from '@/modules/category/hooks/queries';
+import { useCategories } from '@/modules/category/hooks/queries';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Selector from '@/components/ui/custom/Selector';
+import Selector from '@/components/ui/form/Selector';
 import { Textarea } from '@/components/ui/textarea';
 import DatePicker from '@/components/ui/datePicker';
 import { Label } from '@/components/ui/label';
@@ -36,7 +36,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
 
   const { data: accounts = [], isLoading: loadingAccounts } = useAccounts();
   const { data: categories = [], isLoading: loadingCategories } =
-    fetchCategories();
+    useCategories();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);

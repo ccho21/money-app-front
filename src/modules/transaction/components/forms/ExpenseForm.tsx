@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
 import { useAccounts } from '@/modules/account/hooks/queries';
-import { fetchCategories } from '@/modules/category/hooks/queries';
+import { useCategories } from '@/modules/category/hooks/queries';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import DatePicker from '@/components/ui/datePicker';
-import Selector from '@/components/ui/custom/Selector';
+import Selector from '@/components/ui/form/Selector';
 import RecurringFormSection from './RecurringFormSection';
 import {
   useDeleteTransactionMutation,
@@ -36,7 +36,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
 
   const { data: accounts = [], isLoading: loadingAccounts } = useAccounts();
   const { data: categories = [], isLoading: loadingCategories } =
-    fetchCategories();
+    useCategories();
 
   const selectedAccount = accounts.find((a) => a.id === accountId);
   const selectedCategory = categories.find((c) => c.id === categoryId);

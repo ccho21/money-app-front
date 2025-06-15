@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { CategoryCreateRequestDTO, CategoryType, CategoryUpdateRequestDTO } from '../types/types';
+import { CategoryCreateRequest, CategoryType, CategoryUpdateRequest } from '../types/types';
 
 type Mode = 'new' | 'edit';
 
@@ -20,8 +20,8 @@ interface CategoryFormActions {
   setAllFields: (data: Partial<CategoryFormState>) => void;
   setMode: (mode: Mode) => void;
   reset: () => void;
-  getCreateFormData: () => CategoryCreateRequestDTO;
-  getUpdateFormData: () => CategoryUpdateRequestDTO;
+  getCreateFormData: () => CategoryCreateRequest;
+  getUpdateFormData: () => CategoryUpdateRequest;
 }
 
 const initialState: CategoryFormState = {
@@ -67,7 +67,7 @@ export const useCategoryFormStore = create<
 
     getUpdateFormData: () => {
       const { name, type, icon, color } = get();
-      const dto: CategoryUpdateRequestDTO = {};
+      const dto: CategoryUpdateRequest = {};
       if (typeof name === 'string' && name.trim()) dto.name = name.trim();
       if (type === 'expense' || type === 'income') dto.type = type;
       if (typeof icon === 'string' && icon.trim()) dto.icon = icon.trim();

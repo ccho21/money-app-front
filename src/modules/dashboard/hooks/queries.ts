@@ -4,7 +4,7 @@ import { TransactionGroupQuery } from '../../transaction/types/types';
 import { fetchDashboardAPI } from '../api';
 import { DashboardDTO } from '../types/types';
 
-export const fetchDashboard = (params: TransactionGroupQuery) => {
+export const useDashboard = (params: TransactionGroupQuery) => {
   return useQuery<DashboardDTO>({
     queryKey: ['dashboard', params],
     queryFn: () => fetchDashboardAPI(params),

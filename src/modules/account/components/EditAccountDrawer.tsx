@@ -8,7 +8,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { useAccountFormStore } from '@/modules/account/store/formStore';
-import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import {
   useAccountById,
   useUpdateAccount,

@@ -9,7 +9,7 @@ import { useTransactionFormStore } from '@/modules/transaction/stores/formStore'
 import ExpenseForm from '@/modules/transaction/components/forms/ExpenseForm';
 import TransferForm from '@/modules/transaction/components/forms/TransferForm';
 import IncomeForm from '@/modules/transaction/components/forms/IncomeForm';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 
 export default function TransactionNewPage() {
   const searchParams = useSearchParams();

@@ -4,8 +4,8 @@ import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilter
 import { BudgetSummaryCards } from '../../../modules/settings/components/BudgetSummaryCards';
 import { BudgetUsageChart } from '../../../modules/settings/components/BudgetUsageChart';
 import { useInsightBudget } from '../../../modules/insights/hooks/queries';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
 
 export default function InsightsBudgetPage() {
   const { query, getDateRangeKey } = useInsightFilterStore();

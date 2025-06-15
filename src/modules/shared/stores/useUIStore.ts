@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export interface LayoutOptions {
+  hideTopNav?: boolean;
   hideDateNav?: boolean;
   hideMonthNav?: boolean;
   hideTabMenu?: boolean;
@@ -42,8 +43,6 @@ export const useUIStore = create<UIState>((set) => ({
     onBack: undefined,
     onSearch: undefined,
     onFilter: undefined,
-    showSearchButton: false,
-    showFilterButton: false,
     onEdit: undefined,
     onAdd: undefined,
   },

@@ -5,12 +5,12 @@ import { useParams } from 'next/navigation';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { BudgetCategoryPeriodItemDTO } from '@/modules/budget/types/types';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
-import { fetchGroupedBudgetCategory } from '@/modules/budget/hooks/queries';
+import { useGroupedBudgetCategory } from '@/modules/budget/hooks/queries';
 import { AddBudgetDrawer } from '@/modules/budget/components/AddBudgetDrawer';
 import { EditBudgetDrawer } from '@/modules/budget/components/EditBudgetDrawer';
 import { useBudgetFormStore } from '@/modules/budget/stores/formStore';
@@ -32,7 +32,7 @@ export default function ListBudgetCategoryPage() {
     data: budgetGroup,
     isLoading,
     isError,
-  } = fetchGroupedBudgetCategory(String(categoryId), {
+  } = useGroupedBudgetCategory(String(categoryId), {
     startDate,
     endDate,
     timeframe,

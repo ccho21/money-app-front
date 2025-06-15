@@ -1,11 +1,8 @@
 // src/components/dashboard/DashboardShell.tsx
 'use client';
 
-import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 
 const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
   ssr: false,
@@ -16,8 +13,6 @@ export default function DashboardShell({
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
-
   useTopNavPreset({
     title: 'Dashboard',
   });

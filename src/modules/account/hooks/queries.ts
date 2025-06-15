@@ -7,17 +7,15 @@ import {
   createAccountAPI,
   updateAccountAPI,
   deleteAccountAPI,
-  // deleteAccountAPI,
 } from '../api';
-import { DateFilterParams } from '@/modules/shared/common/types';
 import {
-  AccountCreateRequestDTO,
+  AccountCreateRequest,
   AccountUpdateRequestDTO,
-  AccountDetailDTO,
+  AccountDetail,
 } from '../types/types';
 
 export const useAccounts = () =>
-  useQuery<AccountDetailDTO[]>({
+  useQuery<AccountDetail[]>({
     queryKey: ['accounts'],
     queryFn: fetchAccountsAPI,
     staleTime: 1000 * 60 * 5,
@@ -34,7 +32,7 @@ export const useAccountById = (accountId: string, enabled = true) =>
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: AccountCreateRequestDTO) => createAccountAPI(input),
+    mutationFn: (input: AccountCreateRequest) => createAccountAPI(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
     },

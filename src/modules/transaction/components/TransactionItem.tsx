@@ -1,11 +1,11 @@
 'use client';
 
-import { cn } from '@/modules/shared/lib/utils';
-import { format } from 'date-fns';
+import { cn } from '@/modules/shared/util/style.utils';
 import { TransactionItem as TxDTO } from '../types/types';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
+import { formatLocalDateString } from '@/modules/shared/util/date.util';
 
 interface Props {
   tx: TxDTO;
@@ -32,7 +32,7 @@ export default function TransactionItem({
   const categoryLabel =
     isTransfer && showTransferLabel
       ? 'Transfer'
-      : tx.category?.name ?? 'Uncategorized';
+      : tx.category?.name || 'Uncategorized'; // null-safe
 
   const accountLabel = tx.account?.name ?? '';
   const subtitle = [categoryLabel, accountLabel].filter(Boolean).join(' · ');
@@ -41,6 +41,7 @@ export default function TransactionItem({
     <Card
       onClick={handleClick}
       data-slot='transaction-item'
+      data-testid='transaction-item'
       className={cn(
         'px-element py-compact shadow-2xs border-none rounded-sm',
         className
@@ -75,7 +76,7 @@ export default function TransactionItem({
                   />
                 </div>
               ) : (
-                format(new Date(tx.date), 'hh:mm a')
+                formatLocalDateString(tx.date, 'hh:mm a')
               )}
             </div>
           </div>

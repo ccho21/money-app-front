@@ -1,9 +1,9 @@
 // src/app/layout.tsx
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/app/globals.css';
-import { QueryProvider } from '@/modules/shared/providers/QueryProvider';
+import { QueryProvider } from '@/providers/QueryProvider';
 import ClientShell from '@/modules/main/components/ClientShell';
-import { SocketProvider } from '@/modules/shared/providers/SocketProvider';
+import { SocketProvider } from '@/providers/SocketProvider';
 import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
@@ -52,17 +52,25 @@ export default function RootLayout({
 // * 어카운트 디테일 페이지에서, 트랜즈액션 큐뮬레이트 되는거 보여줘 - DONE
 
 // * Recurring transaction / transaction soft delete - DONE
+// * 유닛 테스트 - BACK - DONE.
+// * TS LINT - BACK - DONE
 
-// * 미래 트랜잭션 생성 실패 시 (예: accountId가 삭제됨), 예외 처리 정책을 어떻게 둘까? 무시할지, 알림을 줄지?
-// * Notification
-// * LOG (User Activity)
-// * Google Redirect
-
-// * 유닛 테스트.
+// * settings menu implementation - Parially DONE
+// * 유닛 테스트 - FRONT
+// * TS LINT - FRONT
 // * E2E 테스트
 // * PWA
+// * Google Redirect
+
 
 // * DEPLOY PHASE 1
-// * settings menu implementation - Parially DONE
 // * EXPORT EXCEL
 // * AI Integration
+
+
+// * PHASE 2
+// * Notification - PHASE 2
+// * LOG (User Activity) PHASE 2
+// * 미래 트랜잭션 생성 실패 시 (예: accountId가 삭제됨), 예외 처리 정책을 어떻게 둘까? 무시할지, 알림을 줄지?
+
+

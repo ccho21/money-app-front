@@ -1,4 +1,3 @@
-import { BaseGroupItemDTO } from '@/modules/shared/common/types';
 import { CategoryType } from '../../category/types/types';
 import { Timeframe } from '../../transaction/types/types';
 
@@ -10,7 +9,7 @@ export interface BudgetQuery {
 }
 
 // 📌 응답: 카테고리별 예산 리스트
-export interface BudgetCategoryItemDTO {
+export interface BudgetCategoryItem {
   categoryId: string;
   categoryName: string;
   icon: string;
@@ -23,13 +22,13 @@ export interface BudgetCategoryItemDTO {
   budgetId?: string;
 }
 
-export interface BudgetCategoryListResponseDTO {
+export interface BudgetCategoryListResponse {
   total: number;
-  items: BudgetCategoryItemDTO[];
+  items: BudgetCategoryItem[];
 }
 
 // 📌 응답: 단일 카테고리 그룹 예산
-export interface BudgetGroupItemDTO {
+export interface BudgetGroupItem {
   categoryId: string;
   categoryName: string;
   type: CategoryType;
@@ -58,20 +57,13 @@ export interface BudgetCategoryPeriodItemDTO {
 }
 
 // 📌 요청: 예산 생성/수정
-export interface BudgetCategoryCreateRequestDTO {
+export interface BudgetCategoryCreateRequest {
   categoryId: string;
   amount: number;
   startDate: string;
   endDate: string;
 }
 
-export type BudgetCategoryUpdateRequestDTO = Partial<
-  Omit<BudgetCategoryCreateRequestDTO, 'categoryId'>
+export type BudgetCategoryUpdateRequest = Partial<
+  Omit<BudgetCategoryCreateRequest, 'categoryId'>
 >;
-
-// 📌 응답: 요약
-export interface BudgetSummaryDTO extends BaseGroupItemDTO {
-  totalBudget: number;
-  totalSpent: number;
-  rate: number;
-}

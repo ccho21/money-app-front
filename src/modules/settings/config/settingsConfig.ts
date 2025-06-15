@@ -1,5 +1,5 @@
-import { IconName } from '@/modules/shared/lib/iconMap';
-import { signout } from '@/modules/auth/hooks';
+import { IconName } from '@/modules/shared/util/icon.utils';
+import { signout } from '@/modules/auth/hooks/hooks';
 import { PanelType } from '@/modules/settings/types/types';
 
 export type SettingSection = 'transaction' | 'category' | 'general';

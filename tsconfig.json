@@ -13,17 +13,21 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": "./",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@app/*": ["./src/app/*"],
-      "@components/*": ["./src/app/components/*"],
-      "@features/*": ["./src/features/*"],
-      "@lib/*": ["./src/modules/shared/lib/*"]
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"],
+      "@features/*": ["src/features/*"],
+      "@shared/*": ["src/modules/shared/*"],
+      "@stores/*": ["src/modules/shared/stores/*"],
+      "@lib/*": ["src/modules/shared/lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

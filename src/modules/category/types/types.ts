@@ -1,6 +1,6 @@
 export type CategoryType = 'income' | 'expense';
 
-export interface CategoryDetailDTO {
+export interface CategoryDetail {
   id: string;
   name: string;
   type: CategoryType;
@@ -8,18 +8,11 @@ export interface CategoryDetailDTO {
   color?: string;
 }
 
-export interface CategoryCreateRequestDTO extends BaseCategoryDTO {
+export interface CategoryCreateRequest {
   name: string;
   icon: string;
   color?: string;
   type: CategoryType;
 }
 
-export type CategoryUpdateRequestDTO = Partial<CategoryCreateRequestDTO>;
-
-export interface BaseCategoryDTO {
-  name: string;
-  icon: string;
-  color?: string;
-  type: CategoryType;
-}
+export type CategoryUpdateRequest = Partial<CategoryCreateRequest>;

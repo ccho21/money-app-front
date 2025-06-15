@@ -4,11 +4,9 @@ import { useLayoutEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
-import { format } from 'date-fns';
 import SummaryBox from '@/modules/transaction/components/SummaryBox';
 import {
   TransactionItem,
-  GroupBy,
   TransactionGroupQuery,
 } from '@/modules/transaction/types/types';
 import {
@@ -16,8 +14,6 @@ import {
   useTransactionSummaryQuery,
 } from '@/modules/transaction/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
-import SubMenu from '@/components/navigation/SubMenu';
-import DateNavigator from '@/components/navigation/DateNavigator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 
@@ -31,7 +27,6 @@ export default function ListPage() {
 
   const {
     query,
-    setQuery,
     getDateRangeKey,
     getQueryString,
     initializeListDefaults,
@@ -74,15 +69,15 @@ export default function ListPage() {
     router.push(`/transaction/manage/new?date=${date}`);
   };
 
-  const setActiveSubMenu = (key: string) => {
-    setQuery((prev) => {
-      if (prev.groupBy !== key) {
-        return { groupBy: key as GroupBy };
-      }
-      return {};
-    });
-    router.replace(getQueryString());
-  };
+  // const setActiveSubMenu = (key: string) => {
+  //   setQuery((prev) => {
+  //     if (prev.groupBy !== key) {
+  //       return { groupBy: key as GroupBy };
+  //     }
+  //     return {};
+  //   });
+  //   router.replace(getQueryString());
+  // };
 
   if (isSummaryError || isGroupsError) {
     return (

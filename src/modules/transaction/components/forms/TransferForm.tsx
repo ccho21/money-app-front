@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Selector from '@/components/ui/custom/Selector';
+import Selector from '@/components/ui/form/Selector';
 import DatePicker from '@/components/ui/datePicker';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -86,7 +86,6 @@ export default function TransferForm({ mode, transactionId }: Props) {
           value={amount}
           onChange={(e) => setField('amount', e.target.value)}
           type='number'
-          placeholder='$ 0'
         />
       </div>
 

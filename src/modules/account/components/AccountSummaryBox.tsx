@@ -1,12 +1,12 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
-import { cn } from '@/modules/shared/lib/utils';
-import type { AccountDetailDTO } from '../types/types';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
+import { cn } from '@/modules/shared/util/style.utils';
+import type { AccountDetail } from '../types/types';
 
 interface AccountSummaryBoxProps {
-  account: AccountDetailDTO;
+  account: AccountDetail;
   className?: string;
 }
 

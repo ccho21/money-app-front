@@ -7,7 +7,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { useEffect } from 'react';
-import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { BudgetCategoryForm } from './BudgetCategoryForm';
 import { useUpdateBudgetCategory } from '@/modules/budget/hooks/queries';
 import { useBudgetFormStore } from '../stores/formStore';
@@ -33,7 +33,7 @@ export function EditBudgetDrawer({ onClose }: Props) {
       resetForm();
       setForm({
         categoryId: selectedBudget.categoryId,
-        amount: selectedBudget.amount,
+        amount: String(selectedBudget.amount),
         startDate: selectedBudget.rangeStart,
         endDate: selectedBudget.rangeEnd,
       });
@@ -46,7 +46,7 @@ export function EditBudgetDrawer({ onClose }: Props) {
     if (!categoryId) return;
     await updateMutation.mutateAsync({
       id: categoryId,
-      data: form,
+      data: { ...form, amount: Number(form.amount) },
     });
 
     resetForm();

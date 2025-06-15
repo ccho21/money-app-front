@@ -1,8 +1,8 @@
 'use client';
 
-import { useUIStore } from '@/modules/shared/stores/useUIStore';
 import { ChevronLeft, Filter, Pencil, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useUIStore } from '@/modules/shared/stores/useUIStore';
 
 export default function TopNav() {
   const { title, onSearch, onFilter, onEdit, onBack, onAdd } = useUIStore(

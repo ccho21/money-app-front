@@ -3,14 +3,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@/modules/shared/stores/useUserStore';
-import RedirectIfAuthenticated from '@/modules/auth/RedirectIfAuthenticated';
-import { signin } from '@/modules/auth/hooks';
+import { useAuthStore } from '@/modules/auth/store/useAuthStore';
+import RedirectIfAuthenticated from '@/modules/auth/components/RedirectIfAuthenticated';
+import { signin } from '@/modules/auth/hooks/hooks';
 import { API_BASE_URL } from '@/modules/shared/common/api';
 
 export default function SigninPage() {
   const router = useRouter();
-  const { error } = useUserStore();
+  const { error } = useAuthStore();
 
   const [email, setEmail] = useState('seeduser@example.com');
   const [password, setPassword] = useState('secure123');

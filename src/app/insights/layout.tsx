@@ -4,7 +4,7 @@ import { ReactNode, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import TabMenu from '@/components/navigation/TabMenu';
 import TopNav from '@/components/navigation/TopNav';
-import { useTopNavPreset } from '../../modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '../../modules/shared/hooks/topNavPreset';
 
 export default function InsightsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();

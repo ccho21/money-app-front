@@ -9,7 +9,6 @@ import {
   fetchTransactionCalendarAPI,
   fetchTransactionChartFlowAPI,
   fetchTransactionChartAccountAPI,
-  useRecommendedKeywordsAPI,
   createTransferAPI,
   updateTransferAPI,
   createTransactionAPI,
@@ -17,10 +16,10 @@ import {
   deleteTransactionAPI,
   deleteTransferAPI,
   fetchTransactionByIdAPI,
+  fetchRecommendedKeywordsAPI,
 } from '@/modules/transaction/api';
 import {
   TransactionCalendar,
-  TransactionChartFlowResponse,
   TransactionCreateRequestDTO,
   TransactionDetail,
   TransactionGroupItem,
@@ -28,7 +27,7 @@ import {
   TransactionTransferRequestDTO,
   TransactionUpdateRequestDTO,
 } from '@/modules/transaction/types/types';
-import { formatDate } from '@/modules/shared/lib/date.util';
+import { formatLocalDateString } from '@/modules/shared/util/date.util';
 import { useTransactionFormStore } from '../stores/formStore';
 
 export const useTransactionByIdQuery = (id?: string) => {
@@ -55,7 +54,13 @@ export const useTransactionSummaryQuery = (params: TransactionGroupQuery) =>
 // Groups Query
 export const useTransactionGroupsQuery = (params: TransactionGroupQuery) =>
   useQuery({
-    queryKey: ['transaction-groups', params],
+    queryKey: [
+      'transaction-groups',
+      params.timeframe,
+      params.startDate,
+      params.endDate,
+      params.limit,
+    ],
     queryFn: () => fetchTransactionGroupsAPI(params),
     enabled: !!params.startDate && !!params.endDate,
     staleTime: 1000 * 60 * 5,
@@ -113,7 +118,7 @@ export const useTransactionGroupsByCalendar = (
   date: Date,
   queryParams: TransactionGroupQuery
 ) => {
-  const dateStr = formatDate(date);
+  const dateStr = formatLocalDateString(date);
 
   return useQuery<TransactionGroupItem | null>({
     queryKey: [
@@ -137,7 +142,7 @@ export const useRecommendedKeywords = () =>
   useQuery<string[]>({
     queryKey: ['tx-recommend-keywords'],
     queryFn: async () => {
-      return await useRecommendedKeywordsAPI();
+      return await fetchRecommendedKeywordsAPI();
     },
     staleTime: 1000 * 60 * 30, // 30 분 캐시
   });

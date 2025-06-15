@@ -1,10 +1,10 @@
 'use client';
 
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
 import { ActionCards } from '../../modules/settings/components/ActionCard';
 import { InsightCardList } from '../../modules/settings/components/InsightCardList';
 import { PatternCharts } from '../../modules/settings/components/PatternCharts';
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import { useInsightFilterStore } from '@/modules/insights/store/useInsightFilterStore';
 import { useInsightPattern } from '../../modules/insights/hooks/queries';
 

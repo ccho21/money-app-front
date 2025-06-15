@@ -2,11 +2,11 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { CategoryDetailDTO } from '../types/types';
+import { CategoryDetail } from '../types/types';
 
 interface CategoryStoreState {
-  categories: CategoryDetailDTO[];
-  setCategories: (categories: CategoryDetailDTO[]) => void;
+  categories: CategoryDetail[];
+  setCategories: (categories: CategoryDetail[]) => void;
   clear: () => void;
 }
 

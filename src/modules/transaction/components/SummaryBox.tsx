@@ -1,6 +1,6 @@
 import { TransactionGroupSummary } from '@/modules/transaction/types/types';
-import { cn } from '@/modules/shared/lib/utils';
-import CurrencyDisplay from '../../../components/ui/custom/currencyDisplay';
+import { cn } from '@/modules/shared/util/style.utils';
+import CurrencyDisplay from '../../../components/ui/currency/currencyDisplay';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Separator } from '../../../components/ui/separator';

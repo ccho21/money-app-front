@@ -4,14 +4,14 @@ import { JSX, useLayoutEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 import dynamic from 'next/dynamic';
 
-import { parseLocalDate } from '@/modules/shared/lib/date.util';
+import { parseLocalDate } from '@/modules/shared/util/date.util';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { useTransactionCalendarQuery } from '@/modules/transaction/hooks/queries';
 
-import LoadingMessage from '@/components/ui/custom/loadingMessage';
+import LoadingMessage from '@/components/ui/message/loadingMessage';
 import { TransactionCalendar } from '@/modules/transaction/types/types';
 import DateNavigator from '@/components/navigation/DateNavigator';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 
 const TransactionCalendarView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionCalendarView'),
@@ -47,25 +47,29 @@ export default function CalendarPage() {
 
       map.set(
         item.date,
-        <div className='text-right'>
-          {item.income > 0 && (
-            <CurrencyDisplay
-              amount={item.income}
-              type='income'
-              iconSize='xxs'
-              className='text-caption'
-              shortNumber
-            />
-          )}
-          {item.expense > 0 && (
-            <CurrencyDisplay
-              amount={item.expense}
-              type='expense'
-              iconSize='xxs'
-              className='text-caption'
-              shortNumber
-            />
-          )}
+        <div>
+          <div className='text-right'>
+            {item.income > 0 && (
+              <CurrencyDisplay
+                amount={item.income}
+                type='income'
+                iconSize='xxs'
+                className='text-caption'
+                shortNumber
+              />
+            )}
+          </div>
+          <div className='text-right'>
+            {item.expense > 0 && (
+              <CurrencyDisplay
+                amount={item.expense}
+                type='expense'
+                iconSize='xxs'
+                className='text-caption'
+                shortNumber
+              />
+            )}
+          </div>
         </div>
       );
     });

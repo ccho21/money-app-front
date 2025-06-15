@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { useTopNavPreset } from '@/modules/shared/hooks/useTopNavPreset';
+import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useAccountById } from '@/modules/account/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { useTransactionGroupsQuery } from '@/modules/transaction/hooks/queries';
@@ -39,7 +39,7 @@ export default function AccountDetailPage() {
 
   const { query, setQuery, getDateRangeKey, initializeListDefaults } =
     useTransactionFilterStore();
-  const { timeframe, groupBy } = query;
+  const { groupBy } = query;
 
   useLayoutEffect(() => {
     initializeListDefaults();

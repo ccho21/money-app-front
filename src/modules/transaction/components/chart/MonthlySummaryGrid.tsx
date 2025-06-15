@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/accordion';
 import { IconTrendingUp, IconTrendingDown } from '@tabler/icons-react';
 import { PeriodData } from '../../types/types';
-import CurrencyDisplay from '@/components/ui/custom/currencyDisplay';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 
 interface Props {
   periods: PeriodData[];

@@ -2,17 +2,15 @@
 
 import { get, post, patch, del } from '@/modules/shared/common/api';
 import {
-  AccountCreateRequestDTO,
+  AccountCreateRequest,
   AccountUpdateRequestDTO,
-  AccountDetailDTO,
+  AccountDetail,
   DeleteAccountResponse,
 } from './types/types';
-import type { DateFilterParams } from '@/modules/shared/common/types'; // ✅ 승인 필요
-import { buildQuery } from '../shared/util/buildQuery_old';
 
 // Create a new account
-export const createAccountAPI = (payload: AccountCreateRequestDTO) => {
-  return post<AccountDetailDTO, AccountCreateRequestDTO>('/accounts', payload);
+export const createAccountAPI = (payload: AccountCreateRequest) => {
+  return post<AccountDetail, AccountCreateRequest>('/accounts', payload);
 };
 
 // Update an existing account
@@ -20,7 +18,7 @@ export const updateAccountAPI = (
   id: string,
   payload: AccountUpdateRequestDTO
 ) => {
-  return patch<AccountDetailDTO, AccountUpdateRequestDTO>(
+  return patch<AccountDetail, AccountUpdateRequestDTO>(
     `/accounts/${id}`,
     payload
   );
@@ -33,10 +31,10 @@ export const deleteAccountAPI = (id: string) => {
 
 // Fetch all accounts
 export const fetchAccountsAPI = () => {
-  return get<AccountDetailDTO[]>('/accounts');
+  return get<AccountDetail[]>('/accounts');
 };
 
 // Fetch a single account by ID
 export const fetchAccountByIdAPI = (id: string) => {
-  return get<AccountDetailDTO>(`/accounts/${id}`);
+  return get<AccountDetail>(`/accounts/${id}`);
 };

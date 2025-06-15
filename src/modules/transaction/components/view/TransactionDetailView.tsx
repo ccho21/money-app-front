@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 
-import EmptyMessage from '@/components/ui/custom/emptyMessage';
+import EmptyMessage from '@/components/ui/message/emptyMessage';
 import {
   Drawer,
   DrawerClose,
@@ -12,7 +12,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
-import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { TransactionItem } from '../../types/types';
 import { useTransactionStore } from '../../stores/store';
 import TransactionGroup from '../TransactionGroup';

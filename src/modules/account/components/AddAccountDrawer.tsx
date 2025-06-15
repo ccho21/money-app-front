@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/drawer';
 import { useAccountFormStore } from '@/modules/account/store/formStore';
 import AccountForm from '@/modules/account/components/AccountForm';
-import { useConditionalRender } from '@/modules/shared/hooks/useConditionalRender';
+import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { useCreateAccount } from '@/modules/account/hooks/queries';
 
 interface Props {

@@ -1,20 +1,17 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type {
-  BudgetCategoryListResponseDTO,
-  BudgetSummaryDTO,
+  BudgetCategoryListResponse,
   BudgetCategoryPeriodItemDTO,
 } from '../types/types';
 
 type BudgetState = {
-  budgets: BudgetCategoryListResponseDTO | null;
-  summary: BudgetSummaryDTO | null;
+  budgets: BudgetCategoryListResponse | null;
   selectedBudget: BudgetCategoryPeriodItemDTO | null;
 };
 
 type BudgetActions = {
-  setBudgets: (budgets: BudgetCategoryListResponseDTO) => void;
-  setSummary: (summary: BudgetSummaryDTO) => void;
+  setBudgets: (budgets: BudgetCategoryListResponse) => void;
   setSelectedBudget: (budget: BudgetCategoryPeriodItemDTO) => void;
   deleteBudgetItem: (id: string) => void;
   reset: () => void;
@@ -27,7 +24,6 @@ export const useBudgetStore = create<BudgetState & BudgetActions>()(
     selectedBudget: null,
 
     setBudgets: (budgets) => set({ budgets }, false, 'budget/setBudgets'),
-    setSummary: (summary) => set({ summary }, false, 'budget/setSummary'),
 
     setSelectedBudget: (budget) =>
       set({ selectedBudget: budget }, false, 'budget/setSelectedBudget'),
@@ -46,7 +42,6 @@ export const useBudgetStore = create<BudgetState & BudgetActions>()(
       set(
         {
           budgets: null,
-          summary: null,
           selectedBudget: null,
         },
         false,
