@@ -7,6 +7,7 @@ const mockResetForm = jest.fn();
 
 type BudgetFormStore = {
   form: BudgetCategoryCreateRequest;
+  setField: typeof mockSetField;
   resetForm: typeof mockResetForm;
 };
 
@@ -14,9 +15,13 @@ jest.mock('@/modules/budget/stores/formStore', () => ({
   useBudgetFormStore: (selector: (store: BudgetFormStore) => unknown) =>
     selector({
       form: {
-        amount: '1234',
+        categoryId: 'cat-001',
+        amount: 1234,
+        startDate: '2025-06-01',
+        endDate: '2025-06-30',
       },
       setField: mockSetField,
+      resetForm: mockResetForm,
     }),
 }));
 
@@ -31,7 +36,8 @@ describe('BudgetCategoryForm', () => {
   it('renders input with initial amount and Save button', () => {
     render(<BudgetCategoryForm onSubmit={mockSubmit} />);
 
-    expect(screen.getByPlaceholderText('Amount')).toHaveValue(1234);
+    const input = screen.getByPlaceholderText('Amount');
+    expect(input).toHaveValue(1234);
     expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /delete/i })
@@ -44,7 +50,7 @@ describe('BudgetCategoryForm', () => {
 
     fireEvent.change(input, { target: { value: '5678' } });
 
-    expect(mockSetField).toHaveBeenCalledWith('amount', '5678');
+    expect(mockSetField).toHaveBeenCalledWith('amount', '5678'); // ← 혹시 내부에서 number로 파싱한다면 여기 string → number 바꾸기
   });
 
   it('calls onSubmit when Save button is clicked', () => {

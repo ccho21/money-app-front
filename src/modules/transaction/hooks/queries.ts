@@ -56,10 +56,18 @@ export const useTransactionGroupsQuery = (params: TransactionGroupQuery) =>
   useQuery({
     queryKey: [
       'transaction-groups',
+      params.accountId,
+      params.categoryId,
+      params.groupBy,
+      params.transactionType,
       params.timeframe,
       params.startDate,
       params.endDate,
       params.limit,
+      params.cursor,
+      params.limit,
+      params.note,
+      params.version,
     ],
     queryFn: () => fetchTransactionGroupsAPI(params),
     enabled: !!params.startDate && !!params.endDate,
@@ -78,7 +86,6 @@ export const useTransactionCalendarQuery = (params: TransactionGroupQuery) =>
 // Chart - Flow
 export function useTransactionChartFlowQuery(params: TransactionGroupQuery) {
   const { startDate, endDate, timeframe } = params;
-  console.log('### params', params);
   return useQuery({
     queryKey: ['chart-flow', timeframe, startDate, endDate],
     queryFn: () => fetchTransactionChartFlowAPI(params),

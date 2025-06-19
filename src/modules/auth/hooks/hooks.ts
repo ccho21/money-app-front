@@ -59,6 +59,4 @@ export const signout = async () => {
   } finally {
     setUser(null);
   }
-
-  return { fetchUser, signout };
 };

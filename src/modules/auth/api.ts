@@ -7,7 +7,7 @@ export const signinAPI = (payload: SigninDTO): Promise<User> => {
 };
 
 export const signupAPI = (payload: SignupDTO): Promise<User> => {
-  return post<User, SigninDTO>('/auth/signup', payload);
+  return post<User, SignupDTO>('/auth/signup', payload);
 };
 
 export const fetchUserAPI = (): Promise<User> => {

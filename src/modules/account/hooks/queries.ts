@@ -33,7 +33,17 @@ export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: AccountCreateRequest) => createAccountAPI(input),
-    onSuccess: () => {
+    onSuccess: (createdAccount) => {
+      console.log('### CREATED ACCOUNT', createdAccount);
+      const accountId = createdAccount.id;
+
+      queryClient.invalidateQueries({ queryKey: ['account', accountId] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === 'transaction-groups' &&
+          query.queryKey[1] === accountId,
+      });
+
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
     },
   });
@@ -41,21 +51,44 @@ export const useCreateAccount = () => {
 
 export const useUpdateAccount = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: AccountUpdateRequestDTO }) =>
       updateAccountAPI(id, data),
-    onSuccess: () => {
+
+    onSuccess: (_, { id }) => {
+      if (!id) return;
+
+      queryClient.invalidateQueries({ queryKey: ['account', id] });
+
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === 'transaction-groups' &&
+          query.queryKey[1] === id,
+      });
+
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
     },
   });
 };
 
-// ✅ 7. 계좌 삭제
 export const useDeleteAccount = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (id: string) => deleteAccountAPI(id),
-    onSuccess: () => {
+
+    onSuccess: (_, id) => {
+      if (!id) return;
+
+      queryClient.invalidateQueries({ queryKey: ['account', id] });
+
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey[0] === 'transaction-groups' &&
+          query.queryKey[1] === id,
+      });
+
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
     },
   });

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -10,11 +10,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/modules/shared/util/style.utils';
 import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { IconName } from '@/modules/shared/util/icon.utils';
 import UIIcon from '@/components/common/UIIcon';
+import { Button } from '../button';
 
 interface SelectorProps<T> {
   value: string;
@@ -27,6 +27,7 @@ interface SelectorProps<T> {
   getOptionColor?: (item: T) => string;
   onEdit?: () => void;
   className?: string;
+  children: React.ReactNode;
 }
 
 export default function Selector<T>({
@@ -40,23 +41,15 @@ export default function Selector<T>({
   getOptionColor,
   onEdit,
   className,
+  children,
 }: SelectorProps<T>) {
   const [open, setOpen] = useState(false);
   const shouldRender = useConditionalRender(open);
 
   return (
-    <div className={cn('', className)} {...(open ? { inert: true } : {})}>
+    <div className={cn('', className)}>
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button
-            type='button'
-            variant='outline'
-            className='w-full justify-between text-left text-label'
-          >
-            <span className='truncate'>{value}</span>
-            <ChevronDown className='icon-sm text-muted-foreground' />
-          </Button>
-        </DrawerTrigger>
+        <DrawerTrigger asChild>{children}</DrawerTrigger>
 
         {shouldRender && (
           <DrawerContent className='pb-component' aria-describedby={undefined}>
@@ -64,15 +57,14 @@ export default function Selector<T>({
               <div className='flex items-center justify-between'>
                 <DrawerTitle className='text-heading'>{label}</DrawerTitle>
                 {onEdit && (
-                  <Button
+                  <button
                     type='button'
-                    variant='ghost'
                     onClick={onEdit}
                     title='Add'
                     className='text-muted-foreground'
                   >
                     <Pencil className='icon-sm' />
-                  </Button>
+                  </button>
                 )}
               </div>
             </DrawerHeader>
@@ -85,10 +77,11 @@ export default function Selector<T>({
                   <Button
                     key={idx}
                     type='button'
-                    variant={isSelected ? 'default' : 'ghost'}
                     className={cn(
-                      'flex items-center justify-start gap-element rounded-md shadow-sm h-[2.5rem] px-element',
-                      isSelected && 'border border-primary'
+                      'flex items-center justify-start gap-element shadow-sm text-label truncate bg-background',
+                      isSelected
+                        ? 'border border-primary bg-primary text-white'
+                        : 'hover:bg-muted'
                     )}
                     onClick={() => {
                       onChange(getOptionValue(item));
@@ -96,10 +89,7 @@ export default function Selector<T>({
                     }}
                   >
                     {getOptionIcon && (
-                      <UIIcon
-                        name={getOptionIcon(item) as IconName}
-                        className='icon-md'
-                      />
+                      <UIIcon name={getOptionIcon(item)} className='icon-md' />
                     )}
                     {getOptionColor && (
                       <div
@@ -109,9 +99,7 @@ export default function Selector<T>({
                         }}
                       ></div>
                     )}
-                    <div className='text-label truncate'>
-                      {getOptionLabel(item)}
-                    </div>
+                    {getOptionLabel(item)}
                   </Button>
                 );
               })}

@@ -2,17 +2,17 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  CategoryCreateRequest,
+  CategoryDetail,
+  CategoryUpdateRequest,
+} from '@/modules/category/types/types';
+import {
+  createCategoryAPI,
+  deleteCategoryAPI,
   fetchCategoriesAPI,
   fetchCategoryByIdAPI,
-  createCategoryAPI,
   updateCategoryAPI,
-  deleteCategoryAPI,
-} from '../api';
-import {
-  CategoryCreateRequest,
-  CategoryUpdateRequest,
-  CategoryDetail,
-} from '../types/types';
+} from '@/modules/category/api';
 
 // ✅
 export const useCategories = () =>

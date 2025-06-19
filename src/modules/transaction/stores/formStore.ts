@@ -30,7 +30,7 @@ type TransactionFormState = {
   recurring: RecurringFormState;
 };
 
-type TransactionFormStore = {
+export type TransactionFormStore = {
   mode: Mode;
   state: TransactionFormState;
   initialState: TransactionFormState;

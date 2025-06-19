@@ -18,6 +18,7 @@ import {
   useSubmitTransactionMutation,
 } from '../../hooks/queries';
 import { useTransactionFormStore } from '../../stores/formStore';
+import { ChevronDown } from 'lucide-react';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -68,7 +69,7 @@ export default function IncomeForm({ mode, transactionId }: Props) {
 
     deleteTransaction(transactionId, {
       onSuccess: () => {
-        router.back();
+        router.push('/transaction/view/list');
       },
       onError: (err) => {
         alert(err instanceof Error ? err.message : '삭제 실패');
@@ -100,8 +101,9 @@ export default function IncomeForm({ mode, transactionId }: Props) {
       <div className='grid w-full items-start gap-element'>
         <Label className='text-label'>Account</Label>
         <Selector
+          data-testid='account-selector'
           label='Account'
-          value={selectedAccount?.name ?? ''}
+          value={selectedAccount?.id ?? ''}
           onChange={(val) => setField('accountId', val)}
           options={accounts}
           getOptionLabel={(a) => a.name}
@@ -114,22 +116,51 @@ export default function IncomeForm({ mode, transactionId }: Props) {
               : 'piggyBank'
           }
           onEdit={() => router.push('/account')}
-        />
+        >
+          <Button
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <span className='truncate'>
+              {selectedAccount?.name ?? 'Select account'}
+            </span>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* Category */}
       <div className='grid w-full items-start gap-element'>
         <Label className='text-label'>Category</Label>
         <Selector
+          data-testid='category-selector'
           label='Category'
-          value={selectedCategory?.name ?? ''}
+          value={selectedCategory?.id ?? ''}
           onChange={(val) => setField('categoryId', val)}
-          options={categories.filter((c) => c.type === 'income')}
+          options={categories.filter((c) => c.type === 'expense')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          getOptionColor={(a) => a.color || '--chart-1'}
+          getOptionColor={(c) => c.color || '--chart-1'}
           onEdit={() => router.push('/category')}
-        />
+        >
+          <Button
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <div className='flex items-center gap-2 truncate'>
+              {selectedCategory?.color && (
+                <span
+                  className='w-2 h-2 rounded-full'
+                  style={{ backgroundColor: `var(${selectedCategory.color})` }}
+                />
+              )}
+              <span>{selectedCategory?.name ?? 'Select category'}</span>
+            </div>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* Date Picker */}

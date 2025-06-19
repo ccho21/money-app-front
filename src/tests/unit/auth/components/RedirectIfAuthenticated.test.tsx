@@ -37,7 +37,7 @@ describe('RedirectIfAuthenticated', () => {
       </RedirectIfAuthenticated>
     );
 
-    expect(mockReplace).toHaveBeenCalledWith('');
+    expect(mockReplace).toHaveBeenCalledWith('/dashboard');
     expect(screen.queryByText('Auth Page')).not.toBeInTheDocument();
   });
 

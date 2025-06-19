@@ -50,12 +50,17 @@ const formatCAD = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
+const BAR_HEIGHT = 28;
+
 export function AccountBarChart({ data }: Props) {
   const chartData = data.accounts.map((acc) => ({
     account: acc.name,
     amount: acc.expense,
     color: acc.color ?? 'var(--chart-1)',
+    id: acc.accountId,
   }));
+
+  const chartHeight = (chartData.length * BAR_HEIGHT) + 50;
 
   const total = data.accounts.reduce((sum, acc) => sum + acc.expense, 0);
   const top = data.accounts.reduce((prev, curr) =>
@@ -72,40 +77,42 @@ export function AccountBarChart({ data }: Props) {
       </CardHeader>
 
       <CardContent className='flat-card-content'>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
           <BarChart
             data={chartData}
             layout='vertical'
-            margin={{ top: 0, right: 60, left: 50, bottom: 0 }}
+            margin={{ top: 0, right: 60, left: 30, bottom: 0 }}
+            barSize={20}
+            barCategoryGap={2}
           >
             <CartesianGrid horizontal={false} />
             <YAxis
               dataKey='account'
               type='category'
-              tick={false}
               axisLine={false}
-              width={0}
+              tick={false}
+              width={40}
             />
-            <XAxis dataKey='amount' type='number' hide />
+            <XAxis type='number' hide />
             <ChartTooltip
               content={<ChartTooltipContent indicator='line' />}
               cursor={false}
             />
             <Bar dataKey='amount' radius={4} isAnimationActive={false}>
-              {chartData.map((entry, index) => (
-                <Cell key={`bar-cell-${index}`} fill={`var(${entry.color})`} />
+              {chartData.map((entry) => (
+                <Cell key={entry.id} fill={`var(${entry.color})`} />
               ))}
               <LabelList
                 dataKey='account'
                 position='left'
                 offset={8}
-                className='fill-foreground text-label'
+                className='text-caption fill-foreground'
               />
               <LabelList
                 dataKey='amount'
                 position='right'
                 offset={8}
-                className='fill-foreground text-label'
+                className='fill-foreground text-caption'
                 formatter={formatCAD}
               />
             </Bar>
@@ -115,24 +122,20 @@ export function AccountBarChart({ data }: Props) {
 
       <CardFooter className='flex-col items-start gap-element text-label px-component pb-component'>
         <ul className='w-full divide-y divide-border'>
-          {data.accounts.map((acc) => (
+          {chartData.map((acc) => (
             <li
-              key={acc.accountId}
+              key={acc.id}
               className='flex justify-between items-center py-tight'
             >
               <span className='flex items-center gap-element'>
                 <span
                   className='w-2.5 h-2.5 rounded-full'
-                  style={{
-                    backgroundColor: acc.color
-                      ? `var(${acc.color})`
-                      : 'var(--chart-1)',
-                  }}
+                  style={{ backgroundColor: `var(${acc.color})` }}
                 />
-                <span className='text-body'>{acc.name}</span>
+                <span className='text-body'>{acc.account}</span>
               </span>
               <span className='text-body font-medium text-foreground'>
-                {formatCAD(acc.expense)}
+                {formatCAD(acc.amount)}
               </span>
             </li>
           ))}

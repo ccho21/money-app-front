@@ -56,7 +56,7 @@ export default function AccountDetailPage() {
     ...query,
     accountId,
     timeframe: 'all',
-    groupBy: 'date',
+    groupBy: groupBy,
     startDate,
     endDate,
     includeBalance: true,

@@ -54,23 +54,24 @@ export default function RootLayout({
 // * Recurring transaction / transaction soft delete - DONE
 // * 유닛 테스트 - BACK - DONE.
 // * TS LINT - BACK - DONE
-
+// * 유닛 테스트 - FRONT - DONE
+// * TS LINT - FRONT - DONE
 // * settings menu implementation - Parially DONE
-// * 유닛 테스트 - FRONT
-// * TS LINT - FRONT
+
+// * Calendar Design fix
+
+
 // * E2E 테스트
 // * PWA
 // * Google Redirect
-
-
 // * DEPLOY PHASE 1
-// * EXPORT EXCEL
-// * AI Integration
-
 
 // * PHASE 2
 // * Notification - PHASE 2
 // * LOG (User Activity) PHASE 2
 // * 미래 트랜잭션 생성 실패 시 (예: accountId가 삭제됨), 예외 처리 정책을 어떻게 둘까? 무시할지, 알림을 줄지?
-
+// * EXPORT EXCEL
+// * AI Integration
+// * weekly view
+// * lazy loading
 

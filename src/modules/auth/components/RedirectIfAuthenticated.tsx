@@ -15,7 +15,7 @@ export default function RedirectIfAuthenticated({ children }: Props) {
 
   useEffect(() => {
     if (user) {
-      router.replace('');
+      router.replace('/dashboard');
     }
   }, [user, router]);
 

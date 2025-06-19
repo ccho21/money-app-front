@@ -49,7 +49,7 @@ export default function DashboardSummary({
     <>
       <div className='flex flex-col gap-component'>
         {/* 총 지출 */}
-        <div className='text-display font-extrabold tracking-tight'>
+        <div className='text-display font-bold tracking-tight'>
           <CurrencyDisplay
             className='text-primary'
             amount={totalExpense}

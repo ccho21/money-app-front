@@ -18,7 +18,6 @@ export default function SigninPage() {
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await signin(email, password);
-    console.log('### success', success);
     if (success) {
       router.push('/dashboard');
     } else {

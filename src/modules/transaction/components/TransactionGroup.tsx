@@ -38,7 +38,7 @@ export default function TransactionGroup({
           tabIndex={0}
           onClick={onHeaderClick}
           onKeyDown={(e) => e.key === 'Enter' && onHeaderClick?.()}
-          className='transaction-group-header'
+          className='transaction-group-header mx-compact'
         >
           <div className='flex items-center gap-element'>
             <span>{label}</span>
@@ -52,7 +52,7 @@ export default function TransactionGroup({
         </div>
       )}
 
-      <div className='transaction-group-list -mx-compact'>
+      <div className='transaction-group-list' data-testid="transaction-group-item">
         {group.transactions.map((tx) => (
           <TransactionItem key={tx.id} tx={tx} onClick={onTransactionClick} />
         ))}

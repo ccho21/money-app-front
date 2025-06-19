@@ -20,8 +20,7 @@ export default function AccountSummaryBox({
 
   const cardInfo =
     account.type === 'CARD' &&
-    account.autoPayment &&
-    `Auto-pay: ${account.paymentDate}th · Settlement: ${account.settlementDate}th`;
+    `Payment Date: ${account.paymentDate}th · Settlement: ${account.settlementDate}th`;
 
   const description = account.description || '(No description)';
   return (
@@ -37,23 +36,25 @@ export default function AccountSummaryBox({
               ></span>
               {account.name}
             </h2>
-            <div className='flex items-center gap-2 text-label text-muted-foreground uppercase tracking-wide'>
+            <div className='flex items-center gap-2 text-label text-muted-foreground tracking-wide'>
               <span>{icon}</span>
               <span>{description}</span>
             </div>
           </div>
-          <CurrencyDisplay
-            type={isNegative ? 'expense' : 'income'}
-            amount={Math.abs(account.balance)}
-            className={cn('!text-display')}
-          />
+
+          <h2 className='text-display text-primary font-bold'>
+            <CurrencyDisplay
+              type={isNegative ? 'expense' : 'income'}
+              amount={Math.abs(account.balance)}
+            />
+          </h2>
         </div>
         <div>
-          <span className='text-caption text-muted-foreground'>
+          <span className='text-label text-muted-foreground'>
             {account.type}
           </span>
           {cardInfo && (
-            <p className='text-caption text-muted-foreground'>{cardInfo}</p>
+            <p className='text-label text-muted-foreground'>{cardInfo}</p>
           )}
         </div>
       </CardContent>

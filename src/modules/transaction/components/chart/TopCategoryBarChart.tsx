@@ -40,6 +40,8 @@ interface Props {
   data: TransactionChartCategoryResponse;
 }
 
+const BAR_HEIGHT = 24;
+
 export function TopCategoryBarChart({ data }: Props) {
   const formatCAD = (value: number) =>
     new Intl.NumberFormat('en-CA', {
@@ -52,14 +54,11 @@ export function TopCategoryBarChart({ data }: Props) {
     category: cat.name,
     amount: cat.amount,
     color: cat.color ?? 'var(--chart-1)',
+    id: cat.categoryId,
   }));
 
-  const comparison = data.comparison;
-  // const insightText = comparison
-  //   ? `${comparison.name} spending ${
-  //       comparison.trend === 'increase' ? 'increased' : 'decreased'
-  //     } by ${comparison.percentChange}`
-  //   : null;
+  const chartHeight = (chartData.length * BAR_HEIGHT) + 50;
+  const { comparison } = data;
 
   return (
     <Card className='flat-card'>
@@ -71,13 +70,13 @@ export function TopCategoryBarChart({ data }: Props) {
       </CardHeader>
 
       <CardContent className='flat-card-content'>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
           <BarChart
             data={chartData}
             layout='vertical'
-            role='img'
-            aria-label='Top spending categories chart'
-            margin={{ top: 0, right: 60, left: 50, bottom: 0 }}
+            margin={{ top: 0, right: 60, left: 40, bottom: 0 }}
+            barSize={20}
+            barCategoryGap={2}
           >
             <CartesianGrid horizontal={false} />
             <YAxis
@@ -85,17 +84,16 @@ export function TopCategoryBarChart({ data }: Props) {
               type='category'
               tick={false}
               axisLine={false}
-              width={0}
+              width={40}
             />
-            <XAxis dataKey='amount' type='number' hide />
+            <XAxis type='number' hide />
             <ChartTooltip
               content={<ChartTooltipContent indicator='line' />}
               cursor={false}
             />
-
             <Bar dataKey='amount' radius={4} isAnimationActive={false}>
-              {chartData.map((entry, index) => (
-                <Cell key={`bar-cell-${index}`} fill={`var(${entry.color})`} />
+              {chartData.map((entry) => (
+                <Cell key={entry.id} fill={`var(${entry.color})`} />
               ))}
               <LabelList
                 dataKey='category'
@@ -117,21 +115,17 @@ export function TopCategoryBarChart({ data }: Props) {
 
       <CardFooter className='flex-col items-start px-component pb-element space-y-tight text-label'>
         <ul className='w-full divide-y divide-border'>
-          {data.topCategories.map((cat) => (
+          {chartData.map((cat) => (
             <li
-              key={cat.categoryId}
+              key={cat.id}
               className='flex justify-between items-center py-tight'
             >
               <span className='flex items-center gap-element'>
                 <span
                   className='w-2.5 h-2.5 rounded-full'
-                  style={{
-                    backgroundColor: cat.color
-                      ? `var(${cat.color})`
-                      : 'var(--chart-1)',
-                  }}
+                  style={{ backgroundColor: `var(${cat.color})` }}
                 />
-                {cat.name}
+                {cat.category}
               </span>
               <span className='font-medium text-foreground'>
                 {formatCAD(cat.amount)}

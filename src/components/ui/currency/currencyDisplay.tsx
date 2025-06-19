@@ -1,27 +1,8 @@
 'use client';
 
-import {
-  ArrowDownToLine,
-  ArrowUpFromLine,
-  ArrowRightLeft,
-  LucideIcon,
-  MinusIcon,
-  PlusIcon,
-  Repeat,
-} from 'lucide-react';
+import { ArrowRightLeft, MinusIcon, PlusIcon, Repeat } from 'lucide-react';
 import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
 import { cn } from '@/modules/shared/util/style.utils';
-
-type IconSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
-
-const sizeMap: Record<IconSize, number> = {
-  xxs: 8,
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 20,
-};
-
 interface CurrencyDisplayProps {
   amount: number;
   useSubCurrency?: boolean;
@@ -29,9 +10,7 @@ interface CurrencyDisplayProps {
   showSymbolOnly?: boolean;
   className?: string;
   type?: 'income' | 'expense' | 'transfer' | 'total';
-  icon?: LucideIcon;
-  variant?: 'default' | 'group';
-  iconSize?: IconSize;
+  iconSize?: number;
   isRecurring?: boolean;
   shortNumber?: boolean;
 }
@@ -69,9 +48,7 @@ export default function CurrencyDisplay({
   locale = 'en-US',
   showSymbolOnly = false,
   type,
-  icon: Icon,
-  variant = 'default',
-  iconSize = 'sm',
+  iconSize = 8,
   isRecurring = false,
   className,
   shortNumber = false,
@@ -81,27 +58,14 @@ export default function CurrencyDisplay({
   const unitPosition = useUserSettingStore((s) => s.currencyUnitPosition);
   const decimalPlaces = useUserSettingStore((s) => s.currencyDecimalPlaces);
 
-  const resolvedIconSize = sizeMap[iconSize];
-
   const getIconNode = () => {
-    if (Icon) return <Icon size={resolvedIconSize} />;
-    if (type === 'income')
-      return variant === 'group' ? (
-        <ArrowUpFromLine size={resolvedIconSize} />
-      ) : (
-        <PlusIcon size={resolvedIconSize} />
-      );
-    if (type === 'expense')
-      return variant === 'group' ? (
-        <ArrowDownToLine size={resolvedIconSize} />
-      ) : (
-        <MinusIcon size={resolvedIconSize} />
-      );
-    if (type === 'transfer') return <ArrowRightLeft size={resolvedIconSize} />;
+    const sizeStyle = { width: iconSize, height: iconSize };
+
+    if (type === 'income') return <PlusIcon style={sizeStyle} />;
+    if (type === 'expense') return <MinusIcon style={sizeStyle} />;
+    if (type === 'transfer') return <ArrowRightLeft style={sizeStyle} />;
     return null;
   };
-
-  const iconNode = getIconNode();
 
   const colorClassMap: Record<
     NonNullable<CurrencyDisplayProps['type']>,
@@ -135,7 +99,7 @@ export default function CurrencyDisplay({
 
   let formatted = formatter.format(amount);
 
-  // ⚠️ If position is 'back', swap the symbol to the end
+  // 단위 위치 조정
   if (unitPosition === 'back') {
     const symbol = formatted.replace(/[\d.,\s]/g, '').trim();
     const numberOnly = formatted.replace(/[^\d.,\-]/g, '').trim();
@@ -150,7 +114,7 @@ export default function CurrencyDisplay({
     <span
       className={cn('inline-flex items-center gap-0.5', colorClass, className)}
     >
-      {iconNode} {formatted}
+      {getIconNode()} {formatted}
       {isRecurring && <Repeat size={12} />}
     </span>
   );

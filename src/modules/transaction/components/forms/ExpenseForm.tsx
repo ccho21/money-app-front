@@ -18,6 +18,7 @@ import {
   useDeleteTransactionMutation,
   useSubmitTransactionMutation,
 } from '../../hooks/queries';
+import { ChevronDown } from 'lucide-react';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -68,7 +69,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
 
     deleteTransaction(transactionId, {
       onSuccess: () => {
-        router.back();
+        router.push('/transaction/view/list');
       },
       onError: (err) => {
         alert(err instanceof Error ? err.message : '삭제 실패');
@@ -92,6 +93,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           Amount
         </Label>
         <Input
+          data-testid='amount-input'
           value={amount}
           onChange={(e) => setField('amount', e.target.value)}
           type='number'
@@ -105,7 +107,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
         </Label>
         <Selector
           label='Account'
-          value={selectedAccount?.name ?? ''}
+          value={selectedAccount?.id ?? ''}
           onChange={(val) => setField('accountId', val)}
           options={accounts}
           getOptionLabel={(a) => a.name}
@@ -118,7 +120,19 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
               : 'piggyBank'
           }
           onEdit={() => router.push('/account')}
-        />
+        >
+          <Button
+            data-testid='account-selector'
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <span className='truncate'>
+              {selectedAccount?.name ?? 'Select account'}
+            </span>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* Category */}
@@ -128,14 +142,32 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
         </Label>
         <Selector
           label='Category'
-          value={selectedCategory?.name ?? ''}
+          value={selectedCategory?.id ?? ''}
           onChange={(val) => setField('categoryId', val)}
           options={categories.filter((c) => c.type === 'expense')}
           getOptionLabel={(c) => c.name}
           getOptionValue={(c) => c.id}
-          getOptionColor={(a) => a.color || '--chart-1'}
+          getOptionColor={(c) => c.color || '--chart-1'}
           onEdit={() => router.push('/category')}
-        />
+        >
+          <Button
+            data-testid='category-selector'
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <div className='flex items-center gap-2 truncate'>
+              {selectedCategory?.color && (
+                <span
+                  className='w-2 h-2 rounded-full'
+                  style={{ backgroundColor: `var(${selectedCategory.color})` }}
+                />
+              )}
+              <span>{selectedCategory?.name ?? 'Select category'}</span>
+            </div>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* Date */}
@@ -158,6 +190,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           Note
         </Label>
         <Input
+          name='note'
           value={note}
           onChange={(e) => setField('note', e.target.value)}
         />
@@ -169,6 +202,7 @@ export default function ExpenseForm({ mode, transactionId }: Props) {
           Description
         </Label>
         <Textarea
+          name='description'
           value={description}
           onChange={(e) => setField('description', e.target.value)}
           rows={1}

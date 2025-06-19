@@ -4,12 +4,14 @@ import { JSX, useLayoutEffect, useMemo, useState } from 'react';
 import { addDays } from 'date-fns';
 import dynamic from 'next/dynamic';
 
-import { parseLocalDate } from '@/modules/shared/util/date.util';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { useTransactionCalendarQuery } from '@/modules/transaction/hooks/queries';
 
 import LoadingMessage from '@/components/ui/message/loadingMessage';
-import { TransactionCalendar } from '@/modules/transaction/types/types';
+import {
+  TransactionCalendar,
+  TransactionGroupQuery,
+} from '@/modules/transaction/types/types';
 import DateNavigator from '@/components/navigation/DateNavigator';
 import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
 
@@ -23,19 +25,29 @@ const TransactionDetailView = dynamic(
 );
 
 export default function CalendarPage() {
-  const { query, initializeListDefaults } = useTransactionFilterStore();
-  const { timeframe, startDate, endDate } = query;
+  const { query, getDateRangeKey, initializeListDefaults } =
+    useTransactionFilterStore();
+  const { timeframe } = query;
 
   const [selectedDetail, setSelectedDetail] = useState<{
-    date: Date;
+    date: Date | undefined;
     open: boolean;
   } | null>(null);
 
   useLayoutEffect(() => {
+    console.log('%c[CalendarPage] render', 'color: limegreen');
+
     initializeListDefaults();
   }, [initializeListDefaults]);
 
-  const queryParams = { timeframe, startDate, endDate };
+  const [startDate, endDate] = getDateRangeKey().split('_');
+
+  const queryParams: TransactionGroupQuery = {
+    ...query,
+    timeframe,
+    startDate,
+    endDate,
+  };
 
   const { data: calendarData, isLoading: calendarLoading } =
     useTransactionCalendarQuery(queryParams);
@@ -53,8 +65,8 @@ export default function CalendarPage() {
               <CurrencyDisplay
                 amount={item.income}
                 type='income'
-                iconSize='xxs'
-                className='text-caption'
+                iconSize={10}
+                className='text-[10px]'
                 shortNumber
               />
             )}
@@ -64,8 +76,8 @@ export default function CalendarPage() {
               <CurrencyDisplay
                 amount={item.expense}
                 type='expense'
-                iconSize='xxs'
-                className='text-caption'
+                iconSize={10}
+                className='text-destructive text-[10px]'
                 shortNumber
               />
             )}
@@ -86,7 +98,7 @@ export default function CalendarPage() {
     <>
       <DateNavigator />
       <TransactionCalendarView
-        date={parseLocalDate(startDate)}
+        date={selectedDetail?.date}
         tileContentMap={calendarTileMap}
         onSelectDate={handleDateClick}
       />
@@ -94,16 +106,16 @@ export default function CalendarPage() {
       {selectedDetail && (
         <TransactionDetailView
           open={selectedDetail.open}
-          date={selectedDetail.date}
+          date={selectedDetail.date as Date}
           onClose={() => setSelectedDetail(null)}
           onPrev={() =>
             setSelectedDetail((prev) =>
-              prev ? { ...prev, date: addDays(prev.date, -1) } : null
+              prev ? { ...prev, date: addDays(prev.date as Date, -1) } : null
             )
           }
           onNext={() =>
             setSelectedDetail((prev) =>
-              prev ? { ...prev, date: addDays(prev.date, 1) } : null
+              prev ? { ...prev, date: addDays(prev.date as Date, 1) } : null
             )
           }
         />

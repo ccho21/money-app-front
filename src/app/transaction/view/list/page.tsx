@@ -25,12 +25,8 @@ const TransactionListView = dynamic(
 export default function ListPage() {
   const router = useRouter();
 
-  const {
-    query,
-    getDateRangeKey,
-    getQueryString,
-    initializeListDefaults,
-  } = useTransactionFilterStore();
+  const { query, getDateRangeKey, getQueryString, initializeListDefaults } =
+    useTransactionFilterStore();
   const { timeframe, groupBy } = query;
 
   useLayoutEffect(() => {
@@ -68,16 +64,6 @@ export default function ListPage() {
   const handleHeaderClick = (date: string) => {
     router.push(`/transaction/manage/new?date=${date}`);
   };
-
-  // const setActiveSubMenu = (key: string) => {
-  //   setQuery((prev) => {
-  //     if (prev.groupBy !== key) {
-  //       return { groupBy: key as GroupBy };
-  //     }
-  //     return {};
-  //   });
-  //   router.replace(getQueryString());
-  // };
 
   if (isSummaryError || isGroupsError) {
     return (

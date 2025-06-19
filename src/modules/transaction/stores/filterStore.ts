@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { formatLocalDateString, getDateRangeKey, parseLocalDate } from '@/modules/shared/util/date.util';
+import {
+  formatLocalDateString,
+  getDateRangeKey,
+  parseLocalDate,
+} from '@/modules/shared/util/date.util';
 import {
   GroupBy,
   Timeframe,
@@ -16,7 +20,7 @@ interface TransactionFilterStore {
   ) => void;
   resetQuery: () => void;
   initializeFromParams: (params: URLSearchParams) => void;
-  initializeListDefaults: () => void;
+  initializeListDefaults: (override?: Partial<TransactionGroupQuery>) => void;
   getQueryString: () => string;
   getDateRangeKey: (amount?: number) => string;
 }
@@ -114,9 +118,9 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
         });
       },
 
-      initializeListDefaults: () => {
+      initializeListDefaults: (override?: Partial<TransactionGroupQuery>) => {
         const current = get().query;
-        const timeframe = current.timeframe ?? 'monthly';
+        const timeframe = override?.timeframe ?? current.timeframe ?? 'monthly';
         const today = new Date();
         const [startDate, endDate] = getDateRangeKey(today, {
           unit: timeframe,
@@ -125,6 +129,7 @@ export const useTransactionFilterStore = create<TransactionFilterStore>()(
         set({
           query: {
             ...current,
+            ...override,
             timeframe,
             startDate,
             endDate,

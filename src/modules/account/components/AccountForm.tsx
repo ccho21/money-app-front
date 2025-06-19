@@ -20,6 +20,7 @@ import { ToggleGroup } from '@radix-ui/react-toggle-group';
 import { useAccountFormStore } from '@/modules/account/store/formStore';
 import { AccountType } from '@/modules/account/types/types';
 import { ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Textarea } from '@/components/ui/textarea';
 
 interface AccountFormProps {
   onSubmit: () => void;
@@ -43,8 +44,16 @@ export default function AccountForm({
   isEdit = false,
   submitText = isEdit ? 'Update' : 'Add',
 }: AccountFormProps) {
-  const { name, type, balance, color, settlementDate, paymentDate, setField } =
-    useAccountFormStore();
+  const {
+    name,
+    type,
+    balance,
+    color,
+    settlementDate,
+    paymentDate,
+    description,
+    setField,
+  } = useAccountFormStore();
 
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
@@ -167,6 +176,18 @@ export default function AccountForm({
             </div> */}
           </div>
         )}
+
+        <div className='grid w-full items-center gap-element'>
+          <Label htmlFor='Description' className='text-label'>
+            Description
+          </Label>
+          <Textarea
+            name='description'
+            value={description}
+            onChange={(e) => setField('description', e.target.value)}
+            rows={1}
+          />
+        </div>
 
         {/* 에러 메시지 */}
         {error && (

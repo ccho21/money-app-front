@@ -91,72 +91,86 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
     },
   };
 
+  const chartHeight = (transformedData.length * 24) + 50;
+
   return (
-    <Card className="flat-card space-y-component">
-      <CardHeader className="px-component">
-        <CardTitle className="text-title">Budget Usage by Category</CardTitle>
-        <CardDescription className="text-caption text-muted-foreground">
+    <Card className='flat-card space-y-component gap-component'>
+      <CardHeader className='px-component mb-0'>
+        <CardTitle className='text-title'>Budget Usage by Category</CardTitle>
+        <CardDescription className='text-caption text-muted-foreground'>
           Spending, overages, and remaining budget across all categories.
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="px-component">
-        <ChartContainer config={chartConfig}>
+      <CardContent className='px-component'>
+        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
           <BarChart
             data={transformedData}
-            layout="vertical"
+            layout='vertical'
             margin={{ top: 0, right: 16, left: 40, bottom: 0 }}
             barCategoryGap={0}
           >
-            <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-            <XAxis type="number" hide />
+            <CartesianGrid horizontal={false} strokeDasharray='3 3' />
+            <XAxis type='number' hide />
             <YAxis
-              dataKey="category"
-              type="category"
+              dataKey='category'
+              type='category'
               tick={false}
               axisLine={false}
               width={0}
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
+              content={<ChartTooltipContent indicator='line' />}
             />
-            {Object.entries(chartConfig).map(([key, { color }]) => (
-              <Bar
-                key={key}
-                dataKey={key}
-                stackId="a"
-                fill={color}
-                radius={1}
-                barSize={30}
-              >
-                {key === 'used' && (
-                  <LabelList
-                    dataKey="category"
-                    position="left"
-                    offset={8}
-                    fontSize={12}
-                    style={{ fill: 'var(--color-label)' }} // ✅ 안정적인 방식
-                  />
-                )}
-              </Bar>
-            ))}
+            {Object.entries(chartConfig).map(([key, { color }], idx, arr) => {
+              const isFirst = idx === 0;
+              const isLast = idx === arr.length - 1;
+
+              const radius: [number, number, number, number] = isFirst
+                ? [4, 0, 0, 4]
+                : isLast
+                ? [0, 4, 4, 0]
+                : [0, 4, 4, 0];
+
+              return (
+                <Bar
+                  key={key}
+                  dataKey={key}
+                  stackId='a'
+                  fill={color}
+                  radius={radius}
+                  barSize={20}
+                >
+                  {key === 'used' && (
+                    <LabelList
+                      dataKey='category'
+                      position='left'
+                      offset={8}
+                      fontSize={12}
+                      style={{ fill: 'var(--color-label)' }}
+                    />
+                  )}
+                </Bar>
+              );
+            })}
           </BarChart>
         </ChartContainer>
       </CardContent>
 
-      <CardFooter className="flex-col items-start gap-tight text-label px-component pb-component">
+      <CardFooter className='flex-col items-start gap-tight text-heading px-component pb-component'>
         {overCount > 0 ? (
-          <div className="flex items-center gap-element font-medium text-destructive">
-            <AlertTriangle className="icon-sm" />
-            {overCount} {overCount === 1 ? 'category is' : 'categories are'} over budget
+          <div className='flex items-center gap-element font-medium text-destructive'>
+            <AlertTriangle className='icon-sm' />
+            {overCount} {overCount === 1 ? 'category is' : 'categories are'}{' '}
+            over budget
           </div>
         ) : (
-          <div className="text-success font-medium">
+          <div className='text-primary font-medium'>
             👍 All categories are within budget
           </div>
         )}
-        <div className="text-caption text-muted-foreground">
+        <div className='text-subheading text-muted-foreground'>
           Blue: used / Red: over / Gray: remaining
         </div>
       </CardFooter>

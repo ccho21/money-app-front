@@ -6,12 +6,10 @@ import { format } from 'date-fns';
 import EmptyMessage from '@/components/ui/message/emptyMessage';
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
 import { useConditionalRender } from '@/modules/shared/hooks/conditionalRender';
 import { TransactionItem } from '../../types/types';
 import { useTransactionStore } from '../../stores/store';
@@ -87,7 +85,7 @@ export default function TransactionDetailView({
             )}
           </div>
 
-          <DrawerClose asChild>
+          {/* <DrawerClose asChild>
             <Button
               variant='ghost'
               className='absolute top-component right-component text-label'
@@ -95,7 +93,7 @@ export default function TransactionDetailView({
             >
               Close
             </Button>
-          </DrawerClose>
+          </DrawerClose> */}
         </DrawerContent>
       )}
     </Drawer>

@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Separator } from '../../../components/ui/separator';
 import DateNavigator from '../../../components/navigation/DateNavigator';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUp } from 'lucide-react';
 
 interface SummaryBoxProps {
   summary: TransactionGroupSummary;
@@ -38,12 +38,13 @@ export default function SummaryBox({
             </p>
             <DateNavigator variant='dropdown' onNavigate={onNavigate} />
           </div>
-          <h2 className='text-display text-primary'>
+          <h2 className='text-display text-primary font-bold'>
             <CurrencyDisplay amount={totalExpense} />
           </h2>
           {comparison && (
-            <p className='text-caption text-muted-foreground font-medium'>
-              ↑ <CurrencyDisplay amount={comparison.difference} /> (
+            <p className='flex items-center flex-wrap text-caption text-muted-foreground font-medium'>
+              <ArrowUp className='w-3 h-3 inline-block'></ArrowUp>
+              <CurrencyDisplay amount={comparison.difference} /> (
               {comparison.percent}%) from last month
             </p>
           )}
@@ -61,9 +62,8 @@ export default function SummaryBox({
           <div>
             <div className='text-label'>Net Balance</div>
             <CurrencyDisplay
-              type='expense'
-              className='text-destructive'
-              amount={Math.abs(netBalance)}
+              className={netBalance < 0 ? 'text-destructive' : ''}
+              amount={netBalance}
             />
           </div>
         </div>

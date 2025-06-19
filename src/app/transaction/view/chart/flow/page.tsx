@@ -7,7 +7,7 @@ import { MonthlySummaryGrid } from '@/modules/transaction/components/chart/Month
 import { useTransactionChartFlowQuery } from '@/modules/transaction/hooks/queries';
 import { useTransactionFilterStore } from '@/modules/transaction/stores/filterStore';
 import { TransactionGroupQuery } from '@/modules/transaction/types/types';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 const TransactionYearChart = dynamic(
@@ -16,23 +16,17 @@ const TransactionYearChart = dynamic(
 );
 
 export default function TransactionChartFlowPage() {
-  const { query, setQuery, getDateRangeKey } = useTransactionFilterStore();
+  const { query, getDateRangeKey, initializeListDefaults } =
+    useTransactionFilterStore();
+  const { timeframe } = query;
 
-  useEffect(() => {
-    setQuery((prev) =>
-      prev.timeframe !== 'yearly' ? { timeframe: 'yearly' } : {}
-    );
-
-    return () => {
-      setQuery((prev) =>
-        prev.timeframe !== 'monthly' ? { timeframe: 'monthly' } : {}
-      );
-    };
-  }, [setQuery]);
+  useLayoutEffect(() => {
+    initializeListDefaults({ timeframe: 'yearly' });
+  }, [initializeListDefaults]);
 
   const [startDate, endDate] = getDateRangeKey().split('_');
   const queryParams: TransactionGroupQuery = {
-    timeframe: query.timeframe,
+    timeframe,
     startDate,
     endDate,
   };

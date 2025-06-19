@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { useTransactionFormStore } from '@/modules/transaction/stores/formStore';
-import { TransactionType } from '@/modules/transaction/types';
 import TopNav from '@/components/navigation/TopNav';
 import TabMenu from '@/components/navigation/TabMenu';
 import { useUIStore } from '@/modules/shared/stores/useUIStore';
+import { TransactionType } from '@/modules/transaction/types/types';
 
 const TABS = [
   { key: 'income', label: 'Income' },
@@ -38,7 +38,7 @@ export default function TransactionLayout({
   useEffect(() => {
     useUIStore.getState().setTopNav({
       title: 'New Transaction',
-      onBack: () => router.push('/transaction/view/list'),
+      onBack: () => router.back(),
     });
     return () => {
       useUIStore.getState().resetTopNav();

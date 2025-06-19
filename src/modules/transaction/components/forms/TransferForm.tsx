@@ -17,6 +17,8 @@ import {
   useDeleteTransferMutation,
   useSubmitTransferMutation,
 } from '../../hooks/queries';
+import { ChevronDown } from 'lucide-react';
+import UIIcon from '@/components/common/UIIcon';
 
 type Props = {
   mode: 'new' | 'edit';
@@ -61,7 +63,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
   const handleDelete = () => {
     if (!transactionId) return;
     deleteTransfer(transactionId, {
-      onSuccess: () => router.back(),
+      onSuccess: () => router.push('/transaction/view/list'),
       onError: (err) => {
         alert(err instanceof Error ? err.message : '삭제 실패');
       },
@@ -94,7 +96,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
         <Label htmlFor='from-account'>From Account</Label>
         <Selector
           label='From Account'
-          value={fromAccount?.name ?? ''}
+          value={fromAccount?.id ?? ''}
           onChange={(val) => setField('from', val)}
           options={accounts}
           getOptionLabel={(a) => a.name}
@@ -107,7 +109,30 @@ export default function TransferForm({ mode, transactionId }: Props) {
               : 'piggyBank'
           }
           onEdit={() => router.push('/account')}
-        />
+        >
+          <Button
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <div className='flex items-center gap-2 truncate'>
+              {fromAccount && (
+                <UIIcon
+                  name={
+                    fromAccount.type === 'CASH'
+                      ? 'dollarSign'
+                      : fromAccount.type === 'CARD'
+                      ? 'creditCard'
+                      : 'piggyBank'
+                  }
+                  className='icon-sm'
+                />
+              )}
+              <span>{fromAccount?.name ?? 'Select account'}</span>
+            </div>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* To Account */}
@@ -115,7 +140,7 @@ export default function TransferForm({ mode, transactionId }: Props) {
         <Label htmlFor='to-account'>To Account</Label>
         <Selector
           label='To Account'
-          value={toAccount?.name ?? ''}
+          value={toAccount?.id ?? ''}
           onChange={(val) => setField('to', val)}
           options={accounts}
           getOptionLabel={(a) => a.name}
@@ -128,7 +153,30 @@ export default function TransferForm({ mode, transactionId }: Props) {
               : 'piggyBank'
           }
           onEdit={() => router.push('/account')}
-        />
+        >
+          <Button
+            type='button'
+            variant='outline'
+            className='w-full justify-between text-left text-label'
+          >
+            <div className='flex items-center gap-2 truncate'>
+              {toAccount && (
+                <UIIcon
+                  name={
+                    toAccount.type === 'CASH'
+                      ? 'dollarSign'
+                      : toAccount.type === 'CARD'
+                      ? 'creditCard'
+                      : 'piggyBank'
+                  }
+                  className='icon-sm'
+                />
+              )}
+              <span>{toAccount?.name ?? 'Select account'}</span>
+            </div>
+            <ChevronDown className='icon-sm text-muted-foreground' />
+          </Button>
+        </Selector>
       </div>
 
       {/* Date */}
