@@ -32,7 +32,7 @@ export default function useAuthRedirectSync() {
       try {
         await fetchUser();
       } catch (err) {
-        console.error('❌ 세션 복원 실패:', err);
+        console.error('❌ :', err);
         if (!isPublicPath) {
           router.replace('/auth/signin');
         }

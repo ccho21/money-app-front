@@ -28,7 +28,6 @@ export default function DatePicker({ isoValue, onChange }: Props) {
   useEffect(() => {
     const parsed = parseToDate(isoValue);
     setLocalDate(parsed);
-    console.log('### value', parsed);
   }, [isoValue]);
 
   const handleChange = (val: Date | undefined) => {
@@ -44,7 +43,6 @@ export default function DatePicker({ isoValue, onChange }: Props) {
         now.getMilliseconds()
       );
 
-      console.log('## current date with time', dateWithCurrentTime);
       setLocalDate(dateWithCurrentTime);
       onChange(dateWithCurrentTime);
     }

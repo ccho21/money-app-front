@@ -4,6 +4,7 @@
 import { ReactNode } from 'react';
 import TopNav from '@/components/navigation/TopNav';
 import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
+import BottomNav from '@/components/navigation/BottomNav';
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {
   useTopNavPreset({
@@ -14,6 +15,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
     <div className='layout-shell'>
       <TopNav />
       <main className='layout-body'>{children}</main>
+      <BottomNav />
     </div>
   );
 }

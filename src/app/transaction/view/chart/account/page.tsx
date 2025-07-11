@@ -24,7 +24,7 @@ export default function TransactionChartAccountPage() {
 
   if (isLoading) return <LoadingMessage />;
   if (error) return null;
-  if (!data) return <EmptyMessage />;
+  if (!data || !data.accounts.length) return <EmptyMessage />;
 
   return (
     <main className='w-full pb-[10vh] space-y-component'>

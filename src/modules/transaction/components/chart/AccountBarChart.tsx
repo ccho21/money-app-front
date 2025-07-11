@@ -60,7 +60,7 @@ export function AccountBarChart({ data }: Props) {
     id: acc.accountId,
   }));
 
-  const chartHeight = (chartData.length * BAR_HEIGHT) + 50;
+  const chartHeight = Math.max(chartData.length * BAR_HEIGHT + 50, 100);
 
   const total = data.accounts.reduce((sum, acc) => sum + acc.expense, 0);
   const top = data.accounts.reduce((prev, curr) =>
@@ -77,11 +77,15 @@ export function AccountBarChart({ data }: Props) {
       </CardHeader>
 
       <CardContent className='flat-card-content'>
-        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
+        <ChartContainer
+          config={chartConfig}
+          style={{ height: chartHeight }}
+          className='w-full'
+        >
           <BarChart
             data={chartData}
             layout='vertical'
-            margin={{ top: 0, right: 60, left: 30, bottom: 0 }}
+            margin={{ top: 0, right: 40, left: 0, bottom: 0 }}
             barSize={20}
             barCategoryGap={2}
           >
@@ -90,10 +94,26 @@ export function AccountBarChart({ data }: Props) {
               dataKey='account'
               type='category'
               axisLine={false}
-              tick={false}
-              width={40}
+              tickLine={false}
+              width={100}
+              tick={({ x, y, payload }) => (
+                <text
+                  x={x}
+                  y={y + 5}
+                  className='text-caption fill-foreground'
+                  textAnchor='end'
+                >
+                  {payload.value}
+                </text>
+              )}
             />
-            <XAxis type='number' hide />
+            <XAxis
+              type='number'
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(value) => `$${value}`}
+              tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
+            />
             <ChartTooltip
               content={<ChartTooltipContent indicator='line' />}
               cursor={false}
@@ -102,12 +122,6 @@ export function AccountBarChart({ data }: Props) {
               {chartData.map((entry) => (
                 <Cell key={entry.id} fill={`var(${entry.color})`} />
               ))}
-              <LabelList
-                dataKey='account'
-                position='left'
-                offset={8}
-                className='text-caption fill-foreground'
-              />
               <LabelList
                 dataKey='amount'
                 position='right'

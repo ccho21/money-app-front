@@ -8,26 +8,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const themeColor = useUserSettingStore((s) => s.themeColor);
 
   useEffect(() => {
-    const root = document.documentElement;
+    const root = document.body;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const applyTheme = () => {
-      const isDark =
-        theme === 'dark' || (theme === 'system' && mediaQuery.matches);
-
+      const isDark = theme === 'dark';
       root.classList.toggle('dark', isDark);
 
       root.classList.remove(
-        'theme-white',
         'theme-red',
-        'theme-pink',
+        'theme-rose',
+        'theme-orange',
         'theme-green',
         'theme-blue',
-        'theme-black'
-      );
+        'theme-yellow',
+        'theme-violet'
+      ); 
 
+      root.classList.add(`theme-${themeColor}`);
       if (!isDark) {
-        root.classList.add(`theme-${themeColor}`);
       }
     };
 

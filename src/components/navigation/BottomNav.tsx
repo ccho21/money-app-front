@@ -50,42 +50,39 @@ export default function BottomNav() {
     <nav className='fixed bottom-0 left-0 w-full border-t border-border bg-background z-50'>
       <div className='relative flex justify-around items-center py-2'>
         {tabs.map(({ key, label, icon: Icon, path, isCTA }) => {
-          const isActive = pathname.split('/')[1] === key;
-
-          if (isCTA) {
-            return (
-              <button
-                key={key}
-                onClick={() => handleNavigate(path)}
-                className='absolute -top-6 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full p-3 shadow-md transition-colors'
-              >
-                <Icon className='w-6 h-6' />
-              </button>
-            );
-          }
+          const isActive = pathname === path;
 
           return (
             <button
               key={key}
               onClick={() => handleNavigate(path)}
-              className='flex flex-col items-center text-label gap-0.5'
+              className={cn(
+                'flex flex-col items-center text-label gap-0.5 transition',
+                isCTA && 'rounded-full bg-primary text-primary-foreground p-2'
+              )}
             >
               <Icon
                 className={cn(
                   'w-5 h-5',
-                  isActive ? 'text-primary' : 'text-muted-foreground'
+                  isCTA
+                    ? 'text-primary-foreground'
+                    : isActive
+                    ? 'text-primary'
+                    : 'text-muted-foreground'
                 )}
               />
-              <span
-                className={cn(
-                  'text-label',
-                  isActive
-                    ? 'text-primary font-normal'
-                    : 'text-muted-foreground font-normal'
-                )}
-              >
-                {label}
-              </span>
+              {!isCTA && (
+                <span
+                  className={cn(
+                    'text-label text-xs',
+                    isActive
+                      ? 'text-primary font-medium'
+                      : 'text-muted-foreground font-normal'
+                  )}
+                >
+                  {label}
+                </span>
+              )}
             </button>
           );
         })}

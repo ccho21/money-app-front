@@ -1,4 +1,7 @@
-import { TransactionGroupSummary } from '@/modules/transaction/types/types';
+import {
+  Timeframe,
+  TransactionGroupSummary,
+} from '@/modules/transaction/types/types';
 import { cn } from '@/modules/shared/util/style.utils';
 import CurrencyDisplay from '../../../components/ui/currency/currencyDisplay';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +14,7 @@ interface SummaryBoxProps {
   summary: TransactionGroupSummary;
   onClick?: () => void;
   onNavigate?: () => void;
+  timeframe: Timeframe;
   className?: string;
 }
 
@@ -18,6 +22,7 @@ export default function SummaryBox({
   summary,
   onNavigate,
   className,
+  timeframe = 'monthly',
 }: SummaryBoxProps) {
   const {
     totalIncome,
@@ -36,9 +41,9 @@ export default function SummaryBox({
             <p className='text-label text-muted-foreground uppercase tracking-wide'>
               Total Spending
             </p>
-            <DateNavigator variant='dropdown' onNavigate={onNavigate} />
+            <DateNavigator variant={timeframe} onNavigate={onNavigate} />
           </div>
-          <h2 className='text-display text-primary font-bold'>
+          <h2 className='text-display font-bold'>
             <CurrencyDisplay amount={totalExpense} />
           </h2>
           {comparison && (

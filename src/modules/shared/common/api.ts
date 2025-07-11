@@ -74,8 +74,6 @@ export function get<T>(path: string): Promise<T> {
 }
 
 export function post<Res, Req>(path: string, data: Req): Promise<Res> {
-  console.log('## API BASE_URL', API_BASE_URL);
-
   return api<Res>(path, {
     method: 'POST',
     body: JSON.stringify(data),

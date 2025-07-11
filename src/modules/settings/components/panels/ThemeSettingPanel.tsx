@@ -1,18 +1,39 @@
 'use client';
 
-import { CheckCircle, Circle, Moon, Sun, Settings2 } from 'lucide-react';
+import { CheckCircle, Circle, Moon, Sun } from 'lucide-react';
 import clsx from 'clsx';
 import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
+import { AppThemeColor } from '../../types/types';
 
-type ThemeColor = 'white' | 'red' | 'pink' | 'green' | 'blue' | 'black';
-
-const colorOptions: { color: ThemeColor; hex: string }[] = [
-  { color: 'white', hex: '#f1f1f1' },
-  { color: 'red', hex: '#f97316' },
-  { color: 'pink', hex: '#fb7185' },
-  { color: 'green', hex: '#22c55e' },
-  { color: 'blue', hex: '#3b82f6' },
-  { color: 'black', hex: '#1f2937' },
+const colorOptions: { color: AppThemeColor; oklch: string }[] = [
+  {
+    color: 'red',
+    oklch: 'oklch(0.637 0.237 25.331)',
+  },
+  {
+    color: 'rose',
+    oklch: 'oklch(0.645 0.246 16.439)',
+  },
+  {
+    color: 'orange',
+    oklch: 'oklch(0.705 0.213 47.604)',
+  },
+  {
+    color: 'green',
+    oklch: 'oklch(0.723 0.219 149.579)',
+  },
+  {
+    color: 'blue',
+    oklch: 'oklch(0.623 0.214 259.815)',
+  },
+  {
+    color: 'yellow',
+    oklch: 'oklch(0.795 0.184 86.047)',
+  },
+  {
+    color: 'violet',
+    oklch: 'oklch(0.606 0.25 292.717)',
+  },
 ];
 
 interface ThemeSettingPanelProps {
@@ -31,7 +52,7 @@ export default function ThemeSettingPanel({ onClose }: ThemeSettingPanelProps) {
     icon,
   }: {
     label: string;
-    value: 'light' | 'dark' | 'system';
+    value: 'light' | 'dark';
     icon: React.ReactNode;
   }) => (
     <button
@@ -59,11 +80,6 @@ export default function ThemeSettingPanel({ onClose }: ThemeSettingPanelProps) {
       {/* 테마 모드 선택 */}
       <div className='border-t border-border'>
         <ModeRow
-          label='System Mode'
-          value='system'
-          icon={<Settings2 className='icon-sm' />}
-        />
-        <ModeRow
           label='Dark Mode'
           value='dark'
           icon={<Moon className='icon-sm' />}
@@ -77,7 +93,7 @@ export default function ThemeSettingPanel({ onClose }: ThemeSettingPanelProps) {
 
       {/* 테마 컬러 선택 */}
       <div className='flex flex-wrap gap-element px-component pt-spacious pb-component'>
-        {colorOptions.map(({ color, hex }) => {
+        {colorOptions.map(({ color, oklch }) => {
           const isActive = themeColor === color;
           return (
             <button
@@ -86,7 +102,7 @@ export default function ThemeSettingPanel({ onClose }: ThemeSettingPanelProps) {
                 'w-8 h-8 rounded-full border-2 transition-all',
                 isActive ? 'border-success' : 'border-border'
               )}
-              style={{ backgroundColor: hex }}
+              style={{ backgroundColor: oklch }}
               onClick={() => setThemeColor(color)}
               aria-label={`Change theme color to ${color}`}
             />

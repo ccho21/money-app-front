@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import TabMenu from '@/components/navigation/TabMenu';
 import TopNav from '@/components/navigation/TopNav';
 import { useTopNavPreset } from '../../modules/shared/hooks/topNavPreset';
+import BottomNav from '@/components/navigation/BottomNav';
 
 export default function InsightsLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -45,6 +46,7 @@ export default function InsightsLayout({ children }: { children: ReactNode }) {
 
       {/* Content */}
       <main className='layout-body'>{children}</main>
+      <BottomNav />
     </div>
   );
 }

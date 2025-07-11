@@ -60,7 +60,6 @@ export default function FilterSheet({ open, onOpenChange }: FilterSheetProps) {
       version: Date.now(),
     }));
 
-    console.log('### query', localQuery);
     onOpenChange(false);
   };
 
@@ -100,9 +99,9 @@ export default function FilterSheet({ open, onOpenChange }: FilterSheetProps) {
               <ToggleGroupItem value='monthly' className='text-xs'>
                 Monthly
               </ToggleGroupItem>
-              {/* <ToggleGroupItem value='yearly' className='text-sm'>
+              <ToggleGroupItem value='yearly' className='text-sm'>
                 Yearly
-              </ToggleGroupItem> */}
+              </ToggleGroupItem>
             </ToggleGroup>
           </div>
 

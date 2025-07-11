@@ -9,17 +9,33 @@ import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/modules/shared/util/style.utils';
 import React from 'react';
+import { Timeframe } from '../../types/types';
+import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
+import { format } from 'date-fns';
 
 interface TransactionCalendarViewProps {
+  month: Date;
   date?: Date;
-  tileContentMap: Map<string, React.ReactNode>;
+  tileContentMap: Map<
+    string,
+    | React.ReactNode
+    | {
+        income: number;
+        expense: number;
+      }
+  >;
+  timeframe: Timeframe;
   onSelectDate: (date: Date) => void;
+  onSelectMonth: (date: Date) => void;
 }
 
 export default function TransactionCalendarView({
   date,
+  month,
   tileContentMap,
   onSelectDate,
+  onSelectMonth,
+  timeframe,
 }: TransactionCalendarViewProps) {
   const { weeklyStartDay } = useUserSettingStore(
     useShallow((s) => ({ weeklyStartDay: s.weeklyStartDay }))
@@ -73,10 +89,70 @@ export default function TransactionCalendarView({
     }
   );
 
+  // 🔹 yearly 모드일 경우 월 버튼 UI
+  if (timeframe === 'yearly') {
+    return (
+      <div className='space-y-2'>
+        {Array.from({ length: 12 }, (_, i) => {
+          const currentMonthDate = new Date(month.getFullYear(), i, 1);
+          const key = format(currentMonthDate, 'yyyy-MM');
+          const content = memoizedTileMap.get(key) as
+            | {
+                income: number;
+                expense: number;
+              }
+            | undefined;
+
+          const isSelected =
+            date?.getFullYear() === currentMonthDate.getFullYear() &&
+            date?.getMonth() === i;
+
+          return (
+            <button
+              key={key}
+              onClick={() => onSelectMonth(currentMonthDate)}
+              className={cn(
+                'w-full p-3 rounded-lg border text-left flex justify-between items-center hover:bg-accent transition-all',
+                isSelected && 'bg-primary text-white'
+              )}
+            >
+              <div>
+                <div className='text-sm font-semibold'>
+                  {format(currentMonthDate, 'MMM')}
+                </div>
+                <div className='text-xs text-muted-foreground'>
+                  {format(currentMonthDate, 'MM-01')} ~{' '}
+                  {format(
+                    new Date(currentMonthDate.getFullYear(), i + 1, 0),
+                    'MM-dd'
+                  )}
+                </div>
+              </div>
+              <div className='text-right space-y-1 text-sm'>
+                <CurrencyDisplay
+                  amount={content?.expense ?? 0}
+                  type='expense'
+                  className='text-destructive text-sm'
+                  shortNumber
+                />
+                <CurrencyDisplay
+                  amount={content?.income ?? 0}
+                  type='income'
+                  className='text-green-600 text-sm'
+                  shortNumber
+                />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <Calendar
       mode='single'
-      month={date ?? new Date()}
+      month={month ?? new Date()}
       selected={date}
       onSelect={(d) => d && onSelectDate(d)}
       weekStartsOn={weeklyStartDay === 'monday' ? 1 : 0}
@@ -97,7 +173,7 @@ export default function TransactionCalendarView({
             <CalendarDayButton
               day={day}
               modifiers={modifiers}
-              content={content}
+              content={content as React.ReactNode}
               {...props}
             />
           );

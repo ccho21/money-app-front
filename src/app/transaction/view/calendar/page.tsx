@@ -14,6 +14,7 @@ import {
 } from '@/modules/transaction/types/types';
 import DateNavigator from '@/components/navigation/DateNavigator';
 import CurrencyDisplay from '@/components/ui/currency/currencyDisplay';
+import { getDateRangeKey as getDateRangeUtil } from '@/modules/shared/util/date.util';
 
 const TransactionCalendarView = dynamic(
   () => import('@/modules/transaction/components/view/TransactionCalendarView'),
@@ -25,7 +26,7 @@ const TransactionDetailView = dynamic(
 );
 
 export default function CalendarPage() {
-  const { query, getDateRangeKey, initializeListDefaults } =
+  const { query, setQuery, getDateRangeKey, initializeListDefaults } =
     useTransactionFilterStore();
   const { timeframe } = query;
 
@@ -35,8 +36,6 @@ export default function CalendarPage() {
   } | null>(null);
 
   useLayoutEffect(() => {
-    console.log('%c[CalendarPage] render', 'color: limegreen');
-
     initializeListDefaults();
   }, [initializeListDefaults]);
 
@@ -53,6 +52,17 @@ export default function CalendarPage() {
     useTransactionCalendarQuery(queryParams);
 
   const calendarTileMap = useMemo(() => {
+    if (timeframe === 'yearly') {
+      const map = new Map<string, { income: number; expense: number }>();
+      (calendarData ?? []).forEach((item: TransactionCalendar) => {
+        map.set(item.date, {
+          income: item.income,
+          expense: item.expense,
+        });
+      });
+      return map;
+    }
+
     const map = new Map<string, JSX.Element>();
     (calendarData ?? []).forEach((item: TransactionCalendar) => {
       if (item.income <= 0 && item.expense <= 0) return;
@@ -86,21 +96,42 @@ export default function CalendarPage() {
       );
     });
     return map;
-  }, [calendarData]);
+  }, [calendarData, timeframe]);
 
   const handleDateClick = (clickedDate: Date) => {
     setSelectedDetail({ date: clickedDate, open: true });
+  };
+
+  const handleMonthClick = (clickedMonth: Date) => {
+    const [start, end] = getDateRangeUtil(clickedMonth, {
+      unit: 'monthly',
+    }).split('_');
+
+    setQuery((prev) => {
+      const patch: Partial<TransactionGroupQuery> = {};
+      if (prev.startDate !== start) patch.startDate = start;
+      if (prev.endDate !== end) patch.endDate = end;
+      if (prev.timeframe !== 'monthly') patch.timeframe = 'monthly';
+      return Object.keys(patch).length > 0 ? patch : {};
+    });
   };
 
   if (calendarLoading) return <LoadingMessage />;
 
   return (
     <>
-      <DateNavigator />
+      <DateNavigator
+        showArrows={true}
+        variant={timeframe}
+        className='justify-between w-full'
+      />
       <TransactionCalendarView
+        timeframe={timeframe}
+        month={new Date(`${query.startDate}T00:00:00`)}
         date={selectedDetail?.date}
         tileContentMap={calendarTileMap}
         onSelectDate={handleDateClick}
+        onSelectMonth={handleMonthClick}
       />
 
       {selectedDetail && (

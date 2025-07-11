@@ -1,5 +1,6 @@
 'use client';
 
+import EmptyMessage from '@/components/ui/message/emptyMessage';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BudgetSummaryDonut } from '@/modules/transaction/components/chart/BudgetSummaryDonut';
 import { BudgetUsageStackedBarChart } from '@/modules/transaction/components/chart/BudgetUsageStackedBarChart';
@@ -23,6 +24,9 @@ export default function TransactionChartBudgetPage() {
   if (isLoading) return <Skeleton />;
   if (error || !data) return null;
 
+  if (!data.breakdown || !data.breakdown.length) {
+    return <EmptyMessage />;
+  }
   return (
     <main className='w-full pb-[10vh] space-y-component'>
       <section>

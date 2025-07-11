@@ -1,27 +1,25 @@
-// src/app/signup/page.tsx
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
-import RedirectIfAuthenticated from '@/modules/auth/components/RedirectIfAuthenticated';
 import { signup } from '@/modules/auth/hooks/hooks';
 import { API_BASE_URL } from '@/modules/shared/common/api';
+import { GalleryVerticalEnd } from 'lucide-react';
+import { SignupForm } from '@/modules/auth/components/SignupForm';
+import Link from 'next/link';
 
 export default function SignupPage() {
   const router = useRouter();
   const { error } = useAuthStore();
 
-  const [email, setEmail] = useState('seeduser@example.com');
-  const [password, setPassword] = useState('secure123');
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = await signup(email, password);
+  const handleSignup = async (
+    email: string,
+    password: string,
+    timezone?: string
+  ) => {
+    const success = await signup(email, password, timezone);
     if (success) {
       router.push('/dashboard');
-    } else {
-      // toast.error('이메일 또는 비밀번호가 올바르지 않습니다');
     }
   };
 
@@ -30,91 +28,23 @@ export default function SignupPage() {
   };
 
   return (
-    <RedirectIfAuthenticated>
-      <div className='flex items-center justify-center min-h-screen bg-background px-component'>
-        <form
-          onSubmit={handleSignup}
-          className='w-full max-w-md space-y-component p-component bg-surface border border-border shadow rounded-card'
+    <div className='min-h-svh flex items-center justify-center bg-muted p-6 md:p-10'>
+      <div className='w-full max-w-sm flex flex-col gap-6'>
+        <Link
+          href='/'
+          className='flex items-center justify-center gap-2 font-medium'
         >
-          <h1 className='text-heading font-bold text-center text-foreground'>
-            회원가입
-          </h1>
-
-          {error && (
-            <div className='text-label text-error text-center'>{error}</div>
-          )}
-
-          {/* 이메일 입력 */}
-          <div className='space-y-tight'>
-            <label
-              htmlFor='email'
-              className='block text-label font-medium text-foreground'
-            >
-              이메일
-            </label>
-            <input
-              id='email'
-              type='email'
-              className='w-full px-component py-element border border-border rounded-default bg-transparent text-foreground'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <div className='bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md'>
+            <GalleryVerticalEnd className='size-4' />
           </div>
-
-          {/* 비밀번호 입력 */}
-          <div className='space-y-tight'>
-            <label
-              htmlFor='password'
-              className='block text-label font-medium text-foreground'
-            >
-              비밀번호
-            </label>
-            <input
-              id='password'
-              type='password'
-              className='w-full px-component py-element border border-border rounded-default bg-transparent text-foreground'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* 로그인 버튼 */}
-          <button
-            type='submit'
-            className='w-full bg-primary hover:opacity-90 text-white py-element rounded-default font-semibold transition'
-          >
-            회원가입
-          </button>
-
-          {/* 구분선 */}
-          <div className='relative my-component'>
-            <div className='absolute inset-0 flex items-center'>
-              <div className='w-full border-t border-border' />
-            </div>
-            <div className='relative flex justify-center text-label'>
-              <span className='bg-surface px-component text-muted'>또는</span>
-            </div>
-          </div>
-
-          {/* Google 로그인 */}
-          <button
-            type='button'
-            onClick={handleGoogleSignin}
-            className='w-full flex items-center justify-center gap-component border border-border py-element rounded-default hover:bg-muted/10 transition text-label font-medium text-foreground'
-          >
-            Google 계정으로 로그인
-          </button>
-
-          <p className='text-label text-center text-muted'>
-            아직 계정이 없으신가요?{' '}
-            <a href='/signup' className='text-primary font-medium'>
-              회원가입
-            </a>
-          </p>
-        </form>
+          Money App
+        </Link>
+        <SignupForm
+          onSubmit={handleSignup}
+          onGoogleSignin={handleGoogleSignin}
+          error={error}
+        />
       </div>
-    </RedirectIfAuthenticated>
+    </div>
   );
 }

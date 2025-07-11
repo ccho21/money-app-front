@@ -3,6 +3,7 @@
 
 import dynamic from 'next/dynamic';
 import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
+import BottomNav from '@/components/navigation/BottomNav';
 
 const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
   ssr: false,
@@ -21,6 +22,7 @@ export default function DashboardShell({
     <div className='min-h-screen pb-[10vh]'>
       <TopNav />
       <div className=''>{children}</div>
+      <BottomNav />
     </div>
   );
 }

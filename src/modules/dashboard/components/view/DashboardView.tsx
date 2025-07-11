@@ -85,12 +85,16 @@ export function DashboardView() {
         }))}
       />
 
-      <section>
+      <section className='bg-muted/10 rounded-md'>
         <InsightSection insights={data.insights} />
       </section>
 
-      <section>
-        <h2 className='text-heading font-bold' role='heading' aria-level={3}>
+      <section className='bg-secondary/5 rounded-md space-y-component'>
+        <h2
+          className='text-heading font-bold text-secondary-foreground'
+          role='heading'
+          aria-level={3}
+        >
           Recent Transactions
         </h2>
         <TransactionListView isLoading={txLoading} data={groupList} />

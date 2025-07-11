@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useTransactionFilterStore } from '../../stores/filterStore';
 import dynamic from 'next/dynamic';
+import BottomNav from '@/components/navigation/BottomNav';
 
 const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
   ssr: false,
@@ -14,12 +15,9 @@ const TopNav = dynamic(() => import('@/components/navigation/TopNav'), {
 const TabMenu = dynamic(() => import('@/components/navigation/TabMenu'), {
   ssr: false,
 });
-const SearchDialog = dynamic(
-  () => import('@/components/common/SearchDialog'),
-  {
-    ssr: false,
-  }
-);
+const SearchDialog = dynamic(() => import('@/components/common/SearchDialog'), {
+  ssr: false,
+});
 const FilterSheet = dynamic(() => import('@/components/common/FilterSheet'), {
   ssr: false,
 });
@@ -70,6 +68,7 @@ export default function TransactionShell({
       <TabMenu tabs={tabs} active={tabKey} onChange={handleTabChange} />
 
       <main className='layout-body'>{children}</main>
+      <BottomNav />
 
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <FilterSheet open={filterOpen} onOpenChange={setFilterOpen} />

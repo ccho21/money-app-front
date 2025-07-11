@@ -44,14 +44,12 @@ export default function DashboardSummary({
       ? 'This Month’s Spending'
       : `${format(date, 'MMMM yyyy')} Spending`;
 
-      console.log('### WHAT');
   return (
     <>
       <div className='flex flex-col gap-component'>
         {/* 총 지출 */}
         <div className='text-display font-bold tracking-tight'>
           <CurrencyDisplay
-            className='text-primary'
             amount={totalExpense}
             type='total'
           />
@@ -66,10 +64,10 @@ export default function DashboardSummary({
               {budgetUsage.delta && (
                 <span
                   className={cn(
-                    'text-caption flex items-center gap-tight',
+                    'text-caption flex items-center gap-tight px-1.5 py-[1px] rounded-full',
                     budgetUsage.deltaDirection === 'up'
-                      ? 'text-destructive'
-                      : 'text-success'
+                      ? 'bg-destructive/10 text-destructive'
+                      : 'bg-secondary/10 text-secondary-foreground'
                   )}
                 >
                   {budgetUsage.deltaDirection === 'up' ? (
@@ -150,7 +148,7 @@ export default function DashboardSummary({
                   {categoryList.map((item, i) => (
                     <li
                       key={`${item.name}-${i}`}
-                      className='flex items-center gap-element'
+                      className='flex items-center gap-element rounded-sm px-1 py-0.5 hover:bg-secondary/10 transition-colors'
                     >
                       <span
                         className='inline-block rounded-full w-3 h-3'

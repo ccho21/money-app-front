@@ -80,6 +80,7 @@ export default function ListPage() {
     <section className='space-y-component bg-background text-foreground'>
       <SummaryBox
         summary={summary}
+        timeframe={timeframe}
         onNavigate={() => router.replace(getQueryString())}
       />
       <Separator className='my-compact' />

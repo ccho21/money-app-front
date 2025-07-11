@@ -105,7 +105,7 @@ describe('auth actions', () => {
       await fetchUser();
 
       expect(setUser).toHaveBeenCalledWith(null);
-      expect(setError).toHaveBeenCalledWith('세션 복원 실패');
+      expect(setError).toHaveBeenCalledWith('');
     });
   });
 

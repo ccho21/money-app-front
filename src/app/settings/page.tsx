@@ -3,15 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { settingsConfig } from '@/modules/settings/config/settingsConfig';
-
 import { Section, SectionTitle } from '@/components/ui/layout/section';
 import SettingItem from '@/modules/settings/components/SettingItem';
 import { PanelType } from '@/modules/settings/types/types';
 import { SlideInPanelRenderer } from '@/modules/settings/components/panels/SlideInPanelRenderer';
 import { useUserSettingStore } from '@/modules/shared/stores/useUserSettingStore';
+import { useSettingsConfig } from '@/modules/settings/config/settingsConfig';
 
 export default function SettingsPage() {
+  const config = useSettingsConfig(); // ✅ 여기로 대체됨
+
   const router = useRouter();
 
   const [currentPanel, setCurrentPanel] = useState<PanelType | null>(null);
@@ -22,7 +23,7 @@ export default function SettingsPage() {
   const sections = [
     {
       title: 'Plans',
-      items: settingsConfig.filter((i) => i.section === 'category'),
+      items: config.filter((i) => i.section === 'category'),
     },
     // {
     //   title: 'Transaction',
@@ -30,12 +31,12 @@ export default function SettingsPage() {
     // },
     {
       title: 'General',
-      items: settingsConfig.filter((i) => i.section === 'general'),
+      items: config.filter((i) => i.section === 'general'),
     },
   ];
 
   // 중복된 클릭 로직 추출
-  const handleItemClick = (item: (typeof settingsConfig)[number]) => {
+  const handleItemClick = (item: (typeof config)[number]) => {
     if (item.type === 'panel') setCurrentPanel(item.panel);
     if (item.type === 'link') router.push(item.route);
     if (item.type === 'action') item.action();

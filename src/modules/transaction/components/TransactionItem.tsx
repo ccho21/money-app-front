@@ -43,7 +43,7 @@ export default function TransactionItem({
       data-slot='transaction-item'
       data-testid='transaction-item'
       className={cn(
-        'px-element py-compact shadow-2xs border-none rounded-sm',
+        'px-element py-compact shadow-2xs border-none rounded-sm',  
         className
       )}
     >
@@ -62,7 +62,6 @@ export default function TransactionItem({
             <CurrencyDisplay
               isRecurring={tx.recurringId ? true : false}
               type={isIncome ? 'income' : 'expense'}
-              variant='default'
               amount={tx.amount}
             />
             <div className='text-label text-muted-foreground'>
@@ -70,7 +69,6 @@ export default function TransactionItem({
                 <div>
                   <CurrencyDisplay
                     // type={isIncome ? 'income' : 'expense'}
-                    variant='default'
                     amount={Math.abs(tx.balanceAfter)}
                     className='text-body'
                   />

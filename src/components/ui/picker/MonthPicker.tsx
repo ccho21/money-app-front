@@ -1,8 +1,8 @@
 'use client';
-import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { buttonVariants } from '../button';
 import { cn } from '@/modules/shared/util/style.utils';
+import { useState } from 'react';
 
 type Month = {
   number: number;
@@ -106,13 +106,13 @@ function MonthCal({
   onYearBackward,
   onYearForward,
 }: MonthCalProps) {
-  const [year, setYear] = React.useState<number>(
+  const [year, setYear] = useState<number>(
     selectedMonth?.getFullYear() ?? new Date().getFullYear()
   );
-  const [month, setMonth] = React.useState<number>(
+  const [month, setMonth] = useState<number>(
     selectedMonth?.getMonth() ?? new Date().getMonth()
   );
-  const [menuYear, setMenuYear] = React.useState<number>(year);
+  const [menuYear, setMenuYear] = useState<number>(year);
 
   if (minDate && maxDate && minDate > maxDate) minDate = maxDate;
 

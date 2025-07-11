@@ -88,7 +88,7 @@ export default function ListBudgetCategoryPage() {
           Budget category List
         </h2>
         <div className='text-right'>
-          <DateNavigator variant='dropdown' />
+          <DateNavigator variant={timeframe} />
         </div>
         <div className='grid grid-cols-1 gap-component'>
           {budgetGroup.budgets.map((item) => (

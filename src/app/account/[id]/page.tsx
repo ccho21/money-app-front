@@ -39,7 +39,7 @@ export default function AccountDetailPage() {
 
   const { query, setQuery, getDateRangeKey, initializeListDefaults } =
     useTransactionFilterStore();
-  const { groupBy } = query;
+  const { groupBy, timeframe } = query;
 
   useLayoutEffect(() => {
     initializeListDefaults();
@@ -96,7 +96,7 @@ export default function AccountDetailPage() {
           <div>
             <h2 className='text-heading font-semibold'>Account History</h2>
           </div>
-          <DateNavigator variant='dropdown' />
+          <DateNavigator variant={timeframe} />
         </div>
         <p className='text-subheading text-muted-foreground mb-component'>
           Balance, settings, and payment schedule for this account.

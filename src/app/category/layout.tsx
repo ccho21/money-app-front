@@ -1,6 +1,7 @@
 // src/app/account/layout.tsx
 'use client';
 
+import BottomNav from '@/components/navigation/BottomNav';
 import TopNav from '@/components/navigation/TopNav';
 import { useTopNavPreset } from '@/modules/shared/hooks/topNavPreset';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,7 @@ export default function CategoryLayout({ children }: { children: ReactNode }) {
     <div className='layout-shell bg-muted'>
       <TopNav />
       <main className='layout-body'>{children}</main>
+      <BottomNav />
     </div>
   );
 }

@@ -34,7 +34,6 @@ export const useCreateAccount = () => {
   return useMutation({
     mutationFn: (input: AccountCreateRequest) => createAccountAPI(input),
     onSuccess: (createdAccount) => {
-      console.log('### CREATED ACCOUNT', createdAccount);
       const accountId = createdAccount.id;
 
       queryClient.invalidateQueries({ queryKey: ['account', accountId] });

@@ -40,7 +40,7 @@ export default function BudgetSettingsPage() {
   if (isLoading) {
     return (
       <Section>
-        <DateNavigator variant='dropdown' />
+        <DateNavigator variant={timeframe} />
         <Skeleton className='h-40 w-full' />
       </Section>
     );
@@ -49,7 +49,7 @@ export default function BudgetSettingsPage() {
   if (error || !data || data.items.length === 0) {
     return (
       <Section>
-        <DateNavigator variant='dropdown' />
+        <DateNavigator variant={timeframe} />
         <Alert className='text-center'>
           <AlertTitle>No budgets</AlertTitle>
           <AlertDescription>
@@ -65,7 +65,7 @@ export default function BudgetSettingsPage() {
       <Section className='border-border'>
         <div className='flex justify-between items-center'>
           <SectionTitle>Monthly Spending Plan</SectionTitle>
-          <DateNavigator variant='dropdown' />
+          <DateNavigator variant={timeframe} />
         </div>
         <SectionSubtitle>
           Set limits and track your spending by category

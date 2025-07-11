@@ -10,64 +10,53 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/modules/shared/util/style.utils';
 import { useDateNavigator } from '@/modules/transaction/hooks/useDateNavigator';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '../ui/select';
 import { MonthPicker } from '../ui/picker/MonthPicker';
-
-type Variant = 'dropdown' | 'pager' | 'year';
+import { Timeframe } from '@/modules/transaction/types/types';
+import { YearPicker } from '../ui/picker/YearPicker';
 
 interface DateNavigatorProps {
-  variant?: Variant;
+  variant?: Timeframe;
   className?: string;
   onNavigate?: (start: string, end: string) => void;
+  showArrows?: boolean;
 }
 
 export default function DateNavigator({
-  variant = 'pager',
+  variant = 'monthly',
   className,
   onNavigate,
+  showArrows = false,
 }: DateNavigatorProps) {
-  const [open, setOpen] = useState(false);
+  const [monthOpen, setMonthOpen] = useState(false);
+  const [yearOpen, setYearOpen] = useState(false);
   const { parsedDate, label, handleChange, handleSelect } = useDateNavigator({
     onRangeChange: onNavigate,
   });
 
-  const [selectedYear, setSelectedYear] = useState(
-    parsedDate.getFullYear().toString()
+  const [selectedYear, setSelectedYear] = useState(parsedDate.getFullYear());
+
+  const NavigationArrows = ({ children }: { children: React.ReactNode }) => (
+    <div className={cn('flex items-center gap-2', className)}>
+      <Button variant='ghost' onClick={() => handleChange(-1)}>
+        <ChevronLeft className='w-5 h-5 text-muted-foreground' />
+      </Button>
+      {children}
+      <Button variant='ghost' onClick={() => handleChange(1)}>
+        <ChevronRight className='w-5 h-5 text-muted-foreground' />
+      </Button>
+    </div>
   );
-  const years = ['2025', '2024', '2023', '2022'];
 
-  if (variant === 'year') {
-    return (
-      <div className={cn('flex items-center', className)}>
-        <Select
-          value={selectedYear}
-          onValueChange={(year) => {
-            setSelectedYear(year);
-            handleSelect(new Date(Number(year), 0, 1));
-          }}
-        >
-          <SelectTrigger className='navigator-select-trigger !p-0'>
-            {parsedDate.getFullYear()}
-          </SelectTrigger>
-          <SelectContent align='start'>
-            {years.map((year) => (
-              <SelectItem key={year} value={year}>
-                {year}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    );
-  }
-
-  if (variant === 'dropdown') {
-    return (
-      <Popover open={open} onOpenChange={setOpen}>
+  // 🔸 MONTHLY VIEW
+  if (variant === 'monthly') {
+    const monthButton = (
+      <Popover open={monthOpen} onOpenChange={setMonthOpen}>
         <PopoverTrigger asChild>
-          <Button variant='ghost' className='!p-0 text-sm font-semibold'>
+          <Button variant='ghost' className='!p-2 text-sm font-semibold'>
             {label}
-            <ChevronDown className='w-4 h-4 text-muted-foreground' />
+            {!showArrows && (
+              <ChevronDown className='w-4 h-4 text-muted-foreground' />
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent align='center' className='w-auto p-0'>
@@ -75,7 +64,7 @@ export default function DateNavigator({
             selectedMonth={parsedDate}
             onMonthSelect={(date) => {
               handleSelect(date);
-              setOpen(false);
+              setMonthOpen(false);
             }}
             variant={{
               calendar: { main: 'ghost', selected: 'default' },
@@ -85,20 +74,45 @@ export default function DateNavigator({
         </PopoverContent>
       </Popover>
     );
+
+    return showArrows ? (
+      <NavigationArrows>{monthButton}</NavigationArrows>
+    ) : (
+      <div className={className}>{monthButton}</div>
+    );
   }
 
-  // Default: pager
-  return (
-    <div className={cn('flex items-center justify-between w-full', className)}>
-      <Button variant='ghost' onClick={() => handleChange(-1)}>
-        <ChevronLeft className='w-5 h-5 text-muted-foreground' />
-      </Button>
-      <span className='text-label font-semibold text-foreground select-none'>
-        {label}
-      </span>
-      <Button variant='ghost' onClick={() => handleChange(1)}>
-        <ChevronRight className='w-5 h-5 text-muted-foreground' />
-      </Button>
-    </div>
-  );
+  // 🔸 YEARLY VIEW
+  if (variant === 'yearly') {
+    const yearButton = (
+      <Popover open={yearOpen} onOpenChange={setYearOpen}>
+        <PopoverTrigger asChild>
+          <Button variant='ghost' className='!p-2 text-sm font-semibold'>
+            {parsedDate.getFullYear()}
+            {!showArrows && (
+              <ChevronDown className='w-4 h-4 text-muted-foreground' />
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align='start' className='w-auto p-0'>
+          <YearPicker
+            selectedYear={selectedYear}
+            onYearSelect={(year) => {
+              setSelectedYear(year);
+              handleSelect(new Date(year, 0, 1));
+              setYearOpen(false);
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+
+    return showArrows ? (
+      <NavigationArrows>{yearButton}</NavigationArrows>
+    ) : (
+      <div className={cn('flex items-center', className)}>{yearButton}</div>
+    );
+  }
+
+  return null;
 }

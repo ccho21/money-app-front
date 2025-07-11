@@ -3,12 +3,14 @@ export type WeeklyStartDay = 'sunday' | 'monday';
 export type InputOrder = 'amount-first' | 'account-first';
 export type AppTheme = 'light' | 'dark' | 'system';
 export type AppThemeColor =
-  | 'white'
   | 'red'
-  | 'pink'
+  | 'rose'
+  | 'orange'
   | 'green'
   | 'blue'
-  | 'black';
+  | 'yellow'
+  | 'violet';
+
 export type CurrencyCode = 'CAD' | 'KRW' | 'USD';
 
 export type StartPage = 'list' | 'calendar';

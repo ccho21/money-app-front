@@ -86,7 +86,6 @@ export default function AccountPage() {
                 >
                   <CurrencyDisplay
                     type={acc.balance >= 0 ? 'income' : 'expense'}
-                    variant='default'
                     amount={Math.abs(acc.balance)}
                   />
                 </div>

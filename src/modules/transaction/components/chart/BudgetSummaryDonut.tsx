@@ -55,7 +55,7 @@ export function BudgetSummaryDonut({ data }: Props) {
             Used: { label: 'Used', color: 'var(--chart-1)' },
             Remaining: { label: 'Remaining', color: 'var(--muted)' },
           }}
-          className="mx-auto"
+          className="mx-auto w-full"
         >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
@@ -63,7 +63,7 @@ export function BudgetSummaryDonut({ data }: Props) {
               data={chartData}
               dataKey="value"
               nameKey="name"
-              innerRadius={50}
+              innerRadius={60}
               strokeWidth={5}
               animationDuration={500}
             >

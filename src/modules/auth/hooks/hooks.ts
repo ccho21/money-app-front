@@ -1,7 +1,11 @@
 import { useAuthStore } from '@/modules/auth/store/useAuthStore';
 import { signinAPI, signupAPI, fetchUserAPI, signoutAPI } from '../api';
+import { QueryClient } from '@tanstack/react-query';
 
-export const signin = async (email: string, password: string) => {
+export const signin = async (
+  email: string,
+  password: string,
+) => {
   const { setUser, setLoading, setError } = useAuthStore.getState();
 
   setLoading(true);
@@ -18,13 +22,17 @@ export const signin = async (email: string, password: string) => {
   }
 };
 
-export const signup = async (email: string, password: string) => {
+export const signup = async (
+  email: string,
+  password: string,
+  timezone?: string
+) => {
   const { setUser, setLoading, setError } = useAuthStore.getState();
 
   setLoading(true);
   setError(null);
   try {
-    const user = await signupAPI({ email, password });
+    const user = await signupAPI({ email, password, timezone });
     setUser(user);
     return true;
   } catch {
@@ -44,16 +52,18 @@ export const fetchUser = async () => {
     setUser(user);
   } catch {
     setUser(null);
-    setError('세션 복원 실패');
+    setError('');
   } finally {
     setLoading(false);
   }
 };
 
-export const signout = async () => {
+export const signout = async (queryClient: QueryClient) => {
   const { setUser } = useAuthStore.getState();
   try {
     await signoutAPI();
+
+    await queryClient.clear();
   } catch (err) {
     console.error('❌ Signout error:', err);
   } finally {

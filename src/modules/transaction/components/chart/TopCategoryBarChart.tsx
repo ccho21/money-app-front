@@ -57,7 +57,7 @@ export function TopCategoryBarChart({ data }: Props) {
     id: cat.categoryId,
   }));
 
-  const chartHeight = (chartData.length * BAR_HEIGHT) + 50;
+  const chartHeight = Math.max(chartData.length * BAR_HEIGHT + 50, 100);
   const { comparison } = data;
 
   return (
@@ -70,11 +70,15 @@ export function TopCategoryBarChart({ data }: Props) {
       </CardHeader>
 
       <CardContent className='flat-card-content'>
-        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
+        <ChartContainer
+          config={chartConfig}
+          style={{ height: chartHeight }}
+          className='w-full'
+        >
           <BarChart
             data={chartData}
             layout='vertical'
-            margin={{ top: 0, right: 60, left: 40, bottom: 0 }}
+            margin={{ top: 0, right: 40, left: 0, bottom: 0 }}
             barSize={20}
             barCategoryGap={2}
           >
@@ -82,11 +86,27 @@ export function TopCategoryBarChart({ data }: Props) {
             <YAxis
               dataKey='category'
               type='category'
-              tick={false}
+              tick={({ x, y, payload }) => (
+                <text
+                  x={x}
+                  y={y + 5}
+                  className='text-caption fill-foreground'
+                  textAnchor='end'
+                >
+                  {payload.value}
+                </text>
+              )}
               axisLine={false}
-              width={40}
+              tickLine={false}
+              width={60}
             />
-            <XAxis type='number' hide />
+            <XAxis
+              type='number'
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(value) => `$${value}`}
+              tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
+            />
             <ChartTooltip
               content={<ChartTooltipContent indicator='line' />}
               cursor={false}
@@ -96,15 +116,9 @@ export function TopCategoryBarChart({ data }: Props) {
                 <Cell key={entry.id} fill={`var(${entry.color})`} />
               ))}
               <LabelList
-                dataKey='category'
-                position='left'
-                offset={8}
-                className='text-caption fill-foreground'
-              />
-              <LabelList
                 dataKey='amount'
                 position='right'
-                offset={8}
+                offset={10}
                 className='text-label fill-foreground'
                 formatter={formatCAD}
               />

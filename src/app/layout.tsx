@@ -23,6 +23,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' suppressHydrationWarning>
+      <head>
+        <link rel='manifest' href='/manifest.json' />
+        <meta name='theme-color' content='#ffffff' />
+        <link
+          rel='apple-touch-icon'
+          href='/apple-touch-icon.png'
+          sizes='180x180'
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiase bg-background text-foreground dark:bg-background dark:text-foreground`}
       >
@@ -60,9 +69,9 @@ export default function RootLayout({
 
 // * Calendar Design fix
 
-
-// * E2E 테스트
-// * PWA
+// * E2E 테스트 - DONE
+// * PWA - DONE
+// * Gooe Browser Notification - DONE
 // * Google Redirect
 // * DEPLOY PHASE 1
 
@@ -75,3 +84,5 @@ export default function RootLayout({
 // * weekly view
 // * lazy loading
 
+//* Insight 부분을 어떻게 해결해야될까? 무작정 insight 가 나오는게 아니라, 어느 조건에 맞춰졌을때만 발동이 되어야 되는데 지금은, 무조건 발동이 되고있으니가 조금 그래. 
+//* chart 도 마찬가지. 일단은데이터를 보여주고있긴 하지만, 이렇게 보여주는게 맞는건지... 

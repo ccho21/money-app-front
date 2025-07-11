@@ -91,7 +91,7 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
     },
   };
 
-  const chartHeight = (transformedData.length * 24) + 50;
+  const chartHeight = transformedData.length * 24 + 50;
 
   return (
     <Card className='flat-card space-y-component gap-component'>
@@ -103,15 +103,25 @@ export function BudgetUsageStackedBarChart({ data }: Props) {
       </CardHeader>
 
       <CardContent className='px-component'>
-        <ChartContainer config={chartConfig} style={{ height: chartHeight }}>
+        <ChartContainer
+          config={chartConfig}
+          style={{ height: chartHeight }}
+          className='w-full'
+        >
           <BarChart
             data={transformedData}
             layout='vertical'
-            margin={{ top: 0, right: 16, left: 40, bottom: 0 }}
+            margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
             barCategoryGap={0}
           >
             <CartesianGrid horizontal={false} strokeDasharray='3 3' />
-            <XAxis type='number' hide />
+            <XAxis
+              type='number'
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(value) => `$${value}`}
+              tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }}
+            />
             <YAxis
               dataKey='category'
               type='category'

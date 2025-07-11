@@ -35,7 +35,6 @@ export const getDateRange = (
   { unit, amount = 0 }: DateRangeOptions
 ) => {
   let start: Date, end: Date;
-
   switch (unit) {
     case 'yearly':
       start = startOfYear(baseDate);

@@ -33,28 +33,28 @@ export default function InsightSection({
   if (!insights.length) return null;
 
   return (
-    <div className="space-y-component py-element">
-      <div className="flex items-center justify-between">
+    <div className='bg-accent/10 rounded-md space-y-component py-element'>
+      <div className='flex items-center justify-between'>
         <h3
-          className="text-heading font-bold"
-          role="heading"
+          className='text-heading font-bold text-secondary-foreground'
+          role='heading'
           aria-level={3}
         >
           Insights
         </h3>
         {totalSlides > 0 && (
-          <span className="text-caption text-muted-foreground">
+          <span className='text-caption text-muted-foreground'>
             {selectedIndex + 1} / {totalSlides}
           </span>
         )}
       </div>
 
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-element">
+      <div className='overflow-hidden' ref={emblaRef}>
+        <div className='flex gap-element'>
           {insights.map((insight, index) => (
             <div
               key={insight.id ?? index}
-              className="min-w-full sm:min-w-[70%] md:min-w-[50%] lg:min-w-[33%]"
+              className='min-w-full sm:min-w-[70%] md:min-w-[50%] lg:min-w-[33%]'
             >
               <InsightRow insight={insight} onActionClick={onActionClick} />
             </div>

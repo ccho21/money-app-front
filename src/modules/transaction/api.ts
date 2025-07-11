@@ -91,7 +91,6 @@ export const fetchTransactionGroupsAPI = (params: TransactionGroupQuery) => {
 
 export const fetchTransactionChartFlowAPI = (params: TransactionGroupQuery) => {
   const query = buildTransactionQuery(params);
-  console.log('QQQ QUERY', query);
   return get<TransactionChartFlowResponse>(
     `/transactions/charts/flow?${query}`
   );
